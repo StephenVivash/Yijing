@@ -771,47 +771,6 @@ namespace Yijing
 
 		private static void Tweet(String strDescription)
 		{
-#if TWITTER
-			String strConsumerKey = "AjuaMjEsIADmly7AP0uoHA";
-			String strConsumerSecret = "xTVvJz0lNc21f0kt10tVAlQcglqk1GnFypK8JRewSw";
-			String strAccessToken = "82841909-KMLZMrgXwVLNUWtQaBze5ZE6ZmxvIhs3BSipnuswA";
-			String strAccessTokenSecret = "mw8yYr7UaCEjfcZ4gNmMTmgmKVeDnYCvvpAktwPUX4Q";
-			Double fpLatitude = 32.020333;
-			Double fpLongitude = 118.789200;
-
-			// -33.8384103775024,151.204629898071 Mount St
-			// -35.307635,149.124189 Parliament House
-			// 31.22734101,121.49719276 Shanghai
-			// -33.854928, 151.225495 Port Jackson
-			// 44.6273655, 33.5124411 Sevastopol
-			// 37.421189, 141.032405 Fukushima
-			// 40.153378, -76.725673 Three Mile Island
-			// 32.020333, 118.789200 Confucius Temple
-			// 51.566253, -0.144609 Karl Marx Tomb
-			// 52.094460, 1.340749 Sutton Hoo
-			// -13.163588, -72.545865 Pachu Picchu
-			// 36.360204,43.249987 Gaugamela
-			// 27.469562, 83.275598 Buddha
-			// -54.612347, 158.876134 Macquarie Is
-
-			TwitterService service4 = new TwitterService(strConsumerKey, strConsumerSecret);
-			service4.AuthenticateWith(strAccessToken, strAccessTokenSecret);
-			SendTweetOptions options = new SendTweetOptions();
-			options.Status = strDescription;
-			options.Lat = fpLatitude;
-			options.Long = fpLongitude;
-
-			//TwitterStatus status4;
-			//TwitterResponse response4a;
-			service4.SendTweet(options, (status4, response4a) =>
-			{
-				//if (response4a.StatusCode == HttpStatusCode.OK)
-				{
-					long lTweetId = status4.Id;
-				}
-			});
-			int xxx = 0;
-#endif
 		}
 	}
 /*
