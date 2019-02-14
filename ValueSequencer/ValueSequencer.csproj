@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.0</TargetFramework>
+    <Version>5.2.10.0</Version>
+    <Copyright>Copyright ©  2019</Copyright>
+    <Description>The classic of change</Description>
+    <Authors>Stephen Vivash</Authors>
+    <Product>Yijing</Product>
   </PropertyGroup>
 
 </Project>
