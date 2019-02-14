@@ -18,7 +18,7 @@ namespace ValueSequencer
 		public int Value
 		{
 			get { return m_nValue; }
-			set	{ SetValue(value); }
+			set { SetValue(value); }
 		}
 
 		public int Sequence

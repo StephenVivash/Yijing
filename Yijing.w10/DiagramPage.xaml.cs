@@ -37,24 +37,7 @@ namespace Yijing
 
 		public static int m_nDiagramColor = 2;
 		public static int m_nDiagramSpeed = 1;
-		/*
-		public static int m_nDiagramLsb = 0;
 
-		public static int m_nLineSequence = 1;
-		public static int m_nLineRatio = 1;
-		public static int m_nLineLabel = 3;
-		public static int m_nLineText = 0;
-
-		public static int m_nTrigramSequence = 1;
-		public static int m_nTrigramRatio = 0;
-		public static int m_nTrigramLabel = 2;
-		public static int m_nTrigramText = 0;
-
-		public static int m_nHexagramSequence = 2;
-		public static int m_nHexagramRatio = 0;
-		public static int m_nHexagramLabel = 9;
-		public static int m_nHexagramText = 6;
-		*/
 		public static bool m_bTimerOn = false;
 		public static bool m_bForward = true;
 		public static ComboBoxItem m_cbiDiagramMode = null;
@@ -120,21 +103,8 @@ namespace Yijing
 
 			//YijingDbTest ydb = new YijingDbTest();
 			//ydb.Main();
-			//QueryDB();
 
 			m_hvsCurrent = new CHexagramValueSequencer(0);
-
-			//CLineValueSequencer.SetCurrentSequence(m_nLineSequence);
-			//CLineValueSequencer.SetCurrentRatio(m_nLineRatio);
-			//CLineValueSequencer.SetCurrentLabel(m_nLineLabel);
-
-			//CTrigramValueSequencer.SetCurrentSequence(m_nTrigramSequence);
-			//CTrigramValueSequencer.SetCurrentRatio(m_nTrigramRatio);
-			//CTrigramValueSequencer.SetCurrentLabel(m_nTrigramLabel);
-
-			//CHexagramValueSequencer.SetCurrentSequence(m_nHexagramSequence);
-			//CHexagramValueSequencer.SetCurrentRatio(m_nHexagramRatio);
-			//CHexagramValueSequencer.SetCurrentLabel(m_nHexagramLabel);
 
 			SetDiagramLsb(0);
 
@@ -146,30 +116,6 @@ namespace Yijing
 
 			//m_tskThinkGear.Start();
 		}
-
-		/// <summary>
-		/// ////////////////////////////////////////
-		/// ////////////////////////////////////////
-		/// ////////////////////////////////////////
-		/// </summary>
-		/*
-		public void QueryDB()
-		{
-			using (YijingEntities ye = new YijingEntities())
-			{
-				YijingDb.Type t = ye.Types.Find(3);
-				LabelSery ls2 = ye.LabelSeries.Where(ls1 => ls1.Name == "Vivash" &&
-					ls1.TypeId == (int)Sequences.ValueType.Hexagram).First(); // .OrderBy(ls1 => ls1.Name)
-				IEnumerable<LabelSery> iels = from ls3 in ye.LabelSeries
-					where ls3.TypeId == (int)Sequences.ValueType.Line orderby ls3.Name select ls3;
-				List<LabelSery> lls = iels.ToList();
-				LabelSery ls4 = ye.LabelSeries.Single(ls5 => ls5.Name == "Vivash"); // Vivash Numeric
-				List<Label> ll1 = ls2.Labels.ToList();
-				t = ls2.Type;
-				int x = 0;
-			}
-		}
-		*/
 
 		private void Page_Loaded(object sender, RoutedEventArgs e)
 		{
