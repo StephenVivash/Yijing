@@ -1,0 +1,38 @@
+﻿<Page
+	x:Class="Yijing.QuestionPage"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="using:Yijing"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d" Loaded="Page_Loaded" Unloaded="Page_Unloaded" SizeChanged="Page_SizeChanged">
+
+	<Page.BottomAppBar>
+		<CommandBar>
+			<CommandBar.Content>
+				<Grid/>
+			</CommandBar.Content>
+			<AppBarButton x:Name="btnAccept" Label="Acc" Icon="Accept" Width="50" Click="btnAccept_Click"/>
+			<AppBarButton x:Name="btnCancel" Label="Can" Icon="Cancel" Width="50" Click="btnCancel_Click"/>
+		</CommandBar>
+	</Page.BottomAppBar>
+
+	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+		<ListView x:Name="lbxQuestion" SelectionMode="None" HorizontalAlignment="Center">
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Type" Width="100"/>
+				<ComboBox x:Name="cbxType" HorizontalAlignment="Left" VerticalAlignment="Stretch" 
+						Width="170"  SelectedIndex="0" SelectionChanged="cbxType_SelectionChanged">
+					<ComboBox.Items>
+						<ComboBoxItem Name="cbiPersonal" Content="Personal"/>
+						<ComboBoxItem Name="cbiRelationship" Content="Relationship"/>
+						<ComboBoxItem Name="cbiBusiness" Content="Business"/>
+						<ComboBoxItem Name="cbiSpiritual" Content="Spiritual"/>
+						<ComboBoxItem Name="cbiPhilosophical" Content="Philosophical"/>
+					</ComboBox.Items>
+				</ComboBox>
+			</StackPanel>
+			<TextBox x:Name="txtQuestion" AcceptsReturn="True" PlaceholderText="Why?" Height="256" TextWrapping="Wrap" Width="270"/>
+		</ListView>
+	</Grid>
+</Page>

@@ -1,0 +1,110 @@
+﻿<Page
+	x:Class="Yijing.SettingsPage"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="using:Yijing"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d" Loaded="Page_Loaded" SizeChanged="Page_SizeChanged">
+
+	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+		<ListView x:Name="lbxSettings" SelectionMode="None" HorizontalAlignment="Center">
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Diagram Color" Width="150"/>
+				<ComboBox x:Name="cbxDiagramColor" HorizontalAlignment="Left" VerticalAlignment="Stretch" 
+						Width="120" SelectionChanged="cbxDiagramColor_SelectionChanged">
+					<ComboBox.Items>
+						<ComboBoxItem Name="cbiMono" Content="Mono"/>
+						<ComboBoxItem Name="cbiDual" Content="Dual"/>
+						<ComboBoxItem Name="cbiTriColor" Content="Trigram"/>
+						<ComboBoxItem Name="cbiHexColor" Content="Hexagram"/>
+					</ComboBox.Items>
+				</ComboBox>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Diagram Speed" Width="150"/>
+				<ComboBox x:Name="cbxDiagramSpeed" HorizontalAlignment="Left" VerticalAlignment="Stretch" 
+						Width="120" SelectionChanged="cbxDiagramSpeed_SelectionChanged">
+					<ComboBox.Items>
+						<ComboBoxItem Name="cbiSlow" Content="Slow"/>
+						<ComboBoxItem Name="cbiMedium" Content="Medium"/>
+						<ComboBoxItem Name="cbiFast" Content="Fast"/>
+					</ComboBox.Items>
+				</ComboBox>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Diagram LSB" Width="150"/>
+				<ComboBox x:Name="cbxDiagramLsb" HorizontalAlignment="Left" VerticalAlignment="Stretch" 
+						Width="120" SelectionChanged="cbxDiagramLsb_SelectionChanged">
+					<ComboBox.Items>
+						<ComboBoxItem Name="cbiTop" Content="Top"/>
+						<ComboBoxItem Name="cbiBottom" Content="Bottom"/>
+					</ComboBox.Items>
+				</ComboBox>
+			</StackPanel>
+
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Line Sequence" Width="150"/>
+				<ComboBox x:Name="cbxLineSequence" HorizontalAlignment="Left" VerticalAlignment="Stretch" 
+						Width="120" SelectionChanged="cbxLineSequence_SelectionChanged"/>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Line Ratio" Width="150"/>
+				<ComboBox x:Name="cbxLineRatio" HorizontalAlignment="Left" VerticalAlignment="Stretch" 
+						Width="120" SelectionChanged="cbxLineRatio_SelectionChanged"/>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Line Label" Width="150"/>
+				<ComboBox x:Name="cbxLineLabel" HorizontalAlignment="Left" VerticalAlignment="Stretch" 
+						Width="120" SelectionChanged="cbxLineLabel_SelectionChanged"/>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Line Text" Width="150"/>
+				<ComboBox x:Name="cbxLineText" HorizontalAlignment="Left" VerticalAlignment="Stretch" 
+						Width="120" SelectionChanged="cbxLineText_SelectionChanged"/>
+			</StackPanel>
+
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Trigram Sequence" Width="150"/>
+				<ComboBox x:Name="cbxTrigramSequence" HorizontalAlignment="Left" VerticalAlignment="Stretch" 
+						Width="120" SelectionChanged="cbxTrigramSequence_SelectionChanged"/>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Trigram Ratio" Width="150"/>
+				<ComboBox x:Name="cbxTrigramRatio" HorizontalAlignment="Left" VerticalAlignment="Stretch" 
+						Width="120" SelectionChanged="cbxLineRatio_SelectionChanged"/>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Trigram Label" Width="150"/>
+				<ComboBox x:Name="cbxTrigramLabel" HorizontalAlignment="Left" VerticalAlignment="Stretch" 
+						Width="120" SelectionChanged="cbxTrigramLabel_SelectionChanged"/>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Trigram Text" Width="150"/>
+				<ComboBox x:Name="cbxTrigramText" HorizontalAlignment="Left" VerticalAlignment="Stretch" 
+						Width="120" SelectionChanged="cbxTrigramText_SelectionChanged"/>
+			</StackPanel>
+
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Hexagram Sequence" Width="150"/>
+				<ComboBox x:Name="cbxHexagramSequence" HorizontalAlignment="Left" VerticalAlignment="Stretch" 
+						Width="120" SelectionChanged="cbxHexagramSequence_SelectionChanged"/>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Hexagram Ratio" Width="150"/>
+				<ComboBox x:Name="cbxHexagramRatio" HorizontalAlignment="Left" VerticalAlignment="Stretch" 
+						Width="120" SelectionChanged="cbxLineRatio_SelectionChanged"/>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Hexagram Label" Width="150"/>
+				<ComboBox x:Name="cbxHexagramLabel" HorizontalAlignment="Left" VerticalAlignment="Stretch" 
+						Width="120" SelectionChanged="cbxHexagramLabel_SelectionChanged"/>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Hexagram Text" Width="150"/>
+				<ComboBox x:Name="cbxHexagramText" HorizontalAlignment="Left" VerticalAlignment="Stretch" 
+						Width="120" SelectionChanged="cbxHexagramText_SelectionChanged"/>
+			</StackPanel>
+		</ListView>
+	</Grid>
+</Page>

@@ -1,0 +1,26 @@
+﻿<Page
+	x:Class="Yijing.TextPage"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="using:Yijing"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d" Loaded="Page_Loaded" SizeChanged="Page_SizeChanged">
+
+	<Page.BottomAppBar>
+		<CommandBar>
+			<CommandBar.Content>
+				<Grid/>
+			</CommandBar.Content>
+			<AppBarButton x:Name="btnFirst" Label="Fir" Icon="Previous" Width="50" Click="btnFirst_Click"/>
+			<AppBarButton x:Name="btnPrevious" Label="Bac" Icon="Back" Width="50" Click="btnPrevious_Click"/>
+			<AppBarButton x:Name="btnNext" Label="For" Icon="Forward" Width="50" Click="btnNext_Click"/>
+			<AppBarButton x:Name="btnLast" Label="Las" Icon="Next" Width="50" Click="btnLast_Click"/>
+			<AppBarButton x:Name="btnHome" Label="Hom" Icon="Home" Width="50" Click="btnHome_Click"/>
+		</CommandBar>
+	</Page.BottomAppBar>
+
+	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+		<WebView x:Name="webText" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" NavigationStarting="webText_NavigationStarting"/>
+	</Grid>
+</Page>
