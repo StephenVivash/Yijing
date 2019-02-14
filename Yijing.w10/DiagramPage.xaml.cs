@@ -101,8 +101,8 @@ namespace Yijing
 
 			Sequences.Initialise();
 
-			//YijingDbTest ydb = new YijingDbTest();
-			//ydb.Main();
+			//YijingData yd = new YijingData();
+			//yd.InitialseDB();
 
 			m_hvsCurrent = new CHexagramValueSequencer(0);
 

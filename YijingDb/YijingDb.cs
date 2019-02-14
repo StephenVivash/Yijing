@@ -37,14 +37,14 @@ namespace YijingDb
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
 			optionsBuilder
-					//"Data Source=WALLABY\SQLEXPRESS;Initial Catalog=Yijing;Integrated Security=True;Pooling=False"
-					//"Data Source=WALLABY\SQLEXPRESS;Initial Catalog=Yijing;Trusted_Connection=True;Pooling=False"
-					//"Data Source=WALLABY\SQLEXPRESS;Initial Catalog=Yijing;Persist Security Info=True;User ID=sa;Password="
-					.UseSqlServer(@"Data Source=WALLABY\SQLEXPRESS;Initial Catalog=Yijing;Integrated Security=True;Pooling=False")
-					//.UseSqlite("Data Source=/home/stephen/Src/Yijing/YijingDb/Yijing.db")
-					//.UseLazyLoadingProxies()
-					.EnableSensitiveDataLogging(true)
-					.EnableDetailedErrors(true);
+				//"Data Source=WALLABY\SQLEXPRESS;Initial Catalog=Yijing;Integrated Security=True;Pooling=False"
+				//"Data Source=WALLABY\SQLEXPRESS;Initial Catalog=Yijing;Trusted_Connection=True;Pooling=False"
+				//"Data Source=WALLABY\SQLEXPRESS;Initial Catalog=Yijing;Persist Security Info=True;User ID=sa;Password="
+				.UseSqlServer(@"Data Source=WALLABY\SQLEXPRESS;Initial Catalog=Yijing;Integrated Security=True;Pooling=False")
+				//.UseSqlite("Data Source=/home/stephen/Src/Yijing/YijingDb/Yijing.db")
+				//.UseLazyLoadingProxies()
+				.EnableSensitiveDataLogging(true)
+				.EnableDetailedErrors(true);
 		}
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
