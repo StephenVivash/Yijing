@@ -1,5 +1,14 @@
-# Yijing
-The classic of change
+# Yijing </br></br>
+
+Yijing - The classic of change, the game of koans, play for the system. </br></br>
+
+I Ching - Classification, generalisation and chance. </br></br>
+
+Yi Jing - Judgement, order and contemplation. </br></br>
+
+Zhouyi - Divination, prognostication and synchronicity. </br></br>
+
+IChing - Neurosky Mindwave Brainwave EEG Electroencephalogram. </br></br>
 
 v7.0.0 (2019) [Swift, iOS10] eventually </br>
 v6.0.0 (2016) [Java, Android5] </br>
