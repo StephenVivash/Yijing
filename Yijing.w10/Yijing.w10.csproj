@@ -124,7 +124,6 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <None Include="Yijing.w10_StoreKey.pfx" />
-    <None Include="Yijing.w10_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Package.StoreAssociation.xml" />
