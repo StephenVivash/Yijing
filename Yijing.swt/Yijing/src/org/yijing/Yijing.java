@@ -1,6 +1,6 @@
 package org.yijing;
 
-import java.lang.reflect.Array;
+//import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.Random;
 import java.util.Timer;
@@ -995,11 +995,13 @@ public class Yijing {
 			Transition();
 		}
 
+		@SuppressWarnings("unused")
 		public void SetPrevious() {
 			m_vsCurrent.Previous(false);
 			Transition();
 		}
 
+		@SuppressWarnings("unused")
 		public void SetNext() {
 			m_vsCurrent.Next(false);
 			Transition();
