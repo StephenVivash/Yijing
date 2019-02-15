@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:paddingBottom="@dimen/activity_vertical_margin"
+	android:paddingLeft="@dimen/activity_horizontal_margin"
+	android:paddingRight="@dimen/activity_horizontal_margin"
+	android:paddingTop="@dimen/activity_vertical_margin"
+	tools:context=".MindwaveActivity">
+
+	<TableLayout
+		android:id="@+id/tableLayout"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<TableRow
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
+
+			<Switch
+				android:id="@+id/swiEnable"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginBottom="10dp"
+				android:switchPadding="80dp"
+				android:text="Enable"/>
+
+		</TableRow>
+
+		<TableRow
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
+
+			<Switch
+				android:id="@+id/swiEegAlgorithm"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginBottom="10dp"
+				android:text="EEG Algorithm"/>
+		</TableRow>
+
+		<TableRow
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
+
+			<Switch
+				android:id="@+id/swiAttention"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginBottom="10dp"
+				android:text="Attention"/>
+
+			<Spinner
+				android:id="@+id/spiAttentionLow"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				/>
+
+			<Spinner
+				android:id="@+id/spiAttentionHigh"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				/>
+		</TableRow>
+
+		<TableRow
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
+
+			<Switch
+				android:id="@+id/swiMeditation"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginBottom="10dp"
+				android:text="Meditation"/>
+
+			<Spinner
+				android:id="@+id/spiMeditationLow"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:minWidth="50dp"/>
+
+			<Spinner
+				android:id="@+id/spiMeditationHigh"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"/>
+
+		</TableRow>
+
+	</TableLayout>
+
+	<include
+		android:id="@+id/include"
+		layout="@layout/plot"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentEnd="true"
+		android:layout_alignParentStart="true"
+		android:layout_below="@+id/tableLayout"/>
+</RelativeLayout>

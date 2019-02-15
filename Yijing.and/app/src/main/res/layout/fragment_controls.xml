@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/fragment_controls"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".DiagramActivity$ControlFragment">
+
+        <Button
+            android:id="@+id/btnFirst"
+            style="@style/Widget.AppCompat.Button.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toStartOf="@+id/btnInverse"
+            android:text="F"/>
+
+        <Button
+            android:id="@+id/btnInverse"
+            style="@style/Widget.AppCompat.Button.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toStartOf="@+id/btnOpposite"
+            android:text="I"/>
+
+        <Button
+            android:id="@+id/btnOpposite"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toStartOf="@+id/btnTransverse"
+            android:text="O"/>
+
+        <Button
+            android:id="@+id/btnTransverse"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:text="T"/>
+
+        <Button
+            android:id="@+id/btnNuclear"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toEndOf="@+id/btnTransverse"
+            android:text="N"/>
+
+        <Button
+            android:id="@+id/btnMove"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toEndOf="@+id/btnNuclear"
+            android:text="M"/>
+
+        <Button
+            android:id="@+id/btnHome"
+            style="@style/Widget.AppCompat.Button.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toEndOf="@+id/btnMove"
+            android:text="C"/>
+
+	    <Spinner
+		    android:id="@+id/spiMode"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_above="@+id/spiColor"
+		    android:layout_alignStart="@+id/spiColor"
+		    android:layout_marginBottom="25dp"
+		    android:minWidth="140dp"/>
+
+	    <Spinner
+		    android:id="@+id/spiType"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignTop="@+id/spiMode"
+		    android:layout_toEndOf="@+id/btnTransverse"
+		    android:minWidth="140dp"/>
+
+	    <Spinner
+		    android:id="@+id/spiColor"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignStart="@+id/btnFirst"
+		    android:layout_alignTop="@+id/spiSpeed"
+		    android:minWidth="140dp"/>
+
+	    <Spinner
+		    android:id="@+id/spiSpeed"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_above="@+id/btnTransverse"
+		    android:layout_alignStart="@+id/spiType"
+		    android:layout_marginBottom="25dp"
+		    android:minWidth="140dp"/>
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

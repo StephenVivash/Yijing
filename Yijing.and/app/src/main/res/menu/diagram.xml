@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<item
+		android:title="Question"
+		android:id="@+id/action_question"
+		android:orderInCategory="10"/>
+
+	<item
+		android:title="Diagram"
+		android:id="@+id/action_diagram"
+		android:orderInCategory="20"/>
+
+	<item
+		android:title="Text"
+		android:id="@+id/action_text"
+		android:orderInCategory="30"/>
+
+	<item
+		android:title="Mindwave"
+		android:id="@+id/action_mindwave"
+		android:orderInCategory="40"/>
+
+	<item
+		android:title="Settings"
+		android:id="@+id/action_settings"
+		android:orderInCategory="50"/>
+</menu>

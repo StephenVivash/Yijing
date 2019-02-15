@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<string name="app_name">Yijing</string>
+
+	<string-array name="type_array">
+		<item>Personal</item>
+		<item>Relationship</item>
+		<item>Business</item>
+		<item>Spiritual</item>
+		<item>Philosophical</item>
+	</string-array>
+
+	<string-array name="mode_array">
+		<item>Explore</item>
+		<item>Animate</item>
+		<item>Touch Cast</item>
+		<item>Mind Cast</item>
+		<item>Auto Cast</item>
+	</string-array>
+
+	<string-array name="diagram_array">
+		<item>Hexagram</item>
+		<item>Trigram</item>
+		<item>Line</item>
+	</string-array>
+
+	<string-array name="color_array">
+		<item>Mono</item>
+		<item>Dual</item>
+		<item>Trigram</item>
+		<item>Hexagram</item>
+	</string-array>
+
+	<string-array name="speed_array">
+		<item>Slow</item>
+		<item>Medium</item>
+		<item>Fast</item>
+	</string-array>
+
+</resources>

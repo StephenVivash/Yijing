@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:paddingBottom="@dimen/activity_vertical_margin"
+	android:paddingLeft="@dimen/activity_horizontal_margin"
+	android:paddingRight="@dimen/activity_horizontal_margin"
+	android:paddingTop="@dimen/activity_vertical_margin"
+	tools:context=".SettingsActivity">
+
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+		<TableLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+
+			<TableRow
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_marginTop="15dp">
+
+				<TextView
+					android:id="@+id/txtDiagramLsb"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:minWidth="170dp"
+					android:text="Diagram LSB"
+					android:textAppearance="@android:style/TextAppearance.Material.Medium"/>
+
+				<Spinner
+					android:id="@+id/spiDiagramLsb"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:minWidth="140dp"/>
+			</TableRow>
+
+			<TableRow
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_marginTop="15dp">
+
+				<TextView
+					android:id="@+id/txtLineSequence"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Line Sequence"
+					android:textAppearance="@android:style/TextAppearance.Material.Medium"/>
+
+				<Spinner
+					android:id="@+id/spiLineSequence"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"/>
+			</TableRow>
+
+			<TableRow
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_marginTop="15dp">
+
+				<TextView
+					android:id="@+id/txtLineRatio"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Line Ratio"
+					android:textAppearance="@android:style/TextAppearance.Material.Medium"/>
+
+				<Spinner
+					android:id="@+id/spiLineRatio"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"/>
+			</TableRow>
+
+			<TableRow
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_marginTop="15dp">
+
+				<TextView
+					android:id="@+id/txtLineLabel"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Line Label"
+					android:textAppearance="@android:style/TextAppearance.Material.Medium"/>
+
+				<Spinner
+					android:id="@+id/spiLineLabel"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"/>
+			</TableRow>
+
+			<TableRow
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_marginTop="15dp">
+
+				<TextView
+					android:id="@+id/txtLineText"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Line Text"
+					android:textAppearance="@android:style/TextAppearance.Material.Medium"/>
+
+				<Spinner
+					android:id="@+id/spiLineText"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"/>
+			</TableRow>
+
+			<TableRow
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_marginTop="15dp">
+
+				<TextView
+					android:id="@+id/txtTrigramSequence"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Trigram Sequence"
+					android:textAppearance="@android:style/TextAppearance.Material.Medium"/>
+
+				<Spinner
+					android:id="@+id/spiTrigramSequence"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"/>
+			</TableRow>
+
+			<TableRow
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_marginTop="15dp">
+
+				<TextView
+					android:id="@+id/txtTrigramRatio"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Trigram Ratio"
+					android:textAppearance="@android:style/TextAppearance.Material.Medium"/>
+
+				<Spinner
+					android:id="@+id/spiTrigramRatio"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"/>
+			</TableRow>
+
+			<TableRow
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_marginTop="15dp">
+
+				<TextView
+					android:id="@+id/txtTrigramLabel"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Trigram Label"
+					android:textAppearance="@android:style/TextAppearance.Material.Medium"/>
+
+				<Spinner
+					android:id="@+id/spiTrigramLabel"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"/>
+			</TableRow>
+
+			<TableRow
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_marginTop="15dp">
+
+				<TextView
+					android:id="@+id/txtTrigramText"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Trigram Text"
+					android:textAppearance="@android:style/TextAppearance.Material.Medium"/>
+
+				<Spinner
+					android:id="@+id/spiTrigramText"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"/>
+			</TableRow>
+
+			<TableRow
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_marginTop="15dp">
+
+				<TextView
+					android:id="@+id/txtHexagramSequence"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Hexagram Sequence"
+					android:textAppearance="@android:style/TextAppearance.Material.Medium"/>
+
+				<Spinner
+					android:id="@+id/spiHexagramSequence"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"/>
+			</TableRow>
+
+			<TableRow
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_marginTop="15dp">
+
+				<TextView
+					android:id="@+id/txtHexagramRatio"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Hexagram Ratio"
+					android:textAppearance="@android:style/TextAppearance.Material.Medium"/>
+
+				<Spinner
+					android:id="@+id/spiHexagramRatio"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"/>
+			</TableRow>
+
+			<TableRow
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_marginTop="15dp">
+
+				<TextView
+					android:id="@+id/txtHexagramLabel"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Hexagram Label"
+					android:textAppearance="@android:style/TextAppearance.Material.Medium"/>
+
+				<Spinner
+					android:id="@+id/spiHexagramLabel"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"/>
+			</TableRow>
+
+			<TableRow
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_marginTop="15dp">
+
+				<TextView
+					android:id="@+id/txtHexagramTest"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Hexagram Text"
+					android:textAppearance="@android:style/TextAppearance.Material.Medium"/>
+
+				<Spinner
+					android:id="@+id/spiHexagramText"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"/>
+			</TableRow>
+		</TableLayout>
+	</ScrollView>
+</RelativeLayout>
