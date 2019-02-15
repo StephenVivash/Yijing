@@ -1,0 +1,66 @@
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+interface IApplication;
+interface IValueSequencer;
+
+[object,uuid(46F01DEA-1A2C-4315-8517-119ACED2929A),dual,helpstring("IChing IApplication Interface"),pointer_default(unique)]
+interface IApplication : IDispatch
+{
+	[id(1), propget, helpstring("")] HRESULT Application([out, retval] IApplication** ppIApplication);
+	[id(2), propget, helpstring("")] HRESULT Parent([out, retval] IDispatch** ppIDispatch);
+	[id(3), propget, helpstring("")] HRESULT Name([out, retval] BSTR* pbstrName);
+	[id(4), propget, helpstring("")] HRESULT Hexagram([out, retval] IValueSequencer** ppIValueSequencer);
+	[id(5), helpstring("")] HRESULT Quit(void);
+};
+
+[object,uuid(07532985-705A-464D-B314-B9C7FAB77C4E),dual,helpstring("IChing IValueSequencer Interface"),pointer_default(unique)]
+interface IValueSequencer : IDispatch
+{
+	[id(1), propget, helpstring("")] HRESULT Application([out, retval] IApplication** ppIApplication);
+	[id(2), propget, helpstring("")] HRESULT Parent([out, retval] IDispatch** ppIDispatch);
+	[id(3), propget, helpstring("")] HRESULT Name([out, retval] BSTR* pbstrName);
+	[id(4), propget, helpstring("")] HRESULT Value([out, retval] int* pnValue);
+	[id(4), propput, helpstring("")] HRESULT Value([in] int nValue);
+	[id(5), propget, helpstring("")] HRESULT Text([in] BSTR bstrType, [out, retval] BSTR* pbstrText);
+	[id(6), propget, helpstring("")] HRESULT IsMovingLine([in] int nLine, [out, retval] VARIANT_BOOL* pbValue);
+	[id(7), propget, helpstring("")] HRESULT HasText([in] BSTR bstrType, [out, retval] VARIANT_BOOL* pbValue);
+	[id(8), propget, helpstring("")] HRESULT SequenceName([out, retval] BSTR* pbstrName);
+	[id(9), propget, helpstring("")] HRESULT SecondaryName(int nLine, [out, retval] BSTR* pbstrName);
+};
+
+[uuid(A7163C8F-D4BB-41ED-8F6C-AAD16A7F303D),version(1.0),helpstring("IChing 1.0 Type Library")]
+library IChingLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+//	[uuid(BE52BED7-16DF-4D91-9F9D-0A43259DDEEB),helpstring("IChing _IApplicationEvents Interface")]
+//	dispinterface _IApplicationEvents
+//	{
+//		properties:
+//		methods:
+//	};
+
+	[uuid(0D2AC07A-6EEC-4D76-8A43-92677B0C5400),helpstring("IChing Application Class")]
+	coclass Application
+	{
+		[default] interface IApplication;
+//		[default, source] dispinterface _IApplicationEvents;
+	};
+	
+//	[uuid(1DF45581-63F5-4DD9-8D43-47FC16370139),helpstring("IChing _IValueSequencerEvents Interface")]
+//	dispinterface _IValueSequencerEvents
+//	{
+//		properties:
+//		methods:
+//	};
+
+	[uuid(B90CCEC1-6A6A-4A7C-8D5B-643B6E59ED18),helpstring("IChing ValueSequencer Class")]
+	coclass ValueSequencer
+	{
+		[default] interface IValueSequencer;
+//		[default, source] dispinterface _IValueSequencerEvents;
+	};
+};

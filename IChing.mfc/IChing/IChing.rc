@@ -1,0 +1,632 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (Australia) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENA)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_AUS
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENA)\r\n"
+    "LANGUAGE 9, 3\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#include ""res\\IChing.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#include ""afxprint.rc""       // printing/print preview resources\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "Res\\IChing.ico"
+IDR_LABEL_TYPE          ICON                    "Res\\LabelDoc.ico"
+IDR_SEQUENCE_TYPE       ICON                    "Res\\SequenceDoc.ico"
+IDR_TEXT_TYPE           ICON                    "Res\\TextDoc.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP                  "Res\\Toolbar.bmp"
+IDB_PANE_COMMANDS       BITMAP                  "Res\\PaneCommands.bmp"
+IDR_PANE_PROPERTIES     BITMAP                  "Res\\PropertyTools.bmp"
+IDB_HEXAGRAM00          BITMAP                  "Res\\Hexagram\\00.bmp"
+IDB_HEXAGRAM01          BITMAP                  "Res\\Hexagram\\01.bmp"
+IDB_HEXAGRAM02          BITMAP                  "Res\\Hexagram\\02.bmp"
+IDB_HEXAGRAM03          BITMAP                  "Res\\Hexagram\\03.bmp"
+IDB_HEXAGRAM04          BITMAP                  "Res\\Hexagram\\04.bmp"
+IDB_HEXAGRAM05          BITMAP                  "Res\\Hexagram\\05.bmp"
+IDB_HEXAGRAM06          BITMAP                  "Res\\Hexagram\\06.bmp"
+IDB_HEXAGRAM07          BITMAP                  "Res\\Hexagram\\07.bmp"
+IDB_HEXAGRAM08          BITMAP                  "Res\\Hexagram\\08.bmp"
+IDB_HEXAGRAM09          BITMAP                  "Res\\Hexagram\\09.bmp"
+IDB_HEXAGRAM10          BITMAP                  "Res\\Hexagram\\10.bmp"
+IDB_HEXAGRAM11          BITMAP                  "Res\\Hexagram\\11.bmp"
+IDB_HEXAGRAM12          BITMAP                  "Res\\Hexagram\\12.bmp"
+IDB_HEXAGRAM13          BITMAP                  "Res\\Hexagram\\13.bmp"
+IDB_HEXAGRAM14          BITMAP                  "Res\\Hexagram\\14.bmp"
+IDB_HEXAGRAM15          BITMAP                  "Res\\Hexagram\\15.bmp"
+IDB_HEXAGRAM16          BITMAP                  "Res\\Hexagram\\16.bmp"
+IDB_HEXAGRAM17          BITMAP                  "Res\\Hexagram\\17.bmp"
+IDB_HEXAGRAM18          BITMAP                  "Res\\Hexagram\\18.bmp"
+IDB_HEXAGRAM19          BITMAP                  "Res\\Hexagram\\19.bmp"
+IDB_HEXAGRAM20          BITMAP                  "Res\\Hexagram\\20.bmp"
+IDB_HEXAGRAM21          BITMAP                  "Res\\Hexagram\\21.bmp"
+IDB_HEXAGRAM22          BITMAP                  "Res\\Hexagram\\22.bmp"
+IDB_HEXAGRAM23          BITMAP                  "Res\\Hexagram\\23.bmp"
+IDB_HEXAGRAM24          BITMAP                  "Res\\Hexagram\\24.bmp"
+IDB_HEXAGRAM25          BITMAP                  "Res\\Hexagram\\25.bmp"
+IDB_HEXAGRAM26          BITMAP                  "Res\\Hexagram\\26.bmp"
+IDB_HEXAGRAM27          BITMAP                  "Res\\Hexagram\\27.bmp"
+IDB_HEXAGRAM28          BITMAP                  "Res\\Hexagram\\28.bmp"
+IDB_HEXAGRAM29          BITMAP                  "Res\\Hexagram\\29.bmp"
+IDB_HEXAGRAM30          BITMAP                  "Res\\Hexagram\\30.bmp"
+IDB_HEXAGRAM31          BITMAP                  "Res\\Hexagram\\31.bmp"
+IDB_HEXAGRAM32          BITMAP                  "Res\\Hexagram\\32.bmp"
+IDB_HEXAGRAM33          BITMAP                  "Res\\Hexagram\\33.bmp"
+IDB_HEXAGRAM34          BITMAP                  "Res\\Hexagram\\34.bmp"
+IDB_HEXAGRAM35          BITMAP                  "Res\\Hexagram\\35.bmp"
+IDB_HEXAGRAM36          BITMAP                  "Res\\Hexagram\\36.bmp"
+IDB_HEXAGRAM37          BITMAP                  "Res\\Hexagram\\37.bmp"
+IDB_HEXAGRAM38          BITMAP                  "Res\\Hexagram\\38.bmp"
+IDB_HEXAGRAM39          BITMAP                  "Res\\Hexagram\\39.bmp"
+IDB_HEXAGRAM40          BITMAP                  "Res\\Hexagram\\40.bmp"
+IDB_HEXAGRAM41          BITMAP                  "Res\\Hexagram\\41.bmp"
+IDB_HEXAGRAM42          BITMAP                  "Res\\Hexagram\\42.bmp"
+IDB_HEXAGRAM43          BITMAP                  "Res\\Hexagram\\43.bmp"
+IDB_HEXAGRAM44          BITMAP                  "Res\\Hexagram\\44.bmp"
+IDB_HEXAGRAM45          BITMAP                  "Res\\Hexagram\\45.bmp"
+IDB_HEXAGRAM46          BITMAP                  "Res\\Hexagram\\46.bmp"
+IDB_HEXAGRAM47          BITMAP                  "Res\\Hexagram\\47.bmp"
+IDB_HEXAGRAM48          BITMAP                  "Res\\Hexagram\\48.bmp"
+IDB_HEXAGRAM49          BITMAP                  "Res\\Hexagram\\49.bmp"
+IDB_HEXAGRAM50          BITMAP                  "Res\\Hexagram\\50.bmp"
+IDB_HEXAGRAM51          BITMAP                  "Res\\Hexagram\\51.bmp"
+IDB_HEXAGRAM52          BITMAP                  "Res\\Hexagram\\52.bmp"
+IDB_HEXAGRAM53          BITMAP                  "Res\\Hexagram\\53.bmp"
+IDB_HEXAGRAM54          BITMAP                  "Res\\Hexagram\\54.bmp"
+IDB_HEXAGRAM55          BITMAP                  "Res\\Hexagram\\55.bmp"
+IDB_HEXAGRAM56          BITMAP                  "Res\\Hexagram\\56.bmp"
+IDB_HEXAGRAM57          BITMAP                  "Res\\Hexagram\\57.bmp"
+IDB_HEXAGRAM58          BITMAP                  "Res\\Hexagram\\58.bmp"
+IDB_HEXAGRAM59          BITMAP                  "Res\\Hexagram\\59.bmp"
+IDB_HEXAGRAM60          BITMAP                  "Res\\Hexagram\\60.bmp"
+IDB_HEXAGRAM61          BITMAP                  "Res\\Hexagram\\61.bmp"
+IDB_HEXAGRAM62          BITMAP                  "Res\\Hexagram\\62.bmp"
+IDB_HEXAGRAM63          BITMAP                  "Res\\Hexagram\\63.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDR_FIRST               CURSOR                  "Res\\First.cur"
+IDR_PREVIOUS            CURSOR                  "Res\\Prev.cur"
+IDR_NEXT                CURSOR                  "Res\\Next.cur"
+IDR_LAST                CURSOR                  "Res\\Last.cur"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR  20, 16
+BEGIN
+    BUTTON      ID_FILE_NEW
+    BUTTON      ID_FILE_OPEN
+    BUTTON      ID_FILE_SAVE
+    SEPARATOR
+    BUTTON      ID_FILE_PRINT
+    SEPARATOR
+    BUTTON      ID_EDIT_CUT
+    BUTTON      ID_EDIT_COPY
+    BUTTON      ID_EDIT_PASTE
+    SEPARATOR
+    BUTTON      IDR_PANE_CONVERSATION
+    BUTTON      IDR_PANE_PROPERTIES
+    BUTTON      IDR_PANE_CONSULTATION
+    BUTTON      IDR_PANE_EXPLORATION
+    BUTTON      IDR_PANE_LOGIC
+    SEPARATOR
+    BUTTON      ID_HEXAGRAM_FIRST
+    BUTTON      ID_HEXAGRAM_PREVIOUS
+    BUTTON      ID_HEXAGRAM_NEXT
+    BUTTON      ID_HEXAGRAM_LAST
+    SEPARATOR
+    BUTTON      ID_TEXT_BACK
+    BUTTON      ID_TEXT_FORWARD
+    SEPARATOR
+    BUTTON      ID_APP_ABOUT
+END
+
+IDR_PANE_PROPERTIES TOOLBAR  16, 16
+BEGIN
+    BUTTON      ID_PANEPROPERTIES_CATEGORIZED
+    BUTTON      ID_PANEPROPERTIES_ALPHABETIC
+    SEPARATOR
+    BUTTON      ID_PANEPROPERTIES_PAGES
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// REGISTRY
+//
+
+IDR_ICHING              REGISTRY                "Res\\IChing.rgs"
+IDR_APPLICATION         REGISTRY                "Res\\Application.rgs"
+IDR_VALUESEQUENCER      REGISTRY                "Res\\ValueSequencer.rgs"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&Close",                      ID_FILE_CLOSE
+        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
+        MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
+        MENUITEM SEPARATOR
+        MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
+        MENUITEM "Print Pre&view",              ID_FILE_PRINT_PREVIEW
+        MENUITEM "P&rint Setup...",             ID_FILE_PRINT_SETUP
+        MENUITEM SEPARATOR
+        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
+        MENUITEM SEPARATOR
+        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
+        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
+        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Conversation",               IDR_PANE_CONVERSATION
+        MENUITEM "&Properties",                 IDR_PANE_PROPERTIES
+        MENUITEM "C&onsultation",               IDR_PANE_CONSULTATION
+        MENUITEM "&Exploration",                IDR_PANE_EXPLORATION
+        MENUITEM "&Logic",                      IDR_PANE_LOGIC
+    END
+    POPUP "&Toolbars"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Customize...",               35001
+    END
+    POPUP "&Window"
+    BEGIN
+        MENUITEM "Window List",                 35000
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&Help Topics",                ID_HELP_FINDER
+        MENUITEM SEPARATOR
+        MENUITEM "&About IChing...",            ID_APP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS 
+BEGIN
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
+    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
+    VK_F1,          ID_CONTEXT_HELP,        VIRTKEY, SHIFT
+    VK_F1,          ID_HELP,                VIRTKEY 
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 212, 83
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About IChing"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
+    CTEXT           "IChing v3.0.7 (Beta)",IDC_STATIC,49,11,104,8,SS_NOPREFIX
+    CTEXT           "You don't need a weatherman to know which way the wind blows",IDC_STATIC,40,24,130,19
+    DEFPUSHBUTTON   "OK",IDOK,180,20,20,14,WS_GROUP
+END
+
+IDD_BELIEFBASE DIALOGEX 0, 0, 194, 61
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Belief Base"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,5,5,20,20
+    LTEXT           "Please select your belief",IDC_STATIC,35,5,96,8,SS_NOPREFIX
+    COMBOBOX        IDC_BB_OPTIONS,35,20,91,120,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Don't ask me again, mate",IDC_BB_DONT_ASK,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,35,40,91,10
+    DEFPUSHBUTTON   "OK",IDOK,135,5,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,135,25,50,14
+END
+
+IDD_TEXTEDIT DIALOGEX 0, 0, 352, 233
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Belief Base"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,6,6,20,20
+    LTEXT           "Please select",IDC_STATIC,42,12,54,8,SS_NOPREFIX
+    COMBOBOX        IDC_TE_OPTIONS,90,6,91,120,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "OK",IDOK,234,6,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,288,6,50,14
+    CONTROL         "",IDC_TE_TEXT,"RichEdit20A",ES_MULTILINE | ES_WANTRETURN | WS_BORDER | WS_VSCROLL | WS_TABSTOP,6,30,333,191
+END
+
+IDD_CONSULTATION_FORM DIALOGEX 0, 0, 752, 212
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    LTEXT           "Title",IDC_STATIC,12,12,102,8
+    EDITTEXT        IDC_CF_TITLE,12,24,204,14,ES_AUTOHSCROLL
+    LTEXT           "Question Type",IDC_STATIC,12,42,108,8
+    COMBOBOX        IDC_CF_TYPE,12,54,204,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Hexagram Labels",IDC_STATIC,12,72,108,8
+    COMBOBOX        IDC_CF_LABEL,12,84,204,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Text Source",IDC_STATIC,12,102,108,8
+    COMBOBOX        IDC_CF_SOURCE,12,114,204,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Question",IDC_STATIC,228,12,96,8
+    CONTROL         "",IDC_CF_QUESTION,"RichEdit20A",ES_MULTILINE | ES_WANTRETURN | WS_BORDER | WS_VSCROLL | WS_TABSTOP,228,24,252,180
+    LTEXT           "Notes",IDC_STATIC,492,12,114,8
+    CONTROL         "",IDC_CF_NOTES,"RichEdit20A",ES_MULTILINE | ES_WANTRETURN | WS_BORDER | WS_VSCROLL | WS_TABSTOP,492,24,252,180
+    PUSHBUTTON      "Cast",IDC_CF_CAST,12,150,60,50
+    PUSHBUTTON      "Primary",IDC_CF_PRIMARY,78,150,66,50,BS_BITMAP
+    PUSHBUTTON      "Secondary",IDC_CF_SECONDARY,150,150,66,50,BS_BITMAP
+    LTEXT           "01:30 11 January 2007",IDC_STATIC,12,132,114,8
+END
+
+IDD_CONSULTATION_DLG DIALOGEX 0, 0, 196, 214
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "Consultation"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+END
+
+IDD_EXPLORATION_FORM DIALOGEX 0, 0, 752, 212
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+END
+
+IDD_LOGIC_FORM DIALOGEX 0, 0, 752, 212
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 3,0,7,0
+ PRODUCTVERSION 3,0,7,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "FileDescription", "Windows I Ching Explorer"
+            VALUE "FileVersion", "3, 0, 7, 0"
+            VALUE "InternalName", "Windows I Ching Explorer"
+            VALUE "LegalCopyright", "Copyright (C) 2007"
+            VALUE "OriginalFilename", "IChing.exe"
+            VALUE "ProductName", "Windows I Ching Explorer"
+            VALUE "ProductVersion", "3, 0, 7, 0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_CONSULTATION_FORM, DIALOG
+    BEGIN
+        RIGHTMARGIN, 644
+        BOTTOMMARGIN, 152
+    END
+
+    IDD_CONSULTATION_DLG, DIALOG
+    BEGIN
+        RIGHTMARGIN, 178
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDP_OLE_INIT_FAILED     "OLE initialization failed.  Make sure that the OLE libraries are the correct version."
+    IDP_SOCKETS_INIT_FAILED "Windows sockets initialization failed."
+END
+
+STRINGTABLE 
+BEGIN
+    IDR_MAINFRAME           "IChing"
+    IDR_LABEL_TYPE          "\nLabel\nLabel\nLabel Files (*.icl)\n.icl\nLabel.Document\nLabel Document"
+    IDR_SEQUENCE_TYPE       "\nSequence\nSequence\nSequence Files (*.ics)\n.ics\nSequence.Document\nSequence Document"
+    IDR_TEXT_TYPE           "\nText\nText\nText Files (*.html)\n.html\nText.Document\nText Document"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "IChing"
+    AFX_IDS_IDLEMESSAGE     "For Help, press F1"
+    AFX_IDS_HELPMODEMESSAGE "Select an object on which to get Help"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_FILE_NEW             "Create a new document\nNew"
+    ID_FILE_OPEN            "Open an existing document\nOpen"
+    ID_FILE_CLOSE           "Close the active document\nClose"
+    ID_FILE_SAVE            "Save the active document\nSave"
+    ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
+    ID_FILE_PAGE_SETUP      "Change the printing options\nPage Setup"
+    ID_FILE_PRINT_SETUP     "Change the printer and printing options\nPrint Setup"
+    ID_FILE_PRINT           "Print the active document\nPrint"
+    ID_FILE_PRINT_PREVIEW   "Display full pages\nPrint Preview"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
+    ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
+    ID_HELP_INDEX           "Opens Help\nHelp Topics"
+    ID_HELP_FINDER          "List Help topics\nHelp Topics"
+    ID_HELP_USING           "Display instructions about how to use help\nHelp"
+    ID_CONTEXT_HELP         "Display help for clicked on buttons, menus and windows\nHelp"
+    ID_HELP                 "Display help for current task or command\nHelp"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_FILE_MRU_FILE1       "Open this document"
+    ID_FILE_MRU_FILE2       "Open this document"
+    ID_FILE_MRU_FILE3       "Open this document"
+    ID_FILE_MRU_FILE4       "Open this document"
+    ID_FILE_MRU_FILE5       "Open this document"
+    ID_FILE_MRU_FILE6       "Open this document"
+    ID_FILE_MRU_FILE7       "Open this document"
+    ID_FILE_MRU_FILE8       "Open this document"
+    ID_FILE_MRU_FILE9       "Open this document"
+    ID_FILE_MRU_FILE10      "Open this document"
+    ID_FILE_MRU_FILE11      "Open this document"
+    ID_FILE_MRU_FILE12      "Open this document"
+    ID_FILE_MRU_FILE13      "Open this document"
+    ID_FILE_MRU_FILE14      "Open this document"
+    ID_FILE_MRU_FILE15      "Open this document"
+    ID_FILE_MRU_FILE16      "Open this document"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
+    ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_WINDOW_NEW           "Open another window for the active document\nNew Window"
+    ID_WINDOW_ARRANGE       "Arrange icons at the bottom of the window\nArrange Icons"
+    ID_WINDOW_CASCADE       "Arrange windows so they overlap\nCascade Windows"
+    ID_WINDOW_TILE_HORZ     "Arrange windows as non-overlapping tiles\nTile Windows"
+    ID_WINDOW_TILE_VERT     "Arrange windows as non-overlapping tiles\nTile Windows"
+    ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_EDIT_CLEAR           "Erase the selection\nErase"
+    ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
+    ID_EDIT_COPY            "Copy the selection and put it on the Clipboard\nCopy"
+    ID_EDIT_CUT             "Cut the selection and put it on the Clipboard\nCut"
+    ID_EDIT_FIND            "Find the specified text\nFind"
+    ID_EDIT_PASTE           "Insert Clipboard contents\nPaste"
+    ID_EDIT_REPEAT          "Repeat the last action\nRepeat"
+    ID_EDIT_REPLACE         "Replace specific text with different text\nReplace"
+    ID_EDIT_SELECT_ALL      "Select the entire document\nSelect All"
+    ID_EDIT_UNDO            "Undo the last action\nUndo"
+    ID_EDIT_REDO            "Redo the previously undone action\nRedo"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_VIEW_TOOLBAR         "Show or hide the toolbar\nToggle ToolBar"
+    ID_VIEW_STATUS_BAR      "Show or hide the status bar\nToggle StatusBar"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_SCSIZE          "Change the window size"
+    AFX_IDS_SCMOVE          "Change the window position"
+    AFX_IDS_SCMINIMIZE      "Reduce the window to an icon"
+    AFX_IDS_SCMAXIMIZE      "Enlarge the window to full size"
+    AFX_IDS_SCNEXTWINDOW    "Switch to the next document window"
+    AFX_IDS_SCPREVWINDOW    "Switch to the previous document window"
+    AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_SCRESTORE       "Restore the window to normal size"
+    AFX_IDS_SCTASKLIST      "Activate Task List"
+    AFX_IDS_MDICHILD        "Activate this window"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_PREVIEW_CLOSE   "Close print preview mode\nCancel Preview"
+END
+
+STRINGTABLE 
+BEGIN
+    IDR_PANE_CONVERSATION   "Conversation"
+    IDR_PANE_PROPERTIES     "Properties"
+    IDR_PANE_CONSULTATION   "Consultation"
+    IDR_PANE_EXPLORATION    "Exploration"
+    IDR_PANE_LOGIC          "Logic"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_PANEPROPERTIES_PAGES "Property Page"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_HEXAGRAM_FIRST       "Goto the first hexagram in the sequence\nFirst Hexagram"
+    ID_HEXAGRAM_PREVIOUS    "Goto the previous hexagram in the sequence\nPrevious Hexagram"
+    ID_HEXAGRAM_NEXT        "Goto the next hexagram in the sequence\nNext Hexagram"
+    ID_HEXAGRAM_LAST        "Goto the last hexagram in the sequence\nLast Hexagram"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_TEXT_BACK            "Back to the page you moved\nBack Page"
+    ID_TEXT_FORWARD         "Forward to the page you moved\nForward Page"
+END
+
+#endif    // English (Australia) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENA)
+LANGUAGE 9, 3
+#pragma code_page(1252)
+#include "res\IChing.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#include "afxprint.rc"       // printing/print preview resources
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

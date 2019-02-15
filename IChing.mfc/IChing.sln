@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IChing", "IChing\IChing.vcproj", "{A793D42F-4B5F-440E-A5BC-08DEA0B8B4E2}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "IChingSetup", "IChingSetup.vdproj", "{0499FC90-5196-4C80-82FE-A76427F2CBEC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A793D42F-4B5F-440E-A5BC-08DEA0B8B4E2} = {A793D42F-4B5F-440E-A5BC-08DEA0B8B4E2}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IChingSl", "IChingSl\IChingSl.vcproj", "{498AA68E-5C09-4A27-9A3B-959AA973A189}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A793D42F-4B5F-440E-A5BC-08DEA0B8B4E2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A793D42F-4B5F-440E-A5BC-08DEA0B8B4E2}.Debug|Win32.Build.0 = Debug|Win32
+		{A793D42F-4B5F-440E-A5BC-08DEA0B8B4E2}.Release|Win32.ActiveCfg = Release|Win32
+		{A793D42F-4B5F-440E-A5BC-08DEA0B8B4E2}.Release|Win32.Build.0 = Release|Win32
+		{0499FC90-5196-4C80-82FE-A76427F2CBEC}.Debug|Win32.ActiveCfg = Debug
+		{0499FC90-5196-4C80-82FE-A76427F2CBEC}.Debug|Win32.Build.0 = Debug
+		{0499FC90-5196-4C80-82FE-A76427F2CBEC}.Release|Win32.ActiveCfg = Release
+		{0499FC90-5196-4C80-82FE-A76427F2CBEC}.Release|Win32.Build.0 = Release
+		{498AA68E-5C09-4A27-9A3B-959AA973A189}.Debug|Win32.ActiveCfg = Debug|Win32
+		{498AA68E-5C09-4A27-9A3B-959AA973A189}.Debug|Win32.Build.0 = Debug|Win32
+		{498AA68E-5C09-4A27-9A3B-959AA973A189}.Release|Win32.ActiveCfg = Release|Win32
+		{498AA68E-5C09-4A27-9A3B-959AA973A189}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

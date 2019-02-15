@@ -1,0 +1,24 @@
+HKCR
+{
+	IChing.ValueSequencer.1 = s 'IChing ValueSequencer Class'
+	{
+		CLSID = s '{B90CCEC1-6A6A-4A7C-8D5B-643B6E59ED18}'
+	}
+	IChing.ValueSequencer = s 'IChing ValueSequencer Class'
+	{
+		CLSID = s '{B90CCEC1-6A6A-4A7C-8D5B-643B6E59ED18}'
+		CurVer = s 'IChing.ValueSequencer.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {B90CCEC1-6A6A-4A7C-8D5B-643B6E59ED18} = s 'IChing ValueSequencer Class'
+		{
+			ProgID = s 'IChing.ValueSequencer.1'
+			VersionIndependentProgID = s 'IChing.ValueSequencer'
+			ForceRemove 'Programmable'
+			LocalServer32 = s '%MODULE%'
+			val AppID = s '{2A89D170-B670-4820-A8A4-910F549C0431}'
+			'TypeLib' = s '{A7163C8F-D4BB-41ED-8F6C-AAD16A7F303D}'
+		}
+	}
+}

@@ -1,0 +1,23 @@
+//
+// ICHING.RC2 - resources Microsoft Visual C++ does not edit directly
+//
+
+#ifdef APSTUDIO_INVOKED
+	#error this file is not editable by Microsoft Visual C++
+#endif //APSTUDIO_INVOKED
+
+#include <XTToolkitPro.rc>
+
+/////////////////////////////////////////////////////////////////////////////
+// Add manually edited resources here...
+
+//CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "Res\\IChing.manifest" 
+
+#ifdef NDEBUG
+1 TYPELIB Release\IChing.tlb
+#endif
+#ifdef _DEBUG
+1 TYPELIB Debug\IChing.tlb
+#endif
+
+/////////////////////////////////////////////////////////////////////////////

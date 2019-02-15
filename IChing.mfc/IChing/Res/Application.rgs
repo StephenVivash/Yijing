@@ -1,0 +1,24 @@
+HKCR
+{
+	IChing.Application.1 = s 'IChing Application Class'
+	{
+		CLSID = s '{0D2AC07A-6EEC-4D76-8A43-92677B0C5400}'
+	}
+	IChing.Application = s 'IChing Application Class'
+	{
+		CLSID = s '{0D2AC07A-6EEC-4D76-8A43-92677B0C5400}'
+		CurVer = s 'IChing.Application.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {0D2AC07A-6EEC-4D76-8A43-92677B0C5400} = s 'IChing Application Class'
+		{
+			ProgID = s 'IChing.Application.1'
+			VersionIndependentProgID = s 'IChing.Application'
+			ForceRemove 'Programmable'
+			LocalServer32 = s '%MODULE%'
+			val AppID = s '{2A89D170-B670-4820-A8A4-910F549C0431}'
+			'TypeLib' = s '{A7163C8F-D4BB-41ED-8F6C-AAD16A7F303D}'
+		}
+	}
+}

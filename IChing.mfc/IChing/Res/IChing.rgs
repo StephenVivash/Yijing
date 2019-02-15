@@ -1,0 +1,11 @@
+HKCR
+{
+	NoRemove AppID
+	{
+		{2A89D170-B670-4820-A8A4-910F549C0431} = s 'IChing'
+		'IChing.exe'
+		{
+			val AppID = s {2A89D170-B670-4820-A8A4-910F549C0431}
+		}
+	}
+}
