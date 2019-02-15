@@ -1,5 +1,9 @@
 # Yijing </br></br>
 
+https://play.google.com/store/apps/details?id=org.yijing</br></br>
+
+https://www.microsoft.com/en-au/p/yijing-i-ching/9n5q9qxxh7wj</br></br>
+
 Yijing - The classic of change, the game of koans, play for the system. </br></br>
 
 I Ching - Classification, generalisation and chance. </br></br>
