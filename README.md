@@ -1,7 +1,7 @@
 # Yijing
 The classic of change
 
-v6.0.0 (2016) [Java, Android5] 
+v6.0.0 (2016) [Java, Android5] </br>
 v5.2.0 (2016) [C#, Windows10] 
 v5.1.0 (2014) [C#, Windows8] 
 v5.0.0 (2012) [C#, Windows7] 
