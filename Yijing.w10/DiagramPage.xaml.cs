@@ -603,25 +603,9 @@ namespace Yijing
 			m_dp.UpdateDiagrams(true);
 		}
 
-		public static String DescribeCast()
-		{
-			String strTemp = m_hvsCurrent.SequenceStr;
-			for (int i = 0; i < 6; ++i)
-				if (m_hvsCurrent.Trigram(i / 3).Line(i % 3).IsMoving)
-					strTemp += "." + (i + 1).ToString();
-			strTemp += " " + m_hvsCurrent.Label;
-			if (m_hvsCurrent.IsMoving)
-			{
-				CHexagramValueSequencer hvsSecondary = new CHexagramValueSequencer(ref m_hvsCurrent);
-				hvsSecondary.Move();
-				strTemp += " > " + hvsSecondary.SequenceStr + " " + hvsSecondary.Label;
-			}
-			return strTemp;
-		} 
-
 		private async static void EndCast()
 		{
-			String strTemp = "#Yijing ☯️ " + DescribeCast() + "\n\nW10 v5.2.9  ";
+			String strTemp = "#Yijing ☯️ " + m_hvsCurrent.DescribeCast() + "\n\nW10 v5.2.9  ";
 			strTemp += m_dp.cbxDiagramMode.SelectionBoxItem + " " + Sequences.DiagramSetting(13, Sequences.HexagramSequence) + " " +
 				Sequences.DiagramSetting(4, 00000000000) + " " + Sequences.DiagramSetting(6, Sequences.LineRatio) + " " +
 				Sequences.DiagramSetting(15, Sequences.HexagramLabel) + "\n\nhttps://www.microsoft.com/store/apps/9n5q9qxxh7wj\n\n";
@@ -642,7 +626,7 @@ namespace Yijing
 		public static async void ShareCast()
 		{
 			Appointment appointment = new Appointment();
-			appointment.Subject = "☯️ " + DescribeCast();
+			appointment.Subject = "☯️ " + m_hvsCurrent.DescribeCast();
 			appointment.DetailsKind = AppointmentDetailsKind.Html;
 			appointment.Details = "Type: " + QuestionPage.Type + " Question: " + QuestionPage.Text +
 				" https://www.microsoft.com/store/apps/9n5q9qxxh7wj https://play.google.com/store/apps/details?id=org.yijing";

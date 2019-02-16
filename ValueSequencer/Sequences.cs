@@ -51,7 +51,7 @@ namespace ValueSequencer
 			{"Diagram LSB", "Top", "Bottom", "", "", "", "", "", "", "", "", "", "", ""},
 
 			{"Line Sequence", "Numeric", "Natural", "", "", "", "", "", "", "", "", "", "", ""},
-			{"Line Ratio", "Equal", "Coin", "Yarrow", "Marbles", "Test", "", "", "", "", "", "", "", ""},
+			{"Line Ratio", "Equal", "Coin", "Yarrow", "Marbles", "Yin", "Yang", "", "", "", "", "", "", ""},
 			{"Line Label", "Numeric", "Alpha", "Coin", "Line", "Season", "Direction", "Moon", "Tide", "", "", "", "", ""},
 			{"Line Text", "Wikipedia", "", "", "", "", "", "", "", "", "", "", "", ""},
 
@@ -104,7 +104,8 @@ namespace ValueSequencer
 			{1,3,3,1},
 			{1,5,7,3},
 			{1,4,4,1},
-			{1,14,15,2},
+			{5,1,10,1},
+			{1,10,1,5},
 		};
 
 		public static String[,] strLineLabels = {

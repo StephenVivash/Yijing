@@ -102,7 +102,7 @@ namespace Yijing
 			"Rutt: " + Sequences.strHexagramLabels[8, hvsPrimary.Value] + "</br>" +
 			"Wilhelm: " + Sequences.strHexagramLabels[10, hvsPrimary.Value] + "</br>";
 */
-			strUrl += DiagramPage.DescribeCast();
+			strUrl += hvsPrimary.DescribeCast();
 			strUrl += "</h2>\n";
 
 			if (strText == "Andrade")

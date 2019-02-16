@@ -202,6 +202,53 @@ namespace ValueSequencer
 			return Trigram(0).IsMoving || Trigram(1).IsMoving;
 		}
 
+		public String DescribeCast()
+		{
+			String s = HexagramId() + " " + Label;
+			if (IsMoving)
+			{
+				CHexagramValueSequencer hvsPrimary = this;
+				CHexagramValueSequencer hvsSeconday = new CHexagramValueSequencer(ref hvsPrimary);
+				hvsSeconday.Move();
+				s = s + " > " + hvsSeconday.HexagramId() + " " + hvsSeconday.Label;
+			}
+			return s;
+		}
+
+		public String HexagramId()
+		{
+			String s = String.Format("{0,2}", Sequence + 1);
+			if (IsMoving)
+			{
+				s = s + ".";
+				for (int l = 0; l < 6; ++l)
+					if (Trigram(l / 3).Line(l % 3).IsMoving)
+						s = s + (l + 1).ToString();
+			}
+			return s;
+		}
+/*
+		public String Primary()
+		{
+			return HexagramId() + " " + Label;
+		}
+
+		public String Secondary
+		{
+			get
+			{
+				String s = "";
+				if (IsMoving)
+				{
+					CHexagramValueSequencer hvsPrimary = this;
+					CHexagramValueSequencer hvsSeconday = new CHexagramValueSequencer(ref hvsPrimary);
+					hvsSeconday.Move();
+					s = hvsSeconday.HexagramId() + " " + hvsSeconday.Label;
+				}
+				return s;
+			}
+		}
+*/
 		protected override int GetCurrentSequence() { return m_nCurrentSequence; }
 		protected override int GetCurrentRatio() { return m_nCurrentRatio; }
 		protected override int GetCurrentLabel() { return m_nCurrentLabel; }
