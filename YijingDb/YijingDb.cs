@@ -40,8 +40,8 @@ namespace YijingDb
 				//"Data Source=WALLABY\SQLEXPRESS;Initial Catalog=Yijing;Integrated Security=True;Pooling=False"
 				//"Data Source=WALLABY\SQLEXPRESS;Initial Catalog=Yijing;Trusted_Connection=True;Pooling=False"
 				//"Data Source=WALLABY\SQLEXPRESS;Initial Catalog=Yijing;Persist Security Info=True;User ID=sa;Password="
-				.UseSqlServer(@"Data Source=WALLABY\SQLEXPRESS;Initial Catalog=Yijing;Integrated Security=True;Pooling=False")
-				//.UseSqlite("Data Source=/home/stephen/Src/Yijing/YijingDb/Yijing.db")
+				//.UseSqlServer(@"Data Source=WALLABY\SQLEXPRESS;Initial Catalog=Yijing;Integrated Security=True;Pooling=False")
+				.UseSqlite("Data Source=C:/Src/Yijing/YijingDb/Yijing.db") // /home/stephen/Src/Yijing/YijingDb/Yijing.db
 				//.UseLazyLoadingProxies()
 				.EnableSensitiveDataLogging(true)
 				.EnableDetailedErrors(true);
@@ -128,7 +128,7 @@ namespace YijingDb
 				List<Type> lt1 = ye.Types.ToList(); // Force access
 
 				//ye.Database.EnsureDeleted();
-				//ye.Database.EnsureCreated();
+				ye.Database.EnsureCreated();
 				//ye.Database.Migrate();
 
 				List<Type> lt2 = ye.Types.ToList(); // Force access
