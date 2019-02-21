@@ -16,7 +16,7 @@ namespace Yijing
 		{
 
 			YijingData yd = new YijingData();
-			//yd.InitialseDB();
+			yd.InitialseDB();
 			
 			using (YijingEntities ye = new YijingEntities())
 			{
@@ -32,7 +32,7 @@ namespace Yijing
 				t = l1.Type;
 			}
 
-			CLineValueSequencer.SetCurrentRatio(0); // 0 - 5 "Equal", "Coin", "Yarrow", "Marbles", "Yin", "Yang"
+			CLineValueSequencer.SetCurrentRatio(5); // 0 - 5 "Equal", "Coin", "Yarrow", "Marbles", "Yin", "Yang"
 
 			CHexagramSequences.CHexagramCounterArray hca = new CHexagramSequences.CHexagramCounterArray();
 			hca.MultiCast(10000);
