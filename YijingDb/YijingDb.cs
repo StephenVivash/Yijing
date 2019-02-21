@@ -41,7 +41,7 @@ namespace YijingDb
 				//"Data Source=WALLABY\SQLEXPRESS;Initial Catalog=Yijing;Trusted_Connection=True;Pooling=False"
 				//"Data Source=WALLABY\SQLEXPRESS;Initial Catalog=Yijing;Persist Security Info=True;User ID=sa;Password="
 				//.UseSqlServer(@"Data Source=WALLABY\SQLEXPRESS;Initial Catalog=Yijing;Integrated Security=True;Pooling=False")
-				.UseSqlite("Data Source=/Users/stephenvivash/Src/Yijing/YijingDb/Yijing.db") // C: /home/stephen /Users/stephenvivash
+				.UseSqlite("Data Source=/home/stephen/Src/Yijing/YijingDb/Yijing.db") // C: /home/stephen /Users/stephenvivash
 				//.UseLazyLoadingProxies()
 				.EnableSensitiveDataLogging(true)
 				.EnableDetailedErrors(true);
