@@ -11,12 +11,12 @@ public class CLineValueSequencer : CValueSequencer {
 		Bit(nIndex: 2).SetParent(pvsParent: self)
  		Bit(nIndex: 1).SetParent(pvsParent: self)
  		Bit(nIndex: 0).SetParent(pvsParent: self)
- 		//m_nSequences = Sequences.nLineSequences
- 		//m_nRatios = Sequences.nLineRatios
+ 		m_nSequences = Sequences.nLineSequences
+ 		m_nRatios = Sequences.nLineRatios
 	}
 
 	public func Bit(nIndex: Int) -> CBitValueSequencer {
- 		return m_pvsInner![nIndex] as! CBitValueSequencer
+ 		return m_pvsInner[nIndex] as! CBitValueSequencer
  	}
 
 	@discardableResult

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A7A538122225443900E5FE6E /* Sequences.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7A538112225443900E5FE6E /* Sequences.swift */; };
 		A7C146B4222038D900C0A37F /* ValueSequencer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C146B3222038D800C0A37F /* ValueSequencer.swift */; };
 		A7C146B6222046F800C0A37F /* LineValueSequencer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C146B5222046F800C0A37F /* LineValueSequencer.swift */; };
 		A7C146B822204C1600C0A37F /* BitValueSequencer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C146B722204C1600C0A37F /* BitValueSequencer.swift */; };
@@ -28,6 +29,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A7A538112225443900E5FE6E /* Sequences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sequences.swift; sourceTree = "<group>"; };
 		A7C146B3222038D800C0A37F /* ValueSequencer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueSequencer.swift; sourceTree = "<group>"; };
 		A7C146B5222046F800C0A37F /* LineValueSequencer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineValueSequencer.swift; sourceTree = "<group>"; };
 		A7C146B722204C1600C0A37F /* BitValueSequencer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitValueSequencer.swift; sourceTree = "<group>"; };
@@ -67,6 +69,7 @@
 		A7D3DD8F221E7FBA0098D706 /* Swift1 */ = {
 			isa = PBXGroup;
 			children = (
+				A7A538112225443900E5FE6E /* Sequences.swift */,
 				A7C81C7F22251E0900915D22 /* HexagramValueSequencer.swift */,
 				A7C81C8022251E0900915D22 /* TrigramValueSequencer.swift */,
 				A7C146B722204C1600C0A37F /* BitValueSequencer.swift */,
@@ -138,6 +141,7 @@
 				A7C146B822204C1600C0A37F /* BitValueSequencer.swift in Sources */,
 				A7C146B4222038D900C0A37F /* ValueSequencer.swift in Sources */,
 				A7C81C8122251E0900915D22 /* HexagramValueSequencer.swift in Sources */,
+				A7A538122225443900E5FE6E /* Sequences.swift in Sources */,
 				A7C81C8222251E0900915D22 /* TrigramValueSequencer.swift in Sources */,
 				A7C146B6222046F800C0A37F /* LineValueSequencer.swift in Sources */,
 			);

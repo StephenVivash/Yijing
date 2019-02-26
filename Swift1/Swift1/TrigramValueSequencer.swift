@@ -11,12 +11,12 @@ public class CTrigramValueSequencer : CValueSequencer {
 		Line(nIndex: 2).SetParent(pvsParent: self)
 		Line(nIndex: 1).SetParent(pvsParent: self)
 		Line(nIndex: 0).SetParent(pvsParent: self)
-		//m_nSequences = Sequences.nTrigramSequences
-		//m_nRatios = Sequences.nTrigramRatios
+		m_nSequences = Sequences.nTrigramSequences
+		m_nRatios = Sequences.nTrigramRatios
 	}
 
 	public func Line(nIndex: Int) -> CLineValueSequencer {
- 		return m_pvsInner![nIndex] as! CLineValueSequencer
+ 		return m_pvsInner[nIndex] as! CLineValueSequencer
 	}
 
 	@discardableResult

@@ -3,6 +3,8 @@ import Foundation
 
 func Test() {
 	
+	Sequences.Initialise()
+	
 	let vs = CValueSequencer(nInnerSequencers: 0, nValues: 4, nValue: 0)
 	vs.Value = 0
 	print ("\nvs v:\(vs.First().Value), s:\(vs.Sequence)")
@@ -32,9 +34,22 @@ func Test() {
 	}
 	
 	hvs1.Value = 42
+	hvs1.Update()
 	let hvs2 = CHexagramValueSequencer(hvs: hvs1)
-	print ("hvs1:\(hvs1.Value), hvs2:\(hvs2.Value)")
 	
+	printHexagram(label: "\nhvs1", hvs: hvs1)
+	printHexagram(label: "hvs2", hvs: hvs2)
+	hvs2.Inverse()
+	hvs2.Trigram(nIndex: 0).Line(nIndex: 1).Next()
+	hvs2.Trigram(nIndex: 1).Line(nIndex: 1).Next()
+
+	printHexagram(label: "hvs2", hvs: hvs2)
+	hvs2.Previous().Transverse()
+	printHexagram(label: "hvs2", hvs: hvs2)
+
 }
 
+func printHexagram(label: String, hvs: CHexagramValueSequencer) {
+	print ("\(label):\(hvs.DescribeCast()) tvs0:\(hvs.Trigram(nIndex: 0).Value) tvs1:\(hvs.Trigram(nIndex: 1).Value)")
+}
 Test()

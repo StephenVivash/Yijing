@@ -8,8 +8,8 @@ public class CHexagramValueSequencer : CValueSequencer {
 		//m_pvsInner[0] = new CTrigramValueSequencer(-1)
 		Trigram(nIndex: 1).SetParent(pvsParent: self)
 		Trigram(nIndex: 0).SetParent(pvsParent: self)
-		//m_nSequences = Sequences.nHexagramSequences
-		//m_nRatios = Sequences.nHexagramRatios
+		m_nSequences = Sequences.nHexagramSequences
+		m_nRatios = Sequences.nHexagramRatios
 		//Value = nValue /////////// ???????????????????????????????????
 		UpdateInnerValues()
 		//UpdateOuterValues()
@@ -43,7 +43,7 @@ public class CHexagramValueSequencer : CValueSequencer {
 	}
 
 	public func Trigram(nIndex: Int) -> CTrigramValueSequencer {
- 		return m_pvsInner![nIndex] as! CTrigramValueSequencer
+ 		return m_pvsInner[nIndex] as! CTrigramValueSequencer
 	}
 
 	@discardableResult
@@ -178,8 +178,8 @@ public class CHexagramValueSequencer : CValueSequencer {
 		}
 	}
 
-	public static func SetCurrentSequence(nCurrentSequence: Int) {
-		m_nCurrentSequence = nCurrentSequence
+	public static func SetCurrentSequence(nSequence: Int) {
+		m_nCurrentSequence = nSequence
 	}
 
 	public static func SetCurrentRatio(nRatio: Int) {
@@ -191,7 +191,7 @@ public class CHexagramValueSequencer : CValueSequencer {
 	}
 
 	public override func GetLabel() -> String { 
-		return "Sequences.strHexagramLabels[GetCurrentLabel(),Value]"
+		return Sequences.strHexagramLabels[GetCurrentLabel()][Value]
 	}
 
 	public override func GetMoving() -> Bool {
@@ -210,12 +210,12 @@ public class CHexagramValueSequencer : CValueSequencer {
 	}
 
 	public func HexagramId() -> String {
-		var s = "XXXXXX"//String.Format("{0,2}", Sequence + 1)
+		var s = String(Sequence + 1)
 		if IsMoving {
 			s = s + "."
 			for l in 0 ... 5 {
 				if (Trigram(nIndex: l / 3).Line(nIndex: l % 3).IsMoving) {
-					s = s + "(l + 1).ToString()"
+					s = s + String(l + 1)
 				}
 			}
 		}

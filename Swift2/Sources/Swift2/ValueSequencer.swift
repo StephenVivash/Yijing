@@ -20,7 +20,7 @@ public class CValueSequencer {
 	}
 	
 	public var ValueStr: String {
-		get { return "XXX" /*Sequences.nHexagramSequences[0][Value].ToString()*/}
+		get { return "Sequences.nHexagramSequences[0][Value].ToString()"}
 	}
 	
 	public var SequenceStr: String {
@@ -95,6 +95,7 @@ public class CValueSequencer {
 	@discardableResult
 	public func Old() -> CValueSequencer { return self }
 
+	@discardableResult
 	public func Update() -> CValueSequencer {
 		SetValue(nValue: m_nValue)
 		UpdateInnerValues()
@@ -109,7 +110,7 @@ public class CValueSequencer {
 	public func GetParent() -> CValueSequencer? { return m_pvsParent }
 	
 	public func GetChild(nIndex: Int) -> CValueSequencer? {
-		return m_pvsInner?[nIndex]
+		return m_pvsInner[nIndex]
 	}
 	
 	@discardableResult
@@ -187,6 +188,6 @@ public class CValueSequencer {
 	var m_nSequences: [[Int]] = [[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63]]
 	var m_nRatios: [[Int]] = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
-	var m_pvsParent: CValueSequencer? // = CValueSequencer(nInnerSequencers: 0, nValues: 0, nValue: 0)
-	var  m_pvsInner: [CValueSequencer]? // = [CValueSequencer(nInnerSequencers: 0, nValues: 0, nValue: 0)]
+	var m_pvsParent: CValueSequencer!
+	var  m_pvsInner: [CValueSequencer]!
 }
