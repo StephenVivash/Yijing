@@ -10,6 +10,8 @@
 		A7C146B4222038D900C0A37F /* ValueSequencer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C146B3222038D800C0A37F /* ValueSequencer.swift */; };
 		A7C146B6222046F800C0A37F /* LineValueSequencer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C146B5222046F800C0A37F /* LineValueSequencer.swift */; };
 		A7C146B822204C1600C0A37F /* BitValueSequencer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C146B722204C1600C0A37F /* BitValueSequencer.swift */; };
+		A7C81C8122251E0900915D22 /* HexagramValueSequencer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C81C7F22251E0900915D22 /* HexagramValueSequencer.swift */; };
+		A7C81C8222251E0900915D22 /* TrigramValueSequencer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C81C8022251E0900915D22 /* TrigramValueSequencer.swift */; };
 		A7D3DD91221E7FBA0098D706 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D3DD90221E7FBA0098D706 /* main.swift */; };
 /* End PBXBuildFile section */
 
@@ -29,6 +31,8 @@
 		A7C146B3222038D800C0A37F /* ValueSequencer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueSequencer.swift; sourceTree = "<group>"; };
 		A7C146B5222046F800C0A37F /* LineValueSequencer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineValueSequencer.swift; sourceTree = "<group>"; };
 		A7C146B722204C1600C0A37F /* BitValueSequencer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitValueSequencer.swift; sourceTree = "<group>"; };
+		A7C81C7F22251E0900915D22 /* HexagramValueSequencer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HexagramValueSequencer.swift; sourceTree = "<group>"; };
+		A7C81C8022251E0900915D22 /* TrigramValueSequencer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrigramValueSequencer.swift; sourceTree = "<group>"; };
 		A7D3DD8D221E7FBA0098D706 /* Swift1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Swift1; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7D3DD90221E7FBA0098D706 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -63,6 +67,8 @@
 		A7D3DD8F221E7FBA0098D706 /* Swift1 */ = {
 			isa = PBXGroup;
 			children = (
+				A7C81C7F22251E0900915D22 /* HexagramValueSequencer.swift */,
+				A7C81C8022251E0900915D22 /* TrigramValueSequencer.swift */,
 				A7C146B722204C1600C0A37F /* BitValueSequencer.swift */,
 				A7C146B5222046F800C0A37F /* LineValueSequencer.swift */,
 				A7C146B3222038D800C0A37F /* ValueSequencer.swift */,
@@ -131,6 +137,8 @@
 				A7D3DD91221E7FBA0098D706 /* main.swift in Sources */,
 				A7C146B822204C1600C0A37F /* BitValueSequencer.swift in Sources */,
 				A7C146B4222038D900C0A37F /* ValueSequencer.swift in Sources */,
+				A7C81C8122251E0900915D22 /* HexagramValueSequencer.swift in Sources */,
+				A7C81C8222251E0900915D22 /* TrigramValueSequencer.swift in Sources */,
 				A7C146B6222046F800C0A37F /* LineValueSequencer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

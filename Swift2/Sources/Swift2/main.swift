@@ -1,70 +1,40 @@
-//
-//  main.swift
-//  Swift1
-//
-//  Created by Stephen Vivash on 21/2/19.
-//  Copyright © 2019 Stephen Vivash. All rights reserved.
-//
 
 import Foundation
 
-class Test1 {
-	func Test() -> Int {
-		return i
-	}
-	var i: Int = 1
-}
-
-class Test2: Test1 {
-	override func Test() -> Int {
-		return j
-	}
-	var j: Int = 2
-}
-
 func Test() {
-	let t1a: Test1 = Test1()
-	var t1b: Test1 = Test2()
-	//let t2a: Test2 = Test2()
 	
-	print (t1b.Test())
-	t1b = t1a
-	print (t1b.Test())
-
 	let vs = CValueSequencer(nInnerSequencers: 0, nValues: 4, nValue: 0)
 	vs.Value = 0
-    print (vs.First().Value, vs.Sequence)
-    print (vs.Next().Value, vs.Sequence)
-    print (vs.Next().Value, vs.Sequence)
-    print (vs.Next().Value, vs.Sequence)
-    print (vs.Next().Value, vs.Sequence)
+	print ("\nvs v:\(vs.First().Value), s:\(vs.Sequence)")
+	for _ in 0...3 {
+		print ("vs v:\(vs.Next().Value), s:\(vs.Sequence)")
+	}
 	
 	let lvs = CLineValueSequencer(nValue: 0)
 	lvs.Value = 0
-	print (lvs.First().Value, lvs.Sequence)
-	print (lvs.Next().Value, lvs.Sequence)
-	print (lvs.Next().Value, lvs.Sequence)
-	print (lvs.Next().Value, lvs.Sequence)
-	print (lvs.Next().Value, lvs.Sequence)
-
+	print ("\nlvs v:\(lvs.First().Value), s:\(lvs.Sequence)")
+	for _ in 0...3 {
+		print ("lvs v:\(lvs.Next().Value), s:\(lvs.Sequence)")
+	}
 
 	let tvs = CTrigramValueSequencer(nValue: 0)
 	tvs.Value = 0
-	print (tvs.First().Value, tvs.Sequence)
-	print (tvs.Next().Value, tvs.Sequence)
-	print (tvs.Next().Value, tvs.Sequence)
-	print (tvs.Next().Value, tvs.Sequence)
-	print (tvs.Next().Value, tvs.Sequence)
-
-	let hvs = CHexagramValueSequencer(nValue: 0)
-	hvs.Value = 0
-	print (hvs.First().Value, hvs.Sequence)
-	print (hvs.Next().Value, hvs.Sequence)
-	print (hvs.Next().Value, hvs.Sequence)
-	print (hvs.Next().Value, hvs.Sequence)
-	print (hvs.Next().Value, hvs.Sequence)
-
-
+	print ("\ntvs v:\(tvs.First().Value), s:\(tvs.Sequence)")
+	for _ in 0...7 {
+		print ("tvs v:\(tvs.Next().Value), s:\(tvs.Sequence)")
+	}
+	
+	let hvs1 = CHexagramValueSequencer(nValue: 0)
+	hvs1.Value = 0
+	print ("\nhvs v:\(hvs1.First().Value), s:\(hvs1.Sequence)")
+	for _ in 0...63 {
+		print ("hvs v:\(hvs1.Next().Value), s:\(hvs1.Sequence)")
+	}
+	
+	hvs1.Value = 42
+	let hvs2 = CHexagramValueSequencer(hvs: hvs1)
+	print ("hvs1:\(hvs1.Value), hvs2:\(hvs2.Value)")
+	
 }
 
 Test()

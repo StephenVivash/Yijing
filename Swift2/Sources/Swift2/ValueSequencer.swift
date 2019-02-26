@@ -1,15 +1,6 @@
-//
-//  ValueSequencer.swift
-//  Swift1
-//
-//  Created by Stephen Vivash on 23/2/19.
-//  Copyright © 2019 Stephen Vivash. All rights reserved.
-//
 
-//import Foundation
-
-public class CValueSequencer
-{
+public class CValueSequencer {
+	
 	init(nInnerSequencers: Int, nValues: Int, nValue: Int) {
 		m_nInnerSequencers = nInnerSequencers
 		m_nValues = nValues
@@ -123,7 +114,7 @@ public class CValueSequencer
 	
 	@discardableResult
 	private func SetValue(nValue: Int) -> CValueSequencer {
-		if (nValue >= 0) && (nValue <= m_nValues) {
+		if (nValue >= 0) && (nValue < m_nValues) {  /////////////////// <= ????????????????
 			m_nValue = nValue
 			m_nSequence = m_nSequences[GetCurrentSequence()][nValue]
 			m_nRatio = m_nRatios[GetCurrentRatio()][nValue]
