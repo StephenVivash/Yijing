@@ -594,7 +594,7 @@ namespace Yijing
 					m_recLines[i, 1].Opacity = 1;
 					m_recLines[i, 1].Stroke = bSpecific ? m_brSelectStoke : m_brBackStoke;
 				}
-				txtHexagram.Text = m_hvsCurrent.SequenceStr + ". " + m_hvsCurrent.Label + " (" + m_hvsCurrent.ValueStr + ")";
+				txtHexagram.Text = m_hvsCurrent.DescribePrimary(true);
 			}
 		}
 
@@ -651,7 +651,7 @@ namespace Yijing
 		private static async void MindCast()
 		{
 #if THINKGEAR
-			Random r = new Random(DateTime.Now.Millisecond);
+			Random r = true ? Sequences.m_ranSession : new Random(DateTime.Now.Millisecond);
 			for (int i = 0; i < 6; ++i)
 			{
 				m_dp.SetCurrentLine(i, true);
@@ -675,7 +675,7 @@ namespace Yijing
 
 		private static async void AutoCast()
 		{
-			Random r = new Random(DateTime.Now.Millisecond);
+			Random r = true ? Sequences.m_ranSession : new Random(DateTime.Now.Millisecond);
 			for (int i = 0; i < 6; ++i)
 			{
 				m_dp.SetCurrentLine(i, true);
@@ -689,7 +689,7 @@ namespace Yijing
 		public async static void ThinkGearTask()
 		{
 			//m_mscDevice.ConnectBluetooth(""); // MindWave Mobile
-											  //m_imsDevice.Start(MindwaveProtocol.ThinkGear);
+			//m_imsDevice.Start(MindwaveProtocol.ThinkGear);
 			while (true)
 			{
 				await Task.Delay(1000);

@@ -202,22 +202,9 @@ namespace ValueSequencer
 			return Trigram(0).IsMoving || Trigram(1).IsMoving;
 		}
 
-		public String DescribeCast()
+		public String HexagramId(bool bValue = false)
 		{
-			String s = HexagramId() + " " + Label;
-			if (IsMoving)
-			{
-				CHexagramValueSequencer hvsPrimary = this;
-				CHexagramValueSequencer hvsSeconday = new CHexagramValueSequencer(ref hvsPrimary);
-				hvsSeconday.Move();
-				s = s + " > " + hvsSeconday.HexagramId() + " " + hvsSeconday.Label;
-			}
-			return s;
-		}
-
-		public String HexagramId()
-		{
-			String s = String.Format("{0,2}", Sequence + 1);
+			String s = String.Format("{0,2}", bValue ?  Value : Sequence + 1);
 			if (IsMoving)
 			{
 				s = s + ".";
@@ -227,28 +214,29 @@ namespace ValueSequencer
 			}
 			return s;
 		}
-/*
-		public String Primary()
+
+		public String DescribePrimary(bool bValue = false)
 		{
-			return HexagramId() + " " + Label;
+			return HexagramId() + " " + Label + (bValue ? " (" + ValueStr + ")" : "");
 		}
 
-		public String Secondary
+		public String DescibeSecondary(bool bValue = false)
 		{
-			get
+			if (IsMoving)
 			{
-				String s = "";
-				if (IsMoving)
-				{
-					CHexagramValueSequencer hvsPrimary = this;
-					CHexagramValueSequencer hvsSeconday = new CHexagramValueSequencer(ref hvsPrimary);
-					hvsSeconday.Move();
-					s = hvsSeconday.HexagramId() + " " + hvsSeconday.Label;
-				}
-				return s;
+				CHexagramValueSequencer hvsPrimary = this;
+				CHexagramValueSequencer hvsSeconday = new CHexagramValueSequencer(ref hvsPrimary);
+				hvsSeconday.Move();
+				return hvsSeconday.HexagramId() + " " + hvsSeconday.Label + (bValue ? " (" + hvsSeconday.ValueStr + ")" : "");
 			}
+			return "";
 		}
-*/
+
+		public String DescribeCast(bool bValue = false)
+		{
+			return DescribePrimary(bValue) + (IsMoving ? " > " + DescibeSecondary(bValue) : "");
+		}
+
 		protected override int GetCurrentSequence() { return m_nCurrentSequence; }
 		protected override int GetCurrentRatio() { return m_nCurrentRatio; }
 		protected override int GetCurrentLabel() { return m_nCurrentLabel; }

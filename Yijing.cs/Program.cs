@@ -3,7 +3,6 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-//using HexagramSequences;
 using ValueSequencer;
 using YijingDb;
 
@@ -32,13 +31,13 @@ namespace Yijing
 				t = l1.Type;
 			}
 
-			CLineValueSequencer.SetCurrentRatio(5); // 0 - 5 "Equal", "Coin", "Yarrow", "Marbles", "Yin", "Yang"
+			CLineValueSequencer.SetCurrentRatio(0); // 0 - 5 "Equal", "Coin", "Yarrow", "Marbles", "Yin", "Yang"
 
-			CHexagramSequences.CHexagramCounterArray hca = new CHexagramSequences.CHexagramCounterArray();
-			hca.MultiCast(10000);
-			foreach (CHexagramSequences.CHexagramCounter hc in hca.HexagramCounterArray())
-				if (hc.Count > 0)
-					Console.WriteLine($"{hc.Count,4:D} {hc.DescribeCast}");
+			CHexagramArray ha = new CHexagramArray();
+			ha.MultiCast(10000);
+			foreach (CHexagram h in ha.HexagramArray())
+				if (h.Count > 0)
+					Console.WriteLine($"{h.Count,4:D} {h.DescribeCast}");
 
 			int x = 0;
 		}

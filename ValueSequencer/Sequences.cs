@@ -26,6 +26,8 @@ namespace ValueSequencer
 		public static int HexagramLabel { get; set; } = 9;
 		public static int HexagramText { get; set; } = 1; // 6
 
+		public static Random m_ranSession = new Random(DateTime.Now.Millisecond);
+
 		public static  void Initialise()
 		{
 			SetLSB(DiagramLsb == 1);
@@ -104,8 +106,8 @@ namespace ValueSequencer
 			{1,3,3,1},
 			{1,5,7,3},
 			{1,4,4,1},
-			{5,1,10,1},
-			{1,10,1,5},
+			{5,1,10,2},
+			{2,10,1,5},
 		};
 
 		public static String[,] strLineLabels = {
