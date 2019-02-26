@@ -44,6 +44,7 @@ public class CValueSequencer
 		get { return GetMoving() }
 	}
 	
+	@discardableResult
 	public func First() -> CValueSequencer {
 		SetValue(nValue: GetFirstSequence())
 		UpdateInnerValues()
@@ -51,6 +52,7 @@ public class CValueSequencer
 		return self
 	}
 
+	@discardableResult
 	public func Previous(bRatio: Bool = false) -> CValueSequencer {
 		m_nRatio = m_nRatio - 1
 		if !bRatio || (m_nRatio >= 0) {
@@ -61,6 +63,7 @@ public class CValueSequencer
 		return self
 	}
 
+	@discardableResult
 	public func Next(bRatio: Bool = false) -> CValueSequencer {
 		m_nRatio = m_nRatio - 1
 		if !bRatio || (m_nRatio >= 0) {
@@ -71,6 +74,7 @@ public class CValueSequencer
 		return self
 	}
 
+	@discardableResult
 	public func Last() -> CValueSequencer {
 		SetValue(nValue: GetLastSequence())
 		UpdateInnerValues()
@@ -78,8 +82,10 @@ public class CValueSequencer
 		return self
 	}
 
+	@discardableResult
 	public func Inverse() -> CValueSequencer { return self }
 
+	@discardableResult
 	public func Opposite() -> CValueSequencer {
 		SetValue(nValue: ~m_nValue & (m_nValues - 1))
 		UpdateInnerValues()
@@ -87,10 +93,15 @@ public class CValueSequencer
 		return self
 	}
 
+	@discardableResult
 	public func Transverse() -> CValueSequencer { return self }
+	@discardableResult
 	public func Nuclear() -> CValueSequencer { return self }
+	@discardableResult
 	public func Move() -> CValueSequencer { return self }
+	@discardableResult
 	public func Young() -> CValueSequencer { return self }
+	@discardableResult
 	public func Old() -> CValueSequencer { return self }
 
 	public func Update() -> CValueSequencer {
@@ -168,7 +179,7 @@ public class CValueSequencer
 	public func GetLabel() -> String { return "" }
 	public func GetMoving() -> Bool { return false }
 	
-	public func GetCurrentSequence() -> Int { return 1 } /////////////////////// ????????????????????????????
+	public func GetCurrentSequence() -> Int { return 0 }
 	public func GetCurrentRatio() -> Int { return 0 }
 	public func GetCurrentLabel() -> Int { return 0 }
 
@@ -179,9 +190,12 @@ public class CValueSequencer
 	private var m_nInnerSequencers: Int = 0
 	private var m_nValues: Int = 0
 	
-	var m_nSequences: [[Int]] = [[0,1,2,3],[2,3,1,0]]
-	var m_nRatios: [[Int]] = [[1,1,1,1],[1,3,3,1],[1,5,7,3],[1,4,4,1],[5,1,10,1],[1,10,1,5]]
-    
+	//var m_nSequences: [[Int]] = [[0,1,2,3],[2,3,1,0]]
+	//var m_nRatios: [[Int]] = [[1,1,1,1],[1,3,3,1],[1,5,7,3],[1,4,4,1],[5,1,10,1],[1,10,1,5]]
+
+	var m_nSequences: [[Int]] = [[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63]]
+	var m_nRatios: [[Int]] = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
+
 	var m_pvsParent: CValueSequencer? // = CValueSequencer(nInnerSequencers: 0, nValues: 0, nValue: 0)
 	var  m_pvsInner: [CValueSequencer]? // = [CValueSequencer(nInnerSequencers: 0, nValues: 0, nValue: 0)]
 }

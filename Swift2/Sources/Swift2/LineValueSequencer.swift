@@ -20,6 +20,7 @@ public class CLineValueSequencer : CValueSequencer
  		return m_pvsInner![nIndex] as! CBitValueSequencer
  	}
 
+	@discardableResult
 	public override func Inverse() -> CValueSequencer {
  		switch (Value)
  		{
@@ -43,7 +44,8 @@ public class CLineValueSequencer : CValueSequencer
  		return self
  	}
 
- 	public override func Move() -> CValueSequencer {
+ 	@discardableResult
+	public override func Move() -> CValueSequencer {
 		if Value == 0 {
  	 		Value = 1
 		}
@@ -55,7 +57,8 @@ public class CLineValueSequencer : CValueSequencer
  		return self
  	}
 
- 	public override func Young() -> CValueSequencer {
+ 	@discardableResult
+	public override func Young() -> CValueSequencer {
 		if Value == 0 {
  	 		Value = 2
 		}
@@ -67,7 +70,8 @@ public class CLineValueSequencer : CValueSequencer
  		return self
  	}
 
- 	public override func Old() -> CValueSequencer {
+ 	@discardableResult
+	public override func Old() -> CValueSequencer {
 		if Value == 2 {
  	 		Value = 0
 		}

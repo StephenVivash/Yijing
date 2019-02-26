@@ -46,6 +46,25 @@ func Test() {
 	print (lvs.Next().Value, lvs.Sequence)
 	print (lvs.Next().Value, lvs.Sequence)
 	print (lvs.Next().Value, lvs.Sequence)
+
+
+	let tvs = CTrigramValueSequencer(nValue: 0)
+	tvs.Value = 0
+	print (tvs.First().Value, tvs.Sequence)
+	print (tvs.Next().Value, tvs.Sequence)
+	print (tvs.Next().Value, tvs.Sequence)
+	print (tvs.Next().Value, tvs.Sequence)
+	print (tvs.Next().Value, tvs.Sequence)
+
+	let hvs = CHexagramValueSequencer(nValue: 0)
+	hvs.Value = 0
+	print (hvs.First().Value, hvs.Sequence)
+	print (hvs.Next().Value, hvs.Sequence)
+	print (hvs.Next().Value, hvs.Sequence)
+	print (hvs.Next().Value, hvs.Sequence)
+	print (hvs.Next().Value, hvs.Sequence)
+
+
 }
 
 Test()

@@ -633,7 +633,7 @@ namespace Yijing
 			await AppointmentManager.ShowAddAppointmentAsync(appointment, default(Windows.Foundation.Rect));
 
 			//appointment.Uri = new Uri("ms-windows-store://pdp/?productid=9wzdncrfj6qs");
-			//appointment.Location = "-35.711027, 150.181490";
+			//appointment.Location = "";
 			//Calendar calendar = new Calendar(new string[] { "en-US" }, CalendarIdentifiers.Gregorian, ClockIdentifiers.TwentyFourHour, "America/Los_Angeles");
 			//calendar.GetCalendarSystem();
 		}
