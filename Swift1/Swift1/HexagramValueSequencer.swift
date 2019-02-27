@@ -11,7 +11,8 @@ public class CHexagramValueSequencer : CValueSequencer {
 		m_nSequences = Sequences.nHexagramSequences
 		m_nRatios = Sequences.nHexagramRatios
 		//Value = nValue /////////// ???????????????????????????????????
-		UpdateInnerValues()
+		Update()
+		//UpdateInnerValues()
 		//UpdateOuterValues()
 	}
 
@@ -202,7 +203,7 @@ public class CHexagramValueSequencer : CValueSequencer {
 		var s = HexagramId() + " " + Label
 		if IsMoving {
 			let hvsPrimary = self
-			let hvsSeconday = CHexagramValueSequencer(hvs: hvsPrimary) ////////?????????????????????????
+			let hvsSeconday = CHexagramValueSequencer(hvs: hvsPrimary)
 			hvsSeconday.Move()
 			s = s + " > " + hvsSeconday.HexagramId() + " " + hvsSeconday.Label
 		}
@@ -210,7 +211,7 @@ public class CHexagramValueSequencer : CValueSequencer {
 	}
 
 	public func HexagramId() -> String {
-		var s = String(Sequence + 1)
+		var s = String(format: "%2d", Sequence + 1)
 		if IsMoving {
 			s = s + "."
 			for l in 0 ... 5 {
@@ -221,28 +222,7 @@ public class CHexagramValueSequencer : CValueSequencer {
 		}
 		return s
 	}
-/*
-	public String Primary()
-	{
-		return HexagramId() + " " + Label
-	}
 
-	public String Secondary
-	{
-		get
-		{
-			String s = ""
-			if (IsMoving)
-			{
-				CHexagramValueSequencer hvsPrimary = self
-				CHexagramValueSequencer hvsSeconday = new CHexagramValueSequencer(hvsPrimary)
-				hvsSeconday.Move()
-				s = hvsSeconday.HexagramId() + " " + hvsSeconday.Label
-			}
-			return s
-		}
-	}
-*/
 	public override func GetCurrentSequence() -> Int { return CHexagramValueSequencer.m_nCurrentSequence }
 	public override func GetCurrentRatio() -> Int { return CHexagramValueSequencer.m_nCurrentRatio }
 	public override func GetCurrentLabel() -> Int { return CHexagramValueSequencer.m_nCurrentLabel }

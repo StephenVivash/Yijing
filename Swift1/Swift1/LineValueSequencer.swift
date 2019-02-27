@@ -134,7 +134,7 @@ public class CLineValueSequencer : CValueSequencer {
  	}
 
  	public override func GetLabel() -> String {
- 		return "Sequences.strLineLabels[GetCurrentLabel(),Value]"
+ 		return Sequences.strLineLabels[GetCurrentLabel()][Value]
  	}
 
  	public override func GetMoving() -> Bool {

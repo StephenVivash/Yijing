@@ -5,13 +5,6 @@ func Test() {
 	
 	Sequences.Initialise()
 	
-	let vs = CValueSequencer(nInnerSequencers: 0, nValues: 4, nValue: 0)
-	vs.Value = 0
-	print ("\nvs v:\(vs.First().Value), s:\(vs.Sequence)")
-	for _ in 0...3 {
-		print ("vs v:\(vs.Next().Value), s:\(vs.Sequence)")
-	}
-	
 	let lvs = CLineValueSequencer(nValue: 0)
 	lvs.Value = 0
 	print ("\nlvs v:\(lvs.First().Value), s:\(lvs.Sequence)")
@@ -46,10 +39,19 @@ func Test() {
 	printHexagram(label: "hvs2", hvs: hvs2)
 	hvs2.Previous().Transverse()
 	printHexagram(label: "hvs2", hvs: hvs2)
+	print ("")
 
+	let ha: CHexagramArray = CHexagramArray()
+	ha.MultiCast(nCount: 100);
+	for h in ha.HexagramArray() {
+		if h.Count > 0 {
+			print("\(String(format: "%4d", h.Count)) \(h.DescribeCast)");
+		}
+	}
 }
 
 func printHexagram(label: String, hvs: CHexagramValueSequencer) {
 	print ("\(label):\(hvs.DescribeCast()) tvs0:\(hvs.Trigram(nIndex: 0).Value) tvs1:\(hvs.Trigram(nIndex: 1).Value)")
 }
+
 Test()
