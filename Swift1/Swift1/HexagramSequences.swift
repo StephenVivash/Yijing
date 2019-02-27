@@ -1,8 +1,9 @@
-
+﻿
 public class CHexagramSequences {
 }
 
 public class CHexagram : Comparable {
+	
 	public init() {
 	}
 
@@ -27,7 +28,7 @@ public class CHexagram : Comparable {
 	}
 	
 	public func Add() {
-		Count = Count + 1
+		Count += 1
 	}
 	
 	public var Count: Int = 0
@@ -36,6 +37,7 @@ public class CHexagram : Comparable {
 }
 
 public class CHexagramArray { //: EnumeratedSequence<<#Base: Sequence#>> {
+	
 	public init() {
 		let hvsPrimary: CHexagramValueSequencer = CHexagramValueSequencer(nValue: 0)
 		hvsPrimary.First()
@@ -51,13 +53,13 @@ public class CHexagramArray { //: EnumeratedSequence<<#Base: Sequence#>> {
 			}
 			hvsPrimary.Next()
 		}
-		//m_arrHexagram.sort { $0.DescribeCast < $1.DescribeCast }
-		m_arrHexagram.sort()
+		m_arrHexagram.sort { $0.DescribeCast < $1.DescribeCast }
+		//m_arrHexagram.sort()
 	}
 
-	public func sorterForCHexagram(this:CHexagram, that:CHexagram) -> Bool {
-		return this.DescribeCast < that.DescribeCast
-	}
+	//public func sorterForCHexagram(this:CHexagram, that:CHexagram) -> Bool {
+	//	return this.DescribeCast < that.DescribeCast
+	//}
 	
 	public func Add(hvsPrimary: CHexagramValueSequencer) {
 		m_nCount += 1
@@ -79,6 +81,20 @@ public class CHexagramArray { //: EnumeratedSequence<<#Base: Sequence#>> {
 		return self
 	}
 	
+	public func AutoCast(hvs: CHexagramValueSequencer) { //////// Random ?????????????????????????????
+		//var r: Random = true ? Sequences.m_ranSession : Random(DateTime.Now.Millisecond)
+		for l in 0 ... 5 {
+			let count: Int = (Int.random(in: 1 ... 5) * 100) + Int.random(in: 1 ... 99)
+			for _ in 0 ... count - 1 {
+				hvs.Trigram(nIndex: l / 3).Line(nIndex: l % 3).Next(bRatio: true)
+			}
+		}
+	}
+
+	public func HexagramArray() -> [CHexagram] {
+		return m_arrHexagram
+	}
+	
 	func binarySearch<T:Comparable>(inputArr:Array<T>, searchItem: T) -> Int? {
 		var lowerIndex = 0;
 		var upperIndex = inputArr.count - 1
@@ -98,20 +114,6 @@ public class CHexagramArray { //: EnumeratedSequence<<#Base: Sequence#>> {
 		}
 	}
 
-	public func AutoCast(hvs: CHexagramValueSequencer) { //////// Random ?????????????????????????????
-		//var r: Random = true ? Sequences.m_ranSession : Random(DateTime.Now.Millisecond)
-		for l in 0 ... 5 {
-			let count: Int = (Int.random(in: 1 ... 5) * 100) + Int.random(in: 1 ... 99)
-			for _ in 0 ... count - 1 {
-				hvs.Trigram(nIndex: l / 3).Line(nIndex: l % 3).Next(bRatio: true)
-			}
-		}
-	}
-
-	public func HexagramArray() -> [CHexagram] {
-		return m_arrHexagram
-	}
-	
 	private var m_arrHexagram: [CHexagram] = Array(repeating: CHexagram(), count: 4096)
 	private var m_nCount: Int = -1
 }

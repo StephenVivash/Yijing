@@ -42,7 +42,7 @@ func Test() {
 	print ("")
 
 	let ha: CHexagramArray = CHexagramArray()
-	ha.MultiCast(nCount: 100);
+	ha.MultiCast(nCount: 10000);
 	for h in ha.HexagramArray() {
 		if h.Count > 0 {
 			print("\(String(format: "%4d", h.Count)) \(h.DescribeCast)");
