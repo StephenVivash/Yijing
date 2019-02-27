@@ -11,7 +11,8 @@ public class CHexagramValueSequencer : CValueSequencer {
 		m_nSequences = Sequences.nHexagramSequences
 		m_nRatios = Sequences.nHexagramRatios
 		//Value = nValue /////////// ???????????????????????????????????
-		UpdateInnerValues()
+		Update()
+		//UpdateInnerValues()
 		//UpdateOuterValues()
 	}
 
@@ -198,51 +199,37 @@ public class CHexagramValueSequencer : CValueSequencer {
 		return Trigram(nIndex: 0).IsMoving || Trigram(nIndex: 1).IsMoving
 	}
 
-	public func DescribeCast() -> String {
-		var s = HexagramId() + " " + Label
-		if IsMoving {
-			let hvsPrimary = self
-			let hvsSeconday = CHexagramValueSequencer(hvs: hvsPrimary) ////////?????????????????????????
-			hvsSeconday.Move()
-			s = s + " > " + hvsSeconday.HexagramId() + " " + hvsSeconday.Label
-		}
-		return s
-	}
-
-	public func HexagramId() -> String {
-		var s = String(Sequence + 1)
-		if IsMoving {
+	public func HexagramId(bValue: Bool = false) -> String {
+		var s = String(format: "%2d", bValue ?  Value : Sequence + 1)
+		if IsMoving	{
 			s = s + "."
 			for l in 0 ... 5 {
-				if (Trigram(nIndex: l / 3).Line(nIndex: l % 3).IsMoving) {
+				if Trigram(nIndex: l / 3).Line(nIndex: l % 3).IsMoving {
 					s = s + String(l + 1)
 				}
 			}
 		}
-		return s
-	}
-/*
-	public String Primary()
-	{
-		return HexagramId() + " " + Label
+		return s;
 	}
 
-	public String Secondary
-	{
-		get
-		{
-			String s = ""
-			if (IsMoving)
-			{
-				CHexagramValueSequencer hvsPrimary = self
-				CHexagramValueSequencer hvsSeconday = new CHexagramValueSequencer(hvsPrimary)
-				hvsSeconday.Move()
-				s = hvsSeconday.HexagramId() + " " + hvsSeconday.Label
-			}
-			return s
-		}
+	public func DescribePrimary(bValue: Bool = false) -> String {
+		return HexagramId() + " " + Label + (bValue ? " (" + ValueStr + ")" : "")
 	}
-*/
+
+	public func DescibeSecondary(bValue: Bool = false) -> String {
+		if IsMoving	{
+			let hvsPrimary: CHexagramValueSequencer = self
+			let hvsSeconday: CHexagramValueSequencer = CHexagramValueSequencer(hvs: hvsPrimary)
+			hvsSeconday.Move()
+			return hvsSeconday.HexagramId() + " " + hvsSeconday.Label + (bValue ? " (" + hvsSeconday.ValueStr + ")" : "")
+		}
+		return ""
+	}
+
+	public func DescribeCast(bValue: Bool = false) -> String	{
+		return DescribePrimary(bValue: bValue) + (IsMoving ? " > " + DescibeSecondary(bValue: bValue) : "")
+	}
+
 	public override func GetCurrentSequence() -> Int { return CHexagramValueSequencer.m_nCurrentSequence }
 	public override func GetCurrentRatio() -> Int { return CHexagramValueSequencer.m_nCurrentRatio }
 	public override func GetCurrentLabel() -> Int { return CHexagramValueSequencer.m_nCurrentLabel }

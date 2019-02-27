@@ -153,7 +153,7 @@ public class CTrigramValueSequencer : CValueSequencer {
 	}
 
 	public override func GetLabel() -> String { 
-		return "Sequences.strTrigramLabels[GetCurrentLabel(),Value]"
+		return Sequences.strTrigramLabels[GetCurrentLabel()][Value]
 	}
 
 	public override func GetMoving() -> Bool {
