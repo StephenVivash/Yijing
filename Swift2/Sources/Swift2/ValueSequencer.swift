@@ -110,7 +110,7 @@ public class CValueSequencer {
 	public func SetParent(pvsParent: CValueSequencer) { m_pvsParent = pvsParent }
 	//public func GetParent() -> CValueSequencer { return m_pvsParent }
 	
-	//public func GetChild(nIndex: Int) -> CValueSequencer? {
+	//public func GetChild(nIndex: Int) -> CValueSequencer {
 	//	return m_pvsInner[nIndex]
 	//}
 	
