@@ -12,7 +12,10 @@ public class CHexagram : Comparable {
 	}
 
 	public var DescribeCast: String {
-		get { return m_strPrimary }
+		get {
+				let hvs = CHexagramValueSequencer(value: m_strPrimary)
+				return hvs.DescribeCast(bValueId: false, bIncludeValue: false)// + " --- " + m_strPrimary
+			}
 	}
 
 	public static func < (lhs: CHexagram, rhs: CHexagram) -> Bool {
@@ -44,7 +47,7 @@ public class CHexagramArray { //: EnumeratedSequence<<#Base: Sequence#>> {
 						hvs.Trigram(nIndex: l / 3).Line(nIndex: l % 3).Next(bRatio: false)
 					}
 				}
-				Add(strPrimary: hvs.DescribeCast(bValueId: false))
+				Add(strPrimary: hvs.HexagramId(bValueId: true)) // hvs.DescribeCast(bValueId: false)
 			}
 			hvsPrimary.Next()
 		}
@@ -58,11 +61,10 @@ public class CHexagramArray { //: EnumeratedSequence<<#Base: Sequence#>> {
 
 	@discardableResult
 	public func MultiCast(nCount: Int) -> CHexagramArray {
-		let hvs: CHexagramValueSequencer = CHexagramValueSequencer(nValue: 63) // more even ????????
+		let hvs: CHexagramValueSequencer = CHexagramValueSequencer(nValue: 63)
 		for _ in 0 ... nCount - 1 {
-			//CHexagramValueSequencer hvs = new CHexagramValueSequencer(63)
 			AutoCast(hvs: hvs)
-			let h: CHexagram = CHexagram(strPrimary: hvs.DescribeCast(bValueId: false))
+			let h: CHexagram = CHexagram(strPrimary: hvs.HexagramId(bValueId: true))
 			if let nIndex = binarySearch(inputArr: m_arrHexagram, searchItem: h) {
 				m_arrHexagram[nIndex].Add()
 			}
@@ -70,7 +72,7 @@ public class CHexagramArray { //: EnumeratedSequence<<#Base: Sequence#>> {
 		return self
 	}
 	
-	public func AutoCast(hvs: CHexagramValueSequencer) { //////// Random ?????????????????????????????
+	public func AutoCast(hvs: CHexagramValueSequencer) {
 		//var r: Random = true ? Sequences.m_ranSession : Random(DateTime.Now.Millisecond)
 		for l in 0 ... 5 {
 			let count: Int = (Int.random(in: 1 ... 5) * 100) + Int.random(in: 1 ... 99)
