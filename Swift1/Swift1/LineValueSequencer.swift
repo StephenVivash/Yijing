@@ -13,6 +13,7 @@ public class CLineValueSequencer : CValueSequencer {
  		Bit(nIndex: 0).SetParent(pvsParent: self)
  		m_nSequences = Sequences.nLineSequences
  		m_nRatios = Sequences.nLineRatios
+		Value = nValue
 	}
 
 	public func Bit(nIndex: Int) -> CBitValueSequencer {

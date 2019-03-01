@@ -1,6 +1,6 @@
 	
 	public class Sequences {
-
+		
 		public enum ValueType: Int { case Bit = 0, Line = 1, Duogram = 2, Trigram = 3, Hexagram = 4 }
 
 		public static var TextType: [String]  = [ "Text", "Image", "Judgement", "Line1", "Line2", "Line3", "Line4", "Line5", "Line6" ]

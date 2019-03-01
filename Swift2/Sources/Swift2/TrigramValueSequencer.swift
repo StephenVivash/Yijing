@@ -1,6 +1,6 @@
 
 public class CTrigramValueSequencer : CValueSequencer {
-	
+
 	init(nValue: Int) {
 		super.init(nInnerSequencers: 3, nValues: 8, nValue: nValue)
 		m_pvsInner = [CLineValueSequencer(nValue: 0) as CValueSequencer,CLineValueSequencer(nValue: 0) as CValueSequencer,
@@ -13,6 +13,7 @@ public class CTrigramValueSequencer : CValueSequencer {
 		Line(nIndex: 0).SetParent(pvsParent: self)
 		m_nSequences = Sequences.nTrigramSequences
 		m_nRatios = Sequences.nTrigramRatios
+		Value = nValue
 	}
 
 	public func Line(nIndex: Int) -> CLineValueSequencer {

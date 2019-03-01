@@ -1,12 +1,13 @@
 
 public class CValueSequencer {
-	
+
 	init(nInnerSequencers: Int, nValues: Int, nValue: Int) {
 		m_nInnerSequencers = nInnerSequencers
 		m_nValues = nValues
-		//m_pvsParent = CValueSequencer(nInnerSequencers: 0, nValues: 0, nValue: 0)
-		//m_pvsInner = [CValueSequencer(nInnerSequencers: 0, nValues: 0, nValue: 0)]
-		///////SetValue(nValue)
+		//m_pvsParent = null
+		//m_pvsInner = null
+		//m_nValue = nValue
+		//SetValue(nValue: nValue)
 	}
 
 	public var Value: Int {
@@ -107,11 +108,11 @@ public class CValueSequencer {
 	public func UpdateOuterValues() {}
 
 	public func SetParent(pvsParent: CValueSequencer) { m_pvsParent = pvsParent }
-	public func GetParent() -> CValueSequencer? { return m_pvsParent }
+	//public func GetParent() -> CValueSequencer { return m_pvsParent }
 	
-	public func GetChild(nIndex: Int) -> CValueSequencer? {
-		return m_pvsInner[nIndex]
-	}
+	//public func GetChild(nIndex: Int) -> CValueSequencer? {
+	//	return m_pvsInner[nIndex]
+	//}
 	
 	@discardableResult
 	private func SetValue(nValue: Int) -> CValueSequencer {
@@ -186,5 +187,5 @@ public class CValueSequencer {
 	var m_nRatios: [[Int]] = [[]]
 
 	var m_pvsParent: CValueSequencer!
-	var  m_pvsInner: [CValueSequencer]!
+	var  m_pvsInner: [CValueSequencer] = []
 }

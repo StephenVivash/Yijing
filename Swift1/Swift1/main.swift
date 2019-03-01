@@ -25,7 +25,7 @@ func Test() {
 	for _ in 0...63 {
 		print ("hvs v:\(hvs1.Next().Value), s:\(hvs1.Sequence)")
 	}
-	
+
 	hvs1.Value = 42
 	hvs1.Update()
 	let hvs2 = CHexagramValueSequencer(hvs: hvs1)

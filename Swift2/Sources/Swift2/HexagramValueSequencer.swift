@@ -10,9 +10,8 @@ public class CHexagramValueSequencer : CValueSequencer {
 		Trigram(nIndex: 0).SetParent(pvsParent: self)
 		m_nSequences = Sequences.nHexagramSequences
 		m_nRatios = Sequences.nHexagramRatios
-		//Value = nValue /////////// ???????????????????????????????????
-		Update()
-		//UpdateInnerValues()
+		Value = nValue
+		UpdateInnerValues()
 		//UpdateOuterValues()
 	}
 
@@ -199,8 +198,8 @@ public class CHexagramValueSequencer : CValueSequencer {
 		return Trigram(nIndex: 0).IsMoving || Trigram(nIndex: 1).IsMoving
 	}
 
-	public func HexagramId(bValue: Bool = false) -> String {
-		var s = String(format: "%2d", bValue ?  Value : Sequence + 1)
+	public func HexagramId(bValueId: Bool = false) -> String {
+		var s = String(format: "%2d", bValueId ?  Value : Sequence + 1)
 		if IsMoving	{
 			s = s + "."
 			for l in 0 ... 5 {
@@ -212,22 +211,23 @@ public class CHexagramValueSequencer : CValueSequencer {
 		return s;
 	}
 
-	public func DescribePrimary(bValue: Bool = false) -> String {
-		return HexagramId() + " " + Label + (bValue ? " (" + ValueStr + ")" : "")
+	public func DescribePrimary(bValueId: Bool = false, bIncludeValue: Bool = false) -> String {
+		return HexagramId(bValueId: bValueId) + " " + Label + (bIncludeValue ? " (" + ValueStr + ")" : "")
 	}
 
-	public func DescibeSecondary(bValue: Bool = false) -> String {
+	public func DescibeSecondary(bValueId: Bool = false, bIncludeValue: Bool = false) -> String {
 		if IsMoving	{
 			let hvsPrimary: CHexagramValueSequencer = self
 			let hvsSeconday: CHexagramValueSequencer = CHexagramValueSequencer(hvs: hvsPrimary)
 			hvsSeconday.Move()
-			return hvsSeconday.HexagramId() + " " + hvsSeconday.Label + (bValue ? " (" + hvsSeconday.ValueStr + ")" : "")
+			return hvsSeconday.HexagramId(bValueId: bValueId) + " " + hvsSeconday.Label + (bIncludeValue ? " (" + hvsSeconday.ValueStr + ")" : "")
 		}
 		return ""
 	}
 
-	public func DescribeCast(bValue: Bool = false) -> String	{
-		return DescribePrimary(bValue: bValue) + (IsMoving ? " > " + DescibeSecondary(bValue: bValue) : "")
+	public func DescribeCast(bValueId: Bool = false, bIncludeValue: Bool = false) -> String	{
+		return DescribePrimary(bValueId: bValueId, bIncludeValue: bIncludeValue) + (IsMoving ? " > " +
+			DescibeSecondary(bValueId: bValueId, bIncludeValue: bIncludeValue) : "")
 	}
 
 	public override func GetCurrentSequence() -> Int { return CHexagramValueSequencer.m_nCurrentSequence }
