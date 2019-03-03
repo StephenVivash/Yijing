@@ -41,11 +41,13 @@ func Test() {
 	printHexagram(label: "hvs2", hvs: hvs2)
 	print ("")
 
+	//var hvs3 = CHexagramValueSequencer(StrValue: "63")
+
 	let ha: CHexagramArray = CHexagramArray()
-	ha.MultiCast(nCount: 10000);
+	ha.MultiCast(nCount: 100);
 	for h in ha.HexagramArray() {
 		if h.Count > 0 {
-			print("\(String(format: "%4d", h.Count)) \(h.DescribeCast)");
+			print("\(String(format: "%4d", h.Count)) \(h.m_strPrimary)"); // DescribeCast
 		}
 	}
 }

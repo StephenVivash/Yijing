@@ -15,6 +15,26 @@ public class CHexagramValueSequencer : CValueSequencer {
 		//UpdateOuterValues()
 	}
 
+	convenience init(strValue: String) {
+		var s = strValue.trimmingCharacters(in: [" "])
+		if let fValue = Double(s) {
+			self.init(nValue: Int(fValue))
+			if let i = s.firstIndex(of: ".") {
+				s = s.substring(from: i)
+				var index = -1
+				for l in ["1","2","3","4","5","6"] {
+					index += 1
+					if s.contains(l) {
+						Trigram(nIndex: index / 3).Line(nIndex: index % 3).Next()
+					}
+				}
+			}
+		}
+		else {
+			self.init(nValue: 0)
+		}
+	}
+
 	convenience init(hvs: CHexagramValueSequencer) {
 		self.init(nValue: 0) // (nInnerSequencers: 2, nValues: 64, nValue: 0)
 		Trigram(nIndex: 1).Line(nIndex: 2).Value = hvs.Trigram(nIndex: 1).Line(nIndex: 2).Value
