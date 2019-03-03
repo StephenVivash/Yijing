@@ -7,15 +7,9 @@ public class CHexagram : Comparable {
 	public init() {
 	}
 
-	public init(strPrimary: String) {
+	public init(strPrimary: String, nCount: Int = 0) {
 		m_strPrimary = strPrimary
-	}
-
-	public var DescribeCast: String {
-		get {
-				let hvs = CHexagramValueSequencer(value: m_strPrimary)
-				return hvs.DescribeCast(bValueId: false, bIncludeValue: false)// + " --- " + m_strPrimary
-			}
+		m_nCount = nCount
 	}
 
 	public static func < (lhs: CHexagram, rhs: CHexagram) -> Bool {
@@ -27,14 +21,14 @@ public class CHexagram : Comparable {
 	}
 
 	public func Add() {
-		Count += 1
+		m_nCount += 1
 	}
 
-	public var Count: Int = 0
-	private var m_strPrimary = ""
+	public var m_nCount: Int = 0
+	public var m_strPrimary = ""
 }
 
-public class CHexagramArray { //: EnumeratedSequence<<#Base: Sequence#>> {
+public class CHexagramArray {
 
 	public init() {
 		let hvsPrimary: CHexagramValueSequencer = CHexagramValueSequencer(nValue: 63)
@@ -47,7 +41,7 @@ public class CHexagramArray { //: EnumeratedSequence<<#Base: Sequence#>> {
 						hvs.Trigram(nIndex: l / 3).Line(nIndex: l % 3).Next(bRatio: false)
 					}
 				}
-				Add(strPrimary: hvs.HexagramId(bValueId: true)) // hvs.DescribeCast(bValueId: false)
+				Add(strPrimary: hvs.HexagramId(bValueId: true))
 			}
 			hvsPrimary.Next()
 		}
@@ -59,8 +53,7 @@ public class CHexagramArray { //: EnumeratedSequence<<#Base: Sequence#>> {
 		m_arrHexagram[m_nCount] = CHexagram(strPrimary: strPrimary)
 	}
 
-	@discardableResult
-	public func MultiCast(nCount: Int) -> CHexagramArray {
+	public func MultiCast(nCount: Int) {
 		let hvs: CHexagramValueSequencer = CHexagramValueSequencer(nValue: 63)
 		for _ in 0 ... nCount - 1 {
 			AutoCast(hvs: hvs)
@@ -69,7 +62,6 @@ public class CHexagramArray { //: EnumeratedSequence<<#Base: Sequence#>> {
 				m_arrHexagram[nIndex].Add()
 			}
 		}
-		return self
 	}
 	
 	public func AutoCast(hvs: CHexagramValueSequencer) {
@@ -83,7 +75,15 @@ public class CHexagramArray { //: EnumeratedSequence<<#Base: Sequence#>> {
 	}
 
 	public func HexagramArray() -> [CHexagram] {
-		return m_arrHexagram
+		var arrH = Array(repeating: CHexagram(), count: 4096)
+		var i = -1;
+		for h in m_arrHexagram {
+			i += 1
+			let hvs = CHexagramValueSequencer(strValue: h.m_strPrimary)
+			arrH[i] = CHexagram(strPrimary: hvs.DescribeCast(), nCount: h.m_nCount)
+		}
+		arrH.sort()
+		return arrH
 	}
 
 	func binarySearch<T:Comparable>(inputArr: Array<T>, searchItem: T) -> Int? {

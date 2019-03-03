@@ -15,19 +15,18 @@ public class CHexagramValueSequencer : CValueSequencer {
 		//UpdateOuterValues()
 	}
 
-	convenience init(value: String) {
-		var s = value.trimmingCharacters(in: [" "])
+	convenience init(strValue: String) {
+		var s = strValue.trimmingCharacters(in: [" "])
 		if let fValue = Double(s) {
-			let nValue = Int(fValue)
-			self.init(nValue: nValue)
+			self.init(nValue: Int(fValue))
 			if let i = s.firstIndex(of: ".") {
 				s = s.substring(from: i)
-			}
-			var index = -1
-			for l in ["1","2","3","4","5","6"] {
-				index += 1
-				if s.contains(l) {
-					Trigram(nIndex: index / 3).Line(nIndex: index % 3).Next()
+				var index = -1
+				for l in ["1","2","3","4","5","6"] {
+					index += 1
+					if s.contains(l) {
+						Trigram(nIndex: index / 3).Line(nIndex: index % 3).Next()
+					}
 				}
 			}
 		}

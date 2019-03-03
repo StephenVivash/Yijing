@@ -47,7 +47,7 @@ public class CValueSequencer {
 	@discardableResult
 	public func Previous(bRatio: Bool = false) -> CValueSequencer {
 		m_nRatio = m_nRatio - 1
-		if !bRatio || (m_nRatio >= 0) {
+		if !bRatio || (m_nRatio == 0) {
 			SetValue(nValue: GetPreviousSequence(nSequence: m_nSequence))
 			UpdateInnerValues()
 			UpdateOuterValues()
@@ -58,7 +58,7 @@ public class CValueSequencer {
 	@discardableResult
 	public func Next(bRatio: Bool = false) -> CValueSequencer {
 		m_nRatio = m_nRatio - 1
-		if !bRatio || (m_nRatio >= 0) {
+		if !bRatio || (m_nRatio == 0) {
 			SetValue(nValue: GetNextSequence(nSequence: m_nSequence))
 			UpdateInnerValues()
 			UpdateOuterValues()
