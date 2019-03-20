@@ -1,7 +1,7 @@
 
 public class CHexagramValueSequencer : CValueSequencer {
 	
-	init(nValue: Int) {
+	init(nValue: Int = 0) {
 		super.init(nInnerSequencers: 2, nValues: 64, nValue: nValue)
 		m_pvsInner = [CTrigramValueSequencer(nValue: 0) as CValueSequencer,CTrigramValueSequencer(nValue: 0) as CValueSequencer]
 		//m_pvsInner[1] = new CTrigramValueSequencer(-1)
@@ -16,27 +16,27 @@ public class CHexagramValueSequencer : CValueSequencer {
 	}
 
 	convenience init(strValue: String) {
-		var s = strValue.trimmingCharacters(in: [" "])
+		let s = strValue.trimmingCharacters(in: [" "])
 		if let fValue = Double(s) {
 			self.init(nValue: Int(fValue))
-			if let i = s.firstIndex(of: ".") {
-				s = s.substring(from: i)
-				var index = -1
-				for l in ["1","2","3","4","5","6"] {
-					index += 1
-					if s.contains(l) {
-						Trigram(nIndex: index / 3).Line(nIndex: index % 3).Next()
+			let s1 = s.split(separator: ".")
+			if s1.count == 2 {
+				var line = -1
+				for l in "123456" {
+					line += 1
+					if s1[1].contains(l) {
+						Trigram(nIndex: line / 3).Line(nIndex: line % 3).Next()
 					}
 				}
 			}
 		}
 		else {
-			self.init(nValue: 0)
+			self.init()
 		}
 	}
 
 	convenience init(hvs: CHexagramValueSequencer) {
-		self.init(nValue: 0) // (nInnerSequencers: 2, nValues: 64, nValue: 0)
+		self.init() // (nInnerSequencers: 2, nValues: 64, nValue: 0)
 		Trigram(nIndex: 1).Line(nIndex: 2).Value = hvs.Trigram(nIndex: 1).Line(nIndex: 2).Value
 		Trigram(nIndex: 1).Line(nIndex: 1).Value = hvs.Trigram(nIndex: 1).Line(nIndex: 1).Value
 		Trigram(nIndex: 1).Line(nIndex: 0).Value = hvs.Trigram(nIndex: 1).Line(nIndex: 0).Value

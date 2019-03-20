@@ -1,92 +1,94 @@
 
-public class CHexagramSequences {
-}
+//public class CHexagramSequences {
+//}
 
-public class CHexagram : Comparable {
+public struct CHexagram : Comparable {
 
 	public init() {
 	}
 
-	public init(strPrimary: String, nCount: Int = 0) {
-		m_strPrimary = strPrimary
-		m_nCount = nCount
+	public init(description: String, count: Int = 0) {
+		self.description = description
+		self.count = count
 	}
 
 	public static func < (lhs: CHexagram, rhs: CHexagram) -> Bool {
-		return lhs.m_strPrimary < rhs.m_strPrimary
+		return lhs.description < rhs.description
 	}
 
 	public static func == (lhs: CHexagram, rhs: CHexagram) -> Bool {
-		return lhs.m_strPrimary == rhs.m_strPrimary
+		return lhs.description == rhs.description
 	}
 
-	public func Add() {
-		m_nCount += 1
+	public mutating func Add() {
+		count += 1
 	}
 
-	public var m_nCount: Int = 0
-	public var m_strPrimary = ""
+	public var count = 0
+	public var description = ""
 }
 
 public class CHexagramArray {
 
 	public init() {
-		let hvsPrimary: CHexagramValueSequencer = CHexagramValueSequencer(nValue: 63)
-		hvsPrimary.First()
+		let hvs1 = CHexagramValueSequencer()
+		hvs1.First()
 		for _ in 0 ... 63 {
 			for s in 0 ... 63 {
-				let hvs: CHexagramValueSequencer = CHexagramValueSequencer(hvs: hvsPrimary)
+				let hvs2 = CHexagramValueSequencer(hvs: hvs1)
 				for l in 0 ... 5 {
 					if (((s & (1 << l)) >> l) == 1) {
-						hvs.Trigram(nIndex: l / 3).Line(nIndex: l % 3).Next(bRatio: false)
+						hvs2.Trigram(nIndex: l / 3).Line(nIndex: l % 3).Next(bRatio: false)
 					}
 				}
-				Add(strPrimary: hvs.HexagramId(bValueId: true))
+				Add(description: hvs2.HexagramId(bValueId: true))
 			}
-			hvsPrimary.Next()
+			hvs1.Next()
 		}
-		m_arrHexagram.sort()
+		hexagramArray.sort()
 	}
 
-	public func Add(strPrimary: String) {
-		m_nCount += 1
-		m_arrHexagram[m_nCount] = CHexagram(strPrimary: strPrimary)
-	}
-
-	public func MultiCast(nCount: Int) {
-		let hvs: CHexagramValueSequencer = CHexagramValueSequencer(nValue: 63)
-		for _ in 0 ... nCount - 1 {
+	public func MultiCast(count: Int) {
+		let hvs = CHexagramValueSequencer()
+		for _ in 0 ... count - 1 {
 			AutoCast(hvs: hvs)
-			let h: CHexagram = CHexagram(strPrimary: hvs.HexagramId(bValueId: true))
-			if let nIndex = binarySearch(inputArr: m_arrHexagram, searchItem: h) {
-				m_arrHexagram[nIndex].Add()
+			let h = CHexagram(description: hvs.HexagramId(bValueId: true))
+			if let nIndex = binarySearch(inputArr: hexagramArray, searchItem: h) {
+				hexagramArray[nIndex].Add()
 			}
+			hvs.Move()
 		}
 	}
 	
-	public func AutoCast(hvs: CHexagramValueSequencer) {
+	public func HexagramArray() -> [CHexagram] {
+		var ha = Array(repeating: CHexagram(), count: 4096)
+		var i = -1;
+		for h in hexagramArray {
+			i += 1
+			let hvs = CHexagramValueSequencer(strValue: h.description)
+			ha[i] = CHexagram(description: hvs.DescribeCast(), count: h.count)
+		}
+		ha.sort()
+		return ha
+	}
+
+	private func AutoCast(hvs: CHexagramValueSequencer) {
 		//var r: Random = true ? Sequences.m_ranSession : Random(DateTime.Now.Millisecond)
 		for l in 0 ... 5 {
-			let count: Int = (Int.random(in: 1 ... 5) * 100) + Int.random(in: 1 ... 99)
-			for _ in 0 ... count - 1 {
-				hvs.Trigram(nIndex: l / 3).Line(nIndex: l % 3).Next(bRatio: true)
+			let lvs = hvs.Trigram(nIndex: l / 3).Line(nIndex: l % 3)
+			let count = Int.random(in: 101 ... 599)
+			for _ in 0 ... count {
+				lvs.Next(bRatio: true)
 			}
 		}
 	}
 
-	public func HexagramArray() -> [CHexagram] {
-		var arrH = Array(repeating: CHexagram(), count: 4096)
-		var i = -1;
-		for h in m_arrHexagram {
-			i += 1
-			let hvs = CHexagramValueSequencer(strValue: h.m_strPrimary)
-			arrH[i] = CHexagram(strPrimary: hvs.DescribeCast(), nCount: h.m_nCount)
-		}
-		arrH.sort()
-		return arrH
+	private func Add(description: String) {
+		count += 1
+		hexagramArray[count] = CHexagram(description: description)
 	}
 
-	func binarySearch<T:Comparable>(inputArr: Array<T>, searchItem: T) -> Int? {
+	private func binarySearch<T:Comparable>(inputArr: Array<T>, searchItem: T) -> Int? {
 		var lowerIndex = 0
 		var upperIndex = inputArr.count - 1
 		while true {
@@ -105,6 +107,6 @@ public class CHexagramArray {
 		}
 	}
 
-	private var m_arrHexagram: [CHexagram] = Array(repeating: CHexagram(), count: 4096)
-	private var m_nCount: Int = -1
+	private var hexagramArray = Array(repeating: CHexagram(), count: 4096)
+	private var count = -1
 }
