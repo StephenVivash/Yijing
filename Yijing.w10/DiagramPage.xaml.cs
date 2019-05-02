@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Shapes;
 //using MindSetUWA;
 
 using ValueSequencer;
+using Microsoft.AppCenter.Analytics;
 //using YijingDb;
 
 namespace Yijing
@@ -609,6 +610,8 @@ namespace Yijing
 			strTemp += m_dp.cbxDiagramMode.SelectionBoxItem + " " + Sequences.DiagramSetting(13, Sequences.HexagramSequence) + " " +
 				Sequences.DiagramSetting(4, 00000000000) + " " + Sequences.DiagramSetting(6, Sequences.LineRatio) + " " +
 				Sequences.DiagramSetting(15, Sequences.HexagramLabel) + "\n\nhttps://www.microsoft.com/store/apps/9n5q9qxxh7wj\n\n";
+
+			Analytics.TrackEvent("Cast: " + m_hvsCurrent.DescribeCast());
 
 			m_hvsCast = new CHexagramValueSequencer(ref m_hvsCurrent);
 			m_vsCurrent = m_hvsCurrent;

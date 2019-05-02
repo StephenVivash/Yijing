@@ -15,6 +15,9 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+
 namespace Yijing
 {
 	/// <summary>
@@ -28,6 +31,8 @@ namespace Yijing
 		/// </summary>
 		public App()
 		{
+			AppCenter.Start("4c1d1b32-45d7-43d7-ab76-aa5bd83bfac6", typeof(Analytics));
+
 			//Microsoft.ApplicationInsights.WindowsAppInitializer.InitializeAsync(/*
 			//	Microsoft.ApplicationInsights.WindowsCollectors.Metadata |
 			//	Microsoft.ApplicationInsights.WindowsCollectors.Session*/);
