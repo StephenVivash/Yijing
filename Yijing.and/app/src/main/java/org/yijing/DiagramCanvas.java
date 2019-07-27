@@ -105,6 +105,7 @@ public class DiagramCanvas extends View {
 	private Paint m_pntBlack;
 	private Paint m_pntRed;
 
+	private int m_nStokeWidth = 2;
 	private int m_nOffsetX = 100;
 	private int m_nOffsetY = 100;
 	private int m_nPadY = 20;
@@ -636,6 +637,7 @@ public class DiagramCanvas extends View {
 			m_fRadii = new float[] { 10, 10, 10, 10, 10, 10, 10, 10 };
 		} else
 		if((nWidth <= 800) || (nHeight <= 1000)) { //900
+			m_nStokeWidth = 3;
 			m_nPadY = 10;
 			m_nWidth = 240;
 			m_nHeight = 90;
@@ -646,20 +648,22 @@ public class DiagramCanvas extends View {
 			m_fRadii = new float[] { 20, 20, 20, 20, 20, 20, 20, 20 };
 		} else
 		if(nWidth <= 1100) { // 1200
+			m_nStokeWidth = 4;
 			m_nPadY = 20;
 			m_nWidth = 380;
-			m_nHeight = 140;
+			m_nHeight = 150; // 140
 			m_nOffsetX = (nWidth - ((m_nWidth * 2) + m_nHeight)) / 2;
 			m_nOffsetY = 20;
 			m_nCenter = m_nOffsetX + m_nWidth + (m_nHeight / 2);
 			nTextSize = 60;
 			m_fRadii = new float[] { 30, 30, 30, 30, 30, 30, 30, 30 };
 		} else {
-			m_nPadY = 20;
+			m_nStokeWidth = 6;
+			m_nPadY = 25;
 			m_nWidth = 480;
-			m_nHeight = 160;
+			m_nHeight = 200; // 160
 			m_nOffsetX = (nWidth - ((m_nWidth * 2) + m_nHeight)) / 2;
-			m_nOffsetY = 20;
+			m_nOffsetY = 30; // 20
 			m_nCenter = m_nOffsetX + m_nWidth + (m_nHeight / 2);
 			nTextSize = 80;
 			m_fRadii = new float[] { 40, 40, 40, 40, 40, 40, 40, 40 };
@@ -685,7 +689,7 @@ public class DiagramCanvas extends View {
 			m_sdLines[nLine][0].draw(canvas);
 			m_sdLines[nLine][0].getPaint().set(bSelected ? m_pntRed : m_pntBlack);
 			m_sdLines[nLine][0].getPaint().setStyle(Paint.Style.STROKE);
-			m_sdLines[nLine][0].getPaint().setStrokeWidth(2);
+			m_sdLines[nLine][0].getPaint().setStrokeWidth(m_nStokeWidth);
 			m_sdLines[nLine][0].draw(canvas);
 
 			m_sdLines[nLine][2].setBounds(0,0,0,0);
@@ -697,7 +701,7 @@ public class DiagramCanvas extends View {
 			m_sdLines[nLine][0].draw(canvas);
 			m_sdLines[nLine][0].getPaint().set(bSelected ? m_pntRed : m_pntBlack);
 			m_sdLines[nLine][0].getPaint().setStyle(Paint.Style.STROKE);
-			m_sdLines[nLine][0].getPaint().setStrokeWidth(2);
+			m_sdLines[nLine][0].getPaint().setStrokeWidth(m_nStokeWidth);
 			m_sdLines[nLine][0].draw(canvas);
 
 			m_sdLines[nLine][2].setBounds(nX + nWidth + nHeight, nY, nX + (nWidth * 2) + nHeight, nY + nHeight);
@@ -705,7 +709,7 @@ public class DiagramCanvas extends View {
 			m_sdLines[nLine][2].draw(canvas);
 			m_sdLines[nLine][2].getPaint().set(bSelected ? m_pntRed : m_pntBlack);
 			m_sdLines[nLine][2].getPaint().setStyle(Paint.Style.STROKE);
-			m_sdLines[nLine][2].getPaint().setStrokeWidth(2);
+			m_sdLines[nLine][2].getPaint().setStrokeWidth(m_nStokeWidth);
 			m_sdLines[nLine][2].draw(canvas);
 		}
 		if(bOld) {
@@ -714,7 +718,7 @@ public class DiagramCanvas extends View {
 			m_sdLines[nLine][1].draw(canvas);
 			m_sdLines[nLine][1].getPaint().set(bSelected ? m_pntRed : m_pntBlack);
 			m_sdLines[nLine][1].getPaint().setStyle(Paint.Style.STROKE);
-			m_sdLines[nLine][1].getPaint().setStrokeWidth(2);
+			m_sdLines[nLine][1].getPaint().setStrokeWidth(m_nStokeWidth);
 			m_sdLines[nLine][1].draw(canvas);
 		}
 		else {

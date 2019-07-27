@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "119429148072",
+    "firebase_url": "https://yijing-73288889.firebaseio.com",
+    "project_id": "yijing-73288889",
+    "storage_bucket": "yijing-73288889.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:119429148072:android:1dffda8095958c8d",
+        "android_client_info": {
+          "package_name": "org.yijing"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "119429148072-eu3bnvk1dd3g7f0mvlpdpi6svv997gor.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.yijing",
+            "certificate_hash": "aa80d4f4ab258ae977b45007c12dd316ba202ddc"
+          }
+        },
+        {
+          "client_id": "119429148072-3eoja8oa7291naf8gqqkpimk2uvom8hc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBteIgS6h580ylNtCt03NX3Icdr1SOF_0o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "119429148072-3eoja8oa7291naf8gqqkpimk2uvom8hc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
