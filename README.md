@@ -14,7 +14,8 @@ Zhouyi - Divination, prognostication and synchronicity. </br></br>
 
 IChing - Neurosky Mindwave Brainwave EEG Electroencephalogram. </br></br>
 
-v8.0.0 (202x) [Swift, iOS10] {eventually} </br>
+v9.0.0 (202x) [C#, MAUI] {eventually} </br>
+v8.0.0 (202x) [Swift, iOS10] {unlikely} </br>
 v7.0.0 (2017) [Java, SWT] </br>
 v6.0.0 (2016) [Java, Android5] </br>
 v5.2.0 (2016) [C#, Windows10] </br> 
