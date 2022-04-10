@@ -12,7 +12,7 @@ Yi Jing - Judgement, order and contemplation. </br></br>
 
 Zhouyi - Divination, prognostication and synchronicity. </br></br>
 
-IChing - Neurosky Mindwave Brainwave EEG Electroencephalogram. </br></br>
+IChing - Neurosky / Emotiv EEG Electroencephalogram. </br></br>
 
 v9.0.0 (202x) [C#, MAUI] {eventually} </br>
 v8.0.0 (202x) [Swift, iOS10] {unlikely} </br>
