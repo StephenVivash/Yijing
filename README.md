@@ -14,9 +14,8 @@ Zhouyi - Divination, prognostication and synchronicity. </br></br>
 
 IChing - Neurosky / Emotiv / Muse EEG Electroencephalomancy. </br></br>
 
-v9.0.0 (2023) [C#, MAUI] </br>
-v8.0.0 (2019) [Swift, iOS10] </br>
-v7.0.0 (2017) [Java, SWT] </br>
+v7.0.0 (2023) [C#, MAUI] </br>
+v6.1.0 (2017) [Java, SWT] </br>
 v6.0.0 (2016) [Java, Android5] </br>
 v5.2.0 (2016) [C#, Windows10] </br> 
 v5.1.0 (2014) [C#, Windows8] </br> 
