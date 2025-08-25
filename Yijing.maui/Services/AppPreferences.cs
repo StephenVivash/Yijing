@@ -72,26 +72,23 @@ public class AppPreferences
 
 		AiChatService = Preferences.Get("AiChatService", (int)eAiChatService.eNone);
 
-		// ??? - asst_d5GATH30Xy7ygLF8Tw9zMOjH
-
 		OpenAiModelId = "gpt-5"; //gpt-4.5-preview o1-preview gpt-4o gpt-4o-mini
 		OllamaModelId = "gpt-oss:20b"; // qwen3:8b deepseek-r1:8b llama3.2:latest gemma3:latest
-		//GithubModelId = "gpt-4.1"; // gpt-4.1 grok-3 DeepSeek-V3-0324 Llama-4-Maverick-17B-128E-Instruct-FP8 Mistral-large-2407 Meta-Llama-3.1-405B-Instruct o1 o1-mini gpt-4o-mini
-		GithubModelId = "deepseek-chat"; // deepseek-reasoner deepseek-chat
+		GithubModelId = "gpt-5"; // gpt-4.1 grok-3 DeepSeek-V3-0324 Llama-4-Maverick-17B-128E-Instruct-FP8 Mistral-large-2407 Meta-Llama-3.1-405B-Instruct o1 o1-mini gpt-4o-mini
+		//GithubModelId = "deepseek-chat"; // deepseek-reasoner deepseek-chat
 
 		OllamaEndPoint = "http://localhost:11434"; // api/generate 62844
-		//GithubEndPoint = "https://models.inference.ai.azure.com";
-		GithubEndPoint = "https://api.deepseek.com"; // /v1
+		GithubEndPoint = "https://models.inference.ai.azure.com";
+		//GithubEndPoint = "https://api.deepseek.com"; // /v1
 
-		//AzureEndPoint = "https://svopenai2.openai.azure.com/";
-
+		//AzureEndPoint = "";
 		//AiApiKey = Preferences.Get("AiKey", "");
-		//OPENAI_API_KEY="sk-proj-l86sl3VR1TLnUw5t6q2MT3BlbkFJDxQ9zCxz9Pz4QTN7wfJ5"
+		//OPENAI_API_KEY=""
 
 		OpenAiKey = "";
-		//GithubKey = ""; // github
-		GithubKey = ""; // deepseek
-		AzureKey = "";
+		GithubKey = ""; // github
+		//GithubKey = ""; // deepseek
+		//AzureKey = "";
 
 		MuseScale = 1;
 		AudioScale = 10;
@@ -156,7 +153,7 @@ public class AppPreferences
 
 	public static string OpenAiKey;
 	public static string GithubKey;
-	public static string AzureKey;
+	//public static string AzureKey;
 
 	public static int TriggerIndex;
 
