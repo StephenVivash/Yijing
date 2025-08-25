@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+
+	xmlns:local="clr-namespace:Yijing"
+	xmlns:models="clr-namespace:Yijing.Models"
+	xmlns:controls="clr-namespace:Yijing.Views"
+
+	x:Class="Yijing.Pages.DiagramPage"
+    Title="DiagramPage"
+	Loaded="Page_Loaded">
+
+	<toolkit:DockLayout
+		x:Name="layDock"
+		Padding="10,10,10,10"
+		VerticalSpacing="10"
+		HorizontalSpacing="10"
+		ShouldExpandLastChild="true"
+		>
+
+		<controls:DiagramView
+			x:Name="diagram"
+			toolkit:DockLayout.DockPosition="Left"
+			WidthRequest="400"
+			CardTitle="Card 1"
+			/>
+
+		<VerticalStackLayout
+			toolkit:DockLayout.DockPosition="Bottom"
+			HeightRequest="200">
+
+			<HorizontalStackLayout>
+
+				<Picker
+					x:Name="picAiChatService"
+					SelectedIndexChanged="picAiChatService_SelectedIndexChanged"
+					>
+					<Picker.Items>
+						<x:String>None</x:String>
+						<x:String>OpenAi</x:String>
+						<x:String>Github</x:String>
+						<x:String>Ollama</x:String>
+					</Picker.Items>
+				</Picker>
+
+				<Picker
+					x:Name="picAiMode"
+					SelectedIndexChanged="picAiMode_SelectedIndexChanged"
+					>
+					<Picker.Items>
+						<x:String>Chat Only Mode</x:String>
+						<x:String>Memory and Chat</x:String>
+					</Picker.Items>
+				</Picker>
+
+				<Label
+					Padding="0,10,20,0"
+					/>
+				
+				<CheckBox 
+					x:Name="chbIncludeCast"
+					CheckedChanged="chbIncludeCast_CheckedChanged"
+					>
+				</CheckBox>
+
+				<Label
+					Text="Include Cast"
+					Padding="0,10,20,0"
+					/>
+
+				<!--Label.Triggers>
+						<DataTrigger TargetType="Label"
+						 Binding="{Binding Source={x:Reference chbIncludeCast}, Path=IsChecked}"
+						 Value="true">
+						
+						<Setter Property="FontAttributes"
+							Value="Italic, Bold" />
+						<Setter Property="FontSize"
+							Value="18" />
+					
+						</DataTrigger>
+					</Label.Triggers>
+
+				</Label-->
+
+				<Button 
+					x:Name="btnAsk"
+					Text="Ask AI"
+					Clicked="btnAsk_Clicked"
+					/>
+
+			</HorizontalStackLayout>
+
+			<Editor x:Name="edtSessionLog"
+				HeightRequest="150"/>
+
+			<!--:DockLayout.DockPosition="Bottom" 
+			HeightRequest="200" /-->
+
+		</VerticalStackLayout>
+		
+		<WebView x:Name="webview" 
+			Navigating="webview_Navigating"/>
+
+	</toolkit:DockLayout>
+
+	<!--ScrollView>
+		<StackLayout
+			Orientation="Vertical"
+			>
+
+			<controls:DiagramView
+				x:Name="diagram"
+				CardTitle="Card 1"
+				/>
+
+			<WebView x:Name="webview"
+				Navigating="webview_Navigating"
+				/>
+
+			<Editor x:Name="edtSessionLog" 
+				Text="Info: Session started" 
+				HeightRequest="200"
+				/>
+
+		</StackLayout>
+	</ScrollView-->
+
+</ContentPage>

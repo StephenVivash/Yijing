@@ -1,0 +1,721 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView 
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	x:Class="Yijing.Views.DiagramView"
+	x:Name="diaView"
+	Loaded="Page_Loaded"
+	>
+
+	<!--BackgroundColor="{Binding CardColor}"
+		BorderColor="{Binding BorderColor}"-->
+
+	<ScrollView>
+		
+		<Frame 
+			BindingContext="{x:Reference diaView}"
+			BackgroundColor="{Binding CardColor}"
+			>
+
+			<StackLayout
+				Orientation="Vertical"
+				>
+
+				<AbsoluteLayout
+					x:Name="layDiagram"
+					>
+
+					<FlyoutBase.ContextFlyout>
+						<MenuFlyout>
+							<MenuFlyoutItem x:Name="mnuFirst" Text="First" Clicked="btnFirst_Clicked"/>
+							<MenuFlyoutItem x:Name="mnuLast" Text="Last" Clicked="btnLast_Clicked"/>
+							<MenuFlyoutItem x:Name="mnuMove" Text="Move" Clicked="btnMove_Clicked"/>
+							<MenuFlyoutItem x:Name="mnuHome" Text="Home" Clicked="btnHome_Clicked"/>
+							<MenuFlyoutSeparator/>
+							<MenuFlyoutItem x:Name="mnuInverse" Text="Inverse" Clicked="btnInverse_Clicked"/>
+							<MenuFlyoutItem x:Name="mnuOpposite" Text="Opposite" Clicked="btnOpposite_Clicked"/>
+							<MenuFlyoutItem x:Name="mnuTransverse" Text="Transverse" Clicked="btnTransverse_Clicked"/>
+							<MenuFlyoutItem x:Name="mnuNuclear" Text="Nuclear" Clicked="btnNuclear_Clicked"/>
+
+							<!--MenuFlyoutSubItem Text="Save">
+							<MenuFlyoutItem Text="Save All"/>
+							<MenuFlyoutItem Text="Save As"/>
+							</MenuFlyoutSubItem>
+							<MenuFlyoutItem Text="Exit" Clicked="lblHexagram_Exit_Clicked"/-->
+						</MenuFlyout>
+					</FlyoutBase.ContextFlyout>
+
+					<RoundRectangle 
+						x:Name="lin5L"
+						Fill="Blue"
+						Stroke="Black"
+						StrokeThickness="2" 
+						AbsoluteLayout.LayoutBounds="0,0,110,50"
+						CornerRadius="10,10,10,10">
+						<RoundRectangle.GestureRecognizers>
+							<!--PointerGestureRecognizer 
+								PointerEntered="lin_PointerEntered"
+								PointerExited="lin_PointerExited"
+								PointerMoved="lin_PointerMoved"
+								/-->
+							<TapGestureRecognizer 
+								Tapped="lin_Tapped"
+								NumberOfTapsRequired="1"
+								/>
+						</RoundRectangle.GestureRecognizers>
+					</RoundRectangle>
+
+					<Ellipse 
+						x:Name="ell5"
+						Fill="Blue"
+						Stroke="Black"
+						StrokeThickness="2"
+						AbsoluteLayout.LayoutBounds="110,0,50,50"
+						/>
+
+					<RoundRectangle 
+						x:Name="lin5R"
+						Fill="Blue"
+						Stroke="Black"
+						StrokeThickness="2"
+						AbsoluteLayout.LayoutBounds="160,0,110,50"
+						CornerRadius="10,10,10,10">
+						<RoundRectangle.GestureRecognizers>
+							<TapGestureRecognizer 
+								Tapped="lin_Tapped"
+								NumberOfTapsRequired="1"
+								/>
+						</RoundRectangle.GestureRecognizers>
+					</RoundRectangle>
+
+					<RoundRectangle 
+						x:Name="lin4L"
+						Fill="Red"
+						Stroke="Black"
+						StrokeThickness="2"
+						AbsoluteLayout.LayoutBounds="0,52,110,50"
+						CornerRadius="10,10,10,10">
+						<RoundRectangle.GestureRecognizers>
+							<TapGestureRecognizer 
+								Tapped="lin_Tapped"
+								NumberOfTapsRequired="1"
+								/>
+						</RoundRectangle.GestureRecognizers>
+					</RoundRectangle>
+
+					<Ellipse 
+						x:Name="ell4"
+						Fill="Red"
+						Stroke="Black"
+						StrokeThickness="2"
+						AbsoluteLayout.LayoutBounds="110,52,50,50"
+						/>
+
+					<RoundRectangle 
+						x:Name="lin4R"
+						Fill="Red"
+						Stroke="Black"
+						StrokeThickness="2"
+						AbsoluteLayout.LayoutBounds="160,52,110,50"
+						CornerRadius="10,10,10,10">
+						<RoundRectangle.GestureRecognizers>
+							<TapGestureRecognizer 
+								Tapped="lin_Tapped"
+								NumberOfTapsRequired="1"
+								/>
+						</RoundRectangle.GestureRecognizers>
+					</RoundRectangle>
+
+					<RoundRectangle 
+						x:Name="lin3L"
+						Fill="Blue"
+						Stroke="Black"
+						StrokeThickness="2"
+						AbsoluteLayout.LayoutBounds="0,104,110,50"
+						CornerRadius="10,10,10,10">
+						<RoundRectangle.GestureRecognizers>
+							<TapGestureRecognizer 
+								Tapped="lin_Tapped"
+								NumberOfTapsRequired="1"
+								/>
+						</RoundRectangle.GestureRecognizers>
+					</RoundRectangle>
+
+					<Ellipse 
+						x:Name="ell3"
+						Fill="Blue"
+						Stroke="Black"
+						StrokeThickness="2"
+						AbsoluteLayout.LayoutBounds="110,104,50,50"
+						/>
+
+					<RoundRectangle 
+						x:Name="lin3R"
+						Fill="Blue"
+						Stroke="Black"
+						StrokeThickness="2"
+						AbsoluteLayout.LayoutBounds="160,104,110,50"
+						CornerRadius="10,10,10,10">
+						<RoundRectangle.GestureRecognizers>
+							<TapGestureRecognizer 
+								Tapped="lin_Tapped"
+								NumberOfTapsRequired="1"
+								/>
+						</RoundRectangle.GestureRecognizers>
+					</RoundRectangle>
+
+					<RoundRectangle 
+						x:Name="lin2L"
+						Fill="Red"
+						Stroke="Black"
+						StrokeThickness="2"
+						AbsoluteLayout.LayoutBounds="0,156,110,50"
+						CornerRadius="10,10,10,10">
+						<RoundRectangle.GestureRecognizers>
+							<TapGestureRecognizer 
+								Tapped="lin_Tapped"
+								NumberOfTapsRequired="1"
+								/>
+						</RoundRectangle.GestureRecognizers>
+					</RoundRectangle>
+
+					<Ellipse 
+						x:Name="ell2"
+						Fill="Red"
+						Stroke="Black"
+						StrokeThickness="2"
+						AbsoluteLayout.LayoutBounds="110,156,50,50"
+						/>
+
+					<RoundRectangle 
+						x:Name="lin2R"
+						Fill="Red"
+						Stroke="Black"
+						StrokeThickness="2"
+						AbsoluteLayout.LayoutBounds="160,156,110,50"
+						CornerRadius="10,10,10,10">
+						<RoundRectangle.GestureRecognizers>
+							<TapGestureRecognizer 
+								Tapped="lin_Tapped"
+								NumberOfTapsRequired="1"
+								/>
+						</RoundRectangle.GestureRecognizers>
+					</RoundRectangle>
+
+					<RoundRectangle 
+						x:Name="lin1L"
+						Fill="Blue"
+						Stroke="Black"
+						StrokeThickness="2"
+						AbsoluteLayout.LayoutBounds="0,208,110,50"
+						CornerRadius="10,10,10,10">
+						<RoundRectangle.GestureRecognizers>
+							<TapGestureRecognizer 
+								Tapped="lin_Tapped"
+								NumberOfTapsRequired="1"
+								/>
+						</RoundRectangle.GestureRecognizers>
+					</RoundRectangle>
+
+					<Ellipse 
+						x:Name="ell1"
+						Fill="Blue"
+						Stroke="Black"
+						StrokeThickness="2"
+						AbsoluteLayout.LayoutBounds="110,208,50,50"
+						/>
+
+					<RoundRectangle 
+						x:Name="lin1R"
+						Fill="Blue"
+						Stroke="Black"
+						StrokeThickness="2"
+						AbsoluteLayout.LayoutBounds="160,208,110,50"
+						CornerRadius="10,10,10,10">
+						<RoundRectangle.GestureRecognizers>
+							<TapGestureRecognizer 
+								Tapped="lin_Tapped"
+								NumberOfTapsRequired="1"
+								/>
+						</RoundRectangle.GestureRecognizers>
+					</RoundRectangle>
+
+					<RoundRectangle 
+						x:Name="lin0L"
+						Fill="Red"
+						Stroke="Black"
+						StrokeThickness="2"
+						AbsoluteLayout.LayoutBounds="0,260,110,50"
+						CornerRadius="10,10,10,10">
+						<RoundRectangle.GestureRecognizers>
+							<TapGestureRecognizer 
+								Tapped="lin_Tapped"
+								NumberOfTapsRequired="1"
+								/>
+						</RoundRectangle.GestureRecognizers>
+					</RoundRectangle>
+
+					<Ellipse 
+						x:Name="ell0"
+						Fill="Red"
+						Stroke="Black"
+						StrokeThickness="2"
+						AbsoluteLayout.LayoutBounds="110,260,50,50"
+						/>
+
+					<RoundRectangle 
+						x:Name="lin0R"
+						Fill="Red"
+						Stroke="Black"
+						StrokeThickness="2"
+						AbsoluteLayout.LayoutBounds="160,260,110,50"
+						CornerRadius="10,10,10,10">
+						<RoundRectangle.GestureRecognizers>
+							<TapGestureRecognizer 
+								Tapped="lin_Tapped"
+								NumberOfTapsRequired="1"
+								/>
+						</RoundRectangle.GestureRecognizers>
+					</RoundRectangle>
+
+				</AbsoluteLayout>
+
+				<Label
+					x:Name="lblHexagram"
+					Text="1 Creative"
+					FontSize="18"
+					FontAttributes="Bold"
+					MaxLines="1"
+					LineBreakMode="TailTruncation"
+					HorizontalOptions="Start"
+					VerticalOptions="Start"
+					Padding="0,10,0,0"
+					/>
+
+				<Grid 
+					ColumnDefinitions="Auto,Auto,Auto,Auto"
+					ColumnSpacing="2"
+					RowDefinitions="Auto,Auto"
+					RowSpacing="2" 
+					Padding="0,10,0,0"
+					>
+
+					<Button 
+						x:Name="btnFirst"
+						Text="First"
+						Clicked="btnFirst_Clicked"
+						Grid.Column="0"
+						Grid.Row="0"
+						/>
+
+					<Button 
+						x:Name="btnLast"
+						Text="Last"
+						Clicked="btnLast_Clicked"
+						Grid.Column="1"
+						Grid.Row="0"
+						/>
+
+					<Button 
+						x:Name="btnMove"
+						Text="Move"
+						Clicked="btnMove_Clicked"
+						Grid.Column="2"
+						Grid.Row="0"
+						/>
+
+					<Button 
+						x:Name="btnHome"
+						Text="Home"
+						Clicked="btnHome_Clicked"
+						Grid.Column="3"
+						Grid.Row="0"
+						/>
+
+					<Button 
+						x:Name="btnInverse"
+						Text="Inverse"
+						Clicked="btnInverse_Clicked"
+						Grid.Column="0"
+						Grid.Row="1"
+						/>
+
+					<Button 
+						x:Name="btnOpposite"
+						Text="Opposite"
+						Clicked="btnOpposite_Clicked"
+						Grid.Column="1"
+						Grid.Row="1"
+						/>
+
+					<Button 
+						x:Name="btnTransverse"
+						Text="Transverse"
+						Clicked="btnTransverse_Clicked"
+						Grid.Column="2"
+						Grid.Row="1"
+						/>
+
+					<Button 
+						x:Name="btnNuclear"
+						Text="Nuclear"
+						Clicked="btnNuclear_Clicked"
+						Grid.Column="3"
+						Grid.Row="1"
+						/>
+
+				</Grid>
+
+				<Grid 
+					ColumnDefinitions="Auto,Auto"
+					ColumnSpacing="2"
+					RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+					RowSpacing="2" 
+					Padding="0,10,0,0"
+					>
+
+
+					<HorizontalStackLayout
+						Grid.Column="0"
+						Grid.Row="0"
+						>
+						
+						<Label
+							x:Name="lblSession"
+							Text="Session"
+							Padding="0,10,0,0"
+							/>
+
+						<Button 
+							x:Name="btnDeleteSession"
+							Text="D"
+							Clicked="btnDeleteSession_Clicked"
+							/>
+
+
+					</HorizontalStackLayout>
+					
+					<!--Label
+						x:Name="lblSession"
+						Text="Session"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="0"
+						/-->
+
+					
+					
+					
+					<Picker
+						x:Name="picSession"
+						SelectedIndexChanged="picSession_SelectedIndexChanged"
+						Grid.Column="1"
+						Grid.Row="0">
+						<Picker.Items>
+							<x:String>New</x:String>
+						</Picker.Items>
+					</Picker>
+
+					<Label
+						x:Name="lblDiagramMode"
+						Text="Diagram Mode"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="1"
+						/>
+
+					<Picker
+						x:Name="picDiagramMode"
+						SelectedIndexChanged="picDiagramMode_ValueChanged"
+						Grid.Column="1"
+						Grid.Row="1">
+						<Picker.Items>
+							<x:String>Explore</x:String>
+							<x:String>Animate</x:String>
+							<x:String>Touch Cast</x:String>
+							<x:String>Auto Cast</x:String>
+							<x:String>Mind Cast</x:String>
+						</Picker.Items>
+					</Picker>
+
+					<Label
+						x:Name="lblDiagramType"
+						Text="Diagram Type"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="2"
+						/>
+
+					<Picker
+						x:Name="picDiagramType"
+						SelectedIndexChanged="picDiagramType_ValueChanged"
+						Grid.Column="1"
+						Grid.Row="2">
+						<Picker.Items>
+							<x:String>Line</x:String>
+							<x:String>Trigram</x:String>
+							<x:String>Hexagram</x:String>
+						</Picker.Items>
+					</Picker>
+
+					<Label
+						x:Name="lblDiagramSpeed"
+						Text="Diagram Speed"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="3"
+						/>
+
+					<Picker
+						x:Name="picDiagramSpeed"
+						SelectedIndexChanged="picDiagramSpeed_ValueChanged"
+						Grid.Column="1"
+						Grid.Row="3">
+						<Picker.Items>
+							<x:String>Slow</x:String>
+							<x:String>Medium</x:String>
+							<x:String>Fast</x:String>
+						</Picker.Items>
+					</Picker>
+
+					<Label
+						x:Name="lblDiagramColor"
+						Text="Diagram Color"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="4"
+						/>
+
+					<Picker
+						x:Name="picDiagramColor"
+						SelectedIndexChanged="picDiagramColor_ValueChanged"
+						Grid.Column="1"
+						Grid.Row="4">
+						<Picker.Items>
+							<x:String>Mono</x:String>
+							<x:String>Dual</x:String>
+							<x:String>Trigram</x:String>
+							<x:String>Hexagram</x:String>
+						</Picker.Items>
+					</Picker>
+
+					<Label
+						x:Name="lblDiagramLsb"
+						Text="Diagram Lsb"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="5"
+						/>
+
+					<Picker
+						x:Name="picDiagramLsb"
+						SelectedIndexChanged="picDiagramLsb_ValueChanged"
+						Grid.Column="1"
+						Grid.Row="5">
+						<Picker.Items>
+							<x:String>Top</x:String>
+							<x:String>Bottom</x:String>
+						</Picker.Items>
+					</Picker>
+					
+					<Label
+						x:Name="lblHexagramText"
+						Text="Hexagram Text"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="6"
+						/>
+
+					<Picker
+						x:Name="picHexagramText"
+						SelectedIndexChanged="picHexagramText_ValueChanged"
+						Grid.Column="1"
+						Grid.Row="6"
+						/>
+
+					<Label
+						x:Name="lblHexagramLabel"
+						Text="Hexagram Label"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="7"
+						/>
+
+					<Picker
+						x:Name="picHexagramLabel"
+						SelectedIndexChanged="picHexagramLabel_ValueChanged"
+						Grid.Column="1"
+						Grid.Row="7"
+						/>
+
+					<Label
+						x:Name="lblHexagramSequence"
+						Text="Hexagram Sequence"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="8"
+						/>
+
+					<Picker
+						x:Name="picHexagramSequence"
+						SelectedIndexChanged="picHexagramSequence_ValueChanged"
+						Grid.Column="1"
+						Grid.Row="8"
+						/>
+
+					<Label
+						x:Name="lblHexagramRatio"
+						Text="Hexagram Ratio"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="9"
+						/>
+
+					<Picker
+						x:Name="picHexagramRatio"
+						SelectedIndexChanged="picHexagramRatio_ValueChanged"
+						Grid.Column="1"
+						Grid.Row="9"
+						/>
+
+					<Label
+						x:Name="lblTrigramText"
+						Text="Trigram Text"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="10"
+						/>
+
+					<Picker
+						x:Name="picTrigramText"
+						SelectedIndexChanged="picTrigramText_ValueChanged"
+						Grid.Column="1"
+						Grid.Row="10"
+						/>
+
+					<Label
+						x:Name="lblTrigramLabel"
+						Text="Trigram Label"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="11"
+						/>
+
+					<Picker
+						x:Name="picTrigramLabel"
+						SelectedIndexChanged="picTrigramLabel_ValueChanged"
+						Grid.Column="1"
+						Grid.Row="11"
+						/>
+
+					<Label
+						x:Name="lblTrigramSequence"
+						Text="Trigram Sequence"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="12"
+						/>
+
+					<Picker
+						x:Name="picTrigramSequence"
+						SelectedIndexChanged="picTrigramSequence_ValueChanged"
+						Grid.Column="1"
+						Grid.Row="12"
+						/>
+
+					<Label
+						x:Name="lblTrigramRatio"
+						Text="Trigram Ratio"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="13"
+						/>
+
+					<Picker
+						x:Name="picTrigramRatio"
+						SelectedIndexChanged="picTrigramRatio_ValueChanged"
+						Grid.Column="1"
+						Grid.Row="13"
+						/>
+
+					<Label
+						x:Name="lblLineText"
+						Text="Line Text"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="14"
+						/>
+
+					<Picker
+						x:Name="picLineText"
+						SelectedIndexChanged="picLineText_ValueChanged"
+						Grid.Column="1"
+						Grid.Row="14"
+						/>
+
+					<Label
+						x:Name="lblLineLabel"
+						Text="Line Label"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="15"
+						/>
+
+					<Picker
+						x:Name="picLineLabel"
+						SelectedIndexChanged="picLineLabel_ValueChanged"
+						Grid.Column="1"
+						Grid.Row="15"
+						/>
+
+					<Label
+						x:Name="lblLineSequence"
+						Text="Line Sequence"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="16"
+						/>
+
+					<Picker
+						x:Name="picLineSequence"
+						SelectedIndexChanged="picLineSequence_ValueChanged"
+						Grid.Column="1"
+						Grid.Row="16"
+						/>
+
+					<Label
+						x:Name="lblLineRatio"
+						Text="Line Ratio"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="17"
+						/>
+
+					<Picker
+						x:Name="picLineRatio"
+						SelectedIndexChanged="picLineRatio_ValueChanged"
+						Grid.Column="1"
+						Grid.Row="17"
+						/>
+
+				</Grid>
+
+			</StackLayout>
+
+			<!--VerticalStackLayout>
+				<Frame 
+					BorderColor="{Binding BorderColor, FallbackValue='Blue'}" 
+					BackgroundColor="{Binding IconBackgroundColor, FallbackValue='Blue'}">
+					<Image 
+						Source="{Binding IconImageSource}"/>
+				</Frame>
+				<Label 
+					Text="{Binding CardTitle, FallbackValue='Card Title'}"/>
+				<BoxView 
+					BackgroundColor="{Binding BorderColor, FallbackValue='Blue'}"/>
+				<Label 
+					Text="{Binding CardDescription, FallbackValue='Card description text.'}"/>
+			</VerticalStackLayout-->
+		</Frame>
+	</ScrollView>
+</ContentView>

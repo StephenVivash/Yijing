@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView 
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	x:Class="Yijing.Views.EegView"
+	x:Name="eegView"
+	Loaded="Page_Loaded">
+
+	<!--BackgroundColor="{Binding CardColor}"
+		BorderColor="{Binding BorderColor}"-->
+
+	<ScrollView>
+		
+		<Frame 
+			BindingContext="{x:Reference eegView}"
+			BackgroundColor="{Binding CardColor}"
+			>
+
+			<StackLayout
+				Orientation="Vertical"
+				>
+
+				<Grid 
+					ColumnDefinitions="Auto,Auto"
+					ColumnSpacing="2"
+					RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+					RowSpacing="2" 
+					Padding="0,10,0,0"
+					>
+
+					<Label
+						x:Name="lblDevice"
+						Text="Device"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="0"
+						/>
+
+					<Picker
+						x:Name="picDevice"
+						SelectedIndexChanged="picDevice_SelectedIndexChanged"
+						Grid.Column="1"
+						Grid.Row="0"
+						>
+						<Picker.Items>
+							<x:String>Muse</x:String>
+							<x:String>Emotiv</x:String>
+						</Picker.Items>
+					</Picker>
+
+					<Label
+						x:Name="lblMode"
+						Text="Mode"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="1"
+						/>
+
+					<Picker
+						x:Name="picMode"
+						SelectedIndexChanged="picMode_SelectedIndexChanged"
+						Grid.Column="1"
+						Grid.Row="1"
+						>
+						<Picker.Items>
+							<x:String>Idle</x:String>
+							<x:String>Live</x:String>
+							<x:String>Replay</x:String>
+							<x:String>Summary</x:String>
+						</Picker.Items>
+					</Picker>
+
+					<Label
+						x:Name="lblSession"
+						Text="Session"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="2"
+						/>
+
+					<Picker
+						x:Name="picSession"
+						SelectedIndexChanged="picSession_SelectedIndexChanged"
+						Grid.Column="1"
+						Grid.Row="2"
+						>
+						<Picker.Items/>
+					</Picker>
+
+					<Label
+						x:Name="lblGoal"
+						Text="Goal"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="3"
+						/>
+
+					<Picker
+						x:Name="picGoal"
+						SelectedIndexChanged="picGoal_SelectedIndexChanged"
+						Grid.Column="1"
+						Grid.Row="3"
+						>
+						<Picker.Items>
+							<x:String>Meditation</x:String>
+							<x:String>Yijing Cast</x:String>
+						</Picker.Items>
+					</Picker>
+
+					<Label
+						x:Name="lblAmbience"
+						Text="Ambience"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="4"
+						/>
+
+					<Picker
+						x:Name="picAmbience"
+						SelectedIndexChanged="picAmbience_SelectedIndexChanged"
+						Grid.Column="1"
+						Grid.Row="4"
+						>
+						<Picker.Items>
+							<x:String>None</x:String>
+							<x:String>Light rain</x:String>
+							<x:String>Quiet forest</x:String>
+							<x:String>Meadow birds</x:String>
+							<x:String>Kashmir</x:String>
+							<x:String>Machine Gun</x:String>
+						</Picker.Items>
+					</Picker>
+
+					<Label
+						x:Name="lblTimer"
+						Text="Timer"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="5"
+						/>
+
+					<Picker
+						x:Name="picTimer"
+						SelectedIndexChanged="picTimer_SelectedIndexChanged"
+						Grid.Column="1"
+						Grid.Row="5"
+						>
+						<Picker.Items>
+							<x:String>None</x:String>
+							<x:String>Ten minutes</x:String>
+							<x:String>Fifteen minutes</x:String>
+							<x:String>Twenty minutes</x:String>
+							<x:String>Thirty minutes</x:String>
+							<x:String>Sixty minutes</x:String>
+						</Picker.Items>
+					</Picker>
+
+					<Label
+						x:Name="lblReplaySpeed"
+						Text="Replay Speed"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="6"
+						/>
+
+					<Picker
+						x:Name="picReplaySpeed"
+						SelectedIndexChanged="picReplaySpeed_SelectedIndexChanged"
+						Grid.Column="1"
+						Grid.Row="6"
+						>
+						<Picker.Items>
+							<x:String>Normal</x:String>
+							<x:String>Fast</x:String>
+						</Picker.Items>
+					</Picker>
+
+					<Label
+						x:Name="lblChartBands"
+						Text="Chart Bands"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="7"
+						/>
+
+					<Picker
+						x:Name="picChartBands"
+						SelectedIndexChanged="picChartBands_SelectedIndexChanged"
+						Grid.Column="1"
+						Grid.Row="7"
+						>
+						<Picker.Items>
+							<x:String>Front</x:String>
+							<x:String>Back</x:String>
+							<x:String>Mixed</x:String>
+							<x:String>All</x:String>
+						</Picker.Items>
+					</Picker>
+
+					<Label
+						x:Name="lblChartTime"
+						Text="Chart Time"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="8"
+						/>
+
+					<Picker
+						x:Name="picChartTime"
+						SelectedIndexChanged="picChartTime_SelectedIndexChanged"
+						Grid.Column="1"
+						Grid.Row="8"
+						>
+						<Picker.Items>
+							<x:String>02:30</x:String>
+							<x:String>05:00</x:String>
+						</Picker.Items>
+					</Picker>
+
+					<Label
+						x:Name="lblTriggerBand"
+						Text="Trigger Band"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="9"
+						/>
+
+					<Picker
+						x:Name="picTriggerBand"
+						SelectedIndexChanged="picTriggerChannel_SelectedIndexChanged"
+						Grid.Column="1"
+						Grid.Row="9"
+						>
+						<Picker.Items>
+							<x:String>Delta</x:String>
+							<x:String>Theta</x:String>
+							<x:String>Alpha</x:String>
+							<x:String>Beta</x:String>
+							<x:String>Gamma</x:String>
+						</Picker.Items>
+					</Picker>
+
+					<Label
+						x:Name="lblTriggerChannel"
+						Text="Trigger Channel"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="10"
+						/>
+
+					<Picker
+						x:Name="picTriggerChannel"
+						SelectedIndexChanged="picTriggerChannel_SelectedIndexChanged"
+						Grid.Column="1"
+						Grid.Row="10"
+						>
+						<Picker.Items>
+							<x:String>Back Left</x:String>
+							<x:String>Front Left</x:String>
+							<x:String>Back Center</x:String>
+							<x:String>Front Right</x:String>
+							<x:String>Back Right</x:String>
+						</Picker.Items>
+					</Picker>
+
+					<Label
+						x:Name="lblTriggerRange"
+						Text="Trigger Range"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="11"
+						/>
+
+					<Picker
+						x:Name="picTriggerRange"
+						SelectedIndexChanged="picTriggerRange_SelectedIndexChanged"
+						Grid.Column="1"
+						Grid.Row="11"
+						>
+						<Picker.Items>
+							<x:String>0.0 - 0.1</x:String>
+							<x:String>0.1 - 0.2</x:String>
+							<x:String>0.2 - 0.3</x:String>
+							<x:String>0.2 - 0.4</x:String>
+							<x:String>0.3 - 0.4</x:String>
+							<x:String>0.3 - 0.5</x:String>
+							<x:String>0.4 - 0.5</x:String>
+							<x:String>0.4 - 0.6</x:String>
+						</Picker.Items>
+					</Picker>
+
+					<!--Label 
+						x:Name="lblAiKey"
+						Text="AI Key"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="12"
+						/>
+
+					<Entry
+						x:Name="entAiKey"
+						Completed="entAiKey_Completed"
+						Grid.Column="1"
+						Grid.Row="12"
+						/-->
+
+					<Label 
+						x:Name="lblAiAnalysis"
+						Text="AI Analysis"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="12"
+						/>
+
+					<Picker
+						x:Name="picAiAnalysis"
+						SelectedIndexChanged="picAiAnalysis_SelectedIndexChanged"
+						Grid.Column="1"
+						Grid.Row="12"
+						>
+						<Picker.Items>
+							<x:String>None</x:String>
+							<x:String>Open AI</x:String>
+						</Picker.Items>
+					</Picker>
+
+					<Label 
+						x:Name="lblAiModel"
+						Text="AI Model"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="13"
+						/>
+
+					<Picker
+						x:Name="picAiModel"
+						SelectedIndexChanged="picAiModel_SelectedIndexChanged"
+						Grid.Column="1"
+						Grid.Row="13"
+						>
+						<Picker.Items>
+							<x:String>None</x:String>
+							<x:String>Stephen V</x:String>
+							<x:String>John D</x:String>
+						</Picker.Items>
+					</Picker>
+
+					<Label 
+						x:Name="lblTriggerFixed"
+						Text="Fixed Range"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="14"
+						/>
+
+					<CheckBox 
+						x:Name="chbTriggerFixed"
+						CheckedChanged="chbTriggerFixed_CheckedChanged"
+						Grid.Column="1"
+						Grid.Row="14"
+						/>
+
+					<Label 
+						x:Name="lblTriggerSounding"
+						Text="Trigger Sounding"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="15"
+						/>
+
+					<CheckBox 
+						x:Name="chbTriggerSounding"
+						CheckedChanged="chbTriggerSounding_CheckedChanged"
+						Grid.Column="1"
+						Grid.Row="15"
+						/>
+
+					<Label 
+						x:Name="lblRawData"
+						Text="Raw Data"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="16"
+						/>
+
+					<CheckBox 
+						x:Name="chbRawData"
+						CheckedChanged="chbRawData_CheckedChanged"
+						Grid.Column="1"
+						Grid.Row="16"
+						/>
+
+				</Grid>
+
+				<Label
+					x:Name="lblTime"
+					FontSize="22"
+					FontAttributes="Bold"
+					MaxLines="1"
+					LineBreakMode="TailTruncation"
+					HorizontalOptions="Start"
+					VerticalOptions="Start"
+					Padding="0,10,0,0"
+					>
+
+					<!--VisualState x:Name="PointerOver">
+					<VisualState.Setters>
+					<Setter Property="Background"/>
+					</VisualState.Setters>
+					</VisualState-->
+
+				</Label>
+
+				<Label
+					x:Name="lblLineStart"
+					FontSize="18"
+					FontAttributes="Bold"
+					MaxLines="1"
+					LineBreakMode="TailTruncation"
+					HorizontalOptions="Start"
+					VerticalOptions="Start"
+					Padding="0,10,0,0"
+					/>
+
+				<Label
+					x:Name="lblLineEnd"
+					FontSize="18"
+					FontAttributes="Bold"
+					MaxLines="1"
+					LineBreakMode="TailTruncation"
+					HorizontalOptions="Start"
+					VerticalOptions="Start"
+					Padding="0,10,0,0"
+					/>
+
+			</StackLayout>
+
+			<!--VerticalStackLayout>
+				<Frame 
+					BorderColor="{Binding BorderColor, FallbackValue='Blue'}" 
+					BackgroundColor="{Binding IconBackgroundColor, FallbackValue='Blue'}">
+					<Image 
+						Source="{Binding IconImageSource}"/>
+				</Frame>
+				<Label 
+					Text="{Binding CardTitle, FallbackValue='Card Title'}"/>
+				<BoxView 
+					BackgroundColor="{Binding BorderColor, FallbackValue='Blue'}"/>
+				<Label 
+					Text="{Binding CardDescription, FallbackValue='Card description text.'}"/>
+			</VerticalStackLayout-->
+		</Frame>
+	</ScrollView>
+</ContentView>

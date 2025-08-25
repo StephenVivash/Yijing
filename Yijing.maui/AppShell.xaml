@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+	x:Class="Yijing.AppShell"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:pages="clr-namespace:Yijing.Pages"
+	Shell.FlyoutBehavior="Flyout"
+	Loaded="Page_Loaded">
+
+	<ShellContent
+		x:Name="pagDiagram"
+        Shell.NavBarIsVisible="false"
+        Title="Diagram"
+        Icon="iconlistdetail.png"
+        ContentTemplate="{DataTemplate pages:DiagramPage}"
+        Route="Pages.DiagramPage" />
+	<ShellContent
+		x:Name="pagEeg"
+        Shell.NavBarIsVisible="false"
+        Title="Eeg"
+        Icon="iconlistdetail.png"
+        ContentTemplate="{DataTemplate pages:EegPage}"
+        Route="Pages.EegPage" />
+
+	<!--ShellContent
+        Shell.NavBarIsVisible="false"
+        Title="Text"
+        Icon="iconlistdetail.png"
+        ContentTemplate="{DataTemplate pages:WebPage}"
+        Route="Pages.WebPage" />
+	<ShellContent
+        Shell.NavBarIsVisible="false"
+        Title="Chart"
+        Icon="iconlistdetail.png"
+        ContentTemplate="{DataTemplate pages:ChartPage}"
+        Route="Pages.ChartPage" />
+	<ShellContent
+        Shell.NavBarIsVisible="false"
+        Title="List"
+        Icon="iconlistdetail.png"
+        ContentTemplate="{DataTemplate pages:ListDetailPage}"
+        Route="Pages.ListDetailPage" /-->
+
+</Shell>

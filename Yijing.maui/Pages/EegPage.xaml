@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+	xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
+
+	xmlns:local="clr-namespace:Yijing"
+	xmlns:models="clr-namespace:Yijing.Models"
+	xmlns:controls="clr-namespace:Yijing.Views"
+
+	x:Class="Yijing.Pages.EegPage"
+			 
+			 
+			 
+	x:DataType="models:EegSeries"
+			 
+			 
+			 
+    Title="EegPage"
+	Loaded="Page_Loaded">
+
+	<toolkit:DockLayout
+		x:Name="layDock"
+		Padding="10,10,10,10"
+		VerticalSpacing="10"
+		HorizontalSpacing="10"
+		ShouldExpandLastChild="true"
+		>
+
+		<controls:EegView
+			x:Name="eeg"
+			toolkit:DockLayout.DockPosition="Left"
+			WidthRequest="400"
+			CardTitle="Card 1"
+			/>
+
+		<Editor x:Name="edtSessionLog" 
+			toolkit:DockLayout.DockPosition="Bottom" 
+			HeightRequest="200" />
+
+		<lvc:CartesianChart
+			x:Name="chaEeg"
+			Series="{Binding Series}"
+			TooltipPosition="Hidden"
+			ZoomMode="None" 
+			LegendPosition="Hidden"
+			AnimationsSpeed="0"
+			AutoUpdateEnabled="True"
+			/>
+
+	</toolkit:DockLayout>
+
+	<!--ScrollView>
+		<StackLayout
+			Orientation="Vertical"
+			>
+
+			<controls:EegView
+				x:Name="eeg"
+				CardTitle="Card 1"
+				/>
+
+			<lvc:CartesianChart
+				x:Name="chaEeg"
+				Series="{Binding Series}"
+				TooltipPosition="Hidden"
+				ZoomMode="None" 
+				LegendPosition="Hidden"
+				AnimationsSpeed="0"
+				AutoUpdateEnabled="True"
+				HeightRequest="400"
+				/>
+
+			<Editor x:Name="edtSessionLog" 
+				Text="Info: Session started" 
+				HeightRequest="200"
+				/>
+
+		</StackLayout>
+	</ScrollView-->
+
+</ContentPage>
