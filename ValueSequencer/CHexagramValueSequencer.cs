@@ -220,22 +220,22 @@ namespace ValueSequencer
 			return HexagramId() + " " + Label + (bValue ? " (" + ValueStr + ")" : "");
 		}
 
-		public String DescibeSecondary(bool bValue = false)
+                public String DescribeSecondary(bool bValue = false)
 		{
 			if (IsMoving)
 			{
 				CHexagramValueSequencer hvsPrimary = this;
-				CHexagramValueSequencer hvsSeconday = new CHexagramValueSequencer(ref hvsPrimary);
-				hvsSeconday.Move();
-				return hvsSeconday.HexagramId() + " " + hvsSeconday.Label + (bValue ? " (" + hvsSeconday.ValueStr + ")" : "");
-			}
-			return "";
-		}
+                                CHexagramValueSequencer hvsSecondary = new CHexagramValueSequencer(ref hvsPrimary);
+                                hvsSecondary.Move();
+                                return hvsSecondary.HexagramId() + " " + hvsSecondary.Label + (bValue ? " (" + hvsSecondary.ValueStr + ")" : "");
+                        }
+                        return "";
+                }
 
 		public String DescribeCast(bool bValue = false)
 		{
-			return DescribePrimary(bValue) + (IsMoving ? " > " + DescibeSecondary(bValue) : "");
-		}
+                        return DescribePrimary(bValue) + (IsMoving ? " > " + DescribeSecondary(bValue) : "");
+                }
 
 		protected override int GetCurrentSequence() { return m_nCurrentSequence; }
 		protected override int GetCurrentRatio() { return m_nCurrentRatio; }
