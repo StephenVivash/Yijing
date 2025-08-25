@@ -88,10 +88,10 @@ public class AppPreferences
 		//AiApiKey = Preferences.Get("AiKey", "");
 		//OPENAI_API_KEY="sk-proj-l86sl3VR1TLnUw5t6q2MT3BlbkFJDxQ9zCxz9Pz4QTN7wfJ5"
 
-		OpenAiKey = "sk-proj-l86sl3VR1TLnUw5t6q2MT3BlbkFJDxQ9zCxz9Pz4QTN7wfJ5";
-		//GithubKey = "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";
-		GithubKey = "sk-131600b040e44f3cb6154c962ffc61eb"; // deepseek
-		AzureKey = "APRsdrEmUmnm7ibICZBIriQzwY7T2BYCNqwLs17QF8r4OEDprjNuJQQJ99AKACYeBjFXJ3w3AAABACOGCx0U";
+		OpenAiKey = "";
+		//GithubKey = ""; // github
+		GithubKey = ""; // deepseek
+		AzureKey = "";
 
 		MuseScale = 1;
 		AudioScale = 10;
