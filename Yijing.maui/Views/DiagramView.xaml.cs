@@ -1671,6 +1671,55 @@ public partial class DiagramView : ContentView
 				_aiUserPrompts[1].Add(msg);
 				_aiChatReponses[1].Add(result + str);
 			}
+
+
+			else
+			if (AppPreferences.AiChatService == (int)eAiChatService.eDeepseek)
+			{
+				//var credential = Environment.GetEnvironmentVariable("DEEPSEEK_TOKEN");
+				System.ClientModel.ApiKeyCredential credential = new(AppPreferences.DeepseekKey);
+
+				var openAIOptions = new OpenAIClientOptions()
+				{
+					Endpoint = new Uri(AppPreferences.DeepseekEndPoint)
+				};
+
+				var requestOptions = new ChatCompletionOptions()
+				{
+					Temperature = 1,
+					//MaxOutputTokenCount = 4096,
+				};
+
+				var _deepseekChatClient = new ChatClient(AppPreferences.DeepseekModelId, credential, openAIOptions);
+
+				List<OpenAI.Chat.ChatMessage> _chatHistory = [];
+				foreach (var s1 in _aiSystemPrompts)
+					_chatHistory.Add(new SystemChatMessage(s1)); //  UserChatMessage
+
+
+				for (int i = 0; i < 2; ++i)
+					for (int j = 0; j < _aiUserPrompts[i].Count(); ++j)
+					{
+						_chatHistory.Add(new UserChatMessage(_aiUserPrompts[i][j]));
+						_chatHistory.Add(new AssistantChatMessage(_aiChatReponses[i][j]));
+					}
+				
+				
+				_chatHistory.Add(new UserChatMessage(msg));// + "\n" + result);
+				if (!result.IsNullOrEmpty())
+					_chatHistory.Add(new AssistantChatMessage(result));
+
+				var response = await _deepseekChatClient.CompleteChatAsync(_chatHistory, requestOptions);
+				string str = response.Value.Content[0].Text;
+				str = str.Replace("**", "");
+				str = str.Replace("###", "");
+				str = str.Replace("---", "");
+
+				_aiUserPrompts[1].Add(msg);
+				_aiChatReponses[1].Add(result + str);
+			}
+
+
 			else
 			if (AppPreferences.AiChatService == (int)eAiChatService.eGithub)
 			{
@@ -1701,8 +1750,8 @@ public partial class DiagramView : ContentView
 						_chatHistory.Add(new UserChatMessage(_aiUserPrompts[i][j]));
 						_chatHistory.Add(new AssistantChatMessage(_aiChatReponses[i][j]));
 					}
-				
-				
+
+
 				_chatHistory.Add(new UserChatMessage(msg));// + "\n" + result);
 				if (!result.IsNullOrEmpty())
 					_chatHistory.Add(new AssistantChatMessage(result));
@@ -1716,7 +1765,15 @@ public partial class DiagramView : ContentView
 				_aiUserPrompts[1].Add(msg);
 				_aiChatReponses[1].Add(result + str);
 			}
-			else	
+
+
+
+
+
+
+
+
+			else
 			if (AppPreferences.AiChatService == (int)eAiChatService.eOllama)
 			{
 				ChatOptions options = new()
@@ -1756,6 +1813,7 @@ public partial class DiagramView : ContentView
 				_aiChatReponses[1].Add(result + str); // + "\n\n" + String.Join(", ", embeddind[0].Vector.ToArray()));
 			}
 
+
 			/*
 			if (true)
 			{
@@ -1789,6 +1847,7 @@ public partial class DiagramView : ContentView
 				_aiChatReponses.Add(result + str);
 			}
 			*/
+
 
 			if (reload)
 				LoadSessions(-1);

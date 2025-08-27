@@ -40,6 +40,7 @@
 					<Picker.Items>
 						<x:String>None</x:String>
 						<x:String>OpenAi</x:String>
+						<x:String>Deepseek</x:String>
 						<x:String>Github</x:String>
 						<x:String>Ollama</x:String>
 					</Picker.Items>

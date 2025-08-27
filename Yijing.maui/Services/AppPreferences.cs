@@ -20,7 +20,7 @@ public enum eTriggerBand { eDelta, eTheta, eAlpha, eBeta, eGamma };
 public enum eTriggerChannel { eBackLeft, eFrontLeft, eBackCenter, eFrontRight, eBackRight };
 public enum eTriggerRange { eZeroOne, eOneTwo, eTwoThree, eTwoFour, eThreeFour, eThreeFive, eFourFive, eFourSix };
 
-public enum eAiChatService { eNone, eOpenAi, eGithub, eOllama };
+public enum eAiChatService { eNone, eOpenAi, eDeepseek, eGithub, eOllama };
 public enum eAiAnalysis { eNone, eOpenAI };
 public enum eAiModel { eNone, eStephenV, eJohnD };
 
@@ -73,21 +73,23 @@ public class AppPreferences
 		AiChatService = Preferences.Get("AiChatService", (int)eAiChatService.eNone);
 
 		OpenAiModelId = "gpt-5"; //gpt-4.5-preview o1-preview gpt-4o gpt-4o-mini
-		OllamaModelId = "gpt-oss:20b"; // qwen3:8b deepseek-r1:8b llama3.2:latest gemma3:latest
+		DeepseekModelId = "deepseek-chat"; // deepseek-reasoner deepseek-chat
 		GithubModelId = "gpt-5"; // gpt-4.1 grok-3 DeepSeek-V3-0324 Llama-4-Maverick-17B-128E-Instruct-FP8 Mistral-large-2407 Meta-Llama-3.1-405B-Instruct o1 o1-mini gpt-4o-mini
-		//GithubModelId = "deepseek-chat"; // deepseek-reasoner deepseek-chat
+		OllamaModelId = "gpt-oss:20b"; // qwen3:8b deepseek-r1:8b llama3.2:latest gemma3:latest
 
-		OllamaEndPoint = "http://localhost:11434"; // api/generate 62844
+		OpenAiEndPoint = "";
+		DeepseekEndPoint = "https://api.deepseek.com";
 		GithubEndPoint = "https://models.inference.ai.azure.com";
-		//GithubEndPoint = "https://api.deepseek.com"; // /v1
+		OllamaEndPoint = "http://localhost:11434";
+
+		OpenAiKey = "";
+		DeepseekKey = "";
+		GithubKey = "";
+		OllamaKey = "";
 
 		//AzureEndPoint = "";
 		//AiApiKey = Preferences.Get("AiKey", "");
 		//OPENAI_API_KEY=""
-
-		OpenAiKey = "";
-		GithubKey = ""; // github
-		//GithubKey = ""; // deepseek
 		//AzureKey = "";
 
 		MuseScale = 1;
@@ -144,15 +146,21 @@ public class AppPreferences
 	public static int AiChatService;
 
 	public static string OpenAiModelId;
-	public static string OllamaModelId;
+	public static string DeepseekModelId;
 	public static string GithubModelId;
+	public static string OllamaModelId;
 
-	public static string OllamaEndPoint;
+	public static string OpenAiEndPoint;
+	public static string DeepseekEndPoint;
 	public static string GithubEndPoint;
-	public static string AzureEndPoint;
+	public static string OllamaEndPoint;
 
 	public static string OpenAiKey;
+	public static string DeepseekKey;
 	public static string GithubKey;
+	public static string OllamaKey;
+
+	//public static string AzureEndPoint;
 	//public static string AzureKey;
 
 	public static int TriggerIndex;
