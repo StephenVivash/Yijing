@@ -300,12 +300,10 @@ public partial class EegView : ContentView
 		}
 	}
 
-        private void picChartTime_SelectedIndexChanged(object sender, EventArgs e)
-        {
-                m_nSeriesMax = (picChartTime.SelectedIndex + 1) * 1000;
-                if (EegPage.CartesianChart() != null && EegPage.CartesianChart().XAxes.Count > 0)
-                        EegPage.CartesianChart().XAxes[0].MaxLimit = m_nSeriesMax;
-        }
+	private void picChartTime_SelectedIndexChanged(object sender, EventArgs e)
+	{
+		m_nSeriesMax = (picChartTime.SelectedIndex + 1) * 1000;
+	}
 
 	private void picTriggerChannel_SelectedIndexChanged(object sender, EventArgs e)
 	{
