@@ -13,11 +13,12 @@ public partial class ChartPage : ContentPage
 	{
 		InitializeComponent();
 
-		EegSeries eegSeries = new();
-		var xAxis = new Axis
-		{
-			Labels = new[] { "" }
-		};
+                EegSeries eegSeries = new();
+                var xAxis = new Axis
+                {
+                        Name = "Time",
+                        Labels = new[] { "" }
+                };
 
 		chaEeg = new CartesianChart
 		{

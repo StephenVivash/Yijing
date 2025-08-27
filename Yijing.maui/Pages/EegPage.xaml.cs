@@ -18,13 +18,14 @@ public partial class EegPage : ContentPage
 	{
 		_this = this;
 
-		InitializeComponent();
+                InitializeComponent();
 
-		EegSeries eegChart = new();
-		var xAxis = new Axis
-		{
-			Labels = new[] { "" }
-		};
+                EegSeries eegChart = new();
+                var xAxis = new Axis
+                {
+                        Name = "Time",
+                        Labels = new[] { "" }
+                };
 
 		chaEeg.Series = eegChart.Series;
 		chaEeg.XAxes = new List<Axis> { xAxis };
