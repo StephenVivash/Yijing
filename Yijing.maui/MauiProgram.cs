@@ -25,6 +25,7 @@ using SkiaSharp.Views.Maui.Controls.Hosting;
 
 using Yijing.Services;
 using Yijing.Views;
+using LiveChartsCore.SkiaSharpView.Maui;
 
 namespace Yijing;
 
@@ -130,15 +131,18 @@ public static class MauiProgram
 		//BuildKernel();
 
 		MauiAppBuilder builder = MauiApp.CreateBuilder();
+#if WINDOWS || ANDROID
 		builder
 			.UseMauiApp<App>()
-			.UseMauiCommunityToolkit()
+			.UseLiveCharts()
 			.UseSkiaSharp()
+			.UseMauiCommunityToolkit()
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
+#endif
 
 #if DEBUG
 		builder.Logging.AddDebug();
