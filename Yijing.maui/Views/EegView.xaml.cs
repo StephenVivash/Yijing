@@ -531,18 +531,21 @@ public partial class EegView : ContentView
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public void InitialiseChart()
-	{
-		if (EegPage.CartesianChart() == null)
-			return;
-		IEnumerable<ISeries> ies = EegPage.CartesianChart().Series;
-		foreach (var s in ies)
-		{
-			ObservableCollection<float> v = (ObservableCollection<float>)s.Values;
-			v.Clear();
-			v.Add(0.0f);
-		}
-	}
+        public void InitialiseChart()
+        {
+                if (EegPage.CartesianChart() == null)
+                        return;
+                IEnumerable<ISeries> ies = EegPage.CartesianChart().Series;
+                foreach (var s in ies)
+                {
+                        ObservableCollection<float> v = (ObservableCollection<float>)s.Values;
+                        v.Clear();
+                        v.Add(0.0f);
+                }
+                ObservableCollection<string> l = EegPage.TimeAxisLabels();
+                l.Clear();
+                l.Add("0");
+        }
 
 	public void InitialseTriggers()
 	{
@@ -581,11 +584,11 @@ public partial class EegView : ContentView
 	{
 		int index = -1;
 		IEnumerable<ISeries> ies = EegPage.CartesianChart().Series;
-		foreach (var s in ies)
-		{
-			bool bDisplay = false;
-			++index;
-			ObservableCollection<float> v = (ObservableCollection<float>)s.Values;
+                foreach (var s in ies)
+                {
+                        bool bDisplay = false;
+                        ++index;
+                        ObservableCollection<float> v = (ObservableCollection<float>)s.Values;
 			if (index == 25)
 				v.Add(0);
 			else
@@ -650,10 +653,15 @@ public partial class EegView : ContentView
 				if (bDisplay)
 					v.Add(AppSettings.EegChannel(index).m_fCurrentValue);
 			}
-			if (m_nEegMode != (int)eEegMode.eSummary)
-				while (v.Count > m_nSeriesMax) v.RemoveAt(0);
-		}
-	}
+                        if (m_nEegMode != (int)eEegMode.eSummary)
+                                while (v.Count > m_nSeriesMax) v.RemoveAt(0);
+                }
+                ObservableCollection<string> l = EegPage.TimeAxisLabels();
+                TimeSpan ts = DateTime.Now - AppSettings.Eeg().m_dtEegStart;
+                ts = ts.Multiply(AppSettings.Eeg().m_nReplaySpeed * m_nTriggerSpeed);
+                l.Add($"{ts.Minutes:00}:{ts.Seconds:00}");
+                if (l.Count > m_nSeriesMax) l.RemoveAt(0);
+        }
 
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
