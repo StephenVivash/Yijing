@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.Extensions.Configuration;
 using ValueSequencer;
 
 namespace Yijing.Services;
@@ -26,9 +27,14 @@ public enum eAiModel { eNone, eStephenV, eJohnD };
 
 public class AppPreferences
 {
-	public static void Load()
-	{
-		DiagramLsb = Preferences.Get("DiagramLsb", Sequences.DiagramLsb);
+        public static void Load()
+        {
+                var configuration = new ConfigurationBuilder()
+                        .SetBasePath(AppContext.BaseDirectory)
+                        .AddJsonFile("appsettings.json", optional: true)
+                        .Build();
+
+                DiagramLsb = Preferences.Get("DiagramLsb", Sequences.DiagramLsb);
 
 		DiagramMode = Preferences.Get("DiagramMode", (int)eDiagramMode.eExplore);
 		DiagramType = Preferences.Get("DiagramType", (int)eDiagramType.eHexagram);
@@ -77,15 +83,15 @@ public class AppPreferences
 		GithubModelId = "gpt-5"; // gpt-4.1 grok-3 DeepSeek-V3-0324 Llama-4-Maverick-17B-128E-Instruct-FP8 Mistral-large-2407 Meta-Llama-3.1-405B-Instruct o1 o1-mini gpt-4o-mini
 		OllamaModelId = "gpt-oss:20b"; // qwen3:8b deepseek-r1:8b llama3.2:latest gemma3:latest
 
-		OpenAiEndPoint = "";
-		DeepseekEndPoint = "https://api.deepseek.com";
-		GithubEndPoint = "https://models.inference.ai.azure.com";
-		OllamaEndPoint = "http://localhost:11434";
+                OpenAiEndPoint = "";
+                DeepseekEndPoint = "https://api.deepseek.com";
+                GithubEndPoint = "https://models.inference.ai.azure.com";
+                OllamaEndPoint = "http://localhost:11434";
 
-		OpenAiKey = "";
-		DeepseekKey = "";
-		GithubKey = "";
-		OllamaKey = "";
+                OpenAiKey = configuration["OPENAI_KEY"] ?? "";
+                DeepseekKey = "";
+                GithubKey = "";
+                OllamaKey = "";
 
 		//AzureEndPoint = "";
 		//AiApiKey = Preferences.Get("AiKey", "");
