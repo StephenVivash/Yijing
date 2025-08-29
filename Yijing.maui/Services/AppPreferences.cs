@@ -31,7 +31,6 @@ public class AppPreferences
 	{
 
 		var configuration = new ConfigurationBuilder()
-			//.SetBasePath(AppContext.BaseDirectory)
 			.SetBasePath(AppSettings.DocumentHome())
 			.AddJsonFile("appsettings.json", optional: true)
 			.Build();
@@ -80,25 +79,31 @@ public class AppPreferences
 
 		AiChatService = Preferences.Get("AiChatService", (int)eAiChatService.eNone);
 
-		OpenAiModelId = "gpt-5"; //gpt-4.5-preview o1-preview gpt-4o gpt-4o-mini
-		DeepseekModelId = "deepseek-chat"; // deepseek-reasoner deepseek-chat
-		GithubModelId = "gpt-5"; // gpt-4.1 grok-3 DeepSeek-V3-0324 Llama-4-Maverick-17B-128E-Instruct-FP8 Mistral-large-2407 Meta-Llama-3.1-405B-Instruct o1 o1-mini gpt-4o-mini
-		OllamaModelId = "gpt-oss:20b"; // qwen3:8b deepseek-r1:8b llama3.2:latest gemma3:latest
+		// gpt-4.5-preview o1-preview gpt-4o gpt-4o-mini
+		// deepseek-reasoner deepseek-chat
+		// gpt-4.1 grok-3 DeepSeek-V3-0324 Llama-4-Maverick-17B-128E-Instruct-FP8 Mistral-large-2407 Meta-Llama-3.1-405B-Instruct o1 o1-mini gpt-4o-mini
+		// gpt-oss:20b qwen3:8b deepseek-r1:8b llama3.2:latest gemma3:latest
 
-                OpenAiEndPoint = "";
-                DeepseekEndPoint = "https://api.deepseek.com";
-                GithubEndPoint = "https://models.inference.ai.azure.com";
-                OllamaEndPoint = "http://localhost:11434";
+		// https://api.openai.com
+		// https://api.deepseek.com
+		// https://models.inference.ai.azure.com
+		// http://localhost:11434
 
-                OpenAiKey = configuration["OPENAI_KEY"] ?? "";
-                DeepseekKey = "";
-                GithubKey = "";
-                OllamaKey = "";
+		OpenAiModelId = configuration["OpenAI:Model"] ?? "";
+		OpenAiEndPoint = configuration["OpenAI:EndPoint"] ?? "";
+		OpenAiKey = configuration["OpenAI:Key"] ?? "";
 
-		//AzureEndPoint = "";
-		//AiApiKey = Preferences.Get("AiKey", "");
-		//OPENAI_API_KEY=""
-		//AzureKey = "";
+		DeepseekModelId = configuration["Deepseek:Model"] ?? "";
+		DeepseekEndPoint = configuration["Deepseek:EndPoint"] ?? "";
+		DeepseekKey = configuration["Deepseek:Key"] ?? "";
+
+		GithubModelId = configuration["Github:Model"] ?? "";
+		GithubEndPoint = configuration["Github:EndPoint"] ?? "";
+		GithubKey = configuration["Github:Key"] ?? "";
+
+		OllamaModelId = configuration["Ollama:Model"] ?? "";
+		OllamaEndPoint = configuration["Ollama:EndPoint"] ?? "";
+		OllamaKey = configuration["Ollama:Key"] ?? "";
 
 		MuseScale = 1;
 		AudioScale = 10;
@@ -167,9 +172,6 @@ public class AppPreferences
 	public static string DeepseekKey;
 	public static string GithubKey;
 	public static string OllamaKey;
-
-	//public static string AzureEndPoint;
-	//public static string AzureKey;
 
 	public static int TriggerIndex;
 
