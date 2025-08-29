@@ -11,7 +11,7 @@ public partial class App : Application
 
 	public App()
 	{
-		AppSettings.SetDocumentHome();
+		//AppSettings.SetDocumentHome();
 		AppSettings.EegCreate();
 
 		InitializeComponent();

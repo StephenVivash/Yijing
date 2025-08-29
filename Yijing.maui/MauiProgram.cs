@@ -122,10 +122,7 @@ public static class MauiProgram
 
 	public static MauiApp CreateMauiApp()
 	{
-		//var config = new ConfigurationBuilder()
-		//	.AddJsonFile("appsettings.json")
-		//	.Build();
-
+		AppSettings.SetDocumentHome();
 		AppPreferences.Load();
 
 		//BuildKernel();

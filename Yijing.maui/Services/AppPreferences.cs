@@ -27,14 +27,16 @@ public enum eAiModel { eNone, eStephenV, eJohnD };
 
 public class AppPreferences
 {
-        public static void Load()
-        {
-                var configuration = new ConfigurationBuilder()
-                        .SetBasePath(AppContext.BaseDirectory)
-                        .AddJsonFile("appsettings.json", optional: true)
-                        .Build();
+	public static void Load()
+	{
 
-                DiagramLsb = Preferences.Get("DiagramLsb", Sequences.DiagramLsb);
+		var configuration = new ConfigurationBuilder()
+			//.SetBasePath(AppContext.BaseDirectory)
+			.SetBasePath(AppSettings.DocumentHome())
+			.AddJsonFile("appsettings.json", optional: true)
+			.Build();
+
+		DiagramLsb = Preferences.Get("DiagramLsb", Sequences.DiagramLsb);
 
 		DiagramMode = Preferences.Get("DiagramMode", (int)eDiagramMode.eExplore);
 		DiagramType = Preferences.Get("DiagramType", (int)eDiagramType.eHexagram);
