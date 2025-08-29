@@ -13,8 +13,8 @@ public class AudioPlayer
 	private static IAudioPlayer m_audLightRain;
 	private static IAudioPlayer m_audMeadowBirds;
 	private static IAudioPlayer m_audQuietForest;
-	private static IAudioPlayer m_audKashmir;
-	private static IAudioPlayer m_audMachineGun;
+	//private static IAudioPlayer m_audKashmir;
+	//private static IAudioPlayer m_audMachineGun;
 
 	private static IAudioPlayer m_audAmbience;
 
@@ -30,14 +30,14 @@ public class AudioPlayer
 		m_audMeadowBirds = AudioManager.Current.CreatePlayer(await FileSystem.OpenAppPackageFileAsync("mixkit-meadow-birds-isolated-28.wav"));
 		m_audQuietForest = AudioManager.Current.CreatePlayer(await FileSystem.OpenAppPackageFileAsync("mixkit-quiet-forest-ambience-1220.wav"));
 
-		m_audKashmir = AudioManager.Current.CreatePlayer(await FileSystem.OpenAppPackageFileAsync("06 Kashmir.m4a"));
-		m_audMachineGun = AudioManager.Current.CreatePlayer(await FileSystem.OpenAppPackageFileAsync("02 Machine Gun.m4a"));
+		//m_audKashmir = AudioManager.Current.CreatePlayer(await FileSystem.OpenAppPackageFileAsync("06 Kashmir.m4a"));
+		//m_audMachineGun = AudioManager.Current.CreatePlayer(await FileSystem.OpenAppPackageFileAsync("02 Machine Gun.m4a"));
 
 		m_audLightRain.Loop = true;
 		m_audMeadowBirds.Loop = true;
 		m_audQuietForest.Loop = true;
-		m_audKashmir.Loop = true;
-		m_audMachineGun.Loop = true;
+		//m_audKashmir.Loop = true;
+		//m_audMachineGun.Loop = true;
 
 		m_audAmbience = m_audLightRain;
 	}
@@ -73,12 +73,12 @@ public class AudioPlayer
 			case (int)eAmbience.eQuietForest:
 				m_audAmbience = m_audQuietForest;
 				break;
-			case (int)eAmbience.eKashmir:
-				m_audAmbience = m_audKashmir;
-				break;
-			case (int)eAmbience.eMachineGun:
-				m_audAmbience = m_audMachineGun;
-				break;
+			//case (int)eAmbience.eKashmir:
+			//	m_audAmbience = m_audKashmir;
+			//	break;
+			//case (int)eAmbience.eMachineGun:
+			//	m_audAmbience = m_audMachineGun;
+			//	break;
 			default:
 				return;
 		}

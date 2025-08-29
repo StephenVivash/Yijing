@@ -12,7 +12,7 @@ public enum eEegDevice { eMuse, eEmotiv };
 public enum eEegMode { eIdle, eLive, eReplay, eSummary };
 public enum eGoal { eMeditation, eYijingCast };
 public enum eTimer { eNone, eTen, eFifteen, eTwenty, eThirty, eSixty };
-public enum eAmbience { eNone, eLightRain, eQuietForest, eMeadowBirds, eKashmir, eMachineGun };
+public enum eAmbience { eNone, eLightRain, eQuietForest, eMeadowBirds }; // , eKashmir, eMachineGun 
 public enum eReplaySpeed { eNormal, eFast };
 public enum eChartBands { eFront, eBack, eMixed, eAll };
 public enum eChartTime { eTwoAndHalf, eFive };

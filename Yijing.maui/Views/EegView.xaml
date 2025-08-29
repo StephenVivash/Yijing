@@ -126,8 +126,6 @@
 							<x:String>Light rain</x:String>
 							<x:String>Quiet forest</x:String>
 							<x:String>Meadow birds</x:String>
-							<x:String>Kashmir</x:String>
-							<x:String>Machine Gun</x:String>
 						</Picker.Items>
 					</Picker>
 
