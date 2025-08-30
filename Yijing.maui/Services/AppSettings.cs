@@ -4,7 +4,7 @@ using Microsoft.SemanticKernel;
 
 namespace Yijing.Services;
 
-public class AppSettings
+public static class AppSettings
 {
 
 	private static string _documentHome = null;

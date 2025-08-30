@@ -1,19 +1,13 @@
 ﻿using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
-using Yijing.Services;
 
 namespace Yijing;
 
 public partial class App : Application
 {
 
-	AppSettings _appSettings = new AppSettings();
-
 	public App()
 	{
-		//AppSettings.SetDocumentHome();
-		AppSettings.EegCreate();
-
 		InitializeComponent();
 
 		//MainPage = new AppShell();

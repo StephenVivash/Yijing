@@ -112,14 +112,6 @@ public partial class DiagramView : ContentView
 
 	//public static IntPtr WindowHandle { get; private set; }
 
-	//IChatCompletionService _chatService = null;
-	//ChatHistory _chatHistory = null;
-
-	//OpenAIPromptExecutionSettings _settings = new()
-	//{
-	//	ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions
-	//};
-
 	string[] _aiSystemPrompts =
 	{
 		"This app allows a user to consult the Yijing and engage in casual conversation with AI. " +
@@ -160,18 +152,12 @@ public partial class DiagramView : ContentView
 	public static List<List<string>> _aiUserPrompts = [[], []];
 	public static List<List<string>> _aiChatReponses = [[], []];
 
-	//public static List<string> _aiUserPrompts = new();
-	//public static List<string> _aiChatReponses = new();
-
 	public DiagramView()
 	{
 		_this = this;
 
 		InitializeComponent();
 		Eeg.SetDiagramView(this);
-
-		//if (AppSettings.Kernel() != null)
-		//	_chatService = AppSettings.Kernel().GetRequiredService<IChatCompletionService>();
 
 		m_brMonoColor = App.Current.RequestedTheme == AppTheme.Dark ? Brush.LightGray : Brush.DarkGray;
 		m_brMovingYang = App.Current.RequestedTheme == AppTheme.Dark ? Brush.Black : Brush.White;
@@ -1581,21 +1567,8 @@ public partial class DiagramView : ContentView
 
 	public async void AiChat(bool memoryMode, bool includeCast, string msg, bool reload)
 	{
-		string result = "";
-
 		try
 		{
-
-			if (memoryMode && includeCast && (AppSettings._memoryServerless != null))
-			{
-				var answer = await AppSettings._memoryServerless.AskAsync(msg);
-				result = answer.Result;
-				result = result.Replace("**", "");
-				result = result.Replace("###", "");
-				result = result.Replace("---", "");
-				result += "\n";
-			}
-
 			if (AppPreferences.AiChatService == (int)eAiChatService.eOllama)
 			{
 				ChatOptions options = new()
@@ -1619,18 +1592,15 @@ public partial class DiagramView : ContentView
 					_chatHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.Assistant, _aiChatReponses[1][i]));
 				}
 				_chatHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.User, msg));
-				if (!result.IsNullOrEmpty())
-					_chatHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.Assistant, result));
 
 				var completion = await ollamaChatClient.GetResponseAsync(_chatHistory, options);
-				//var embeddind = await _embeddingClient.GenerateAsync(new List<string>() { msg });
 				string str = completion.Messages[0].Text;
 				str = str.Replace("**", "");
 				str = str.Replace("###", "");
 				str = str.Replace("---", "");
 
 				_aiUserPrompts[1].Add(msg);
-				_aiChatReponses[1].Add(result + str); // + "\n\n" + String.Join(", ", embeddind[0].Vector.ToArray()));
+				_aiChatReponses[1].Add(str);
 			}
 			else
 			{
@@ -1663,8 +1633,6 @@ public partial class DiagramView : ContentView
 					}
 
 				_chatHistory.Add(new UserChatMessage(msg));
-				if (!result.IsNullOrEmpty())
-					_chatHistory.Add(new AssistantChatMessage(result));
 
 				var response = await openAiChatClient.CompleteChatAsync(_chatHistory, requestOptions);
 				string str = response.Value.Content[0].Text;
@@ -1673,7 +1641,7 @@ public partial class DiagramView : ContentView
 				str = str.Replace("---", "");
 
 				_aiUserPrompts[1].Add(msg);
-				_aiChatReponses[1].Add(result + str);
+				_aiChatReponses[1].Add(str);
 			}
 			if (reload)
 				LoadSessions(-1);

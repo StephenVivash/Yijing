@@ -67,7 +67,7 @@ public partial class DiagramPage : ContentPage
 	{
 		if (picAiMode.SelectedIndex == 1)
 		{
-			MauiProgram.BuildKernelMemory();
+			//MauiProgram.BuildKernelMemory();
 			//DiagramView.UpdateSessionLog(" ***** Started Kernel Memory", true, true);
 		}
 	}

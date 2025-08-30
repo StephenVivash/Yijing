@@ -25,7 +25,7 @@ public enum eAiChatService { eOpenAi, eDeepseek, eGithub, eOllama, eNone };
 public enum eAiAnalysis { eNone, eOpenAI };
 public enum eAiModel { eNone, eStephenV, eJohnD };
 
-public class AppPreferences
+public static class AppPreferences
 {
 	public static void Load()
 	{
