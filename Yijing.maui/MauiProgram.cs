@@ -165,7 +165,7 @@ public static class MauiProgram
 
 	public static void BuildKernel()
 	{
-		if (!string.IsNullOrEmpty(AppPreferences.OpenAiModelId))
+		if (!string.IsNullOrEmpty(AppPreferences.AiModelId[(int)eAiChatService.eOpenAi]))
 		{
 
 #pragma warning disable SKEXP0010
@@ -234,7 +234,7 @@ public static class MauiProgram
 
 			OpenAIConfig openAIConfig = new OpenAIConfig()
 			{
-				APIKey = AppPreferences.OpenAiKey,
+				APIKey = AppPreferences.AiModelId[(int)eAiChatService.eOpenAi],
 				TextModel = "gpt-4o", //AppPreferences.OpenAiModelId
 				TextGenerationType = OpenAIConfig.TextGenerationTypes.Auto, //Chat,
 				TextModelMaxTokenTotal = 8192,

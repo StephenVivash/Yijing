@@ -33,25 +33,14 @@ Press OK.
 *************************************************************************************************
 *************************************************************************************************/
 
-
-using System.Text;
-using System.Text.RegularExpressions;
 //using Microsoft.EntityFrameworkCore;
 using Microsoft.Maui.Controls.Shapes;
-//using Microsoft.SemanticKernel.ChatCompletion;
-//using Microsoft.SemanticKernel.Connectors.OpenAI;
-
 using Microsoft.Extensions.AI;
 using Microsoft.IdentityModel.Tokens;
+using System.Text.RegularExpressions;
 
-//using OllamaSharp.Models;
-//using OllamaSharp.Models.Chat;
-//using OllamaSharp;
-
-using OpenAI.Chat;
 using OpenAI;
-
-using Newtonsoft.Json;
+using OpenAI.Chat;
 
 #if WINDOWS
 using Windows.Win32;
@@ -61,9 +50,7 @@ using Windows.Win32.Foundation;
 using ValueSequencer;
 //using YijingDb;
 using Yijing.Pages;
-using Platform = Yijing.Platforms.Platform;
 using Yijing.Services;
-using System.Collections;
 
 namespace Yijing.Views;
 
@@ -164,7 +151,6 @@ public partial class DiagramView : ContentView
 		
 		//"Only call kernel functions if the user input should be interpreted as a command rather that a " +
 		//"corherrent question or statement." + 
-
 		//"Always call the get_hexagram() function to return the hexagram's current value after a call to a " +
 		//"kernel function that modifies the state of the hexagram, eg. first_hexagram(), next_hexagram(), " +
 		//"inverse_hexagram(). You cannot reliably calculate this value because a user can also modify the hexagram " +
@@ -359,7 +345,6 @@ public partial class DiagramView : ContentView
 	{
 	}
 	*/
-
 	protected void lin_Tapped(object sender, TappedEventArgs e)
 	{
 		string s = ((RoundRectangle)sender).StyleId;
@@ -681,6 +666,27 @@ public partial class DiagramView : ContentView
 		}
 	}
 
+	public static void AutoCastHexagram()
+	{
+		//UpdateSessionLog("KernelFunction AutoCastHexagram", true, true);
+		void action() => _this.picDiagramMode.SelectedIndex = (int)eDiagramMode.eAutoCast;
+		_this.Dispatcher.Dispatch(action);
+	}
+
+	public static void SetHexagram(int sequence)
+	{
+		//UpdateSessionLog($"KernelFunction SetHexagram {sequence}", true, true);
+		_this.m_vsCurrent.Sequence = sequence - 1;
+		Transition();
+		UpdateDiagram(true);
+	}
+
+	public static int GetHexagram()
+	{
+		//UpdateSessionLog($"KernelFunction GetHexagram {_this.m_vsCurrent.Sequence + 1}", true, true);
+		return _this.m_vsCurrent.Sequence + 1;
+	}
+
 	public void LoadDiagramSettings()
 	{
 		int nLength = Sequences.strDiagramSettings.Length / 17;
@@ -860,107 +866,70 @@ public partial class DiagramView : ContentView
 		UpdateText();
 	}
 
-
-
-
-
-
-
-
-
-
-	public static void AutoCastHexagram()
-	{
-		UpdateSessionLog("KernelFunction AutoCastHexagram", true, true);
-		void action() => _this.picDiagramMode.SelectedIndex = (int)eDiagramMode.eAutoCast;
-		_this.Dispatcher.Dispatch(action);
-	}
-
-	public static void SetHexagram(int sequence)
-	{
-		UpdateSessionLog($"KernelFunction SetHexagram {sequence}", true, true);
-		_this.m_vsCurrent.Sequence = sequence - 1;
-		Transition();
-		UpdateDiagram(true);
-	}
-
-	public static int GetHexagram()
-	{
-		UpdateSessionLog($"KernelFunction GetHexagram {_this.m_vsCurrent.Sequence + 1}", true, true);
-		return _this.m_vsCurrent.Sequence + 1;
-	}
-
-
-
-
-
-
-
-
 	public static void SetFirst()
 	{
-		UpdateSessionLog("KernelFunction SetFirst", true, true);
+		//UpdateSessionLog("KernelFunction SetFirst", true, true);
 		_this.m_vsCurrent.First();
 		Transition();
 	}
 
 	public static void SetPrevious()
 	{
-		UpdateSessionLog("KernelFunction SetPrevious", true, true);
+		//UpdateSessionLog("KernelFunction SetPrevious", true, true);
 		_this.m_vsCurrent.Previous();
 		Transition();
 	}
 
 	public static void SetNext()
 	{
-		UpdateSessionLog("KernelFunction SetNext", true, true);
+		//UpdateSessionLog("KernelFunction SetNext", true, true);
 		_this.m_vsCurrent.Next();
 		Transition();
 	}
 
 	public static void SetLast()
 	{
-		UpdateSessionLog("KernelFunction SetLast", true, true);
+		//UpdateSessionLog("KernelFunction SetLast", true, true);
 		_this.m_vsCurrent.Last();
 		Transition();
 	}
 
 	public static void SetMove()
 	{
-		UpdateSessionLog("KernelFunction SetMove", true, true);
+		//UpdateSessionLog("KernelFunction SetMove", true, true);
 		_this.SetMove(0);
 	}
 
 	public static void SetHome()
 	{
-		UpdateSessionLog("KernelFunction SetHome", true, true);
+		//UpdateSessionLog("KernelFunction SetHome", true, true);
 		_this.SetHome(0);
 	}
 
 	public static void SetInverse()
 	{
-		UpdateSessionLog("KernelFunction SetInverse", true, true);
+		//UpdateSessionLog("KernelFunction SetInverse", true, true);
 		_this.m_vsCurrent.Inverse();
 		Transition();
 	}
 
 	public static void SetOpposite()
 	{
-		UpdateSessionLog("KernelFunction SetOpposite", true, true);
+		//UpdateSessionLog("KernelFunction SetOpposite", true, true);
 		_this.m_vsCurrent.Opposite();
 		Transition();
 	}
 
 	public static void SetTransverse()
 	{
-		UpdateSessionLog("KernelFunction SetTransverse", true, true);
+		//UpdateSessionLog("KernelFunction SetTransverse", true, true);
 		_this.m_vsCurrent.Transverse();
 		Transition();
 	}
 
 	public static void SetNuclear()
 	{
-		UpdateSessionLog("KernelFunction SetNuclear", true, true);
+		//UpdateSessionLog("KernelFunction SetNuclear", true, true);
 		_this.m_vsCurrent.Nuclear();
 		Transition();
 	}
@@ -1372,14 +1341,11 @@ public partial class DiagramView : ContentView
 	public void UpdateText(CHexagramValueSequencer hvsPrimary)
 	{
 
-
 		////////////////////////////////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////////////////////////////////
 		// https://www.youtube.com/live/hM4ifrqF_lQ?si=eyV0DSBPuay9JV1d&t=21795 - RegEx Span
 		////////////////////////////////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////////////////////////////////
-
-
 
 		String strText = Sequences.strDiagramSettings[16, Sequences.HexagramText + 1];
 		string strBC = App.Current.RequestedTheme == AppTheme.Dark ? "black" : "white";
@@ -1630,150 +1596,6 @@ public partial class DiagramView : ContentView
 				result += "\n";
 			}
 
-			if (AppPreferences.AiChatService == (int)eAiChatService.eOpenAi)
-			{
-				OpenAIClientOptions openAIClientOptions = new()
-				{
-					NetworkTimeout = TimeSpan.FromSeconds(60),
-					//Endpoint = new Uri("https://chatgpt.com/g/g-676e82f5c8908191805c0fc03f32d687-hatcher-yijing")
-				};
-
-				var requestOptions = new ChatCompletionOptions()
-				{
-					Temperature = 1,
-					//MaxOutputTokenCount = 4096,
-				};
-
-				System.ClientModel.ApiKeyCredential credential = new(AppPreferences.OpenAiKey);
-				var _openAiChatClient = new ChatClient(AppPreferences.OpenAiModelId, credential, openAIClientOptions); // AppPreferences.OpenAiKey
-
-				List<OpenAI.Chat.ChatMessage> _chatHistory = [];
-				foreach (var s1 in _aiSystemPrompts)
-					_chatHistory.Add(new UserChatMessage(s1)); // SystemChatMessage
-
-				for (int i = 0; i < 2; ++i)
-					for (int j = 0; j < _aiUserPrompts[i].Count(); ++j)
-					{
-						_chatHistory.Add(new UserChatMessage(_aiUserPrompts[i][j]));
-						_chatHistory.Add(new AssistantChatMessage(_aiChatReponses[i][j]));
-					}
-				
-				_chatHistory.Add(new UserChatMessage(msg));
-				if (!result.IsNullOrEmpty())
-					_chatHistory.Add(new AssistantChatMessage(result));
-
-				var response = await _openAiChatClient.CompleteChatAsync(_chatHistory, requestOptions);
-				string str = response.Value.Content[0].Text;
-				str = str.Replace("**", "");
-				str = str.Replace("###", "");
-				str = str.Replace("---", "");
-
-				_aiUserPrompts[1].Add(msg);
-				_aiChatReponses[1].Add(result + str);
-			}
-
-
-			else
-			if (AppPreferences.AiChatService == (int)eAiChatService.eDeepseek)
-			{
-				//var credential = Environment.GetEnvironmentVariable("DEEPSEEK_TOKEN");
-				System.ClientModel.ApiKeyCredential credential = new(AppPreferences.DeepseekKey);
-
-				var openAIOptions = new OpenAIClientOptions()
-				{
-					Endpoint = new Uri(AppPreferences.DeepseekEndPoint)
-				};
-
-				var requestOptions = new ChatCompletionOptions()
-				{
-					Temperature = 1,
-					//MaxOutputTokenCount = 4096,
-				};
-
-				var _deepseekChatClient = new ChatClient(AppPreferences.DeepseekModelId, credential, openAIOptions);
-
-				List<OpenAI.Chat.ChatMessage> _chatHistory = [];
-				foreach (var s1 in _aiSystemPrompts)
-					_chatHistory.Add(new SystemChatMessage(s1)); //  UserChatMessage
-
-
-				for (int i = 0; i < 2; ++i)
-					for (int j = 0; j < _aiUserPrompts[i].Count(); ++j)
-					{
-						_chatHistory.Add(new UserChatMessage(_aiUserPrompts[i][j]));
-						_chatHistory.Add(new AssistantChatMessage(_aiChatReponses[i][j]));
-					}
-				
-				
-				_chatHistory.Add(new UserChatMessage(msg));// + "\n" + result);
-				if (!result.IsNullOrEmpty())
-					_chatHistory.Add(new AssistantChatMessage(result));
-
-				var response = await _deepseekChatClient.CompleteChatAsync(_chatHistory, requestOptions);
-				string str = response.Value.Content[0].Text;
-				str = str.Replace("**", "");
-				str = str.Replace("###", "");
-				str = str.Replace("---", "");
-
-				_aiUserPrompts[1].Add(msg);
-				_aiChatReponses[1].Add(result + str);
-			}
-
-
-			else
-			if (AppPreferences.AiChatService == (int)eAiChatService.eGithub)
-			{
-				//var credential = Environment.GetEnvironmentVariable("GITHUB_TOKEN");
-				System.ClientModel.ApiKeyCredential credential = new(AppPreferences.GithubKey);
-
-				var openAIOptions = new OpenAIClientOptions()
-				{
-					Endpoint = new Uri(AppPreferences.GithubEndPoint)
-				};
-
-				var requestOptions = new ChatCompletionOptions()
-				{
-					Temperature = 1,
-					//MaxOutputTokenCount = 4096,
-				};
-
-				var _githubChatClient = new ChatClient(AppPreferences.GithubModelId, credential, openAIOptions);
-
-				List<OpenAI.Chat.ChatMessage> _chatHistory = [];
-				foreach (var s1 in _aiSystemPrompts)
-					_chatHistory.Add(new SystemChatMessage(s1)); //  UserChatMessage
-
-
-				for (int i = 0; i < 2; ++i)
-					for (int j = 0; j < _aiUserPrompts[i].Count(); ++j)
-					{
-						_chatHistory.Add(new UserChatMessage(_aiUserPrompts[i][j]));
-						_chatHistory.Add(new AssistantChatMessage(_aiChatReponses[i][j]));
-					}
-
-
-				_chatHistory.Add(new UserChatMessage(msg));// + "\n" + result);
-				if (!result.IsNullOrEmpty())
-					_chatHistory.Add(new AssistantChatMessage(result));
-
-				var response = await _githubChatClient.CompleteChatAsync(_chatHistory, requestOptions);
-				string str = response.Value.Content[0].Text;
-				str = str.Replace("**", "");
-				str = str.Replace("###", "");
-				str = str.Replace("---", "");
-
-				_aiUserPrompts[1].Add(msg);
-				_aiChatReponses[1].Add(result + str);
-			}
-
-
-
-
-
-
-
-
-			else
 			if (AppPreferences.AiChatService == (int)eAiChatService.eOllama)
 			{
 				ChatOptions options = new()
@@ -1785,10 +1607,8 @@ public partial class DiagramView : ContentView
 					Temperature = 0.5f,
 				};
 
-				var _ollamaChatClient = new OllamaChatClient(new Uri(AppPreferences.OllamaEndPoint), AppPreferences.OllamaModelId);
-				//var _embeddingClient = new OllamaEmbeddingGenerator(new Uri("http://localhost:11434"), "nomic-embed-text:latest");
-				//_ollamaChatClient.AsBuilder();
-				//_embeddingClient.AsBuilder();
+				var ollamaChatClient = new OllamaChatClient(new Uri(AppPreferences.AiEndPoint[AppPreferences.AiChatService]), 
+					AppPreferences.AiModelId[AppPreferences.AiChatService]);
 
 				List<Microsoft.Extensions.AI.ChatMessage> _chatHistory = [];
 				foreach (var s1 in _aiSystemPrompts)
@@ -1802,7 +1622,7 @@ public partial class DiagramView : ContentView
 				if (!result.IsNullOrEmpty())
 					_chatHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.Assistant, result));
 
-				var completion = await _ollamaChatClient.GetResponseAsync(_chatHistory, options);
+				var completion = await ollamaChatClient.GetResponseAsync(_chatHistory, options);
 				//var embeddind = await _embeddingClient.GenerateAsync(new List<string>() { msg });
 				string str = completion.Messages[0].Text;
 				str = str.Replace("**", "");
@@ -1812,43 +1632,49 @@ public partial class DiagramView : ContentView
 				_aiUserPrompts[1].Add(msg);
 				_aiChatReponses[1].Add(result + str); // + "\n\n" + String.Join(", ", embeddind[0].Vector.ToArray()));
 			}
-
-
-			/*
-			if (true)
+			else
 			{
-				Microsoft.SemanticKernel.ChatCompletion.ChatHistory _chatHistory = [];
-				foreach (var s in _aiSystemPrompts)
-					_chatHistory.AddUserMessage(s); // AddSystemMessage
-				for (int i = 0; i < _aiUserPrompts.Count(); ++i)
+				OpenAIClientOptions openAIClientOptions = new()
 				{
-					_chatHistory.AddUserMessage(_aiUserPrompts[1][i]);
-					_chatHistory.AddAssistantMessage(_aiChatReponses[1][i]);
-				}
-				_chatHistory.AddUserMessage(msg);
+					NetworkTimeout = TimeSpan.FromSeconds(60),
+				};
+				if (AppPreferences.AiChatService != (int)eAiChatService.eOpenAi)
+					openAIClientOptions.Endpoint = new Uri(AppPreferences.AiEndPoint[AppPreferences.AiChatService]);
 
-				if (memoryMode && includeCast && (AppSettings._memoryServerless != null))
+				var requestOptions = new ChatCompletionOptions()
 				{
-					var answer = await AppSettings._memoryServerless.AskAsync(msg);
-					result = answer.Result;
-					result = result.Replace("**", "");
-					result = result.Replace("###", "");
-					_chatHistory.AddAssistantMessage(result);
-					result += "\n";
-				}
+					Temperature = 1,
+					//TopP = 1,
+					MaxOutputTokenCount = 10240,
+				};
 
-				var r = await _chatService.GetChatMessageContentAsync(_chatHistory, /*_settings* /null, AppSettings._kernel);
-				string str = r.ToString();
-				//_chatHistory.AddAssistantMessage(str);
+				System.ClientModel.ApiKeyCredential credential = new(AppPreferences.AiKey[AppPreferences.AiChatService]);
+				var openAiChatClient = new ChatClient(AppPreferences.AiModelId[AppPreferences.AiChatService], credential, openAIClientOptions); // AppPreferences.OpenAiKey
+
+				List<OpenAI.Chat.ChatMessage> _chatHistory = [];
+				foreach (var s1 in _aiSystemPrompts)
+					_chatHistory.Add(new SystemChatMessage(s1)); // UserChatMessage SystemChatMessage
+
+				for (int i = 0; i < 2; ++i)
+					for (int j = 0; j < _aiUserPrompts[i].Count(); ++j)
+					{
+						_chatHistory.Add(new UserChatMessage(_aiUserPrompts[i][j]));
+						_chatHistory.Add(new AssistantChatMessage(_aiChatReponses[i][j]));
+					}
+
+				_chatHistory.Add(new UserChatMessage(msg));
+				if (!result.IsNullOrEmpty())
+					_chatHistory.Add(new AssistantChatMessage(result));
+
+				var response = await openAiChatClient.CompleteChatAsync(_chatHistory, requestOptions);
+				string str = response.Value.Content[0].Text;
 				str = str.Replace("**", "");
 				str = str.Replace("###", "");
+				str = str.Replace("---", "");
 
-				_aiUserPrompts.Add(msg);
-				_aiChatReponses.Add(result + str);
+				_aiUserPrompts[1].Add(msg);
+				_aiChatReponses[1].Add(result + str);
 			}
-			*/
-
-
 			if (reload)
 				LoadSessions(-1);
 			else

@@ -89,7 +89,6 @@ public class AppPreferences
 		// https://models.inference.ai.azure.com
 		// http://localhost:11434
 
-
 		AiModelId[(int)eAiChatService.eOpenAi] = configuration["OpenAI:Model"] ?? "";
 		AiEndPoint[(int)eAiChatService.eOpenAi] = configuration["OpenAI:EndPoint"] ?? "";
 		AiKey[(int)eAiChatService.eOpenAi] = configuration["OpenAI:Key"] ?? "";
@@ -105,23 +104,6 @@ public class AppPreferences
 		AiModelId[(int)eAiChatService.eOllama] = configuration["Ollama:Model"] ?? "";
 		AiEndPoint[(int)eAiChatService.eOllama] = configuration["Ollama:EndPoint"] ?? "";
 		AiKey[(int)eAiChatService.eOllama] = configuration["Ollama:Key"] ?? "";
-
-
-		OpenAiModelId = configuration["OpenAI:Model"] ?? "";
-		OpenAiEndPoint = configuration["OpenAI:EndPoint"] ?? "";
-		OpenAiKey = configuration["OpenAI:Key"] ?? "";
-
-		DeepseekModelId = configuration["Deepseek:Model"] ?? "";
-		DeepseekEndPoint = configuration["Deepseek:EndPoint"] ?? "";
-		DeepseekKey = configuration["Deepseek:Key"] ?? "";
-
-		GithubModelId = configuration["Github:Model"] ?? "";
-		GithubEndPoint = configuration["Github:EndPoint"] ?? "";
-		GithubKey = configuration["Github:Key"] ?? "";
-
-		OllamaModelId = configuration["Ollama:Model"] ?? "";
-		OllamaEndPoint = configuration["Ollama:EndPoint"] ?? "";
-		OllamaKey = configuration["Ollama:Key"] ?? "";
 
 		MuseScale = 1;
 		AudioScale = 10;
@@ -179,21 +161,6 @@ public class AppPreferences
 	public static string[] AiModelId = ["", "", "", ""];
 	public static string[] AiEndPoint = ["", "", "", ""];
 	public static string[] AiKey = ["", "", "", ""];
-
-	public static string OpenAiModelId;
-	public static string DeepseekModelId;
-	public static string GithubModelId;
-	public static string OllamaModelId;
-
-	public static string OpenAiEndPoint;
-	public static string DeepseekEndPoint;
-	public static string GithubEndPoint;
-	public static string OllamaEndPoint;
-
-	public static string OpenAiKey;
-	public static string DeepseekKey;
-	public static string GithubKey;
-	public static string OllamaKey;
 
 	public static int TriggerIndex;
 
