@@ -21,7 +21,7 @@ public enum eTriggerBand { eDelta, eTheta, eAlpha, eBeta, eGamma };
 public enum eTriggerChannel { eBackLeft, eFrontLeft, eBackCenter, eFrontRight, eBackRight };
 public enum eTriggerRange { eZeroOne, eOneTwo, eTwoThree, eTwoFour, eThreeFour, eThreeFive, eFourFive, eFourSix };
 
-public enum eAiChatService { eNone, eOpenAi, eDeepseek, eGithub, eOllama };
+public enum eAiChatService { eOpenAi, eDeepseek, eGithub, eOllama, eNone };
 public enum eAiAnalysis { eNone, eOpenAI };
 public enum eAiModel { eNone, eStephenV, eJohnD };
 
@@ -88,6 +88,24 @@ public class AppPreferences
 		// https://api.deepseek.com
 		// https://models.inference.ai.azure.com
 		// http://localhost:11434
+
+
+		AiModelId[(int)eAiChatService.eOpenAi] = configuration["OpenAI:Model"] ?? "";
+		AiEndPoint[(int)eAiChatService.eOpenAi] = configuration["OpenAI:EndPoint"] ?? "";
+		AiKey[(int)eAiChatService.eOpenAi] = configuration["OpenAI:Key"] ?? "";
+
+		AiModelId[(int)eAiChatService.eDeepseek] = configuration["Deepseek:Model"] ?? "";
+		AiEndPoint[(int)eAiChatService.eDeepseek] = configuration["Deepseek:EndPoint"] ?? "";
+		AiKey[(int)eAiChatService.eDeepseek] = configuration["Deepseek:Key"] ?? "";
+
+		AiModelId[(int)eAiChatService.eGithub] = configuration["Github:Model"] ?? "";
+		AiEndPoint[(int)eAiChatService.eGithub] = configuration["Github:EndPoint"] ?? "";
+		AiKey[(int)eAiChatService.eGithub] = configuration["Github:Key"] ?? "";
+
+		AiModelId[(int)eAiChatService.eOllama] = configuration["Ollama:Model"] ?? "";
+		AiEndPoint[(int)eAiChatService.eOllama] = configuration["Ollama:EndPoint"] ?? "";
+		AiKey[(int)eAiChatService.eOllama] = configuration["Ollama:Key"] ?? "";
+
 
 		OpenAiModelId = configuration["OpenAI:Model"] ?? "";
 		OpenAiEndPoint = configuration["OpenAI:EndPoint"] ?? "";
@@ -157,6 +175,10 @@ public class AppPreferences
 	public static int AiModel;
 
 	public static int AiChatService;
+
+	public static string[] AiModelId = ["", "", "", ""];
+	public static string[] AiEndPoint = ["", "", "", ""];
+	public static string[] AiKey = ["", "", "", ""];
 
 	public static string OpenAiModelId;
 	public static string DeepseekModelId;
