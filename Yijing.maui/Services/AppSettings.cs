@@ -1,7 +1,4 @@
 ﻿
-using Microsoft.KernelMemory;
-using Microsoft.SemanticKernel;
-
 namespace Yijing.Services;
 
 public static class AppSettings
@@ -12,16 +9,10 @@ public static class AppSettings
 
 	public static DateTime _lastEegDataTime = DateTime.Now;
 
-	//public static Kernel _kernel = null;
-	public static MemoryServerless _memoryServerless = null; 
-
 	private static Eeg _eeg = null;
 
 	public static string DocumentHome() { return _documentHome; }
 	public static string EegDataHome() { return _eegDataHome; }
-
-	//public static Kernel Kernel() { return _kernel; }
-	public static MemoryServerless MemoryServerless() { return _memoryServerless; }
 
 	public static Eeg Eeg() { return _eeg; }
 

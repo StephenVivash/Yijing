@@ -36,7 +36,7 @@ Press OK.
 //using Microsoft.EntityFrameworkCore;
 using Microsoft.Maui.Controls.Shapes;
 using Microsoft.Extensions.AI;
-using Microsoft.IdentityModel.Tokens;
+//using Microsoft.IdentityModel.Tokens;
 using System.Text.RegularExpressions;
 
 using OpenAI;
@@ -1569,6 +1569,8 @@ public partial class DiagramView : ContentView
 	{
 		try
 		{
+			// OllamaSharp 
+
 			if (AppPreferences.AiChatService == (int)eAiChatService.eOllama)
 			{
 				ChatOptions options = new()
@@ -1752,7 +1754,7 @@ public partial class DiagramView : ContentView
 			LoadChat(contexts[i], "Question", _aiUserPrompts[0]);
 			LoadChat(contexts[i], "Answer", _aiChatReponses[0]);
 		}
-		if (!session.IsNullOrEmpty())
+		if (!string.IsNullOrEmpty(session))
 		{
 			EegView._strSession = session;
 			LoadChat(session, "Question", _aiUserPrompts[1]);
