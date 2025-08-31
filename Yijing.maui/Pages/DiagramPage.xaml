@@ -46,7 +46,7 @@
 					</Picker.Items>
 				</Picker>
 
-				<Picker
+				<!--Picker
 					x:Name="picAiMode"
 					SelectedIndexChanged="picAiMode_SelectedIndexChanged"
 					>
@@ -54,7 +54,7 @@
 						<x:String>Chat Only Mode</x:String>
 						<x:String>Memory and Chat</x:String>
 					</Picker.Items>
-				</Picker>
+				</Picker-->
 
 				<Label
 					Padding="0,10,20,0"
@@ -87,9 +87,9 @@
 				</Label-->
 
 				<Button 
-					x:Name="btnAsk"
+					x:Name="btnAskAi"
 					Text="Ask AI"
-					Clicked="btnAsk_Clicked"
+					Clicked="btnAskAi_Clicked"
 					/>
 
 			</HorizontalStackLayout>

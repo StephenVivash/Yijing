@@ -75,35 +75,42 @@ public static class AppPreferences
 		RawData = Preferences.Get("RawData", false);
 
 		AiAnalysis = Preferences.Get("AiAnalysis", (int)eAiAnalysis.eNone);
-		AiModel = Preferences.Get("AiModel", (int)eAiModel.eStephenV);
-
+		AiModel = Preferences.Get("AiModel", (int)eAiModel.eNone);
 		AiChatService = Preferences.Get("AiChatService", (int)eAiChatService.eNone);
+
+		if (float.TryParse(configuration["AI:Temperature"], out float temp1))
+			AiTemperature = temp1;
+		else
+			AiTemperature = 1.0f;
+		if (float.TryParse(configuration["AI:TopP"], out float temp2))
+			AiTopP = temp2;
+		else
+			AiTopP = 1.0f;
+		if (int.TryParse(configuration["AI:MaxTokens"], out int temp3))
+			AiMaxTokens = temp3;
+		else
+			AiMaxTokens = 10240;
 
 		// gpt-4.5-preview o1-preview gpt-4o gpt-4o-mini
 		// deepseek-reasoner deepseek-chat
 		// gpt-4.1 grok-3 DeepSeek-V3-0324 Llama-4-Maverick-17B-128E-Instruct-FP8 Mistral-large-2407 Meta-Llama-3.1-405B-Instruct o1 o1-mini gpt-4o-mini
 		// gpt-oss:20b qwen3:8b deepseek-r1:8b llama3.2:latest gemma3:latest
 
-		// https://api.openai.com
-		// https://api.deepseek.com
-		// https://models.inference.ai.azure.com
-		// http://localhost:11434
+		AiModelId[(int)eAiChatService.eOpenAi] = configuration["AI:Providers:OpenAI:Model"] ?? "";
+		AiEndPoint[(int)eAiChatService.eOpenAi] = configuration["AI:Providers:OpenAI:EndPoint"] ?? "";
+		AiKey[(int)eAiChatService.eOpenAi] = configuration["AI:Providers:OpenAI:Key"] ?? "";
 
-		AiModelId[(int)eAiChatService.eOpenAi] = configuration["OpenAI:Model"] ?? "";
-		AiEndPoint[(int)eAiChatService.eOpenAi] = configuration["OpenAI:EndPoint"] ?? "";
-		AiKey[(int)eAiChatService.eOpenAi] = configuration["OpenAI:Key"] ?? "";
+		AiModelId[(int)eAiChatService.eDeepseek] = configuration["AI:Providers:Deepseek:Model"] ?? "";
+		AiEndPoint[(int)eAiChatService.eDeepseek] = configuration["AI:Providers:Deepseek:EndPoint"] ?? "";
+		AiKey[(int)eAiChatService.eDeepseek] = configuration["AI:Providers:Deepseek:Key"] ?? "";
 
-		AiModelId[(int)eAiChatService.eDeepseek] = configuration["Deepseek:Model"] ?? "";
-		AiEndPoint[(int)eAiChatService.eDeepseek] = configuration["Deepseek:EndPoint"] ?? "";
-		AiKey[(int)eAiChatService.eDeepseek] = configuration["Deepseek:Key"] ?? "";
+		AiModelId[(int)eAiChatService.eGithub] = configuration["AI:Providers:Github:Model"] ?? "";
+		AiEndPoint[(int)eAiChatService.eGithub] = configuration["AI:Providers:Github:EndPoint"] ?? "";
+		AiKey[(int)eAiChatService.eGithub] = configuration["AI:Providers:Github:Key"] ?? "";
 
-		AiModelId[(int)eAiChatService.eGithub] = configuration["Github:Model"] ?? "";
-		AiEndPoint[(int)eAiChatService.eGithub] = configuration["Github:EndPoint"] ?? "";
-		AiKey[(int)eAiChatService.eGithub] = configuration["Github:Key"] ?? "";
-
-		AiModelId[(int)eAiChatService.eOllama] = configuration["Ollama:Model"] ?? "";
-		AiEndPoint[(int)eAiChatService.eOllama] = configuration["Ollama:EndPoint"] ?? "";
-		AiKey[(int)eAiChatService.eOllama] = configuration["Ollama:Key"] ?? "";
+		AiModelId[(int)eAiChatService.eOllama] = configuration["AI:Providers:Ollama:Model"] ?? "";
+		AiEndPoint[(int)eAiChatService.eOllama] = configuration["AI:Providers:Ollama:EndPoint"] ?? "";
+		AiKey[(int)eAiChatService.eOllama] = configuration["AI:Providers:Ollama:Key"] ?? "";
 
 		MuseScale = 1;
 		AudioScale = 10;
@@ -155,8 +162,11 @@ public static class AppPreferences
 
 	public static int AiAnalysis;
 	public static int AiModel;
-
 	public static int AiChatService;
+
+	public static float AiTemperature;
+	public static float AiTopP;
+	public static int AiMaxTokens;
 
 	public static string[] AiModelId = ["", "", "", ""];
 	public static string[] AiEndPoint = ["", "", "", ""];

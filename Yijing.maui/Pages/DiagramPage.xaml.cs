@@ -16,11 +16,9 @@ public partial class DiagramPage : ContentPage
 	{
 		_this = this;
 		InitializeComponent();
-
 		picAiChatService.SelectedIndex = AppPreferences.AiChatService;
-		picAiMode.SelectedIndex = 0;
+		//picAiMode.SelectedIndex = 0;
 		chbIncludeCast.IsChecked = true;
-
 	}
 
 	private void Page_Loaded(object sender, EventArgs e)
@@ -59,22 +57,28 @@ public partial class DiagramPage : ContentPage
 
 	protected void picAiChatService_SelectedIndexChanged(object sender, EventArgs e)
 	{
-		//picAiChatService.SelectedIndex = AppPreferences.AiChatService;
 		AppPreferences.AiChatService = picAiChatService.SelectedIndex;
+		if ((AppPreferences.AiChatService != (int)eAiChatService.eNone) &&
+			!string.IsNullOrEmpty(AppPreferences.AiModelId[AppPreferences.AiChatService]) &&
+			(((AppPreferences.AiChatService == (int)eAiChatService.eOllama)) || 
+			!string.IsNullOrEmpty(AppPreferences.AiKey[AppPreferences.AiChatService])))
+			btnAskAi.IsEnabled = true;
+		else
+			btnAskAi.IsEnabled = false;
 	}
 
-	protected void picAiMode_SelectedIndexChanged(object sender, EventArgs e)
-	{
-		if (picAiMode.SelectedIndex == 1)
-		{
+	//protected void picAiMode_SelectedIndexChanged(object sender, EventArgs e)
+	//{
+	//	if (picAiMode.SelectedIndex == 1)
+	//	{
 			//MauiProgram.BuildKernelMemory();
 			//DiagramView.UpdateSessionLog(" ***** Started Kernel Memory", true, true);
-		}
-	}
+	//	}
+	//}
 
-	protected void btnAsk_Clicked(object sender, EventArgs e)
+	protected void btnAskAi_Clicked(object sender, EventArgs e)
 	{
-		diagram.AiChat(picAiMode.SelectedIndex == 1, chbIncludeCast.IsChecked);
+		diagram.AiChat(chbIncludeCast.IsChecked);
 		chbIncludeCast.IsChecked = false;
 	}
 

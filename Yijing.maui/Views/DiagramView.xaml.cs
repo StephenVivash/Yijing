@@ -51,6 +51,7 @@ using ValueSequencer;
 //using YijingDb;
 using Yijing.Pages;
 using Yijing.Services;
+using System.Threading.Tasks;
 
 namespace Yijing.Views;
 
@@ -1497,7 +1498,7 @@ public partial class DiagramView : ContentView
 		_this.Dispatcher.Dispatch(action);
 	}
 
-	public void AiChat(bool memoryMode, bool includeCast)
+	public void AiChat(bool includeCast)
 	{
 		string s = DiagramPage.SessionLog().Text;
 		if (includeCast)
@@ -1508,7 +1509,7 @@ public partial class DiagramView : ContentView
 			if (picSession.FindByName(EegView._strSession) == null)
 				reload = true;
 		_saveChat = true;
-		AiChat(memoryMode, includeCast, s, reload);
+		AiChat(includeCast, s, reload);
 		UpdateSessionLog("", false, false);
 
 		/*
@@ -1565,7 +1566,7 @@ public partial class DiagramView : ContentView
 		*/
 	}
 
-	public async void AiChat(bool memoryMode, bool includeCast, string msg, bool reload)
+	public async void AiChat(bool includeCast, string msg, bool reload)
 	{
 		try
 		{
@@ -1575,11 +1576,12 @@ public partial class DiagramView : ContentView
 			{
 				ChatOptions options = new()
 				{
-					MaxOutputTokens = 4096,
+					Temperature = AppPreferences.AiTemperature,
+					TopP = AppPreferences.AiTopP,
+					MaxOutputTokens = AppPreferences.AiMaxTokens,
 					//AllowParallelToolCalls = true,
 					//EndUserId = "Stephen",
 					//Functions = new List<ChatCompletionFunction> { ChatCompletionFunction.Chat },	
-					Temperature = 0.5f,
 				};
 
 				var ollamaChatClient = new OllamaChatClient(new Uri(AppPreferences.AiEndPoint[AppPreferences.AiChatService]), 
@@ -1615,9 +1617,9 @@ public partial class DiagramView : ContentView
 
 				var requestOptions = new ChatCompletionOptions()
 				{
-					Temperature = 1,
-					//TopP = 1,
-					MaxOutputTokenCount = 10240,
+					Temperature = AppPreferences.AiTemperature,
+					TopP = AppPreferences.AiTopP,
+					MaxOutputTokenCount = AppPreferences.AiMaxTokens,
 				};
 
 				System.ClientModel.ApiKeyCredential credential = new(AppPreferences.AiKey[AppPreferences.AiChatService]);

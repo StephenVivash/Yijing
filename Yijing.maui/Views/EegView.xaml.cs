@@ -104,11 +104,12 @@ public partial class EegView : ContentView
 		chbTriggerFixed.IsChecked = AppPreferences.TriggerFixed;
 		chbTriggerSounding.IsChecked = AppPreferences.TriggerSounding;
 
-		if (string.IsNullOrEmpty(AppPreferences.AiKey[(int)eAiChatService.eOpenAi]))
-		{
-			picAiAnalysis.SelectedIndex = (int)eAiAnalysis.eNone;
+		//if (string.IsNullOrEmpty(AppPreferences.AiKey[(int)eAiChatService.eOpenAi]))
+		//{
+			//picAiAnalysis.SelectedIndex = (int)eAiAnalysis.eNone;
 			picAiAnalysis.IsEnabled = false;
-		}
+			picAiModel.IsEnabled = false;
+		//}
 
 		picDevice.SelectedIndex = AppPreferences.EegDevice;
 	}

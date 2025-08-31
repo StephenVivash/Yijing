@@ -28,11 +28,26 @@ public static class AppSettings
 		if (Directory.Exists(_documentHome))
 		{
 			_documentHome = Path.Combine(_documentHome, "Yijing");
-			_eegDataHome = _documentHome;
-			if (!Directory.Exists(_eegDataHome))
-				Directory.CreateDirectory(_eegDataHome);
+			_eegDataHome = Path.Combine(_documentHome, AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? "Emotiv" : "Muse");
+			if (!Directory.Exists(_documentHome))
+				Directory.CreateDirectory(_documentHome);
 
-			String strTemp = Path.Combine(_eegDataHome, "Emotiv");
+			String strTemp = Path.Combine(_documentHome, "appsettings.json");
+			if (!File.Exists(strTemp))
+			{
+				string strSource = "appsettings.json";
+				string strDestination = strTemp;
+				CopyStream(await FileSystem.OpenAppPackageFileAsync(strSource), strDestination);
+			}
+			strTemp = Path.Combine(_documentHome, "Muse");
+			if (!Directory.Exists(strTemp))
+			{
+				Directory.CreateDirectory(strTemp);
+				string strSource = "Example-Muse.csv";
+				string strDestination = Path.Combine(strTemp, strSource);
+				CopyStream(await FileSystem.OpenAppPackageFileAsync(strSource), strDestination);
+			}
+			strTemp = Path.Combine(_documentHome, "Emotiv");
 			if (!Directory.Exists(strTemp))
 			{
 				Directory.CreateDirectory(strTemp);
@@ -40,14 +55,21 @@ public static class AppSettings
 				string strDestination = Path.Combine(strTemp, strSource);
 				CopyStream(await FileSystem.OpenAppPackageFileAsync(strSource), strDestination);
 			}
-
-			_eegDataHome = Path.Combine(_eegDataHome, AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? "Emotiv" : "Muse");
-			if (!Directory.Exists(_eegDataHome))
+			strTemp = Path.Combine(_documentHome, "Questions");
+			if (!Directory.Exists(strTemp))
 			{
-				Directory.CreateDirectory(_eegDataHome);
-				string strSource = AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? "Example-Emotiv.csv" : "Example-Muse.csv";
-				string strDestination = Path.Combine(_eegDataHome, strSource);
-				CopyStream(await FileSystem.OpenAppPackageFileAsync(strSource), strDestination);
+				Directory.CreateDirectory(strTemp);
+				//string strSource = "111.txt";
+				//string strDestination = Path.Combine(strTemp, strSource);
+				//CopyStream(await FileSystem.OpenAppPackageFileAsync(strSource), strDestination);
+			}
+			strTemp = Path.Combine(_documentHome, "Answers");
+			if (!Directory.Exists(strTemp))
+			{
+				Directory.CreateDirectory(strTemp);
+				//string strSource = "111.txt";
+				//string strDestination = Path.Combine(strTemp, strSource);
+				//CopyStream(await FileSystem.OpenAppPackageFileAsync(strSource), strDestination);
 			}
 		}
 	}
