@@ -1658,7 +1658,8 @@ public partial class DiagramView : ContentView
 		catch (Exception ex)
 		{
 			_aiUserPrompts[1].Add(msg);
-			_aiChatReponses[1].Add(ex.Message);
+			_aiChatReponses[1].Add(ex.Message + 
+				"\n\nEdit the Documents\\Yijing\\appsettings.json file to correct the configuration and restart the application.");
 			UpdateChat();
 		}
 	}
