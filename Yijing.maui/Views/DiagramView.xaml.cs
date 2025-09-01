@@ -36,7 +36,6 @@ Press OK.
 //using Microsoft.EntityFrameworkCore;
 using Microsoft.Maui.Controls.Shapes;
 using Microsoft.Extensions.AI;
-//using Microsoft.IdentityModel.Tokens;
 using System.Text.RegularExpressions;
 
 using OpenAI;
@@ -51,7 +50,6 @@ using ValueSequencer;
 //using YijingDb;
 using Yijing.Pages;
 using Yijing.Services;
-using System.Threading.Tasks;
 
 namespace Yijing.Views;
 

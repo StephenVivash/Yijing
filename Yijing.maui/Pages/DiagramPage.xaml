@@ -33,6 +33,11 @@
 
 			<HorizontalStackLayout>
 
+				<Label
+					Text="Chat Service"
+					Padding="0,10,10,0"
+					/>
+
 				<Picker
 					x:Name="picAiChatService"
 					SelectedIndexChanged="picAiChatService_SelectedIndexChanged"

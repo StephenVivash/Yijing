@@ -58,10 +58,10 @@ public partial class DiagramPage : ContentPage
 	protected void picAiChatService_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		AppPreferences.AiChatService = picAiChatService.SelectedIndex;
-		if ((AppPreferences.AiChatService != (int)eAiChatService.eNone) &&
-			!string.IsNullOrEmpty(AppPreferences.AiModelId[AppPreferences.AiChatService]) &&
-			(((AppPreferences.AiChatService == (int)eAiChatService.eOllama)) || 
-			!string.IsNullOrEmpty(AppPreferences.AiKey[AppPreferences.AiChatService])))
+		if (AppPreferences.AiChatService != (int)eAiChatService.eNone)
+			//!string.IsNullOrEmpty(AppPreferences.AiModelId[AppPreferences.AiChatService]) &&
+			//(((AppPreferences.AiChatService == (int)eAiChatService.eOllama)) || 
+			//!string.IsNullOrEmpty(AppPreferences.AiKey[AppPreferences.AiChatService])))
 			btnAskAi.IsEnabled = true;
 		else
 			btnAskAi.IsEnabled = false;
