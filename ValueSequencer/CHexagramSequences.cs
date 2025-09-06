@@ -50,12 +50,12 @@ namespace ValueSequencer
 				}
 				hvsPrimary.Next();
 			}
-			Array.Sort(m_arrHexagram);
+			Array.Sort<CHexagram>(m_arrHexagram);
 		}
 
 		public void Add(ref CHexagramValueSequencer hvsPrimary)
 		{
-			m_arrHexagram.SetValue(new CHexagram(ref hvsPrimary),++m_nCount);
+			m_arrHexagram[++m_nCount] = new CHexagram(ref hvsPrimary);
 		}
 
 		public CHexagramArray MultiCast(int nCount)
@@ -66,9 +66,9 @@ namespace ValueSequencer
 				//CHexagramValueSequencer hvs = new CHexagramValueSequencer(63);
 				AutoCast(ref hvs);
 				CHexagram h = new CHexagram(ref hvs);
-				int nIndex = Array.BinarySearch(m_arrHexagram, h);
+				int nIndex = Array.BinarySearch<CHexagram>(m_arrHexagram, h);
 				if(nIndex >= 0)
-					((CHexagram) m_arrHexagram.GetValue(nIndex)).Add();
+				m_arrHexagram[nIndex].Add();
 			}
 			return this;
 		}
@@ -90,11 +90,10 @@ namespace ValueSequencer
 			throw new NotImplementedException();
 		}
 
-		public Array HexagramArray() => m_arrHexagram;
-		public CHexagram this[int i] => (CHexagram) m_arrHexagram.GetValue(i);
+		public CHexagram[] HexagramArray() => m_arrHexagram;
+		public CHexagram this[int i] => m_arrHexagram[i];
 
-		private Array m_arrHexagram = Array.CreateInstance(typeof(CHexagram), 4096);
+		private CHexagram[] m_arrHexagram = new CHexagram[4096];
 		private int m_nCount = -1;
 	}
-	
 }

@@ -20,6 +20,21 @@ namespace ValueSequencer
 
 		public CHexagramValueSequencer(ref CHexagramValueSequencer hvs) : this(0)
 		{
+			for (int t = 0; t < 2; ++t)
+				for (int l = 0; l < 3; ++l)
+				{
+					var line = Trigram(t).Line(l);
+					line.Value = hvs.Trigram(t).Line(l).Value;
+					line.UpdateInnerValues();
+					line.UpdateOuterValues();
+				}
+		//UpdateInnerValues();
+		//UpdateOuterValues();
+		}
+			   
+/*			   
+		public CHexagramValueSequencer(ref CHexagramValueSequencer hvs) : this(0)
+		{
 			Trigram(1).Line(2).Value = hvs.Trigram(1).Line(2).Value;
 			Trigram(1).Line(1).Value = hvs.Trigram(1).Line(1).Value;
 			Trigram(1).Line(0).Value = hvs.Trigram(1).Line(0).Value;
@@ -44,6 +59,7 @@ namespace ValueSequencer
 			//UpdateInnerValues();
 			//UpdateOuterValues();
 		}
+*/
 
 		public CTrigramValueSequencer Trigram(int nIndex)
 		{
@@ -220,22 +236,22 @@ namespace ValueSequencer
 			return HexagramId() + " " + Label + (bValue ? " (" + ValueStr + ")" : "");
 		}
 
-                public String DescribeSecondary(bool bValue = false)
+		public String DescribeSecondary(bool bValue = false)
 		{
 			if (IsMoving)
 			{
 				CHexagramValueSequencer hvsPrimary = this;
-                                CHexagramValueSequencer hvsSecondary = new CHexagramValueSequencer(ref hvsPrimary);
-                                hvsSecondary.Move();
-                                return hvsSecondary.HexagramId() + " " + hvsSecondary.Label + (bValue ? " (" + hvsSecondary.ValueStr + ")" : "");
-                        }
-                        return "";
-                }
+				CHexagramValueSequencer hvsSeconday = new CHexagramValueSequencer(ref hvsPrimary);
+				hvsSeconday.Move();
+				return hvsSeconday.HexagramId() + " " + hvsSeconday.Label + (bValue ? " (" + hvsSeconday.ValueStr + ")" : "");
+			}
+			return "";
+		}
 
 		public String DescribeCast(bool bValue = false)
 		{
-                        return DescribePrimary(bValue) + (IsMoving ? " > " + DescribeSecondary(bValue) : "");
-                }
+			return DescribePrimary(bValue) + (IsMoving ? " > " + DescribeSecondary(bValue) : "");
+		}
 
 		protected override int GetCurrentSequence() { return m_nCurrentSequence; }
 		protected override int GetCurrentRatio() { return m_nCurrentRatio; }
