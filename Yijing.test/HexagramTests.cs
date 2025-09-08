@@ -49,15 +49,7 @@ public class HexagramTests
 		for (int i = 0; i < 64; i++)
 		{
 			Assert.Equal(i, hvs.Next().Sequence);
-			int v = 0;
-			int b = 32;
-			for (int t = 1; t >= 0; t--)
-				for (int l = 2; l >= 0; l--)
-				{
-					v += (hvs.Trigram(t).Line(l).Value == 2 ? 0 : 1) * b;
-					b /= 2;
-				}
-			Assert.Equal(v, hvs.Value);
+			Assert.Equal(hvs.Value, hvs.Trigram(1).Value * 8 + hvs.Trigram(0).Value);
 		}
 	}
 	
@@ -73,10 +65,14 @@ public class HexagramTests
 		for (int i = 0; i < 32; i++)
 		{
 			Assert.Equal(i * 2, hvs.Next().Sequence);
+			Assert.Equal(hvs.Value, hvs.Trigram(1).Value * 8 + hvs.Trigram(0).Value);
+
 			int v = hvs.Value;
 			if (hvs.Inverse().Value == v)
 				hvs.Opposite();
+
 			Assert.Equal(i * 2 + 1, hvs.Sequence);
+			Assert.Equal(hvs.Value, hvs.Trigram(1).Value * 8 + hvs.Trigram(0).Value);
 		}
 	}
 }
