@@ -3,71 +3,80 @@ using Xunit;
 
 namespace Yijing.test;
 
+//[Collection("MySequentialCollection")]
 public class HexagramTests
 {
-    [Fact]
-    public void CopyConstructor_CreatesIndependentCopy()
+	[Fact]
+	public void CopyConstructor()
     {
-        var original = new CHexagramValueSequencer(42);
-
-        var originalValues = new int[2, 3];
-        for (int t = 0; t < 2; t++)
-        {
-            for (int l = 0; l < 3; l++)
-            {
-                originalValues[t, l] = original.Trigram(t).Line(l).Value;
-            }
-        }
-
-        var copy = new CHexagramValueSequencer(ref original);
-
-        for (int t = 0; t < 2; t++)
-        {
-            for (int l = 0; l < 3; l++)
-            {
-                Assert.Equal(originalValues[t, l], copy.Trigram(t).Line(l).Value);
-            }
-        }
-
-        var line = original.Trigram(0).Line(0);
-        line.Value = line.Value == 1 ? 2 : 1;
-        line.UpdateInnerValues();
-        line.UpdateOuterValues();
-
-        Assert.NotEqual(originalValues[0, 0], original.Trigram(0).Line(0).Value);
-        for (int t = 0; t < 2; t++)
-        {
-            for (int l = 0; l < 3; l++)
-            {
-                Assert.Equal(originalValues[t, l], copy.Trigram(t).Line(l).Value);
-            }
-        }
-    }
-
-
-	[Fact]
-	public void HexagramId_ReflectsSequence()
-	{
 		Sequences.Initialise();
-		var first = new CHexagramValueSequencer(0);
-		var second = new CHexagramValueSequencer(1);
-
-		Assert.NotEqual(first.HexagramId(), second.HexagramId());
+		CHexagramValueSequencer.SetCurrentSequence(0); // Numeric
+		Sequences.SetLSB(true); // Top
+		var hvs1 = new CHexagramValueSequencer(0);
+		var hvs2 = new CHexagramValueSequencer(ref hvs1);
+		Assert.Equal(hvs1.Value, hvs2.Value);
+		hvs1.Next();
+		Assert.NotEqual(hvs1.Value, hvs2.Value);
+		hvs2.Next();
+		Assert.Equal(hvs1.Value, hvs2.Value);
 	}
 
 	[Fact]
-	public void HexagramId_AddsMovingLineSuffixWhenLinesMove()
+	public void NumericSequence()
 	{
 		Sequences.Initialise();
+		CHexagramValueSequencer.SetCurrentSequence(0); // Numeric
+		Sequences.SetLSB(false); // Bottom
 		var hvs = new CHexagramValueSequencer(0);
+		hvs.Last();
 
-		var baseId = hvs.HexagramId();
-		hvs.Trigram(0).Line(0).Next(false);
-		var movingId = hvs.HexagramId();
-
-		Assert.DoesNotContain('.', baseId);
-		Assert.Contains('.', movingId);
+		for (int i = 0; i < 64; i++)
+		{
+			Assert.Equal(i, hvs.Next().Sequence);
+			Assert.Equal(i, hvs.Value);
+		}
 	}
 
+	[Fact]
+	public void FuxiSequence()
+	{
+		Sequences.Initialise();
+		CHexagramValueSequencer.SetCurrentSequence(1); // Fuxi
+		Sequences.SetLSB(true); // Top
+		var hvs = new CHexagramValueSequencer(0);
+		hvs.Last();
 
+		for (int i = 0; i < 64; i++)
+		{
+			Assert.Equal(i, hvs.Next().Sequence);
+			int v = 0;
+			int b = 32;
+			for (int t = 1; t >= 0; t--)
+				for (int l = 2; l >= 0; l--)
+				{
+					v += (hvs.Trigram(t).Line(l).Value == 2 ? 0 : 1) * b;
+					b /= 2;
+				}
+			Assert.Equal(v, hvs.Value);
+		}
+	}
+	
+	[Fact]
+	public void WenSequence()
+	{
+		Sequences.Initialise();
+		CHexagramValueSequencer.SetCurrentSequence(2); // Wen
+		Sequences.SetLSB(true); // Top
+		var hvs = new CHexagramValueSequencer(0);
+		hvs.Last();
+
+		for (int i = 0; i < 32; i++)
+		{
+			Assert.Equal(i * 2, hvs.Next().Sequence);
+			int v = hvs.Value;
+			if (hvs.Inverse().Value == v)
+				hvs.Opposite();
+			Assert.Equal(i * 2 + 1, hvs.Sequence);
+		}
+	}
 }
