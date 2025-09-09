@@ -108,6 +108,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\ValueSequencer\ValueSequencer.csproj" />
 		<ProjectReference Include="..\CortexAccess\CortexAccess.csproj" />
+		<ProjectReference Include="..\EegML\EegML.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

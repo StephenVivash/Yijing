@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <Version>7.0.6</Version>
+    <Copyright>Copyright © 2023</Copyright>
+    <Description>The Classic of Change</Description>
+    <Authors>Stephen Vivash</Authors>
+    <Product>Yijing</Product>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ML" Version="5.0.0-preview.25373.1" />
+    <PackageReference Include="Microsoft.ML.FastTree" Version="5.0.0-preview.25373.1" />
+    <PackageReference Include="Microsoft.ML.LightGbm" Version="5.0.0-preview.25373.1" />
+    <PackageReference Include="Plotly.NET" Version="3.0.1" />
+  </ItemGroup>
+  <ItemGroup Label="EegML">
+    <None Include="EegML.mlnet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

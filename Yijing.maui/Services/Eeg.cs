@@ -4,11 +4,11 @@ using System.Net.Sockets;
 using System.Text;
 
 using Newtonsoft.Json.Linq;
-using CortexAccess;
 
+using CortexAccess;
+using EegML;
 
 using Yijing.Views;
-//using EegML;
 
 namespace Yijing.Services;
 
@@ -18,8 +18,8 @@ namespace Yijing.Services;
 
 public class EegChannel
 {
-        public ArrayList m_alAverage = new();
-        public float m_fCurrentValue = 0.0f;
+	public ArrayList m_alAverage = new();
+	public float m_fCurrentValue = 0.0f;
 	//public float m_fMinValue = 0.0f;
 	//public float m_fMaxValue = 0.0f;
 
@@ -31,26 +31,26 @@ public class EegChannel
 
 	public bool m_isTrigger = false;
 
-        public bool m_isInitialised = false;
+	public bool m_isInitialised = false;
 
-        public static int m_nAverageMax = 100;
+	public static int m_nAverageMax = 100;
 
-        public EegChannel(int nAverageMax)
-        {
-                m_nAverageMax = nAverageMax;
-                m_alAverage.Clear();
-                for (int j = 0; j < m_nAverageMax; ++j)
-                        m_alAverage.Add(0.0f);
-                m_isInitialised = false;
-        }
+	public EegChannel(int nAverageMax)
+	{
+		m_nAverageMax = nAverageMax;
+		m_alAverage.Clear();
+		for (int j = 0; j < m_nAverageMax; ++j)
+			m_alAverage.Add(0.0f);
+		m_isInitialised = false;
+	}
 
-        public void InitialseChannel(float f)
-        {
-                m_alAverage.Clear();
-                for (int j = 0; j < m_nAverageMax; ++j)
-                        m_alAverage.Add(f);
-                m_isInitialised = true;
-        }
+	public void InitialseChannel(float f)
+	{
+		m_alAverage.Clear();
+		for (int j = 0; j < m_nAverageMax; ++j)
+			m_alAverage.Add(f);
+		m_isInitialised = true;
+		}
 }
 
 // //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,7 +87,7 @@ public class Eeg
 
 	public static string m_strPrediction;
 
-	//private EegModel m_mlEEG = null;
+	private EegModel m_mlEEG = null;
 
 	public static void SetEegView(EegView eeg) 
 	{ 
@@ -259,12 +259,11 @@ public class Eeg
 				}
 			}
 
-                        //m_eegChannel[i].InitialseChannel(f);
+			//m_eegChannel[i].InitialseChannel(f);
+			if (!m_eegChannel[i].m_isInitialised)
+				m_eegChannel[i].InitialseChannel(f);
 
-                        if (!m_eegChannel[i].m_isInitialised)
-                                m_eegChannel[i].InitialseChannel(f);
-
-                        m_eegChannel[i].m_alAverage.Insert(0, f);
+			m_eegChannel[i].m_alAverage.Insert(0, f);
 			m_eegChannel[i].m_alAverage.RemoveAt(EegChannel.m_nAverageMax);
 			for (int j = 0; j < EegChannel.m_nAverageMax; ++j)
 				sum += (float)m_eegChannel[i].m_alAverage[j];
@@ -314,7 +313,6 @@ public class Eeg
 		}
 
 		float prediction = 0.0f;
-		/*
 		if (!bSummary && (m_mlEEG != null) && (AppPreferences.AiModel != (int)eAiModel.eNone))
 		{
 			prediction = m_mlEEG.Predict(
@@ -327,7 +325,6 @@ public class Eeg
 		}
 		else
 			m_strPrediction = "";
-		*/
 
 		if (!bSummary || (++m_nSummaryCount % 100 == 0))
 		{
