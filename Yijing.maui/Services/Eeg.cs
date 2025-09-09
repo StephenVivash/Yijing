@@ -121,10 +121,10 @@ public class Eeg
 			Directory.CreateDirectory(str);
 		str = Path.Combine(str, "Stephen V.mlnet"); // "John D.mlnet"
 		
-		//if (File.Exists(str))
-		//	m_mlEEG = new(str);
-		//else
-		//	m_mlEEG = null;
+		if (File.Exists(str))
+			m_mlEEG = new(str);
+		else
+			m_mlEEG = null;
 	}
 
 	public virtual void InitialiseChannels()
