@@ -53,14 +53,14 @@ public class HexagramTests
 		}
 	}
 	
-	[Fact]
-	public void WenSequence()
-	{
-		Sequences.Initialise();
-		CHexagramValueSequencer.SetCurrentSequence(2); // Wen
-		Sequences.SetLSB(true); // Top
-		var hvs = new CHexagramValueSequencer(0);
-		hvs.Last();
+        [Fact]
+        public void WenSequence()
+        {
+                Sequences.Initialise();
+                CHexagramValueSequencer.SetCurrentSequence(2); // Wen
+                Sequences.SetLSB(true); // Top
+                var hvs = new CHexagramValueSequencer(0);
+                hvs.Last();
 
 		for (int i = 0; i < 32; i++)
 		{
@@ -72,7 +72,36 @@ public class HexagramTests
 				hvs.Opposite();
 
 			Assert.Equal(i * 2 + 1, hvs.Sequence);
-			Assert.Equal(hvs.Value, hvs.Trigram(1).Value * 8 + hvs.Trigram(0).Value);
-		}
-	}
+                        Assert.Equal(hvs.Value, hvs.Trigram(1).Value * 8 + hvs.Trigram(0).Value);
+                }
+        }
+
+        [Fact]
+        public void MysterySequence()
+        {
+                Sequences.Initialise();
+                CHexagramValueSequencer.SetCurrentSequence(3); // Mystery
+                Sequences.SetLSB(true); // Top
+                var hvs = new CHexagramValueSequencer(0);
+                hvs.Last();
+
+                int[] expectedValues = {
+                        63, 62, 61, 59, 55, 47, 31, 60,
+                        57, 51, 39, 15, 58, 53, 43, 23,
+                        54, 45, 27, 46, 29, 30, 56, 49,
+                        35, 7, 50, 37, 11, 52, 41, 19,
+                        38, 13, 44, 25, 14, 28, 26, 22,
+                        21, 42, 48, 33, 3, 34, 5, 36,
+                        9, 40, 17, 6, 12, 24, 18, 20,
+                        10, 1, 2, 4, 8, 16, 32, 0
+                };
+
+                for (int i = 0; i < 64; i++)
+                {
+                        hvs.Next();
+                        Assert.Equal(i, hvs.Sequence);
+                        Assert.Equal(expectedValues[i], hvs.Value);
+                        Assert.Equal(hvs.Value, hvs.Trigram(1).Value * 8 + hvs.Trigram(0).Value);
+                }
+        }
 }
