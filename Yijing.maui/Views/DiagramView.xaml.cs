@@ -33,7 +33,7 @@ Press OK.
 *************************************************************************************************
 *************************************************************************************************/
 
-//using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Maui.Controls.Shapes;
 using Microsoft.Extensions.AI;
 using System.Text.RegularExpressions;
@@ -47,7 +47,7 @@ using Windows.Win32.Foundation;
 #endif
 
 using ValueSequencer;
-//using YijingDb;
+using YijingDb;
 using Yijing.Pages;
 using Yijing.Services;
 
@@ -1871,35 +1871,90 @@ public partial class DiagramView : ContentView
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
-	/*
-	
-	
-	
-// //////////////////////////////////////////////////////////////////////////////////////////////////
-// //////////////////////////////////////////////////////////////////////////////////////////////////
-// //////////////////////////////////////////////////////////////////////////////////////////////////
 
-// https://github.com/ollama/ollama/blob/main/docs/api.md
-//string request = "http://localhost:11434/api/generate";
-//string content = $"{{" +
-//	"\"model\": \"llama3.1\"," +
-//	"\"prompt\": \"Why is the sky blue?\"" +
-//	"}";
+	void YijingDB()
+	{
+#if WINDOWS
+		String path = "C:\\Src\\Yijing\\Yijing.db\\Yijing.db";
+#else // if ANDROID
+		String s1 = FileSystem.Current.AppDataDirectory;
+		//String s2 = FileSystem.Current.CacheDirectory;
+		String path = System.IO.Path.Combine(s1, "Yijing.db");
+#endif
+		YijingData yd = new YijingData(path);
+		yd.InitialseDB();
 
-//{
-//	"model": "llama3.1",
-//	"created_at": "2024-09-16T06:07:39.2728134Z",
-//	"response": "Hello! How are you today? Is there something I can help you with, or would you like to just chat?",
-//	"done": true,
-//	"done_reason": "stop",
-//	"context": [128006, 882, 128007],
-//	"total_duration": 3520390800,
-//	"load_duration": 16736600,
-//	"prompt_eval_count": 11,
-//	"prompt_eval_duration": 329277000,
-//	"eval_count": 25,
-//	"eval_duration": 3173195000
-//}
+		using (YijingEntities ye = new YijingEntities())
+		{
+
+			Text txt = ye.Texts.First();
+
+			YijingDb.Type t = ye.Types.Find(3);
+			LabelSery ls2 = ye.LabelSeries.Where(ls1 => ls1.Name == "Vivash" &&
+				ls1.TypeId == (int)Sequences.ValueType.Hexagram).First(); // .OrderBy(ls1 => ls1.Name)
+			IEnumerable<LabelSery> iels = from ls3 in ye.LabelSeries
+										  where ls3.TypeId == (int)Sequences.ValueType.Line
+										  orderby ls3.Name
+										  select ls3;
+			List<LabelSery> lls = iels.ToList();
+			LabelSery ls4 = ye.LabelSeries.Include(ls => ls.Type).Include(ls => ls.Labels).Single(ls5 => ls5.Name == "Vivash");
+			YijingDb.Label l1 = ls2.Labels.Single(l => l.LabelData == "Return");
+			t = l1.Type;
+		}
+
+		//lblValues.Text = "";
+		//CHexagramArray ha = new CHexagramArray();
+		//ha.MultiCast(10000);
+		//foreach (CHexagram h in ha.HexagramArray())
+		//	if (h.Count > 0)
+		//		lblValues.Text += $"{h.Count,4:D} {h.DescribeCast}\n";
+	}
+
+	public static readonly BindableProperty CardTitleProperty = BindableProperty.Create(nameof(CardTitle),
+		typeof(string), typeof(DiagramView), string.Empty);
+
+	public static readonly BindableProperty CardColorProperty = BindableProperty.Create(nameof(CardColor),
+		typeof(Color), typeof(DiagramView), App.Current.RequestedTheme == AppTheme.Dark ? Colors.Black : Colors.White);
+
+	public string CardTitle
+	{
+		get => (string)GetValue(CardTitleProperty);
+		set => SetValue(CardTitleProperty, value);
+	}
+
+	public Color CardColor
+	{
+		get => (Color)GetValue(CardColorProperty);
+		set => SetValue(CardColorProperty, value);
+	}
+}
+
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+
+	// https://github.com/ollama/ollama/blob/main/docs/api.md
+	//string request = "http://localhost:11434/api/generate";
+	//string content = $"{{" +
+	//	"\"model\": \"llama3.1\"," +
+	//	"\"prompt\": \"Why is the sky blue?\"" +
+	//	"}";
+
+	//{
+	//	"model": "llama3.1",
+	//	"created_at": "2024-09-16T06:07:39.2728134Z",
+	//	"response": "Hello! How are you today? Is there something I can help you with, or would you like to just chat?",
+	//	"done": true,
+	//	"done_reason": "stop",
+	//	"context": [128006, 882, 128007],
+	//	"total_duration": 3520390800,
+	//	"load_duration": 16736600,
+	//	"prompt_eval_count": 11,
+	//	"prompt_eval_duration": 329277000,
+	//	"eval_count": 25,
+	//	"eval_duration": 3173195000
+	//}
 
 public class OllamaRequest
 {
@@ -1949,65 +2004,4 @@ public class OllamaResponse
 	}
 	
 	
-	void YijingDB()
-	{
-#if WINDOWS
-		String path = "C:\\Src\\Yijing\\YijingDb\\Yijing.db";
-#else // if ANDROID
-		String s1 = FileSystem.Current.AppDataDirectory;
-		//String s2 = FileSystem.Current.CacheDirectory;
-		String path = System.IO.Path.Combine(s1, "Yijing.db");
-#endif
-		YijingData yd = new YijingData(path);
-		yd.InitialseDB();
-
-		using (YijingEntities ye = new YijingEntities())
-		{
-
-			Text txt = ye.Texts.First();
-
-			YijingDb.Type t = ye.Types.Find(3);
-			LabelSery ls2 = ye.LabelSeries.Where(ls1 => ls1.Name == "Vivash" &&
-				ls1.TypeId == (int)Sequences.ValueType.Hexagram).First(); // .OrderBy(ls1 => ls1.Name)
-			IEnumerable<LabelSery> iels = from ls3 in ye.LabelSeries
-										  where ls3.TypeId == (int)Sequences.ValueType.Line
-										  orderby ls3.Name
-										  select ls3;
-			List<LabelSery> lls = iels.ToList();
-			LabelSery ls4 = ye.LabelSeries.Include(ls => ls.Type).Include(ls => ls.Labels).Single(ls5 => ls5.Name == "Vivash");
-			YijingDb.Label l1 = ls2.Labels.Single(l => l.LabelData == "Return");
-			t = l1.Type;
-		}
-
-		//lblValues.Text = "";
-		//CHexagramArray ha = new CHexagramArray();
-		//ha.MultiCast(10000);
-		//foreach (CHexagram h in ha.HexagramArray())
-		//	if (h.Count > 0)
-		//		lblValues.Text += $"{h.Count,4:D} {h.DescribeCast}\n";
-	}
-	*/
-	// //////////////////////////////////////////////////////////////////////////////////////////////////
-	// //////////////////////////////////////////////////////////////////////////////////////////////////
-	// //////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-	public static readonly BindableProperty CardTitleProperty = BindableProperty.Create(nameof(CardTitle),
-		typeof(string), typeof(DiagramView), string.Empty);
-
-	public static readonly BindableProperty CardColorProperty = BindableProperty.Create(nameof(CardColor),
-		typeof(Color), typeof(DiagramView), App.Current.RequestedTheme == AppTheme.Dark ? Colors.Black : Colors.White);
-
-	public string CardTitle
-	{
-		get => (string)GetValue(CardTitleProperty);
-		set => SetValue(CardTitleProperty, value);
-	}
-
-	public Color CardColor
-	{
-		get => (Color)GetValue(CardColorProperty);
-		set => SetValue(CardColorProperty, value);
-	}
-}
-
+*/
