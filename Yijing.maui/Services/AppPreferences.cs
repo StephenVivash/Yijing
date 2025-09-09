@@ -21,9 +21,9 @@ public enum eTriggerBand { eDelta, eTheta, eAlpha, eBeta, eGamma };
 public enum eTriggerChannel { eBackLeft, eFrontLeft, eBackCenter, eFrontRight, eBackRight };
 public enum eTriggerRange { eZeroOne, eOneTwo, eTwoThree, eTwoFour, eThreeFour, eThreeFive, eFourFive, eFourSix };
 
-public enum eAiChatService { eOpenAi, eDeepseek, eGithub, eOllama, eNone };
-public enum eAiAnalysis { eNone, eOpenAI };
-public enum eAiModel { eNone, eStephenV, eJohnD };
+public enum eAiService { eOpenAi, eDeepseek, eGithub, eOllama, eNone };
+//public enum eAiAnalysis { eNone, eOpenAI };
+public enum eAiEegMlModel { eStephenV, eNone }; // eJohnD
 
 public static class AppPreferences
 {
@@ -74,9 +74,10 @@ public static class AppPreferences
 		TriggerSounding = Preferences.Get("TriggerSounding", true);
 		RawData = Preferences.Get("RawData", false);
 
-		AiAnalysis = Preferences.Get("AiAnalysis", (int)eAiAnalysis.eNone);
-		AiModel = Preferences.Get("AiModel", (int)eAiModel.eNone);
-		AiChatService = Preferences.Get("AiChatService", (int)eAiChatService.eNone);
+		AiChatService = Preferences.Get("AiChatService", (int)eAiService.eNone);
+		
+		AiEegService = Preferences.Get("AiEegService", (int)eAiService.eNone);
+		AiEegMlModel = Preferences.Get("AiEegMlModel", (int)eAiEegMlModel.eNone);
 
 		if (float.TryParse(configuration["AI:Temperature"], out float temp1))
 			AiTemperature = temp1;
@@ -96,21 +97,21 @@ public static class AppPreferences
 		// gpt-4.1 grok-3 DeepSeek-V3-0324 Llama-4-Maverick-17B-128E-Instruct-FP8 Mistral-large-2407 Meta-Llama-3.1-405B-Instruct o1 o1-mini gpt-4o-mini
 		// gpt-oss:20b qwen3:8b deepseek-r1:8b llama3.2:latest gemma3:latest
 
-		AiModelId[(int)eAiChatService.eOpenAi] = configuration["AI:Providers:OpenAI:Model"] ?? "";
-		AiEndPoint[(int)eAiChatService.eOpenAi] = configuration["AI:Providers:OpenAI:EndPoint"] ?? "";
-		AiKey[(int)eAiChatService.eOpenAi] = configuration["AI:Providers:OpenAI:Key"] ?? "";
+		AiModelId[(int)eAiService.eOpenAi] = configuration["AI:Providers:OpenAI:Model"] ?? "";
+		AiEndPoint[(int)eAiService.eOpenAi] = configuration["AI:Providers:OpenAI:EndPoint"] ?? "";
+		AiKey[(int)eAiService.eOpenAi] = configuration["AI:Providers:OpenAI:Key"] ?? "";
 
-		AiModelId[(int)eAiChatService.eDeepseek] = configuration["AI:Providers:Deepseek:Model"] ?? "";
-		AiEndPoint[(int)eAiChatService.eDeepseek] = configuration["AI:Providers:Deepseek:EndPoint"] ?? "";
-		AiKey[(int)eAiChatService.eDeepseek] = configuration["AI:Providers:Deepseek:Key"] ?? "";
+		AiModelId[(int)eAiService.eDeepseek] = configuration["AI:Providers:Deepseek:Model"] ?? "";
+		AiEndPoint[(int)eAiService.eDeepseek] = configuration["AI:Providers:Deepseek:EndPoint"] ?? "";
+		AiKey[(int)eAiService.eDeepseek] = configuration["AI:Providers:Deepseek:Key"] ?? "";
 
-		AiModelId[(int)eAiChatService.eGithub] = configuration["AI:Providers:Github:Model"] ?? "";
-		AiEndPoint[(int)eAiChatService.eGithub] = configuration["AI:Providers:Github:EndPoint"] ?? "";
-		AiKey[(int)eAiChatService.eGithub] = configuration["AI:Providers:Github:Key"] ?? "";
+		AiModelId[(int)eAiService.eGithub] = configuration["AI:Providers:Github:Model"] ?? "";
+		AiEndPoint[(int)eAiService.eGithub] = configuration["AI:Providers:Github:EndPoint"] ?? "";
+		AiKey[(int)eAiService.eGithub] = configuration["AI:Providers:Github:Key"] ?? "";
 
-		AiModelId[(int)eAiChatService.eOllama] = configuration["AI:Providers:Ollama:Model"] ?? "";
-		AiEndPoint[(int)eAiChatService.eOllama] = configuration["AI:Providers:Ollama:EndPoint"] ?? "";
-		AiKey[(int)eAiChatService.eOllama] = configuration["AI:Providers:Ollama:Key"] ?? "";
+		AiModelId[(int)eAiService.eOllama] = configuration["AI:Providers:Ollama:Model"] ?? "";
+		AiEndPoint[(int)eAiService.eOllama] = configuration["AI:Providers:Ollama:EndPoint"] ?? "";
+		AiKey[(int)eAiService.eOllama] = configuration["AI:Providers:Ollama:Key"] ?? "";
 
 		MuseScale = 1;
 		AudioScale = 10;
@@ -160,9 +161,10 @@ public static class AppPreferences
 	public static bool TriggerSounding;
 	public static bool RawData;
 
-	public static int AiAnalysis;
-	public static int AiModel;
 	public static int AiChatService;
+
+	public static int AiEegService;
+	public static int AiEegMlModel;
 
 	public static float AiTemperature;
 	public static float AiTopP;

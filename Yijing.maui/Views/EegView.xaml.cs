@@ -99,16 +99,16 @@ public partial class EegView : ContentView
 		picTriggerBand.SelectedIndex = AppPreferences.TriggerBand;
 		picTriggerChannel.SelectedIndex = AppPreferences.TriggerChannel;
 		picTriggerRange.SelectedIndex = AppPreferences.TriggerRange;
-		picAiAnalysis.SelectedIndex = AppPreferences.AiAnalysis;
-		picAiModel.SelectedIndex = AppPreferences.AiModel;
+		picAiAnalysis.SelectedIndex = AppPreferences.AiEegService;
+		picAiModel.SelectedIndex = AppPreferences.AiEegMlModel;
 		chbTriggerFixed.IsChecked = AppPreferences.TriggerFixed;
 		chbTriggerSounding.IsChecked = AppPreferences.TriggerSounding;
 
 		//if (string.IsNullOrEmpty(AppPreferences.AiKey[(int)eAiChatService.eOpenAi]))
 		//{
 			//picAiAnalysis.SelectedIndex = (int)eAiAnalysis.eNone;
-			picAiAnalysis.IsEnabled = false;
-			picAiModel.IsEnabled = false;
+			//picAiAnalysis.IsEnabled = false;
+			//picAiModel.IsEnabled = false;
 		//}
 
 		picDevice.SelectedIndex = AppPreferences.EegDevice;
@@ -229,7 +229,7 @@ public partial class EegView : ContentView
 			string s = (string)picSession.SelectedItem;
 			if (!string.IsNullOrEmpty(s))
 			{
-				if (picAiAnalysis.SelectedIndex != (int) eAiAnalysis.eNone)
+				if (picAiAnalysis.SelectedIndex != (int) eAiService.eNone)
 					EegPage.SessionLog().Text = "";
 				AppSettings.Eeg().m_bCancelReplay = false;
 				void action() => AppSettings.Eeg().Replay(Path.Combine(AppSettings.EegDataHome(), s + (AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? "-Emotiv.csv" : "-Muse.csv")));
@@ -350,12 +350,12 @@ public partial class EegView : ContentView
 
 	private void picAiModel_SelectedIndexChanged(object sender, EventArgs e)
 	{
-		AppPreferences.AiModel = picAiModel.SelectedIndex;
+		AppPreferences.AiEegMlModel = picAiModel.SelectedIndex;
 	}
 
 	private void picAiAnalysis_SelectedIndexChanged(object sender, EventArgs e)
 	{
-		AppPreferences.AiAnalysis = picAiAnalysis.SelectedIndex;
+		AppPreferences.AiEegService = picAiAnalysis.SelectedIndex;
 		//if (chbAiAnalysis.IsChecked)
 		//	_chat.AddSystemMessage(prompt[0]);
 		//AiChat(prompt[0], false, false, false);

@@ -1570,7 +1570,7 @@ public partial class DiagramView : ContentView
 		{
 			// OllamaSharp 
 
-			if (AppPreferences.AiChatService == (int)eAiChatService.eOllama)
+			if (AppPreferences.AiChatService == (int)eAiService.eOllama)
 			{
 				ChatOptions options = new()
 				{
@@ -1610,7 +1610,7 @@ public partial class DiagramView : ContentView
 				{
 					NetworkTimeout = TimeSpan.FromSeconds(60),
 				};
-				if (AppPreferences.AiChatService != (int)eAiChatService.eOpenAi)
+				if (AppPreferences.AiChatService != (int)eAiService.eOpenAi)
 					openAIClientOptions.Endpoint = new Uri(AppPreferences.AiEndPoint[AppPreferences.AiChatService]);
 
 				var requestOptions = new ChatCompletionOptions()

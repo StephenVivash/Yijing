@@ -317,8 +317,11 @@
 						Grid.Row="12"
 						>
 						<Picker.Items>
+							<x:String>OpenAi</x:String>
+							<x:String>Deepseek</x:String>
+							<x:String>Github</x:String>
+							<x:String>Ollama</x:String>
 							<x:String>None</x:String>
-							<x:String>Open AI</x:String>
 						</Picker.Items>
 					</Picker>
 
@@ -337,9 +340,8 @@
 						Grid.Row="13"
 						>
 						<Picker.Items>
-							<x:String>None</x:String>
 							<x:String>Stephen V</x:String>
-							<x:String>John D</x:String>
+							<x:String>None</x:String>
 						</Picker.Items>
 					</Picker>
 

@@ -313,7 +313,7 @@ public class Eeg
 		}
 
 		float prediction = 0.0f;
-		if (!bSummary && (m_mlEEG != null) && (AppPreferences.AiModel != (int)eAiModel.eNone))
+		if (!bSummary && (m_mlEEG != null) && (AppPreferences.AiEegMlModel != (int)eAiEegMlModel.eNone))
 		{
 			prediction = m_mlEEG.Predict(
 				m_eegChannel[0].m_fCurrentValue, m_eegChannel[1].m_fCurrentValue, m_eegChannel[3].m_fCurrentValue, m_eegChannel[4].m_fCurrentValue,
@@ -329,9 +329,9 @@ public class Eeg
 		if (!bSummary || (++m_nSummaryCount % 100 == 0))
 		{
 #if DEBUG
-			if (!bSummary && (m_nReplaySpeed == 1) && (AppPreferences.AiAnalysis == (int)eAiAnalysis.eOpenAI))
+			if (!bSummary && (m_nReplaySpeed == 1) && (AppPreferences.AiEegService != (int)eAiService.eNone))
 #else
-			if (!bSummary && (m_bLive || (m_nReplaySpeed == 1)) && (AppPreferences.AiAnalysis == (int)eAiAnalysis.eOpenAI))
+			if (!bSummary && (m_bLive || (m_nReplaySpeed == 1)) && (AppPreferences.AiEegService != (int)eAiAnalysis.eNone))
 #endif
 			{
 				DateTime Timestamp = DateTime.Now;
