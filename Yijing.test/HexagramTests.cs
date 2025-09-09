@@ -26,7 +26,7 @@ public class HexagramTests
 	{
 		Sequences.Initialise();
 		CHexagramValueSequencer.SetCurrentSequence(0); // Numeric
-		Sequences.SetLSB(false); // Bottom
+		Sequences.SetLSB(false); // Bottom so Value = Sequence = i
 		var hvs = new CHexagramValueSequencer(0);
 		hvs.Last();
 
@@ -40,14 +40,17 @@ public class HexagramTests
 	[Fact]
 	public void FuxiSequence()
 	{
+		// Value always calculated LSB = Bottom
 		int[] expectedValues =
 		{ 
-			0,32,16,48,8,40,24,56,4,36,20,52,12,44,28,60,2,34,18,50,10,42,26,58,6,38,22,54,14,46,30,62,1,33,17,49,9,41,25,57,5,37,21,53,13,45,29,61,3,35,19,51,11,43,27,59,7,39,23,55,15,47,31,63
+			0,32,16,48,8,40,24,56,4,36,20,52,12,44,28,60,2,34,18,50,10,42,26,58,6,38,22,54,
+			14,46,30,62,1,33,17,49,9,41,25,57,5,37,21,53,13,45,29,61,3,35,19,51,11,43,27,59,
+			7,39,23,55,15,47,31,63
 		};
 
 		Sequences.Initialise();
 		CHexagramValueSequencer.SetCurrentSequence(1); // Fuxi
-		Sequences.SetLSB(true); // Top
+		Sequences.SetLSB(true); // Top - irrelevant with calculated expected Value
 		var hvs = new CHexagramValueSequencer(0);
 		hvs.Last();
 
@@ -59,23 +62,17 @@ public class HexagramTests
 	}
 	
 	[Fact]
-        public void WenSequence()
-        {
-                int[] expectedValues =
-                {
-                       1, 23, 6, 18, 14, 35, 45, 10,
-                       15, 50, 39, 53, 61, 54, 31, 33,
-                       7, 2, 28, 59, 38, 62, 47, 4,
-                       44, 16, 46, 57, 30, 48, 27, 42,
-                       22, 26, 3, 40, 51, 21, 17, 25,
-                       34, 20, 63, 37, 55, 29, 49, 13,
-                       19, 41, 58, 60, 52, 36, 56, 8,
-                       11, 24, 5, 9, 32, 12, 43, 0
-               };
+	public void WenSequence()
+	{
+		int[] expectedValues =
+		{
+			63,0,17,34,23,58,2,16,55,59,7,56,61,47,4,8,25,38,3,48,41,37,32,1,57,39,33,30,18,
+			45,28,14,60,15,40,5,53,43,20,10,35,49,31,62,24,6,26,22,29,46,9,36,52,11,13,44,54,
+			27,50,19,51,12,21,42,		
+		};
 
 		Sequences.Initialise();
 		CHexagramValueSequencer.SetCurrentSequence(2); // Wen
-		Sequences.SetLSB(true); // Top
 		var hvs = new CHexagramValueSequencer(0);
 		hvs.Last();
 
@@ -98,19 +95,31 @@ public class HexagramTests
 	{
 		Sequences.Initialise();
 		CHexagramValueSequencer.SetCurrentSequence(3); // Mystery
-		Sequences.SetLSB(true); // Top
 		var hvs = new CHexagramValueSequencer(0);
 		hvs.Last();
 
+		// Highlight the sub-sequence pattern
 		int[] expectedValues = {
-			63, 62, 61, 59, 55, 47, 31, 60,
-			57, 51, 39, 15, 58, 53, 43, 23,
-			54, 45, 27, 46, 29, 30, 56, 49,
-			35, 7, 50, 37, 11, 52, 41, 19,
-			38, 13, 44, 25, 14, 28, 26, 22,
-			21, 42, 48, 33, 3, 34, 5, 36,
-			9, 40, 17, 6, 12, 24, 18, 20,
-			10, 1, 2, 4, 8, 16, 32, 0
+			63, 62, 61, 59, 55, 47, 31, 
+			60,	57, 51, 39, 15, 
+			58, 53, 43, 23,
+			54, 45, 27, 
+			46, 29, 
+			30, 
+			56, 49,	35, 7, 
+			50, 37, 11, 
+			52, 41, 19,
+
+			38, 13, 
+			44, 25, 
+			14, 28, 
+			26, 22,
+			21, 42, 
+			48, 33, 3, 
+			
+			34, 5, 36, 9, 40, 17, 6, 12, 24, 18, 20, 10, // ???
+			
+			1, 2, 4, 8, 16, 32, 0
 		};
 
 		for (int i = 0; i < 64; i++)
