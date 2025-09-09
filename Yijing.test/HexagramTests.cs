@@ -59,11 +59,19 @@ public class HexagramTests
 	}
 	
 	[Fact]
-	public void WenSequence()
-	{
-		int[] expectedValues =
-		{
-		};
+        public void WenSequence()
+        {
+                int[] expectedValues =
+                {
+                       1, 23, 6, 18, 14, 35, 45, 10,
+                       15, 50, 39, 53, 61, 54, 31, 33,
+                       7, 2, 28, 59, 38, 62, 47, 4,
+                       44, 16, 46, 57, 30, 48, 27, 42,
+                       22, 26, 3, 40, 51, 21, 17, 25,
+                       34, 20, 63, 37, 55, 29, 49, 13,
+                       19, 41, 58, 60, 52, 36, 56, 8,
+                       11, 24, 5, 9, 32, 12, 43, 0
+               };
 
 		Sequences.Initialise();
 		CHexagramValueSequencer.SetCurrentSequence(2); // Wen
