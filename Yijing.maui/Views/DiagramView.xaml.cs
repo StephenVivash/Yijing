@@ -35,11 +35,12 @@ Press OK.
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Maui.Controls.Shapes;
-using Microsoft.Extensions.AI;
 using System.Text.RegularExpressions;
 
 using OpenAI;
 using OpenAI.Chat;
+using OllamaSharp;
+using OllamaSharp.Models.Chat;
 
 #if WINDOWS
 using Windows.Win32;
@@ -1568,42 +1569,38 @@ public partial class DiagramView : ContentView
 	{
 		try
 		{
-			// OllamaSharp 
+                        // OllamaSharp
 
-			if (AppPreferences.AiChatService == (int)eAiService.eOllama)
-			{
-				ChatOptions options = new()
-				{
-					Temperature = AppPreferences.AiTemperature,
-					TopP = AppPreferences.AiTopP,
-					MaxOutputTokens = AppPreferences.AiMaxTokens,
-					//AllowParallelToolCalls = true,
-					//EndUserId = "Stephen",
-					//Functions = new List<ChatCompletionFunction> { ChatCompletionFunction.Chat },	
-				};
+                        if (AppPreferences.AiChatService == (int)eAiService.eOllama)
+                        {
+                                var ollamaClient = new OllamaApiClient(new Uri(AppPreferences.AiEndPoint[AppPreferences.AiChatService]));
 
-				var ollamaChatClient = new OllamaChatClient(new Uri(AppPreferences.AiEndPoint[AppPreferences.AiChatService]), 
-					AppPreferences.AiModelId[AppPreferences.AiChatService]);
+                                ChatRequest request = new()
+                                {
+                                        Model = AppPreferences.AiModelId[AppPreferences.AiChatService],
+                                        Messages = []
+                                };
 
-				List<Microsoft.Extensions.AI.ChatMessage> _chatHistory = [];
-				foreach (var s1 in _aiSystemPrompts)
-					_chatHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.System, s1));
-				for (int i = 0; i < _aiUserPrompts[1].Count(); ++i)
-				{
-					_chatHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.User, _aiUserPrompts[1][i]));
-					_chatHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.Assistant, _aiChatReponses[1][i]));
-				}
-				_chatHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.User, msg));
+                                foreach (var s1 in _aiSystemPrompts)
+                                        request.Messages.Add(new Message(Role.System, s1));
 
-				var completion = await ollamaChatClient.GetResponseAsync(_chatHistory, options);
-				string str = completion.Messages[0].Text;
-				str = str.Replace("**", "");
-				str = str.Replace("###", "");
-				str = str.Replace("---", "");
+                                for (int i = 0; i < _aiUserPrompts[1].Count(); ++i)
+                                {
+                                        request.Messages.Add(new Message(Role.User, _aiUserPrompts[1][i]));
+                                        request.Messages.Add(new Message(Role.Assistant, _aiChatReponses[1][i]));
+                                }
 
-				_aiUserPrompts[1].Add(msg);
-				_aiChatReponses[1].Add(str);
-			}
+                                request.Messages.Add(new Message(Role.User, msg));
+
+                                var completion = await ollamaClient.Chat(request);
+                                string str = completion.Message.Content;
+                                str = str.Replace("**", "");
+                                str = str.Replace("###", "");
+                                str = str.Replace("---", "");
+
+                                _aiUserPrompts[1].Add(msg);
+                                _aiChatReponses[1].Add(str);
+                        }
 			else
 			{
 				OpenAIClientOptions openAIClientOptions = new()
