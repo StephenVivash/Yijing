@@ -331,7 +331,7 @@ public class Eeg
 #if DEBUG
 			if (!bSummary && (m_nReplaySpeed == 1) && (AppPreferences.AiEegService != (int)eAiService.eNone))
 #else
-			if (!bSummary && (m_bLive || (m_nReplaySpeed == 1)) && (AppPreferences.AiEegService != (int)eAiAnalysis.eNone))
+			if (!bSummary && (m_bLive || (m_nReplaySpeed == 1)) && (AppPreferences.AiEegService != (int)eAiService.eNone))
 #endif
 			{
 				DateTime Timestamp = DateTime.Now;
