@@ -35,11 +35,16 @@ Press OK.
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Maui.Controls.Shapes;
-using Microsoft.Extensions.AI;
 using System.Text.RegularExpressions;
+
+using Microsoft.Extensions.AI;
 
 using OpenAI;
 using OpenAI.Chat;
+
+//using OllamaSharp.Models;
+//using OllamaSharp.Models.Chat;
+//using OllamaSharp;
 
 #if WINDOWS
 using Windows.Win32;
@@ -1568,8 +1573,74 @@ public partial class DiagramView : ContentView
 	{
 		try
 		{
-			// OllamaSharp 
 
+			/*			
+			OllamaApiClient client = new OllamaApiClient(new Uri(AppPreferences.AiEndPoint[AppPreferences.AiChatService]));
+			Chat chat = new(client);
+			chat.Model = AppPreferences.AiModelId[AppPreferences.AiChatService];
+			//chat.Options = options;
+			chat.Messages.Add(new Message { Role = "user", Content = msg });
+
+			var response1 = await chat.SendAsync("Hello") // .GetResponseAsync(options);
+
+			// With the following code to properly consume the IAsyncEnumerable<string>:
+			string str1 = "";
+			await foreach (var chunk in chat.SendAsync("Hello"))
+			{
+				str1 += chunk;
+			}
+
+			string str2 = response1.Choices[0].Message.Content;
+
+			client.ChatAsync("llama3.1:latest", new List<OllamaSharp.Message> 
+				{ new OllamaSharp. Message { Role = "user", Content = msg } },
+				options).Subscribe((response) =>
+			{
+				// Handle each response chunk as it arrives
+				if (response != null && response.Choices != null && response.Choices.Count > 0)
+				{
+					var chunk = response.Choices[0].Message.Content;
+					Console.WriteLine(chunk);
+				}
+			},
+			() =>
+			{
+				// Handle completion of the stream
+				Console.WriteLine("Stream completed.");
+			});
+
+			if (AppPreferences.AiChatService == (int)eAiService.eOllama)
+			{
+				var ollamaClient = new OllamaApiClient(new Uri(AppPreferences.AiEndPoint[AppPreferences.AiChatService]));
+
+				ChatRequest request = new()
+				{
+					Model = AppPreferences.AiModelId[AppPreferences.AiChatService],
+					Messages = []
+				};
+				
+				foreach (var s1 in _aiSystemPrompts)
+					request.Messages.Add(new Message(ChatRole.System, s1));
+
+				for (int i = 0; i < _aiUserPrompts[1].Count(); ++i)
+				{
+					request.Messages.Add(new Message(ChatRole.User, _aiUserPrompts[1][i]));
+					request.Messages.Add(new Message(ChatRole.Assistant, _aiChatReponses[1][i]));
+				}
+
+				request.Messages.Add(new Message(ChatRole.User, msg));
+
+				var completion = await ollamaClient.ChatAsync(request);
+				string str = completion.Message.Content;
+				str = str.Replace("**", "");
+				str = str.Replace("###", "");
+				str = str.Replace("---", "");
+
+				_aiUserPrompts[1].Add(msg);
+				_aiChatReponses[1].Add(str);
+			}
+			*/
+			
 			if (AppPreferences.AiChatService == (int)eAiService.eOllama)
 			{
 				ChatOptions options = new()
