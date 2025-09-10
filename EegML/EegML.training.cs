@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.Trainers;
-using Microsoft.ML.Trainers.LightGbm;
+using Microsoft.ML.Trainers.FastTree;
 
 namespace EegML
 {
@@ -92,7 +92,7 @@ namespace EegML
             // Data process configuration with pipeline data transformations
             var pipeline = mlContext.Transforms.ReplaceMissingValues(new []{new InputOutputColumnPair(@"Delta_AF7", @"Delta_AF7"),new InputOutputColumnPair(@"Delta_AF8", @"Delta_AF8"),new InputOutputColumnPair(@"Delta_TP10", @"Delta_TP10"),new InputOutputColumnPair(@"Theta_TP9", @"Theta_TP9"),new InputOutputColumnPair(@"Theta_AF7", @"Theta_AF7"),new InputOutputColumnPair(@"Theta_AF8", @"Theta_AF8"),new InputOutputColumnPair(@"Theta_TP10", @"Theta_TP10"),new InputOutputColumnPair(@"Alpha_TP9", @"Alpha_TP9"),new InputOutputColumnPair(@"Alpha_AF7", @"Alpha_AF7"),new InputOutputColumnPair(@"Alpha_AF8", @"Alpha_AF8"),new InputOutputColumnPair(@"Alpha_TP10", @"Alpha_TP10"),new InputOutputColumnPair(@"Beta_TP9", @"Beta_TP9"),new InputOutputColumnPair(@"Beta_AF7", @"Beta_AF7"),new InputOutputColumnPair(@"Beta_AF8", @"Beta_AF8"),new InputOutputColumnPair(@"Beta_TP10", @"Beta_TP10"),new InputOutputColumnPair(@"Gamma_TP9", @"Gamma_TP9"),new InputOutputColumnPair(@"Gamma_AF7", @"Gamma_AF7"),new InputOutputColumnPair(@"Gamma_AF8", @"Gamma_AF8"),new InputOutputColumnPair(@"Gamma_TP10", @"Gamma_TP10")})      
                                     .Append(mlContext.Transforms.Concatenate(@"Features", new []{@"Delta_AF7",@"Delta_AF8",@"Delta_TP10",@"Theta_TP9",@"Theta_AF7",@"Theta_AF8",@"Theta_TP10",@"Alpha_TP9",@"Alpha_AF7",@"Alpha_AF8",@"Alpha_TP10",@"Beta_TP9",@"Beta_AF7",@"Beta_AF8",@"Beta_TP10",@"Gamma_TP9",@"Gamma_AF7",@"Gamma_AF8",@"Gamma_TP10"}))      
-                                    .Append(mlContext.Regression.Trainers.LightGbm(new LightGbmRegressionTrainer.Options(){NumberOfLeaves=4,NumberOfIterations=2204,MinimumExampleCountPerLeaf=20,LearningRate=0.4543285843149072,LabelColumnName=@"Prediction",FeatureColumnName=@"Features",Booster=new GradientBooster.Options(){SubsampleFraction=0.3142125081420919,FeatureFraction=0.99999999,L1Regularization=2E-10,L2Regularization=0.9999997766729865},MaximumBinCountPerFeature=401}));
+                                    .Append(mlContext.Regression.Trainers.FastForest(new FastForestRegressionTrainer.Options(){NumberOfTrees=6,NumberOfLeaves=4,FeatureFraction=1F,LabelColumnName=@"Prediction",FeatureColumnName=@"Features"}));
 
             return pipeline;
         }
