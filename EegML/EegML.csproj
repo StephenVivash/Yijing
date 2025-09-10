@@ -3,8 +3,8 @@
     <TargetFrameworks>net9.0;net9.0-windows10.0.19041.0</TargetFrameworks>
 	<ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
-    <Version>7.0.6</Version>
-    <Copyright>Copyright © 2023</Copyright>
+    <Version>7.0.7</Version>
+    <Copyright>Copyright © 2025</Copyright>
     <Description>The Classic of Change</Description>
     <Authors>Stephen Vivash</Authors>
     <Product>Yijing</Product>
