@@ -5,10 +5,6 @@ using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 
-//using Microsoft.SemanticKernel;
-//using Microsoft.SemanticKernel.ChatCompletion;
-//using Microsoft.SemanticKernel.Connectors.OpenAI;
-
 using Platform = Yijing.Platforms.Platform;
 using Yijing.Models;
 using Yijing.Services;
@@ -49,45 +45,13 @@ public partial class EegView : ContentView
 	private Task m_tskReplay = null;
 	//private Task m_tskLoadAnalysis = null;
 
-	//IChatCompletionService _chatService = null;
-	//ChatHistory _chat = null;
-
-	//OpenAIPromptExecutionSettings _settings = new() 
-	//{
-	//	ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions
-	//};
-
-	string[] _aiSystemPrompts =
-	{
-		"I will upload Muse EEG brain wave data in dB while I perform a focused meditation. " +
-		"The Prediction represents the degree of meditative state as a percentage. " +
-		"Don't report the Prediction just use it as a primary factor in your analysis. " +
-		"The Minute represents the time from the start. " +
-		"Don't report the Minute just use it as a factor in your analysis " +
-		"eg. You can't conclude much about state at the start. " +
-		"Focus on readings at Gamma_AF7 and Gamma_AF8 and contrast their values. " +
-		"Don't disgregard the other frequencies or sensors. " +
-		"Determine genaral meditative state from any patterns you discern. " +
-		"Keep commentary very short and focus on significant current brainwave trends, don't rehash past trends. " +
-		"Don't use extraneous comments or excessive punctuation or extra spaces or new lines. " +
-		"Don't repeat the raw data or ever specify any numeric vales. Don't use document point form. " +
-		"Dont request further data I will send it automatically.",
-	};
-
-	List<string> _aiDataContext = new();
+	public Ai _ai = new Ai();
 
 	public EegView()
 	{
 		InitializeComponent();
 		Eeg.SetEegView(this);
 		AppSettings.Eeg().InitialiseChannels();
-
-		//if (AppSettings.Kernel() != null)
-		//{
-		//	_chatService = AppSettings.Kernel().GetRequiredService<IChatCompletionService>();
-		//	_chat = new();
-		//	_chat.AddSystemMessage(_aiSystemPrompts[0]);
-		//}
 
 		picMode.SelectedIndex = (int)eEegMode.eIdle;
 		picGoal.SelectedIndex = AppPreferences.EegGoal;
@@ -104,11 +68,27 @@ public partial class EegView : ContentView
 		chbTriggerFixed.IsChecked = AppPreferences.TriggerFixed;
 		chbTriggerSounding.IsChecked = AppPreferences.TriggerSounding;
 
+		_ai._systemPrompts[0] =
+			"I will upload Muse EEG brain wave data in dB while I perform a focused meditation. " +
+			"The Prediction represents the degree of meditative state as a percentage. " +
+			"Don't report the Prediction just use it as a primary factor in your analysis. " +
+			"The Minute represents the time from the start. " +
+			"Don't report the Minute just use it as a factor in your analysis " +
+			"eg. You can't conclude much about state at the start. " +
+			"Focus on readings at Gamma_AF7 and Gamma_AF8 and contrast their values. " +
+			"Don't disgregard the other frequencies or sensors. " +
+			"Determine genaral meditative state from any patterns you discern. " +
+			"Keep commentary very short and focus on significant current brainwave trends, don't rehash past trends. " +
+			"Don't use extraneous comments or excessive punctuation or extra spaces or new lines. " +
+			"Don't repeat the raw data or ever specify any numeric vales. Don't use document point form. " +
+			"Dont request further data I will send it automatically.";
+
+
 		//if (string.IsNullOrEmpty(AppPreferences.AiKey[(int)eAiChatService.eOpenAi]))
 		//{
-			//picAiAnalysis.SelectedIndex = (int)eAiAnalysis.eNone;
-			//picAiAnalysis.IsEnabled = false;
-			//picAiModel.IsEnabled = false;
+		//picAiAnalysis.SelectedIndex = (int)eAiAnalysis.eNone;
+		//picAiAnalysis.IsEnabled = false;
+		//picAiModel.IsEnabled = false;
 		//}
 
 		picDevice.SelectedIndex = AppPreferences.EegDevice;
@@ -356,11 +336,6 @@ public partial class EegView : ContentView
 	private void picAiAnalysis_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		AppPreferences.AiEegService = picAiAnalysis.SelectedIndex;
-		//if (chbAiAnalysis.IsChecked)
-		//	_chat.AddSystemMessage(prompt[0]);
-		//AiChat(prompt[0], false, false, false);
-
-		//AiData(strEegData[0]);
 	}
 
 	private void chbTriggerFixed_CheckedChanged(object sender, EventArgs e)
@@ -395,31 +370,16 @@ public partial class EegView : ContentView
 
 	public void AiData(string data)
 	{
-		/*
-		if (_chatService != null)
-		{
-			_aiDataContext.Add(data);
-			void action() => AiData(data, true);
-			Dispatcher.Dispatch(action);
-		}
-		*/
+		void action() => AiData(data, true);
+		Dispatcher.Dispatch(action);
 	}
 
-	public void AiData(string data, bool dummy)
+	public async void AiData(string data, bool dummy)
 	{
-		/*
-		try
-		{
-			_chat.AddUserMessage(data);
-			//UpdateSessionLog(s.ToString() + "\n\n");
-			var r = await _chatService.GetChatMessageContentAsync(_chat, _settings);
-			UpdateSessionLog(r.ToString() + "\n\n");
-		}
-		catch (Exception ex)
-		{
-			UpdateSessionLog(ex.Message + "\n\n");
-		}
-		*/
+		await _ai.ChatAsync(data);
+		int i = _ai._userPrompts[1].Count() - 1;
+		//UpdateSessionLog(_ai._userPrompts[1][i] + "\n\n");
+		UpdateSessionLog(_ai._chatReponses[1][i] + "\n\n");
 	}
 
 	public void UpdateSessionLog(string str)

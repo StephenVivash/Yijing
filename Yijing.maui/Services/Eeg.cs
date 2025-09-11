@@ -336,7 +336,7 @@ public class Eeg
 			{
 				DateTime Timestamp = DateTime.Now;
 				TimeSpan TimeDiff = Timestamp - _dtAiUpdate;
-				if (TimeDiff.TotalSeconds >= 60)
+				if (TimeDiff.TotalSeconds >= 120)
 				{
 					_dtAiUpdate = Timestamp;
 					TimeDiff = Timestamp - m_dtEegStart;
