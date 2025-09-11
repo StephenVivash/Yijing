@@ -37,15 +37,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Maui.Controls.Shapes;
 using System.Text.RegularExpressions;
 
-using Microsoft.Extensions.AI;
-
-using OpenAI;
-using OpenAI.Chat;
-
-//using OllamaSharp.Models;
-//using OllamaSharp.Models.Chat;
-//using OllamaSharp;
-
 #if WINDOWS
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -53,6 +44,7 @@ using Windows.Win32.Foundation;
 
 using ValueSequencer;
 using YijingDb;
+
 using Yijing.Pages;
 using Yijing.Services;
 
@@ -88,6 +80,8 @@ public partial class DiagramView : ContentView
 	private int m_nCurrentLine = 0;
 	private int m_nCurrentTrigram = 0;
 
+	private int m_nTriggerSpeed = 1;
+
 	private int m_nDiagramHeight;
 	private int m_nDiagramWidth;
 	private int m_nDiagramPadding;
@@ -98,6 +92,8 @@ public partial class DiagramView : ContentView
 
 	private static Timer m_timDiagram = new Timer(DiagramTimer, null, Timeout.Infinite, 0);
 
+	private Task m_tskAutoCast = null;
+
 	private SolidColorBrush m_brMonoColor;
 	private SolidColorBrush m_brMovingYang;
 	private SolidColorBrush m_brSelectStoke;
@@ -105,56 +101,12 @@ public partial class DiagramView : ContentView
 	private SolidColorBrush m_brDarkGray = new SolidColorBrush(Color.FromRgba(0x40, 0x40, 0x40, 0xFF));
 	private SolidColorBrush m_brLightGray = new SolidColorBrush(Colors.LightGray);
 
-	private int m_nTriggerSpeed = 1;
-
-	private Task m_tskAutoCast = null;
-
-	public static string m_strLineStart = "";
-	public static string m_strLineEnd = "";
-
-	public static bool _saveChat = false;
-
+	//public static string m_strLineStart = "";
+	//public static string m_strLineEnd = "";
 	//public static IntPtr WindowHandle { get; private set; }
 
-	string[] _aiSystemPrompts =
-	{
-		"This app allows a user to consult the Yijing and engage in casual conversation with AI. " +
-	
-		"Don't explain what the Yijing is or how it works unless explicitly asked. " +
-		
-		"Not all consultations with the Yijing, and therefore AI, involve a question that needs an answer, like those " +
-		"which are simply a reflective statement that seeks to explore for enjoyment rather than map for remedy. " +
-		
-		"The question/statement and the Yijing's response will then be sent to the AI for comment. " +
-		
-		"Respond in light of the Yijing's answer unless told to ignore it. " +
-		
-		"Focus on an explanation of question/statement and draw from any other relevant sources. " +
-		
-		"After the initial response don't repeat or rehash the answer refering to " +
-		"the hexagram again unless explicitly asked to do so. " +
-		
-		"Subsequent 'on topic' questions/statements won't necessarily be related to the cast hexagram, " +
-		"therefore don't include that information in the response. " +
-		
-		"At least reference the ideas associated with hexagrams cast if mentioned in the current prompt " +
-		
-		"Don't repeat or summarise previous answers unless explicitly ask to do so. " +
-		
-		"Allow the user to change the subject or ask for clarification about past responses. " + 	
-
-		"Respond with prose rather than bullet points unless explicitly asked."
-		
-		//"Only call kernel functions if the user input should be interpreted as a command rather that a " +
-		//"corherrent question or statement." + 
-		//"Always call the get_hexagram() function to return the hexagram's current value after a call to a " +
-		//"kernel function that modifies the state of the hexagram, eg. first_hexagram(), next_hexagram(), " +
-		//"inverse_hexagram(). You cannot reliably calculate this value because a user can also modify the hexagram " +
-		//"without the AI knowing."
-	};
-
-	public static List<List<string>> _aiUserPrompts = [[], []];
-	public static List<List<string>> _aiChatReponses = [[], []];
+	public static bool _saveChat = false;
+	public Ai _ai = new Ai();
 
 	public DiagramView()
 	{
@@ -215,41 +167,40 @@ public partial class DiagramView : ContentView
 
 		LoadSessions(0);
 
+		//_ai._contextSessions.Add("2025-07-06-19-55-13");
+
+		_ai._systemPrompts[0] =
+
+			"This app allows a user to consult the Yijing and engage in casual conversation with AI. " +
+
+			"Don't explain what the Yijing is or how it works unless explicitly asked. " +
+
+			"Not all consultations with the Yijing, and therefore AI, involve a question that needs an answer, like those " +
+			"which are simply a reflective statement that seeks to explore for enjoyment rather than map for remedy. " +
+
+			"The question/statement and the Yijing's response will then be sent to the AI for comment. " +
+
+			"Respond in light of the Yijing's answer unless told to ignore it. " +
+
+			"Focus on an explanation of question/statement and draw from any other relevant sources. " +
+
+			"After the initial response don't repeat or rehash the answer refering to " +
+			"the hexagram again unless explicitly asked to do so. " +
+
+			"Subsequent 'on topic' questions/statements won't necessarily be related to the cast hexagram, " +
+			"therefore don't include that information in the response. " +
+
+			"At least reference the ideas associated with hexagrams cast if mentioned in the current prompt " +
+
+			"Don't repeat or summarise previous answers unless explicitly ask to do so. " +
+
+			"Allow the user to change the subject or ask for clarification about past responses. " +
+
+			"Respond with prose rather than bullet points unless explicitly asked."
+			;
+
 		//YijingDB();
 
-		/*
-		var description = new StringBuilder();
-		var process = Process.GetCurrentProcess();
-		foreach (ProcessModule module in process.Modules)
-		{
-			description.AppendLine(module.FileName);
-		}
-
-		Window[] w = Application.Current.Windows.ToArray();
-		WindowHandle = WinRT.Interop.WindowNative.GetWindowHandle(w[0]);
-
-#if WINDOWS
-		nint a = User32.GetActiveWindow();
-		string b = Kernel32Extensions.GetMessage(Win32ErrorCode.ERROR_CREATE_FAILED);
-		bool b1 = System.Runtime.GCSettings.IsServerGC;
-		//AsyncInfo.Run(null);
-		//interface iii = System.Runtime.InteropServices.ComTypes.IDataObject;
-#endif
-
-		DisplayAlert("Error", "Failed to locate document folder", "OK");
-		string location = System.IO.Path.Combine(FileSystem.Current.AppDataDirectory, "Download", "abc.jpg");
-		m_strDocumentHome = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
-		image.Source = ImageSource.FromFile(location);
-
-		Stream fileStream = await FileSystem.Current.OpenAppPackageFileAsync("");
-
-		Application.Current.On<Microsoft.Maui.Controls.PlatformConfiguration.Windows>().SetImageDirectory("Assets");
-		var y = Microsoft.Maui.Controls.PlatformConfiguration.WindowsSpecific.Application.GetImageDirectory(btnEeg);
-
-		File.Delete("");
-		Directory.Delete("", true);
-		DriveInfo.GetDrives();
-		*/
 	}
 
 	protected void Page_Loaded(object sender, EventArgs e)
@@ -419,10 +370,6 @@ public partial class DiagramView : ContentView
 		SetNuclear();
 	}
 
-	List<string> _contexts = [
-		//"2025-07-06-19-55-13"
-	];
-
 	protected void picSession_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		if (picSession.SelectedIndex == -1)
@@ -433,11 +380,11 @@ public partial class DiagramView : ContentView
 			DateTime start = DateTime.Now;
 			StartChat();
 			EegView._strSession = AppSettings.ReverseDateString();
-			LoadChat("", _contexts);
+			LoadChat("", _ai._contextSessions);
 			UpdateText();
 		}
 		else
-			LoadChat((string)picSession.SelectedItem, _contexts);
+			LoadChat((string)picSession.SelectedItem, _ai._contextSessions);
 	}
 
 	protected void btnDeleteSession_Clicked(object sender, EventArgs e)
@@ -1264,23 +1211,6 @@ public partial class DiagramView : ContentView
 		m_vsCurrent = m_hvsCurrent;
 	}
 
-	/*
-	public static async void ShareCast()
-	{
-		Appointment appointment = new Appointment();
-		appointment.Subject = "☯️ " + m_hvsCurrent.DescribeCast();
-		appointment.DetailsKind = AppointmentDetailsKind.Html;
-		appointment.Details = "Type: " + QuestionPage.Type + " Question: " + QuestionPage.Text +
-			" https://www.microsoft.com/store/apps/9n5q9qxxh7wj https://play.google.com/store/apps/details?id=org.yijing";
-		await AppointmentManager.ShowAddAppointmentAsync(appointment, default(Windows.Foundation.Rect));
-
-		//appointment.Uri = new Uri("ms-windows-store://pdp/?productid=9wzdncrfj6qs");
-		//appointment.Location = "";
-		//Calendar calendar = new Calendar(new string[] { "en-US" }, CalendarIdentifiers.Gregorian, ClockIdentifiers.TwentyFourHour, "America/Los_Angeles");
-		//calendar.GetCalendarSystem();
-	}
-	*/
-
 	private void EnableDiagramControls(bool bEnable, bool bExplore)
 	{
 		//MainPage.EnableDiagramControls(bEnable);
@@ -1508,227 +1438,23 @@ public partial class DiagramView : ContentView
 			s += " I consulted the oracle and the Yijing responded with hexagram " + m_hvsCurrent.DescribeCast();
 
 		bool reload = false;
-		if (_aiUserPrompts[1].Count() == 0)
+		if (_ai._userPrompts[1].Count() == 0)
 			if (picSession.FindByName(EegView._strSession) == null)
 				reload = true;
 		_saveChat = true;
-		AiChat(includeCast, s, reload);
+		AiChat(s, reload);
 		UpdateSessionLog("", false, false);
 
-		/*
-		HttpResponseMessage response1 = await OllamaPostRequest("llama3.1", s);
-		response1.EnsureSuccessStatusCode();
-		string content = await response1.Content.ReadAsStringAsync();
-		OllamaResponse or = JsonConvert.DeserializeObject<OllamaResponse>(content);
-		_aiUserPrompts.Add(DiagramPage.SessionLog().Text);
-		_aiChatReponses.Add(or.response);
-		UpdateChat();
-		UpdateSessionLog("", false, false);
-		return;
-		
-		// Brain dead Ollama
-
-		IOllamaApiClient _ollamaApiClient = new OllamaApiClient(new Uri("http://localhost:11434"), "llama3.1:latest");
-		var chatRequest = new ChatRequest
-		{
-			Messages = new List<Message>
-			{
-				new Message { Content = s}
-			}
-		};
-		string r = "";
-		await foreach (var response2 in _ollamaApiClient.ChatAsync(chatRequest))
-			r += response2.Message.Content;
-
-		_aiUserPrompts.Add(DiagramPage.SessionLog().Text);
-		_aiChatReponses.Add(r);
-		UpdateChat();
-		UpdateSessionLog("", false, false);
-		return;
-
-		string seq = "";
-		if (m_hvsCurrent.Sequence < 8)
-			seq = $"{m_hvsCurrent.Sequence + 1:0#}";
-		else
-			seq = $"{m_hvsCurrent.Sequence + 1:#}";
-
-		s = $"Locate the following sections for the hexagram in DocumentId B-YiTran\n " +
-			$"{seq}.X, Overall Image - hexagram image\n " +
-			$"{seq}.0, {m_hvsCurrent.Label} - hexagram judgment\n " +
-			$"{seq}.M, Keywords - hexagram keywords\n " +
-			$"{seq}.G, Glossary - hexagram glossary\n " +
-			$"{seq}.T, Tuan Zhuan - hexagram judgment commentary\n " +
-			$"{seq}.1, 1st - first moving line\n " +
-			$"{seq}.2, 2nd - second moving line\n " +
-			$"{seq}.3, 3rd - third moving line\n " +
-			$"{seq}.4, 4th - fourth moving line\n " +
-			$"{seq}.5, 5th - fith moving line\n " +
-			$"{seq}.6, Top - sixth moving line\n\n ";
-
-		s += $"Please summarise all section for hexagram {m_hvsCurrent.DescribeCast()}";
-		*/
 	}
 
-	public async void AiChat(bool includeCast, string msg, bool reload)
+	public async void AiChat(string msg, bool reload)
 	{
-		try
+		await _ai.ChatAsync(msg);
+		if (reload)
+			LoadSessions(-1);
+		else
 		{
-
-			/*			
-			OllamaApiClient client = new OllamaApiClient(new Uri(AppPreferences.AiEndPoint[AppPreferences.AiChatService]));
-			Chat chat = new(client);
-			chat.Model = AppPreferences.AiModelId[AppPreferences.AiChatService];
-			//chat.Options = options;
-			chat.Messages.Add(new Message { Role = "user", Content = msg });
-
-			var response1 = await chat.SendAsync("Hello") // .GetResponseAsync(options);
-
-			// With the following code to properly consume the IAsyncEnumerable<string>:
-			string str1 = "";
-			await foreach (var chunk in chat.SendAsync("Hello"))
-			{
-				str1 += chunk;
-			}
-
-			string str2 = response1.Choices[0].Message.Content;
-
-			client.ChatAsync("llama3.1:latest", new List<OllamaSharp.Message> 
-				{ new OllamaSharp. Message { Role = "user", Content = msg } },
-				options).Subscribe((response) =>
-			{
-				// Handle each response chunk as it arrives
-				if (response != null && response.Choices != null && response.Choices.Count > 0)
-				{
-					var chunk = response.Choices[0].Message.Content;
-					Console.WriteLine(chunk);
-				}
-			},
-			() =>
-			{
-				// Handle completion of the stream
-				Console.WriteLine("Stream completed.");
-			});
-
-			if (AppPreferences.AiChatService == (int)eAiService.eOllama)
-			{
-				var ollamaClient = new OllamaApiClient(new Uri(AppPreferences.AiEndPoint[AppPreferences.AiChatService]));
-
-				ChatRequest request = new()
-				{
-					Model = AppPreferences.AiModelId[AppPreferences.AiChatService],
-					Messages = []
-				};
-				
-				foreach (var s1 in _aiSystemPrompts)
-					request.Messages.Add(new Message(ChatRole.System, s1));
-
-				for (int i = 0; i < _aiUserPrompts[1].Count(); ++i)
-				{
-					request.Messages.Add(new Message(ChatRole.User, _aiUserPrompts[1][i]));
-					request.Messages.Add(new Message(ChatRole.Assistant, _aiChatReponses[1][i]));
-				}
-
-				request.Messages.Add(new Message(ChatRole.User, msg));
-
-				var completion = await ollamaClient.ChatAsync(request);
-				string str = completion.Message.Content;
-				str = str.Replace("**", "");
-				str = str.Replace("###", "");
-				str = str.Replace("---", "");
-
-				_aiUserPrompts[1].Add(msg);
-				_aiChatReponses[1].Add(str);
-			}
-			*/
-			
-			if (AppPreferences.AiChatService == (int)eAiService.eOllama)
-			{
-				ChatOptions options = new()
-				{
-					Temperature = AppPreferences.AiTemperature,
-					TopP = AppPreferences.AiTopP,
-					MaxOutputTokens = AppPreferences.AiMaxTokens,
-					//AllowParallelToolCalls = true,
-					//EndUserId = "Stephen",
-					//Functions = new List<ChatCompletionFunction> { ChatCompletionFunction.Chat },	
-				};
-
-				var ollamaChatClient = new OllamaChatClient(new Uri(AppPreferences.AiEndPoint[AppPreferences.AiChatService]), 
-					AppPreferences.AiModelId[AppPreferences.AiChatService]);
-
-				List<Microsoft.Extensions.AI.ChatMessage> _chatHistory = [];
-				foreach (var s1 in _aiSystemPrompts)
-					_chatHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.System, s1));
-				for (int i = 0; i < _aiUserPrompts[1].Count(); ++i)
-				{
-					_chatHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.User, _aiUserPrompts[1][i]));
-					_chatHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.Assistant, _aiChatReponses[1][i]));
-				}
-				_chatHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.User, msg));
-
-				var completion = await ollamaChatClient.GetResponseAsync(_chatHistory, options);
-				string str = completion.Messages[0].Text;
-				str = str.Replace("**", "");
-				str = str.Replace("###", "");
-				str = str.Replace("---", "");
-
-				_aiUserPrompts[1].Add(msg);
-				_aiChatReponses[1].Add(str);
-			}
-			else
-			{
-				OpenAIClientOptions openAIClientOptions = new()
-				{
-					NetworkTimeout = TimeSpan.FromSeconds(60),
-				};
-				if (AppPreferences.AiChatService != (int)eAiService.eOpenAi)
-					openAIClientOptions.Endpoint = new Uri(AppPreferences.AiEndPoint[AppPreferences.AiChatService]);
-
-				var requestOptions = new ChatCompletionOptions()
-				{
-					Temperature = AppPreferences.AiTemperature,
-					TopP = AppPreferences.AiTopP,
-					MaxOutputTokenCount = AppPreferences.AiMaxTokens,
-				};
-
-				System.ClientModel.ApiKeyCredential credential = new(AppPreferences.AiKey[AppPreferences.AiChatService]);
-				var openAiChatClient = new ChatClient(AppPreferences.AiModelId[AppPreferences.AiChatService], credential, openAIClientOptions); // AppPreferences.OpenAiKey
-
-				List<OpenAI.Chat.ChatMessage> _chatHistory = [];
-				foreach (var s1 in _aiSystemPrompts)
-					_chatHistory.Add(new SystemChatMessage(s1)); // UserChatMessage SystemChatMessage
-
-				for (int i = 0; i < 2; ++i)
-					for (int j = 0; j < _aiUserPrompts[i].Count(); ++j)
-					{
-						_chatHistory.Add(new UserChatMessage(_aiUserPrompts[i][j]));
-						_chatHistory.Add(new AssistantChatMessage(_aiChatReponses[i][j]));
-					}
-
-				_chatHistory.Add(new UserChatMessage(msg));
-
-				var response = await openAiChatClient.CompleteChatAsync(_chatHistory, requestOptions);
-				string str = response.Value.Content[0].Text;
-				str = str.Replace("**", "");
-				str = str.Replace("###", "");
-				str = str.Replace("---", "");
-
-				_aiUserPrompts[1].Add(msg);
-				_aiChatReponses[1].Add(str);
-			}
-			if (reload)
-				LoadSessions(-1);
-			else
-			{
-				SaveChat(_this.picSession.SelectedItem as string);
-				UpdateChat();
-			}
-		}
-		catch (Exception ex)
-		{
-			_aiUserPrompts[1].Add(msg);
-			_aiChatReponses[1].Add(ex.Message + 
-				"\n\nEdit the Documents\\Yijing\\appsettings.json file to correct the configuration and restart the application.");
+			SaveChat(picSession.SelectedItem as string);
 			UpdateChat();
 		}
 	}
@@ -1785,12 +1511,8 @@ public partial class DiagramView : ContentView
 		SaveChat(EegView._strSession);
 		_saveChat = false;
 
-		//_chatHistory = new();
-		//foreach (var s in _aiSystemPrompts)
-		//	_chatHistory.AddUserMessage(s); // AddSystemMessage
-
-		_aiUserPrompts = [[], []];
-		_aiChatReponses = [[], []];
+		_ai._userPrompts = [[], []];
+		_ai._chatReponses = [[], []];
 		_this.UpdateChat();
 
 		UpdateSessionLog("", false, false);
@@ -1799,10 +1521,10 @@ public partial class DiagramView : ContentView
 	public void SaveChat(string name)
 	{
 		if (_saveChat)
-			if ((_aiUserPrompts[1].Count() > 0) || (_aiChatReponses[1].Count() > 0))
+			if ((_ai._userPrompts[1].Count() > 0) || (_ai._chatReponses[1].Count() > 0))
 			{
-				SaveChat(name, "Question", _aiUserPrompts[1]);
-				SaveChat(name, "Answer", _aiChatReponses[1]); 
+				SaveChat(name, "Question", _ai._userPrompts[1]);
+				SaveChat(name, "Answer", _ai._chatReponses[1]); 
 				_saveChat = false;
 			}
 	}
@@ -1823,15 +1545,15 @@ public partial class DiagramView : ContentView
 		StartChat();
 		for (int i = 0; i < contexts.Count(); ++i)
 		{
-			LoadChat(contexts[i], "Question", _aiUserPrompts[0]);
-			LoadChat(contexts[i], "Answer", _aiChatReponses[0]);
+			LoadChat(contexts[i], "Question", _ai._userPrompts[0]);
+			LoadChat(contexts[i], "Answer", _ai._chatReponses[0]);
 		}
 		if (!string.IsNullOrEmpty(session))
 		{
 			EegView._strSession = session;
-			LoadChat(session, "Question", _aiUserPrompts[1]);
-			LoadChat(session, "Answer", _aiChatReponses[1]);
-			if ((_aiUserPrompts[1].Count() > 0) || (_aiChatReponses[1].Count() > 0))
+			LoadChat(session, "Question", _ai._userPrompts[1]);
+			LoadChat(session, "Answer", _ai._chatReponses[1]);
+			if ((_ai._userPrompts[1].Count() > 0) || (_ai._chatReponses[1].Count() > 0))
 				UpdateChat();
 		}
 	}
@@ -1894,20 +1616,20 @@ public partial class DiagramView : ContentView
 			"} " +
 			"</style></head><body><h1>" + " Chat Session: " + (picSession.SelectedItem as string);
 
-		if (_contexts.Count() > 0)
+		if (_ai._contextSessions.Count() > 0)
 			strHtml += "</p>Context Sessions: ";
-		foreach (var s in _contexts)
+		foreach (var s in _ai._contextSessions)
 			strHtml += s + " ";
 
 		strHtml += "</h1>";
 
-		int count = int.Max(_aiChatReponses[1].Count(), _aiUserPrompts[1].Count());
+		int count = int.Max(_ai._chatReponses[1].Count(), _ai._userPrompts[1].Count());
 		for (int i = 0; i < count; ++i)
 		{
-			if (i < _aiUserPrompts[1].Count())
-				strHtml += "<p><h4>" + _aiUserPrompts[1][i].Replace("\n", "</p>") + "</h4></p>";
-			if (i < _aiChatReponses[1].Count())
-				strHtml += "<p>" + _aiChatReponses[1][i].Replace("\n", "</p>") + "</p>";
+			if (i < _ai._userPrompts[1].Count())
+				strHtml += "<p><h4>" + _ai._userPrompts[1][i].Replace("\n", "</p>") + "</h4></p>";
+			if (i < _ai._chatReponses[1].Count())
+				strHtml += "<p>" + _ai._chatReponses[1][i].Replace("\n", "</p>") + "</p>";
 		}
 		for (int i = 0; i < 64; ++i)
 			if (strHtml.Contains(Sequences.strHexagramLabels[9, i], StringComparison.CurrentCultureIgnoreCase))
@@ -1938,10 +1660,6 @@ public partial class DiagramView : ContentView
 		}
 		Dispatcher.Dispatch(action);
 	}
-
-	// //////////////////////////////////////////////////////////////////////////////////////////////////
-	// //////////////////////////////////////////////////////////////////////////////////////////////////
-	// //////////////////////////////////////////////////////////////////////////////////////////////////
 
 	void YijingDB()
 	{
@@ -2074,5 +1792,103 @@ public class OllamaResponse
 			return await httpClient.SendAsync(httpRequestMessage);
 	}
 	
-	
+
+		HttpResponseMessage response1 = await OllamaPostRequest("llama3.1", s);
+		response1.EnsureSuccessStatusCode();
+		string content = await response1.Content.ReadAsStringAsync();
+		OllamaResponse or = JsonConvert.DeserializeObject<OllamaResponse>(content);
+		_aiUserPrompts.Add(DiagramPage.SessionLog().Text);
+		_aiChatReponses.Add(or.response);
+		UpdateChat();
+		UpdateSessionLog("", false, false);
+		return;
+		
+		// Brain dead Ollama
+
+		IOllamaApiClient _ollamaApiClient = new OllamaApiClient(new Uri("http://localhost:11434"), "llama3.1:latest");
+		var chatRequest = new ChatRequest
+		{
+			Messages = new List<Message>
+			{
+				new Message { Content = s}
+			}
+		};
+		string r = "";
+		await foreach (var response2 in _ollamaApiClient.ChatAsync(chatRequest))
+			r += response2.Message.Content;
+
+		_aiUserPrompts.Add(DiagramPage.SessionLog().Text);
+		_aiChatReponses.Add(r);
+		UpdateChat();
+		UpdateSessionLog("", false, false);
+		return;
+
+		string seq = "";
+		if (m_hvsCurrent.Sequence < 8)
+			seq = $"{m_hvsCurrent.Sequence + 1:0#}";
+		else
+			seq = $"{m_hvsCurrent.Sequence + 1:#}";
+
+		s = $"Locate the following sections for the hexagram in DocumentId B-YiTran\n " +
+			$"{seq}.X, Overall Image - hexagram image\n " +
+			$"{seq}.0, {m_hvsCurrent.Label} - hexagram judgment\n " +
+			$"{seq}.M, Keywords - hexagram keywords\n " +
+			$"{seq}.G, Glossary - hexagram glossary\n " +
+			$"{seq}.T, Tuan Zhuan - hexagram judgment commentary\n " +
+			$"{seq}.1, 1st - first moving line\n " +
+			$"{seq}.2, 2nd - second moving line\n " +
+			$"{seq}.3, 3rd - third moving line\n " +
+			$"{seq}.4, 4th - fourth moving line\n " +
+			$"{seq}.5, 5th - fith moving line\n " +
+			$"{seq}.6, Top - sixth moving line\n\n ";
+
+		s += $"Please summarise all section for hexagram {m_hvsCurrent.DescribeCast()}";
+
+
+		var description = new StringBuilder();
+		var process = Process.GetCurrentProcess();
+		foreach (ProcessModule module in process.Modules)
+		{
+			description.AppendLine(module.FileName);
+		}
+
+		Window[] w = Application.Current.Windows.ToArray();
+		WindowHandle = WinRT.Interop.WindowNative.GetWindowHandle(w[0]);
+
+#if WINDOWS
+		nint a = User32.GetActiveWindow();
+		string b = Kernel32Extensions.GetMessage(Win32ErrorCode.ERROR_CREATE_FAILED);
+		bool b1 = System.Runtime.GCSettings.IsServerGC;
+		//AsyncInfo.Run(null);
+		//interface iii = System.Runtime.InteropServices.ComTypes.IDataObject;
+#endif
+
+		DisplayAlert("Error", "Failed to locate document folder", "OK");
+		string location = System.IO.Path.Combine(FileSystem.Current.AppDataDirectory, "Download", "abc.jpg");
+		m_strDocumentHome = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
+		image.Source = ImageSource.FromFile(location);
+
+		Stream fileStream = await FileSystem.Current.OpenAppPackageFileAsync("");
+
+		Application.Current.On<Microsoft.Maui.Controls.PlatformConfiguration.Windows>().SetImageDirectory("Assets");
+		var y = Microsoft.Maui.Controls.PlatformConfiguration.WindowsSpecific.Application.GetImageDirectory(btnEeg);
+
+		File.Delete("");
+		Directory.Delete("", true);
+		DriveInfo.GetDrives();
+
+public static async void ShareCast()
+{
+	Appointment appointment = new Appointment();
+	appointment.Subject = "☯️ " + m_hvsCurrent.DescribeCast();
+	appointment.DetailsKind = AppointmentDetailsKind.Html;
+	appointment.Details = "Type: " + QuestionPage.Type + " Question: " + QuestionPage.Text +
+		" https://www.microsoft.com/store/apps/9n5q9qxxh7wj https://play.google.com/store/apps/details?id=org.yijing";
+	await AppointmentManager.ShowAddAppointmentAsync(appointment, default(Windows.Foundation.Rect));
+
+	//appointment.Uri = new Uri("ms-windows-store://pdp/?productid=9wzdncrfj6qs");
+	//appointment.Location = "";
+	//Calendar calendar = new Calendar(new string[] { "en-US" }, CalendarIdentifiers.Gregorian, ClockIdentifiers.TwentyFourHour, "America/Los_Angeles");
+	//calendar.GetCalendarSystem();
+}
 */

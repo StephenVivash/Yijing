@@ -82,7 +82,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.9" />
 
 		<PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="9.9.0" />
-		<PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="9.8.0-preview.1.25412.6" />
+		<PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="9.9.0-preview.1.25458.4" />
 
 		<PackageReference Include="Microsoft.Extensions.AI" Version="9.9.0" />
 		<PackageReference Include="Microsoft.Extensions.AI.Ollama" Version="9.7.0-preview.1.25356.2" />
@@ -96,7 +96,7 @@
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Plugin.Maui.Audio" Version="4.0.0" />
 		<PackageReference Include="LiveChartsCore.SkiaSharpView.Maui" Version="2.0.0-rc5.4" />
-		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.183">
+		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.205">
 			<PrivateAssets>all</PrivateAssets>
 			<!--IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets-->
 		</PackageReference>
