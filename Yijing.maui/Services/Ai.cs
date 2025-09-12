@@ -18,15 +18,15 @@ public class Ai
 	public List<List<string>> _userPrompts = [[], []];
 	public List<List<string>> _chatReponses = [[], []];
 
-	public async Task ChatAsync(string msg)
+	public async Task ChatAsync(int aiService, string prompt)
 	{
+		string response = "";
 		try
 		{
-
-			/*			
-			OllamaApiClient client = new OllamaApiClient(new Uri(AppPreferences.AiEndPoint[AppPreferences.AiChatService]));
+            /*			
+			OllamaApiClient client = new OllamaApiClient(new Uri(AppPreferences.AiEndPoint[aiService]));
 			Chat chat = new(client);
-			chat.Model = AppPreferences.AiModelId[AppPreferences.AiChatService];
+			chat.Model = AppPreferences.AiModelId[aiService];
 			//chat.Options = options;
 			chat.Messages.Add(new Message { Role = "user", Content = msg });
 
@@ -58,13 +58,13 @@ public class Ai
 				Console.WriteLine("Stream completed.");
 			});
 
-			if (AppPreferences.AiChatService == (int)eAiService.eOllama)
+			if (aiService == (int)eAiService.eOllama)
 			{
-				var ollamaClient = new OllamaApiClient(new Uri(AppPreferences.AiEndPoint[AppPreferences.AiChatService]));
+				var ollamaClient = new OllamaApiClient(new Uri(AppPreferences.AiEndPoint[aiService]));
 
 				ChatRequest request = new()
 				{
-					Model = AppPreferences.AiModelId[AppPreferences.AiChatService],
+					Model = AppPreferences.AiModelId[aiService],
 					Messages = []
 				};
 
@@ -90,7 +90,7 @@ public class Ai
 			}
 			*/
 
-			if (AppPreferences.AiChatService == (int)eAiService.eOllama)
+            if (aiService == (int)eAiService.eOllama)
 			{
 				ChatOptions options = new()
 				{
@@ -102,8 +102,8 @@ public class Ai
 					//Functions = new List<ChatCompletionFunction> { ChatCompletionFunction.Chat },	
 				};
 
-				var ollamaChatClient = new OllamaChatClient(new Uri(AppPreferences.AiEndPoint[AppPreferences.AiChatService]),
-					AppPreferences.AiModelId[AppPreferences.AiChatService]);
+				var ollamaChatClient = new OllamaChatClient(new Uri(AppPreferences.AiEndPoint[aiService]),
+					AppPreferences.AiModelId[aiService]);
 
 				List<Microsoft.Extensions.AI.ChatMessage> chatHistory = [];
 				foreach (var s1 in _systemPrompts)
@@ -113,16 +113,10 @@ public class Ai
 					chatHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.User, _userPrompts[1][i]));
 					chatHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.Assistant, _chatReponses[1][i]));
 				}
-				chatHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.User, msg));
+				chatHistory.Add(new Microsoft.Extensions.AI.ChatMessage(ChatRole.User, prompt));
 
 				var completion = await ollamaChatClient.GetResponseAsync(chatHistory, options);
-				string str = completion.Messages[0].Text;
-				str = str.Replace("**", "");
-				str = str.Replace("###", "");
-				str = str.Replace("---", "");
-
-				_userPrompts[1].Add(msg);
-				_chatReponses[1].Add(str);
+                response = completion.Messages[0].Text;
 			}
 			else
 			{
@@ -130,8 +124,8 @@ public class Ai
 				{
 					NetworkTimeout = TimeSpan.FromSeconds(60),
 				};
-				if (AppPreferences.AiChatService != (int)eAiService.eOpenAi)
-					openAIClientOptions.Endpoint = new Uri(AppPreferences.AiEndPoint[AppPreferences.AiChatService]);
+				if (aiService != (int)eAiService.eOpenAi)
+					openAIClientOptions.Endpoint = new Uri(AppPreferences.AiEndPoint[aiService]);
 
 				var requestOptions = new ChatCompletionOptions()
 				{
@@ -140,8 +134,8 @@ public class Ai
 					MaxOutputTokenCount = AppPreferences.AiMaxTokens,
 				};
 
-				System.ClientModel.ApiKeyCredential credential = new(AppPreferences.AiKey[AppPreferences.AiChatService]);
-				var openAiChatClient = new ChatClient(AppPreferences.AiModelId[AppPreferences.AiChatService], credential, openAIClientOptions); // AppPreferences.OpenAiKey
+				System.ClientModel.ApiKeyCredential credential = new(AppPreferences.AiKey[aiService]);
+				var openAiChatClient = new ChatClient(AppPreferences.AiModelId[aiService], credential, openAIClientOptions); // AppPreferences.OpenAiKey
 
 				List<OpenAI.Chat.ChatMessage> chatHistory = [];
 				foreach (var s1 in _systemPrompts)
@@ -154,21 +148,23 @@ public class Ai
 						chatHistory.Add(new AssistantChatMessage(_chatReponses[i][j]));
 					}
 
-				chatHistory.Add(new UserChatMessage(msg));
+				chatHistory.Add(new UserChatMessage(prompt));
 
-				var response = await openAiChatClient.CompleteChatAsync(chatHistory, requestOptions);
-				string str = response.Value.Content[0].Text;
-				str = str.Replace("**", "");
-				str = str.Replace("###", "");
-				str = str.Replace("---", "");
-
-				_userPrompts[1].Add(msg);
-				_chatReponses[1].Add(str);
+				var completion = await openAiChatClient.CompleteChatAsync(chatHistory, requestOptions);
+                response = completion.Value.Content[0].Text;
 			}
-		}
-		catch (Exception ex)
+
+            response = response.Replace("**", ""); // Remove .MD
+            response = response.Replace("###", "");
+            response = response.Replace("---", "");
+
+            _userPrompts[1].Add(prompt);
+            _chatReponses[1].Add(response);
+
+        }
+        catch (Exception ex)
 		{
-			_userPrompts[1].Add(msg);
+			_userPrompts[1].Add(prompt);
 			_chatReponses[1].Add(ex.Message +
 				"\n\nEdit the Documents\\Yijing\\appsettings.json file to correct the configuration and restart the application.");
 		}

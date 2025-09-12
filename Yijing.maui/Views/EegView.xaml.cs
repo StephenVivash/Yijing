@@ -328,14 +328,14 @@ public partial class EegView : ContentView
 		//	AppPreferences.AiKey = entAiKey.Text;
 	}
 
-	private void picAiModel_SelectedIndexChanged(object sender, EventArgs e)
+    private void picAiAnalysis_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        AppPreferences.AiEegService = picAiAnalysis.SelectedIndex;
+    }
+
+    private void picAiModel_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		AppPreferences.AiEegMlModel = picAiModel.SelectedIndex;
-	}
-
-	private void picAiAnalysis_SelectedIndexChanged(object sender, EventArgs e)
-	{
-		AppPreferences.AiEegService = picAiAnalysis.SelectedIndex;
 	}
 
 	private void chbTriggerFixed_CheckedChanged(object sender, EventArgs e)
@@ -376,7 +376,7 @@ public partial class EegView : ContentView
 
 	public async void AiData(string data, bool dummy)
 	{
-		await _ai.ChatAsync(data);
+		await _ai.ChatAsync(AppPreferences.AiEegService, data);
 		int i = _ai._userPrompts[1].Count() - 1;
 		//UpdateSessionLog(_ai._userPrompts[1][i] + "\n\n");
 		UpdateSessionLog(_ai._chatReponses[1][i] + "\n\n");

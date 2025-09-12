@@ -381,7 +381,7 @@ public partial class DiagramView : ContentView
 			StartChat();
 			EegView._strSession = AppSettings.ReverseDateString();
 			LoadChat("", _ai._contextSessions);
-			UpdateText();
+			UpdateText(false);
 		}
 		else
 			LoadChat((string)picSession.SelectedItem, _ai._contextSessions);
@@ -1064,10 +1064,15 @@ public partial class DiagramView : ContentView
 		_this.Dispatcher.Dispatch(action);
 	}
 
-	private static void UpdateText() 
+	private static void UpdateText(bool resetSession = true) 
 	{
-		void action() => _this.UpdateText(_this.m_hvsCurrent);
-		_this.Dispatcher.Dispatch(action);
+        if (resetSession)
+		{
+            void action1() => _this.picSession.SelectedIndex = 0;
+            _this.Dispatcher.Dispatch(action1);
+        }
+        void action2() => _this.UpdateText(_this.m_hvsCurrent);
+		_this.Dispatcher.Dispatch(action2);
 	}
 
 	private void DiagramTimer()
@@ -1267,6 +1272,8 @@ public partial class DiagramView : ContentView
 		////////////////////////////////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////////////////////////////////
 
+
+
 		String strText = Sequences.strDiagramSettings[16, Sequences.HexagramText + 1];
 		string strBC = App.Current.RequestedTheme == AppTheme.Dark ? "black" : "white";
 		string strFC = App.Current.RequestedTheme == AppTheme.Dark ? "white" : "black";
@@ -1449,7 +1456,7 @@ public partial class DiagramView : ContentView
 
 	public async void AiChat(string msg, bool reload)
 	{
-		await _ai.ChatAsync(msg);
+		await _ai.ChatAsync(AppPreferences.AiChatService, msg);
 		if (reload)
 			LoadSessions(-1);
 		else
@@ -1464,7 +1471,10 @@ public partial class DiagramView : ContentView
 		String strTemp = System.IO.Path.Combine(AppSettings.DocumentHome(), "Questions");
 		if (!Directory.Exists(strTemp))
 			Directory.CreateDirectory(strTemp);
-		IEnumerable<string> ief = Directory.EnumerateFiles(strTemp, "*.txt", SearchOption.TopDirectoryOnly);
+
+        // wait Task.Delay(1000);
+
+        IEnumerable<string> ief = Directory.EnumerateFiles(strTemp, "*.txt", SearchOption.TopDirectoryOnly);
 		List<string> lf = new();
 		foreach (string f in ief)
 			lf.Add(System.IO.Path.GetFileNameWithoutExtension(f));
