@@ -11,34 +11,34 @@ namespace Yijing.Pages;
 public partial class EegPage : ContentPage
 {
 
-        private static EegPage _this;
-        private static ObservableCollection<string> _timeAxisLabels = new() { "0" };
+	private static EegPage _this;
+	private static ObservableCollection<string> _timeAxisLabels = new() { "0" };
 
-        public static Editor SessionLog() { return _this.edtSessionLog; }
-        public static CartesianChart CartesianChart() { return _this.chaEeg; }
-        public static ObservableCollection<string> TimeAxisLabels() => _timeAxisLabels;
+	public static Editor SessionLog() { return _this.edtSessionLog; }
+	public static CartesianChart CartesianChart() { return _this.chaEeg; }
+	public static ObservableCollection<string> TimeAxisLabels() => _timeAxisLabels;
 
-        public EegPage()
-        {
-                _this = this;
+	public EegPage()
+	{
+		_this = this;
 
-                InitializeComponent();
+		InitializeComponent();
 
-                EegSeries eegChart = new();
-                var xAxis = new Axis
-                {
-                        Labels = _timeAxisLabels
-                };
+		EegSeries eegChart = new();
+		var xAxis = new Axis
+		{
+			Labels = _timeAxisLabels
+		};
 
-                chaEeg.Series = eegChart.Series;
-                chaEeg.XAxes = new List<Axis> { xAxis };
-                chaEeg.TooltipPosition = TooltipPosition.Hidden;
-                chaEeg.ZoomMode = ZoomAndPanMode.None;
-                chaEeg.LegendPosition = LegendPosition.Hidden;
-                chaEeg.AnimationsSpeed = new TimeSpan();
-                chaEeg.AutoUpdateEnabled = true;
+		chaEeg.Series = eegChart.Series;
+		chaEeg.XAxes = new List<Axis> { xAxis };
+		chaEeg.TooltipPosition = TooltipPosition.Hidden;
+		chaEeg.ZoomMode = ZoomAndPanMode.None;
+		chaEeg.LegendPosition = LegendPosition.Hidden;
+		chaEeg.AnimationsSpeed = new TimeSpan();
+		chaEeg.AutoUpdateEnabled = true;
 
-        }
+	}
 
 	private void Page_Loaded(object sender, EventArgs e)
 	{

@@ -22,7 +22,6 @@ public enum eTriggerChannel { eBackLeft, eFrontLeft, eBackCenter, eFrontRight, e
 public enum eTriggerRange { eZeroOne, eOneTwo, eTwoThree, eTwoFour, eThreeFour, eThreeFive, eFourFive, eFourSix };
 
 public enum eAiService { eOpenAi, eDeepseek, eGithub, eOllama, eNone };
-//public enum eAiAnalysis { eNone, eOpenAI };
 public enum eAiEegMlModel { eStephenV, eNone }; // eJohnD
 
 public static class AppPreferences

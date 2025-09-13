@@ -387,14 +387,25 @@ public partial class DiagramView : ContentView
 			LoadChat((string)picSession.SelectedItem, _ai._contextSessions);
 	}
 
-	protected void btnDeleteSession_Clicked(object sender, EventArgs e)
+	protected async void btnDeleteSession_Clicked(object sender, EventArgs e)
 	{
+
+		//var x1 = Window.Parent as Yijing.App;
+		//x1.Test1();
+		//var x2 = Window.Page.GetParentWindow();
+
 		if (picSession.SelectedIndex > 0)
 		{
-			string s = (string) picSession.SelectedItem;
-			File.Delete(System.IO.Path.Combine(AppSettings.DocumentHome(), "Questions", s + ".txt"));
-			File.Delete(System.IO.Path.Combine(AppSettings.DocumentHome(), "Answers", s + ".txt"));
-			LoadSessions(picSession.SelectedIndex);
+			bool delete = await Window.Page.DisplayAlert("Delete Session", 
+				"Are you sure you want to delete session " + 
+				(string)picSession.SelectedItem + " ?", "Yes", "No");
+			if (delete)
+			{
+				string s = (string)picSession.SelectedItem;
+				File.Delete(System.IO.Path.Combine(AppSettings.DocumentHome(), "Questions", s + ".txt"));
+				File.Delete(System.IO.Path.Combine(AppSettings.DocumentHome(), "Answers", s + ".txt"));
+				LoadSessions(picSession.SelectedIndex);
+			}
 		}
 	}
 
@@ -1272,8 +1283,6 @@ public partial class DiagramView : ContentView
 		////////////////////////////////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////////////////////////////////
 
-
-
 		String strText = Sequences.strDiagramSettings[16, Sequences.HexagramText + 1];
 		string strBC = App.Current.RequestedTheme == AppTheme.Dark ? "black" : "white";
 		string strFC = App.Current.RequestedTheme == AppTheme.Dark ? "white" : "black";
@@ -1451,7 +1460,6 @@ public partial class DiagramView : ContentView
 		_saveChat = true;
 		AiChat(s, reload);
 		UpdateSessionLog("", false, false);
-
 	}
 
 	public async void AiChat(string msg, bool reload)
@@ -1494,9 +1502,6 @@ public partial class DiagramView : ContentView
 				index = 0;
 
 		picSession.SelectedIndex = index;
-
-		//_strSession = picSession.SelectedItem.ToString();
-
 		picSession.Focus();
 	}
 	
@@ -1524,8 +1529,6 @@ public partial class DiagramView : ContentView
 		_ai._userPrompts = [[], []];
 		_ai._chatReponses = [[], []];
 		_this.UpdateChat();
-
-		UpdateSessionLog("", false, false);
 	}
 
 	public void SaveChat(string name)

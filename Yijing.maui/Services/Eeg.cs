@@ -39,8 +39,6 @@ public class EegChannel
 	{
 		m_nAverageMax = nAverageMax;
 		m_alAverage.Clear();
-		//////////////////////////////////for (int j = 0; j < m_nAverageMax; ++j)
-		/////////////////////////////////	m_alAverage.Add(0.0f);
 		m_isInitialised = false;
 	}
 
@@ -50,7 +48,7 @@ public class EegChannel
 		for (int j = 0; j < m_nAverageMax; ++j)
 			m_alAverage.Add(f);
 		m_isInitialised = true;
-		}
+	}
 }
 
 // //////////////////////////////////////////////////////////////////////////////////////////////////

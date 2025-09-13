@@ -38,7 +38,6 @@ public partial class EegView : ContentView
 
 	public int m_nEegMode = (int)eEegMode.eIdle;
 	private int m_nSeriesMax = 2000;
-	private int m_nTriggerSpeed = 1;
 
 	public static string _strSession = "";
 
@@ -77,7 +76,7 @@ public partial class EegView : ContentView
 			"eg. You can't conclude much about state at the start. " +
 			"Focus on readings at Gamma_AF7 and Gamma_AF8 and contrast their values. " +
 			"Don't disgregard the other frequencies or sensors. " +
-			"Determine genaral meditative state from any patterns you discern. " +
+			"Determine general meditative state from any patterns you discern. " +
 			"Keep commentary very short and focus on significant current brainwave trends, don't rehash past trends. " +
 			"Don't use extraneous comments or excessive punctuation or extra spaces or new lines. " +
 			"Don't repeat the raw data or ever specify any numeric vales. Don't use document point form. " +
@@ -322,11 +321,6 @@ public partial class EegView : ContentView
 		AppSettings.EegChannel(AppPreferences.TriggerIndex).m_fDifference = AppSettings.EegChannel(AppPreferences.TriggerIndex).m_fInitialHigh - AppSettings.EegChannel(AppPreferences.TriggerIndex).m_fInitialLow;
 	}
 
-	private void entAiKey_Completed(object sender, EventArgs e)
-	{
-		//	AppPreferences.AiKey = entAiKey.Text;
-	}
-
     private void picAiAnalysis_SelectedIndexChanged(object sender, EventArgs e)
     {
         AppPreferences.AiEegService = picAiAnalysis.SelectedIndex;
@@ -493,7 +487,7 @@ public partial class EegView : ContentView
 
 	public void InitialiseChart()
 	{
-		int index = -1;
+		//int index = -1;
 		if (EegPage.CartesianChart() == null)
 			return;
 		IEnumerable<ISeries> ies = EegPage.CartesianChart().Series;
@@ -501,9 +495,9 @@ public partial class EegView : ContentView
 		{
 			ObservableCollection<float> v = (ObservableCollection<float>)s.Values;
 			v.Clear();
-			if (++index < 25)
-				v.Add(AppSettings.EegChannel(index).m_fCurrentValue);
-			else
+			//if (++index < 25)
+			//	v.Add(AppSettings.EegChannel(index).m_fCurrentValue);
+			//else
 				v.Add(0.0f);
         }
         ObservableCollection<string> l = EegPage.TimeAxisLabels();
@@ -525,7 +519,7 @@ public partial class EegView : ContentView
 	public void UpdateTime(DateTime dtCurrent)
 	{
 		TimeSpan ts = DateTime.Now - AppSettings.Eeg().m_dtEegStart;
-		ts = ts.Multiply(AppSettings.Eeg().m_nReplaySpeed * m_nTriggerSpeed);
+		ts = ts.Multiply(AppSettings.Eeg().m_nReplaySpeed);
 		void action() => lblTime.Text = $"{dtCurrent.ToLongTimeString()} - {ts.Hours,1:#00}:{ts.Minutes,1:#00}:{ts.Seconds,1:#00} " + Eeg.m_strPrediction;
 		Dispatcher.Dispatch(action);
 	}
@@ -578,20 +572,8 @@ public partial class EegView : ContentView
 					||
 
 					(AppPreferences.ChartBands == (int)eChartBands.eAll)) 
-					{
-						if (AppPreferences.EegDevice == (int)eEegDevice.eEmotiv)
-						{
-							if (s.Name.Contains("Theta") ||
-								s.Name.Contains("Alpha") ||
-								s.Name.Contains("Delta") || // BetaL
-								s.Name.Contains("Beta") ||  // BetaH
-								s.Name.Contains("Gamma"))
-								bDisplay = true;
-						}
-						else
-						if (AppPreferences.EegDevice == (int)eEegDevice.eMuse)
-							bDisplay = true;
-					}
+						bDisplay = true;
+
 				if (bDisplay)
 					v.Add(AppSettings.EegChannel(index).m_fCurrentValue);
 			}
@@ -617,7 +599,7 @@ public partial class EegView : ContentView
 		}
 		ObservableCollection<string> l = EegPage.TimeAxisLabels();
 		TimeSpan ts = DateTime.Now - AppSettings.Eeg().m_dtEegStart;
-		ts = ts.Multiply(AppSettings.Eeg().m_nReplaySpeed * m_nTriggerSpeed);
+		ts = ts.Multiply(AppSettings.Eeg().m_nReplaySpeed);
 		l.Add($"{ts.Minutes:00}:{ts.Seconds:00}");
 		if (l.Count > m_nSeriesMax) 
 			l.RemoveAt(0);

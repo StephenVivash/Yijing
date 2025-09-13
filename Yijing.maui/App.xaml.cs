@@ -6,6 +6,8 @@ namespace Yijing;
 public partial class App : Application
 {
 
+	public void Test1() { }
+
 	public App()
 	{
 		InitializeComponent();
