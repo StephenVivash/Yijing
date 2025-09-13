@@ -39,8 +39,8 @@ public class EegChannel
 	{
 		m_nAverageMax = nAverageMax;
 		m_alAverage.Clear();
-		for (int j = 0; j < m_nAverageMax; ++j)
-			m_alAverage.Add(0.0f);
+		//////////////////////////////////for (int j = 0; j < m_nAverageMax; ++j)
+		/////////////////////////////////	m_alAverage.Add(0.0f);
 		m_isInitialised = false;
 	}
 
@@ -259,7 +259,6 @@ public class Eeg
 				}
 			}
 
-			//m_eegChannel[i].InitialseChannel(f);
 			if (!m_eegChannel[i].m_isInitialised)
 				m_eegChannel[i].InitialseChannel(f);
 
@@ -274,17 +273,17 @@ public class Eeg
 			else
 				m_eegChannel[i].m_fCurrentValue = f1;
 
-			//if (f < m_eegChannel[i].m_fMinValue)
-			//	m_eegChannel[i].m_fMinValue = f;
-			//if (f > m_eegChannel[i].m_fMaxValue)
-			//	m_eegChannel[i].m_fMaxValue = f;
+            //if (f < m_eegChannel[i].m_fMinValue)
+            //	m_eegChannel[i].m_fMinValue = f;
+            //if (f > m_eegChannel[i].m_fMaxValue)
+            //	m_eegChannel[i].m_fMaxValue = f;
 
-			//if (f >= 8.0)
-			//	++nBadData;
-		}
-		//m_bBadData = nBadData > 3;
+            //if (f >= 8.0)
+            //	++nBadData;
+        }
+        //m_bBadData = nBadData > 3;
 
-		if (AppPreferences.TriggerSounding && ((AppPreferences.EegGoal == (int)eGoal.eMeditation)  ||
+        if (AppPreferences.TriggerSounding && ((AppPreferences.EegGoal == (int)eGoal.eMeditation)  ||
 			// or MindCast is finished
 			((AppPreferences.EegGoal == (int)eGoal.eYijingCast) && (AppPreferences.DiagramMode == (int) eDiagramMode.eExplore))))
 		{
