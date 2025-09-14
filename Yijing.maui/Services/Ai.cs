@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.AI;
+﻿//using Microsoft.Extensions.AI;
 //using Microsoft.SemanticKernel;
 
 using OpenAI;
@@ -21,12 +21,68 @@ public class Ai
 	public List<List<string>> _userPrompts = [[], []];
 	public List<List<string>> _chatReponses = [[], []];
 
+	public List<ChatMessage> _chatHistory = [];
+
+	public async Task ChatAsync(int aiService, string prompt)
+	{
+		try
+		{
+			OpenAIClientOptions openAIClientOptions = new()
+			{
+				NetworkTimeout = TimeSpan.FromSeconds(aiService == (int)eAiService.eOllama ? 600 : 120),
+				Endpoint = new Uri(AppPreferences.AiEndPoint[aiService])
+			};
+
+			var requestOptions = new ChatCompletionOptions()
+			{
+				Temperature = AppPreferences.AiTemperature,
+				TopP = AppPreferences.AiTopP,
+				MaxOutputTokenCount = AppPreferences.AiMaxTokens,
+				//AudioOptions = 
+			};
+
+			System.ClientModel.ApiKeyCredential credential = new(AppPreferences.AiKey[aiService]);
+			var openAiChatClient = new ChatClient(AppPreferences.AiModelId[aiService], credential, openAIClientOptions);
+
+			_chatHistory = [];
+			foreach (var s1 in _systemPrompts)
+				_chatHistory.Add(new SystemChatMessage(s1)); // UserChatMessage SystemChatMessage
+
+			for (int i = 0; i < 2; ++i)
+				for (int j = 0; j < _userPrompts[i].Count(); ++j)
+				{
+					_chatHistory.Add(new UserChatMessage(_userPrompts[i][j]));
+					_chatHistory.Add(new AssistantChatMessage(_chatReponses[i][j]));
+				}
+
+			_chatHistory.Add(new UserChatMessage(prompt));
+
+			var completion = await openAiChatClient.CompleteChatAsync(_chatHistory, requestOptions);
+			string response = completion.Value.Content[0].Text;
+
+			response = response.Replace("**", ""); // Remove .md
+			response = response.Replace("###", "");
+			response = response.Replace("---", "");
+
+			_userPrompts[1].Add(prompt);
+			_chatReponses[1].Add(response);
+
+			}
+		catch (Exception ex)
+		{
+			_userPrompts[1].Add(prompt);
+			_chatReponses[1].Add(ex.Message +
+				"\n\nEdit the Documents\\Yijing\\appsettings.json file to correct the configuration and restart the application.");
+		}
+	}
+}
+
+/*
 	public async Task ChatAsync(int aiService, string prompt)
 	{
 		string response = "";
 		try
 		{
-            /*			
 			OllamaApiClient client = new OllamaApiClient(new Uri(AppPreferences.AiEndPoint[aiService]));
 			Chat chat = new(client);
 			chat.Model = AppPreferences.AiModelId[aiService];
@@ -91,7 +147,6 @@ public class Ai
 				_aiUserPrompts[1].Add(msg);
 				_aiChatReponses[1].Add(str);
 			}
-			*/
 
             if (aiService == (int)eAiService.eOllama)
 			{
@@ -126,10 +181,11 @@ public class Ai
 			{
 				OpenAIClientOptions openAIClientOptions = new()
 				{
-					NetworkTimeout = TimeSpan.FromSeconds(60),
+					NetworkTimeout = TimeSpan.FromSeconds(aiService == (int)eAiService.eOllama ? 360 : 120),
+					Endpoint = new Uri(AppPreferences.AiEndPoint[aiService])
 				};
-				if (aiService != (int)eAiService.eOpenAi)
-					openAIClientOptions.Endpoint = new Uri(AppPreferences.AiEndPoint[aiService]);
+				//if (aiService != (int)eAiService.eOpenAi)
+				//openAIClientOptions.Endpoint = new Uri(AppPreferences.AiEndPoint[aiService]);
 
 				var requestOptions = new ChatCompletionOptions()
 				{
@@ -156,18 +212,18 @@ public class Ai
 				chatHistory.Add(new UserChatMessage(prompt));
 
 				var completion = await openAiChatClient.CompleteChatAsync(chatHistory, requestOptions);
-                response = completion.Value.Content[0].Text;
+				response = completion.Value.Content[0].Text;
 			}
 
-            response = response.Replace("**", ""); // Remove .MD
-            response = response.Replace("###", "");
-            response = response.Replace("---", "");
+			response = response.Replace("**", ""); // Remove .md
+			response = response.Replace("###", "");
+			response = response.Replace("---", "");
 
-            _userPrompts[1].Add(prompt);
-            _chatReponses[1].Add(response);
+			_userPrompts[1].Add(prompt);
+			_chatReponses[1].Add(response);
 
-        }
-        catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			_userPrompts[1].Add(prompt);
 			_chatReponses[1].Add(ex.Message +
@@ -175,6 +231,7 @@ public class Ai
 		}
 	}
 }
+*/
 
 public class YijingKernelFunctions
 {
