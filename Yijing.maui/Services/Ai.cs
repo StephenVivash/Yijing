@@ -1,12 +1,13 @@
 ﻿//using Microsoft.Extensions.AI;
-//using Microsoft.SemanticKernel;
+
+using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.ChatCompletion;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
 
 using OpenAI;
 using OpenAI.Chat;
-
-//using OllamaSharp.Models;
-//using OllamaSharp.Models.Chat;
-//using OllamaSharp;
+using System.ClientModel;
+//using System.Text.Json;
 
 using Yijing.Views;
 
@@ -21,9 +22,68 @@ public class Ai
 	public List<List<string>> _userPrompts = [[], []];
 	public List<List<string>> _chatReponses = [[], []];
 
-	public List<ChatMessage> _chatHistory = [];
+	public ChatHistory _chatHistory = new();
+	public List<OpenAI.Chat.ChatMessage> _chatHistory1 = [];
 
 	public async Task ChatAsync(int aiService, string prompt)
+	{
+		try
+		{
+			var builder = Kernel.CreateBuilder();
+			var http = new HttpClient { Timeout = TimeSpan.FromMinutes(
+				aiService == (int)eAiService.eOllama ? 10 : 2) };
+
+			builder.AddOpenAIChatCompletion(AppPreferences.AiModelId[aiService],
+				new Uri(AppPreferences.AiEndPoint[aiService]), 
+				AppPreferences.AiKey[aiService], httpClient: http);
+
+			//builder.AddOpenAITextToAudio(AppPreferences.AiModelId[aiService], AppPreferences.AiKey[aiService]);
+
+			//builder.Plugins.AddFromType<YijingPlugin>("Yijing");
+			Kernel kernel = builder.Build();
+
+			var chatService = kernel.GetRequiredService<IChatCompletionService>();
+
+			_chatHistory = new ChatHistory();
+			foreach (var s1 in _systemPrompts)
+				_chatHistory.AddSystemMessage(s1);
+
+			for (int i = 0; i < 2; ++i)
+				for (int j = 0; j < _userPrompts[i].Count(); ++j)
+				{
+					_chatHistory.AddUserMessage(_userPrompts[i][j]);
+					_chatHistory.AddAssistantMessage(_chatReponses[i][j]);
+				}
+
+			_chatHistory.AddUserMessage(prompt);
+			var settings = new OpenAIPromptExecutionSettings
+			{
+				Temperature = AppPreferences.AiTemperature,
+				TopP = AppPreferences.AiTopP,
+				MaxTokens = AppPreferences.AiMaxTokens,
+				ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions
+				//AudioOptions =
+			};
+
+			var reply = await chatService.GetChatMessageContentAsync(_chatHistory, settings, kernel);
+			string response = reply.Content;
+
+			response = response.Replace("**", ""); // Remove .md
+			response = response.Replace("###", "");
+			response = response.Replace("---", "");
+
+			_userPrompts[1].Add(prompt);
+			_chatReponses[1].Add(response);
+		}
+		catch (Exception ex)
+		{
+			_userPrompts[1].Add(prompt);
+			_chatReponses[1].Add(ex.Message +
+				"\n\nEdit the Documents\\Yijing\\appsettings.json file to correct the configuration and restart the application.");
+		}
+	}
+
+	public async Task ChatAsync1(int aiService, string prompt)
 	{
 		try
 		{
@@ -41,23 +101,23 @@ public class Ai
 				//AudioOptions = 
 			};
 
-			System.ClientModel.ApiKeyCredential credential = new(AppPreferences.AiKey[aiService]);
-			var openAiChatClient = new ChatClient(AppPreferences.AiModelId[aiService], credential, openAIClientOptions);
+			ApiKeyCredential credential = new(AppPreferences.AiKey[aiService]);
+			var chatClient = new ChatClient(AppPreferences.AiModelId[aiService], credential, openAIClientOptions);
 
-			_chatHistory = [];
+			_chatHistory1 = [];
 			foreach (var s1 in _systemPrompts)
-				_chatHistory.Add(new SystemChatMessage(s1)); // UserChatMessage SystemChatMessage
+				_chatHistory1.Add(new SystemChatMessage(s1)); // UserChatMessage SystemChatMessage
 
 			for (int i = 0; i < 2; ++i)
 				for (int j = 0; j < _userPrompts[i].Count(); ++j)
 				{
-					_chatHistory.Add(new UserChatMessage(_userPrompts[i][j]));
-					_chatHistory.Add(new AssistantChatMessage(_chatReponses[i][j]));
+					_chatHistory1.Add(new UserChatMessage(_userPrompts[i][j]));
+					_chatHistory1.Add(new AssistantChatMessage(_chatReponses[i][j]));
 				}
 
-			_chatHistory.Add(new UserChatMessage(prompt));
+			_chatHistory1.Add(new UserChatMessage(prompt));
 
-			var completion = await openAiChatClient.CompleteChatAsync(_chatHistory, requestOptions);
+			var completion = await chatClient.CompleteChatAsync(_chatHistory1, requestOptions);
 			string response = completion.Value.Content[0].Text;
 
 			response = response.Replace("**", ""); // Remove .md
@@ -77,7 +137,245 @@ public class Ai
 	}
 }
 
+public class YijingPlugin
+{
+
+	[KernelFunction("autocast_hexagram")]
+	public static void autocast_hexagram()
+	{
+		DiagramView.AutoCastHexagram();
+	}
+
+	[KernelFunction("set_hexagram")]
+	public static void set_hexagram(int sequence)
+	{
+		DiagramView.SetHexagram(sequence);
+	}
+
+	[KernelFunction("get_hexagram")]
+	public static int get_hexagram()
+	{
+		return DiagramView.GetHexagram();
+	}
+	
+	[KernelFunction("first_hexagram")]
+	public static void first_hexagram()
+	{
+		DiagramView.SetFirst();
+	}
+
+	[KernelFunction("previous_hexagram")]
+	public static void previous_hexagram()
+	{
+		DiagramView.SetPrevious();
+	}
+
+	[KernelFunction("next_hexagram")]
+	public static void next_hexagram()
+	{
+		DiagramView.SetNext();
+	}
+
+	[KernelFunction("last_hexagram")]
+	public static void last_hexagram()
+	{
+		DiagramView.SetLast();
+	}
+
+	[KernelFunction("move_hexagram")]
+	public static void move_hexagram()
+	{
+		DiagramView.SetMove();
+	}
+
+	[KernelFunction("last_cast_hexagram")]
+	public static void last_cast_hexagram()
+	{
+		DiagramView.SetHome();
+	}
+
+	[KernelFunction("inverse_hexagram")]
+	public static void inverse_hexagram()
+	{
+		DiagramView.SetInverse();
+	}
+
+	[KernelFunction("opposite_hexagram")]
+	public static void opposite_hexagram()
+	{
+		DiagramView.SetOpposite();
+	}
+
+	[KernelFunction("transverse_hexagram")]
+	public static void transverse_hexagram()
+	{
+		DiagramView.SetTransverse();
+	}
+
+	[KernelFunction("nuclear_hexagram")]
+	public static void nuclear_hexagram()
+	{
+		DiagramView.SetNuclear();
+	}
+}
+
 /*
+	public async Task TestSkOpenAiTools(int aiService)
+	{
+		var builder = Kernel.CreateBuilder();
+		builder.AddOpenAIChatCompletion(
+			modelId: AppPreferences.AiModelId[aiService],
+			apiKey: AppPreferences.AiKey[aiService]);
+
+		builder.Plugins.AddFromType<ClockPlugin>("Utils");
+		Kernel kernel = builder.Build();
+
+		var chatService = kernel.GetRequiredService<IChatCompletionService>();
+		var history = new ChatHistory();
+		history.AddSystemMessage("You may call functions when needed.");
+		history.AddUserMessage("What time is it in Sydney?");
+
+		var settings = new OpenAIPromptExecutionSettings
+		{
+			ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions
+		};
+
+		ApiKeyCredential credential = new(AppPreferences.AiKey[aiService]);
+		var chatClient = new ChatClient(AppPreferences.AiModelId[aiService], credential, openAIClientOptions);
+
+		var tools = new List<ChatTool> {
+			ChatTool.CreateFunctionTool(
+				"Utils_get_time",
+				"Get the local time in a given city.",
+				BinaryData.FromString("""
+				{
+				  "type": "object",
+				  "properties": { "city": { "type": "string", "description": "City name" } },
+				  "required": ["city"]
+				}
+				"""))
+		};
+
+		var messages = new List<ChatMessage> {
+			new SystemChatMessage("You may call tools."),
+			new UserChatMessage("What time is it in Sydney?")
+		};
+
+		var options = new ChatCompletionOptions
+		{
+			//Temperature = 0.7f,
+			//TopP = 0.95f,
+			//MaxOutputTokenCount = 1000,
+			//AllowParallelToolCalls = true,
+			//EndUserId = "Stephen",
+			//ToolChoice = ChatToolChoice.CreateAutoChoice //.Auto
+		};
+		options.Tools.Add(tools[0]);
+
+		while (true)
+		{
+			ChatCompletion completion = chatClient.CompleteChat(messages, options);
+			messages.Add(new AssistantChatMessage(completion));
+
+			bool handledToolCall = false;
+			foreach (var call in completion.ToolCalls)
+			{
+				if (call is ChatToolCall.Function function && function.Name == "Utils_get_time")
+				{
+					using var doc = JsonDocument.Parse(function.Arguments);
+					string city = doc.RootElement.GetProperty("city").GetString()!;
+					var result1 = await kernel.InvokeAsync<string>("Utils", "get_time", new() { ["city"] = city });
+					messages.Add(new ToolChatMessage(function.Id, result1));
+					handledToolCall = true;
+				}
+			}
+			if (!handledToolCall)
+			{
+				Console.WriteLine(completion.Content[0].Text);
+				break;
+			}
+		}
+	}
+ 
+	public async void TestOpenAITools(int aiService)
+	{
+
+		OpenAIClientOptions openAIClientOptions = new()
+		{
+			NetworkTimeout = TimeSpan.FromSeconds(aiService == (int)eAiService.eOllama ? 600 : 120),
+			Endpoint = new Uri(AppPreferences.AiEndPoint[aiService])
+		};
+
+		System.ClientModel.ApiKeyCredential credential = new(AppPreferences.AiKey[aiService]);
+		var openAiChatClient = new ChatClient(AppPreferences.AiModelId[aiService], credential, openAIClientOptions);
+
+		// Advertise a function tool
+		var tools = new List<ChatTool> {
+		ChatTool.CreateFunctionTool(
+			"get_time", "Return ISO8601 time for an IANA timezone.",
+			BinaryData.FromString(
+			"""
+			{"type":"object","properties":{"tz":{"type":"string"}},"required":["tz"]}
+			"""))
+		};
+
+		var messages = new List<OpenAI.Chat.ChatMessage> {
+			new SystemChatMessage("You may call tools."),
+			new UserChatMessage("What's the time in Australia/Sydney?")
+		};
+
+		var opts = new ChatCompletionOptions();// { ToolChoice = ChatToolChoice.CreateNoneChoice };
+		opts.Tools.Add(tools[0]);
+
+		while (true)
+		{
+			ChatCompletion completion = await openAiChatClient.CompleteChatAsync(messages, opts);
+			messages.Add(new AssistantChatMessage(completion));
+
+			if (completion.ToolCalls.Count == 0)
+			{
+				Console.WriteLine(completion.Content[0].Text);
+				break;
+			}
+			foreach (var tool in completion.ToolCalls.OfType<ChatToolCall.CreateFunctionToolCall>())
+			{
+				if (tool.Name == "get_time")
+				{
+					string tz = JsonDocument.Parse(tool.Arguments).RootElement.GetProperty("tz").GetString()!;
+					var now = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, TimeZoneInfo.FindSystemTimeZoneById(tz)).ToString("O");
+					messages.Add(new ToolChatMessage(tool.Id, now));
+				}
+			}
+		}
+	}
+
+	public async void TestExtensionTools(int aiService)
+	{
+		OpenAIClientOptions openAIClientOptions = new()
+		{
+			NetworkTimeout = TimeSpan.FromSeconds(aiService == (int)eAiService.eOllama ? 600 : 120),
+			Endpoint = new Uri(AppPreferences.AiEndPoint[aiService])
+		};
+
+		System.ClientModel.ApiKeyCredential credential = new(AppPreferences.AiKey[aiService]);
+		var openAiChatClient = new ChatClient(AppPreferences.AiModelId[aiService], credential, openAIClientOptions);
+
+		IChatClient chat = openAiChatClient.AsIChatClient();
+		
+		//IChatClient chat = new ChatClientBuilder(new OpenAIClient(Environment.GetEnvironmentVariable("OPENAI_API_KEY"))
+		//	.GetChatClient("gpt-4o").AsIChatClient())
+		//	.UseFunctionInvocation()
+		//	.Build();
+
+		var options = new ChatOptions
+		{
+			Tools = [AIFunctionFactory.Create((string location) => "15°C and drizzly", "get_current_weather", "Weather by location")]
+		};
+
+		var response = await chat.GetResponseAsync("Do I need a jacket in Sydney?", options);
+		string x = response.Text;
+	}
+
 	public async Task ChatAsync(int aiService, string prompt)
 	{
 		string response = "";
@@ -233,84 +531,3 @@ public class Ai
 }
 */
 
-public class YijingKernelFunctions
-{
-
-	//[KernelFunction("autocast_hexagram")]
-	public static void autocast_hexagram()
-	{
-		DiagramView.AutoCastHexagram();
-	}
-
-	//[KernelFunction("set_hexagram")]
-	public static void set_hexagram(int sequence)
-	{
-		DiagramView.SetHexagram(sequence);
-	}
-
-	//[KernelFunction("get_hexagram")]
-	public static int get_hexagram()
-	{
-		return DiagramView.GetHexagram();
-	}
-
-	//[KernelFunction("first_hexagram")]
-	public static void first_hexagram()
-	{
-		DiagramView.SetFirst();
-	}
-
-	//[KernelFunction("previous_hexagram")]
-	public static void previous_hexagram()
-	{
-		DiagramView.SetPrevious();
-	}
-
-	//[KernelFunction("next_hexagram")]
-	public static void next_hexagram()
-	{
-		DiagramView.SetNext();
-	}
-
-	//[KernelFunction("last_hexagram")]
-	public static void last_hexagram()
-	{
-		DiagramView.SetLast();
-	}
-
-	//[KernelFunction("move_hexagram")]
-	public static void move_hexagram()
-	{
-		DiagramView.SetMove();
-	}
-
-	//[KernelFunction("last_cast_hexagram")]
-	public static void last_cast_hexagram()
-	{
-		DiagramView.SetHome();
-	}
-
-	//[KernelFunction("inverse_hexagram")]
-	public static void inverse_hexagram()
-	{
-		DiagramView.SetInverse();
-	}
-
-	//[KernelFunction("opposite_hexagram")]
-	public static void opposite_hexagram()
-	{
-		DiagramView.SetOpposite();
-	}
-
-	//[KernelFunction("transverse_hexagram")]
-	public static void transverse_hexagram()
-	{
-		DiagramView.SetTransverse();
-	}
-
-	//[KernelFunction("nuclear_hexagram")]
-	public static void nuclear_hexagram()
-	{
-		DiagramView.SetNuclear();
-	}
-}

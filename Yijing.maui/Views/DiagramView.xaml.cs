@@ -196,7 +196,9 @@ public partial class DiagramView : ContentView
 
 			"Allow the user to change the subject or ask for clarification about past responses. " +
 
-			"Respond with prose rather than bullet points unless explicitly asked."
+			"Respond with prose rather than bullet points unless explicitly asked. " +
+
+			"You may call functions when needed."
 			;
 
 		//YijingDB();
@@ -404,7 +406,7 @@ public partial class DiagramView : ContentView
 				string s = (string)picSession.SelectedItem;
 				File.Delete(System.IO.Path.Combine(AppSettings.DocumentHome(), "Questions", s + ".txt"));
 				File.Delete(System.IO.Path.Combine(AppSettings.DocumentHome(), "Answers", s + ".txt"));
-				LoadSessions(picSession.SelectedIndex);
+				LoadSessions(0);
 			}
 		}
 	}
