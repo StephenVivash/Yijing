@@ -59,12 +59,12 @@ public class HexagramTests
 			Assert.Equal(i, hvs.Next().Sequence);
 			Assert.Equal(expectedValues[i], hvs.Value);
 		}
-	}
-	
-	[Fact]
-	public void WenSequence()
-	{
-		int[] expectedValues =
+        }
+
+        [Fact]
+        public void WenSequence()
+        {
+                int[] expectedValues =
 		{
 			63,0,17,34,23,58,2,16,55,59,7,56,61,47,4,8,25,38,3,48,41,37,32,1,57,39,33,30,18,
 			45,28,14,60,15,40,5,53,43,20,10,35,49,31,62,24,6,26,22,29,46,9,36,52,11,13,44,54,
@@ -87,13 +87,39 @@ public class HexagramTests
 
 			Assert.Equal(i * 2 + 1, hvs.Sequence);
 			Assert.Equal(expectedValues[i * 2 + 1], hvs.Value);
-		}
-	}
+                }
+        }
 
-	[Fact]
-	public void MysterySequence()
-	{
-		Sequences.Initialise();
+        [Fact]
+        public void WenFirstHexagramMoveProducesSecond()
+        {
+                Sequences.Initialise();
+                CHexagramValueSequencer.SetCurrentSequence(2); // Wen
+                var hvs = new CHexagramValueSequencer(0);
+                hvs.First();
+
+                Assert.Equal(0, hvs.Sequence);
+                Assert.Equal(63, hvs.Value);
+
+                for (int trigram = 0; trigram < 2; trigram++)
+                        for (int line = 0; line < 3; line++)
+                                hvs.Trigram(trigram).Line(line).Old();
+
+                Assert.True(hvs.IsMoving);
+                Assert.Equal(0, hvs.Sequence);
+                Assert.Equal(63, hvs.Value);
+
+                hvs.Move();
+
+                Assert.Equal(1, hvs.Sequence);
+                Assert.Equal(0, hvs.Value);
+                Assert.False(hvs.IsMoving);
+        }
+
+        [Fact]
+        public void MysterySequence()
+        {
+                Sequences.Initialise();
 		CHexagramValueSequencer.SetCurrentSequence(3); // Mystery
 		var hvs = new CHexagramValueSequencer(0);
 		hvs.Last();
