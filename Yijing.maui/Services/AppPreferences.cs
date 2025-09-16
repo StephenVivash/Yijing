@@ -1,5 +1,7 @@
 ﻿
 using Microsoft.Extensions.Configuration;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using ValueSequencer;
 
 namespace Yijing.Services;
@@ -108,9 +110,15 @@ public static class AppPreferences
 		AiEndPoint[(int)eAiService.eGithub] = configuration["AI:Providers:Github:EndPoint"] ?? "";
 		AiKey[(int)eAiService.eGithub] = configuration["AI:Providers:Github:Key"] ?? "";
 
-		AiModelId[(int)eAiService.eOllama] = configuration["AI:Providers:Ollama:Model"] ?? "";
-		AiEndPoint[(int)eAiService.eOllama] = configuration["AI:Providers:Ollama:EndPoint"] ?? "";
-		AiKey[(int)eAiService.eOllama] = configuration["AI:Providers:Ollama:Key"] ?? "";
+                AiModelId[(int)eAiService.eOllama] = configuration["AI:Providers:Ollama:Model"] ?? "";
+                AiEndPoint[(int)eAiService.eOllama] = configuration["AI:Providers:Ollama:EndPoint"] ?? "";
+                AiKey[(int)eAiService.eOllama] = configuration["AI:Providers:Ollama:Key"] ?? "";
+                if (string.IsNullOrWhiteSpace(AiKey[(int)eAiService.eOllama]))
+                {
+                        AiKey[(int)eAiService.eOllama] = DefaultOllamaKey;
+                        if (!TryPersistOllamaKey(DefaultOllamaKey))
+                                System.Diagnostics.Debug.WriteLine("Unable to persist default Ollama key to configuration file.");
+                }
 
 		MuseScale = 1;
 		AudioScale = 10;
@@ -173,9 +181,67 @@ public static class AppPreferences
 	public static string[] AiEndPoint = ["", "", "", ""];
 	public static string[] AiKey = ["", "", "", ""];
 
-	public static int TriggerIndex;
+        public static int TriggerIndex;
 
-	public static int MuseScale;
-	public static int AudioScale;
+        public static int MuseScale;
+        public static int AudioScale;
+
+        private const string DefaultOllamaKey = "Ollama";
+
+        private static bool TryPersistOllamaKey(string keyValue)
+        {
+                try
+                {
+                        string documentHome = AppSettings.DocumentHome() ?? string.Empty;
+                        string settingsPath = Path.Combine(documentHome, "appsettings.json");
+
+                        string? settingsDirectory = Path.GetDirectoryName(settingsPath);
+                        if (!string.IsNullOrWhiteSpace(settingsDirectory) && !Directory.Exists(settingsDirectory))
+                                Directory.CreateDirectory(settingsDirectory);
+
+                        JsonObject rootObject = LoadConfigurationObject(settingsPath);
+                        JsonObject aiObject = rootObject["AI"] as JsonObject ?? new JsonObject();
+                        rootObject["AI"] = aiObject;
+
+                        JsonObject providersObject = aiObject["Providers"] as JsonObject ?? new JsonObject();
+                        aiObject["Providers"] = providersObject;
+
+                        JsonObject ollamaObject = providersObject["Ollama"] as JsonObject ?? new JsonObject();
+                        providersObject["Ollama"] = ollamaObject;
+
+                        ollamaObject["Key"] = keyValue;
+
+                        var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
+                        File.WriteAllText(settingsPath, rootObject.ToJsonString(jsonOptions));
+                        return true;
+                }
+                catch (Exception ex)
+                {
+                        System.Diagnostics.Debug.WriteLine($"Unable to update Ollama key: {ex}");
+                        return false;
+                }
+        }
+
+        private static JsonObject LoadConfigurationObject(string settingsPath)
+        {
+                if (File.Exists(settingsPath))
+                {
+                        string json = File.ReadAllText(settingsPath);
+                        if (!string.IsNullOrWhiteSpace(json))
+                        {
+                                try
+                                {
+                                        JsonNode? parsed = JsonNode.Parse(json);
+                                        if (parsed is JsonObject jsonObject)
+                                                return jsonObject;
+                                }
+                                catch (JsonException)
+                                {
+                                }
+                        }
+                }
+
+                return new JsonObject();
+        }
 
 }
