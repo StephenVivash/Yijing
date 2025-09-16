@@ -165,12 +165,10 @@ public partial class DiagramView : ContentView
 		picDiagramColor.SelectedIndex = (int)eDiagramColor.eTrigram;
 		picDiagramLsb.SelectedIndex = 0;
 
-		LoadSessions(0);
-
 		//_ai._contextSessions.Add("2025-07-06-19-55-13");
 
+		//_ai.AddSystemMessage(
 		_ai._systemPrompts[0] =
-
 			"This app allows a user to consult the Yijing and engage in casual conversation with AI. " +
 
 			"Don't explain what the Yijing is or how it works unless explicitly asked. " +
@@ -198,8 +196,9 @@ public partial class DiagramView : ContentView
 
 			"Respond with prose rather than bullet points unless explicitly asked. " +
 
-			"You may call functions when needed."
-			;
+			"You may call functions when needed.";
+
+		LoadSessions(0);
 
 		//YijingDB();
 
@@ -1527,6 +1526,8 @@ public partial class DiagramView : ContentView
 	{
 		SaveChat(EegView._strSession);
 		_saveChat = false;
+
+		//_ai.NewChat();
 
 		_ai._userPrompts = [[], []];
 		_ai._chatReponses = [[], []];

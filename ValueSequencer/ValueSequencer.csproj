@@ -5,6 +5,8 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>disable</Nullable>
 
+		<EnableWindowsTargeting>true</EnableWindowsTargeting>
+		
 		<Version>7.0.7</Version>
 		<Copyright>Copyright © 2025</Copyright>
 		<Description>The Classic of Change</Description>

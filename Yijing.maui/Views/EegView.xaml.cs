@@ -67,6 +67,7 @@ public partial class EegView : ContentView
 		chbTriggerFixed.IsChecked = AppPreferences.TriggerFixed;
 		chbTriggerSounding.IsChecked = AppPreferences.TriggerSounding;
 
+		//_ai.AddSystemMessage(
 		_ai._systemPrompts[0] =
 			"I will upload Muse EEG brain wave data in dB while I perform a focused meditation. " +
 			"The Prediction represents the degree of meditative state as a percentage. " +
@@ -81,14 +82,6 @@ public partial class EegView : ContentView
 			"Don't use extraneous comments or excessive punctuation or extra spaces or new lines. " +
 			"Don't repeat the raw data or ever specify any numeric vales. Don't use document point form. " +
 			"Dont request further data I will send it automatically.";
-
-
-		//if (string.IsNullOrEmpty(AppPreferences.AiKey[(int)eAiChatService.eOpenAi]))
-		//{
-		//picAiAnalysis.SelectedIndex = (int)eAiAnalysis.eNone;
-		//picAiAnalysis.IsEnabled = false;
-		//picAiModel.IsEnabled = false;
-		//}
 
 		picDevice.SelectedIndex = AppPreferences.EegDevice;
 	}

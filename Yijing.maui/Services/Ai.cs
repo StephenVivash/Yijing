@@ -4,9 +4,10 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 
-using OpenAI;
-using OpenAI.Chat;
-using System.ClientModel;
+//using OpenAI;
+//using OpenAI.Chat;
+//using System.ClientModel;
+
 //using System.Text.Json;
 
 using Yijing.Views;
@@ -23,7 +24,31 @@ public class Ai
 	public List<List<string>> _chatReponses = [[], []];
 
 	public ChatHistory _chatHistory = new();
-	public List<OpenAI.Chat.ChatMessage> _chatHistory1 = [];
+	//public List<OpenAI.Chat.ChatMessage> _chatHistory1 = [];
+
+	public void NewChat()
+	{
+		//foreach (var item in _chatHistory)
+		//{
+		//	if (item.Role != AuthorRole.System)
+		//		_chatHistory.Remove(item);
+		//}
+	}
+
+	public void AddSystemMessage(string message)
+	{
+		_chatHistory.AddSystemMessage(message);
+	}
+
+	public void AddUserMessage(string message)
+	{
+		_chatHistory.AddUserMessage(message);
+	}
+
+	public void AddAssistantMessage(string message)
+	{
+		_chatHistory.AddAssistantMessage(message);
+	}
 
 	public async Task ChatAsync(int aiService, string prompt)
 	{
@@ -82,7 +107,7 @@ public class Ai
 				"\n\nEdit the Documents\\Yijing\\appsettings.json file to correct the configuration and restart the application.");
 		}
 	}
-
+	/*
 	public async Task ChatAsync1(int aiService, string prompt)
 	{
 		try
@@ -135,6 +160,7 @@ public class Ai
 				"\n\nEdit the Documents\\Yijing\\appsettings.json file to correct the configuration and restart the application.");
 		}
 	}
+	*/
 }
 
 public class YijingPlugin
