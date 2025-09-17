@@ -3,8 +3,6 @@ using LiveChartsCore.SkiaSharpView;
 
 namespace Yijing;
 
-#nullable enable
-
 public partial class App : Application
 {
 

@@ -1,3 +1,4 @@
+
 namespace Yijing.Services;
 
 #nullable enable
@@ -19,7 +20,104 @@ public static class ViewDirectory
 	// Pending actions for specific key (run when that key registers)
 	static readonly Dictionary<string, Queue<Action<VisualElement>>> _pendingByKey = new(StringComparer.Ordinal);
 
-	// ---- Getters ----
+	// --- Get<T>: exact type first, then any assignable (base type support) ---
+	public static T? Get<T>() where T : VisualElement
+	{
+		lock (_gate)
+		{
+			// exact type
+			if (_byType.TryGetValue(typeof(T), out var list))
+				for (var n = list.Last; n != null; n = n.Previous)
+					if (n.Value.TryGetTarget(out var v) && v is T tv) return tv;
+
+			// any registered type assignable to T (e.g., EegViewPro : EegView)
+			foreach (var (type, l) in _byType)
+			{
+				if (!typeof(T).IsAssignableFrom(type)) continue;
+				for (var n = l.Last; n != null; n = n.Previous)
+					if (n.Value.TryGetTarget(out var v) && v is T tv) return tv;
+			}
+		}
+		return null;
+	}
+
+	// --- GetAll<T>: include assignable types ---
+	public static IReadOnlyList<T> GetAll<T>() where T : VisualElement
+	{
+		var result = new List<T>();
+		lock (_gate)
+		{
+			// exact type block
+			if (_byType.TryGetValue(typeof(T), out var list))
+				for (var n = list.First; n != null; n = n.Next)
+					if (n.Value.TryGetTarget(out var v) && v is T tv) result.Add(tv);
+
+			// plus any assignable types not already included
+			foreach (var (type, l) in _byType)
+			{
+				if (type == typeof(T) || !typeof(T).IsAssignableFrom(type)) continue;
+				for (var n = l.First; n != null; n = n.Next)
+					if (n.Value.TryGetTarget(out var v) && v is T tv) result.Add(tv);
+			}
+		}
+		return result;
+	}
+
+	// --- Invoke<T>: try immediate across assignable types; else queue under the *requested* T ---
+	public static void Invoke<T>(Action<T> action) where T : VisualElement
+	{
+		var target = (VisualElement?)Get<T>();
+		if (target is not null) { RunOnUi(target, () => action((T)target)); return; }
+
+		lock (_gate)
+		{
+			if (!_pendingByType.TryGetValue(typeof(T), out var q))
+				_pendingByType[typeof(T)] = q = new Queue<Action<VisualElement>>();
+			q.Enqueue(ve => action((T)ve));
+		}
+	}
+
+	// --- Register: flush pending for *all base types* of v.GetType() that queued actions ---
+	internal static void Register(VisualElement v, string? key)
+	{
+		Queue<Action<VisualElement>>? toRunExact = null;
+		var toRunAssignable = new List<Action<VisualElement>>();
+
+		lock (_gate)
+		{
+			var type = v.GetType();
+			if (!_byType.TryGetValue(type, out var list))
+				_byType[type] = list = new LinkedList<WeakReference<VisualElement>>();
+			list.AddLast(new WeakReference<VisualElement>(v));
+			if (list.Count > 64) Prune(list);
+
+			if (!string.IsNullOrEmpty(key))
+				_byKey[key!] = new WeakReference<VisualElement>(v);
+
+			// exact-type queue
+			if (_pendingByType.TryGetValue(type, out var q1) && q1.Count > 0)
+			{
+				toRunExact = new Queue<Action<VisualElement>>(q1);
+				q1.Clear();
+			}
+
+			// base-type queues (any K where K.IsAssignableFrom(type))
+			foreach (var (k, q) in _pendingByType)
+				if (k != type && k.IsAssignableFrom(type) && q.Count > 0)
+					while (q.Count > 0) toRunAssignable.Add(q.Dequeue());
+
+			// key queue
+			if (key != null && _pendingByKey.TryGetValue(key, out var q2) && q2.Count > 0)
+				while (q2.Count > 0) toRunAssignable.Add(q2.Dequeue());
+		}
+
+		if (toRunExact != null)
+			while (toRunExact.Count > 0) { var a = toRunExact.Dequeue(); RunOnUi(v, () => a(v)); }
+
+		foreach (var a in toRunAssignable) RunOnUi(v, () => a(v));
+	}
+
+	/*/ ---- Getters ----
 	public static T? Get<T>() where T : VisualElement
 	{
 		lock (_gate)
@@ -29,7 +127,7 @@ public static class ViewDirectory
 					if (n.Value.TryGetTarget(out var v) && v is T tv) return tv;
 		}
 		return null;
-	}
+	}*/
 
 	public static T? GetByKey<T>(string key) where T : VisualElement
 	{
@@ -38,7 +136,7 @@ public static class ViewDirectory
 				return tv;
 		return null;
 	}
-
+	/*
 	public static IReadOnlyList<T> GetAll<T>() where T : VisualElement
 	{
 		var result = new List<T>();
@@ -51,7 +149,7 @@ public static class ViewDirectory
 			}
 		}
 		return result;
-	}
+	}*/
 
 	/*  
 		Minimal API I recommend keeping
@@ -92,7 +190,7 @@ public static class ViewDirectory
 		return targets.Count;
 	}
 
-	// ---- Invoke (now or later) ----
+	/*/ ---- Invoke (now or later) ----
 	// If at least one T exists, invokes on the latest one; otherwise queues until one registers.
 	public static void Invoke<T>(Action<T> action) where T : VisualElement
 	{
@@ -112,7 +210,7 @@ public static class ViewDirectory
 			}
 		}
 		if (target is not null) RunOnUi(target, () => action((T)target));
-	}
+	}*/
 
 	// If key exists, invokes; otherwise queues until that key registers.
 	public static void InvokeByKey<T>(string key, Action<T> action) where T : VisualElement
@@ -159,7 +257,7 @@ public static class ViewDirectory
 		return tcs.Task;
 	}
 
-	// ---- Registration from behavior ----
+	/*/ ---- Registration from behavior ----
 	internal static void Register(VisualElement v, string? key)
 	{
 		Queue<Action<VisualElement>>? toRunType = null;
@@ -194,7 +292,7 @@ public static class ViewDirectory
 
 		if (toRunKey != null)
 			while (toRunKey.Count > 0) { var a = toRunKey.Dequeue(); RunOnUi(v, () => a(v)); }
-	}
+	}*/
 
 	internal static void Unregister(VisualElement v, string? key)
 	{
@@ -240,6 +338,23 @@ public static class ViewDirectory
 			if (!n.Value.TryGetTarget(out _)) list.Remove(n);
 			n = next;
 		}
+	}
+
+	public static string DebugDump()
+	{
+		var sb = new System.Text.StringBuilder();
+		lock (_gate)
+		{
+			sb.AppendLine("ViewDirectory:");
+			foreach (var (type, list) in _byType)
+			{
+				int live = 0;
+				for (var n = list.First; n != null; n = n.Next)
+					if (n.Value.TryGetTarget(out _)) live++;
+				sb.AppendLine($"  {type.Name}: {live} live entries");
+			}
+		}
+		return sb.ToString();
 	}
 }
 

@@ -48,6 +48,8 @@ public partial class EegView : ContentView
 
 	public EegView()
 	{
+		var b = new RegisterInViewDirectoryBehavior(); // { Key = "DiagramView1" };
+		Behaviors.Add(b);
 		InitializeComponent();
 
 		Eeg.SetEegView(this);

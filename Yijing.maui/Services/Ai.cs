@@ -68,7 +68,7 @@ public class Ai
 
 			//builder.AddOpenAITextToAudio(AppPreferences.AiModelId[aiService], AppPreferences.AiKey[aiService]);
 
-			//builder.Plugins.AddFromType<YijingPlugin>("Yijing");
+			builder.Plugins.AddFromType<YijingPlugin>("Yijing");
 			Kernel kernel = builder.Build();
 
 			var chatService = kernel.GetRequiredService<IChatCompletionService>();
@@ -95,14 +95,14 @@ public class Ai
 			};
 
 			var reply = await chatService.GetChatMessageContentAsync(_chatHistory, settings, kernel);
-			string response = reply.Content;
+			string? response = reply.Content;
 
-			response = response.Replace("**", ""); // Remove .md
-			response = response.Replace("###", "");
-			response = response.Replace("---", "");
+			response = response?.Replace("**", ""); // Remove .md
+			response = response?.Replace("###", "");
+			response = response?.Replace("---", "");
 
 			_userPrompts[1].Add(prompt);
-			_chatReponses[1].Add(response);
+			_chatReponses[1].Add(response!);
 		}
 		catch (Exception ex)
 		{

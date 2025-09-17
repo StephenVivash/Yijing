@@ -58,7 +58,7 @@ public class EegChannel
 public class Eeg
 {
 	protected static EegView m_vwEeg;
-	protected static DiagramView m_vwDiagram;
+	//protected static DiagramView m_vwDiagram;
 
 	public DateTime m_dtEegStart;
 	public bool m_bConnected = false;
@@ -92,10 +92,10 @@ public class Eeg
 		m_vwEeg = eeg; 
 	}
 
-	public static void SetDiagramView(DiagramView diagram) 
-	{ 
-		m_vwDiagram = diagram; 
-	}
+	//public static void SetDiagramView(DiagramView diagram) 
+	//{ 
+	//	m_vwDiagram = diagram; 
+	//}
 
 	public bool BadData()
 	{
@@ -108,8 +108,7 @@ public class Eeg
 		m_dtEegStart = DateTime.Now;
 		m_nSummaryCount = 0;
 
-		//UI.Get<EegView>().EnableEegControls(false, bLive);
-		m_vwEeg.EnableEegControls(false, bLive);
+		UI.Get<EegView>().EnableEegControls(false, bLive);
 		InitialiseChannels();
 
 		_dtAiUpdate = DateTime.Now;
@@ -129,10 +128,14 @@ public class Eeg
 
 	public virtual void InitialiseChannels()
 	{
+		int xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx;
+		int max = 0;
+		UI.Call<EegView>(v => max = v.m_nEegMode == (int)eEegMode.eSummary ? 400 : 200);
+
 		for (int i = 0; i < m_nChannelMax; ++i)
 			m_eegChannel[i] = new EegChannel(m_vwEeg.m_nEegMode == (int)eEegMode.eSummary ? 400 : 200);
-		m_vwEeg.InitialseTriggers();
-		m_vwEeg.InitialiseChart();
+		UI.Call<EegView>(v => v.InitialseTriggers());
+		UI.Call<EegView>(v => v.InitialiseChart());
 	}
 
 	public void SetTriggers(bool bHigh, bool bLow)
@@ -307,7 +310,7 @@ public class Eeg
 			if (TimeDiff1.TotalMinutes >= MinuteTimer())
 			{
 				_dtTimerUpdate = Timestamp1;
-				m_vwEeg.PlayTimer();
+				UI.Get<EegView>().PlayTimer();
 			}
 		}
 
@@ -361,7 +364,7 @@ public class Eeg
 						$"Gamma_AF8={m_eegChannel[23].m_fCurrentValue,1:#0.000}, " +
 						$"Gamma_TP10={m_eegChannel[24].m_fCurrentValue,1:#0.000}";
 
-					m_vwEeg.AiData(str);
+					UI.Get<EegView>().AiData(str);
 				}
 			}
 			else
@@ -378,7 +381,7 @@ public class Eeg
 				}
 			}
 			*/
-			m_vwEeg.UpdateData();
+			UI.Get<EegView>().UpdateData();
 			//ViewDirectory.Invoke<EegView>(v => v.UpdateData());
 			//UI.Try<EegView>(v => v.UpdateData());
 		}
@@ -543,7 +546,7 @@ public class MuseEeg : Eeg
 				IPAddress[] ipa = Dns.GetHostEntry(s).AddressList;
 				if ((ipa != null) && (ipa.Length > 0))
 					if ((s = ipa[ipa.Length - 1].ToString()) != null)
-						m_vwEeg.SetAppTitle("Listening on " + s + ":5000" + " - Yijing");
+						UI.Get<EegView>().SetAppTitle("Listening on " + s + ":5000" + " - Yijing");
 			}
 		}
 		return base.Connect();
@@ -553,7 +556,7 @@ public class MuseEeg : Eeg
 	{
 		if (m_socMuse != null)
 		{
-			m_vwEeg.EnableEegControls(true, true);
+			UI.Get<EegView>().EnableEegControls(true, true);
 			m_socMuse.Close();
 			m_socMuse = null;
 		}
@@ -572,7 +575,7 @@ public class MuseEeg : Eeg
 			DateTime FirstTimestamp = DateTime.Now;
 			DateTime LastTimestamp = DateTime.Now;
 			TimeSpan TimeDiff;
-			m_vwEeg.SetAppTitle(Path.GetFileName(file) + " - Yijing");
+			UI.Get<EegView>().SetAppTitle(Path.GetFileName(file) + " - Yijing");
 
 			if (AppPreferences.EegGoal == (int)eGoal.eYijingCast)
 				ViewDirectory.Invoke<DiagramView>(v => v.SetDiagramMode(eDiagramMode.eMindCast));
@@ -603,7 +606,7 @@ public class MuseEeg : Eeg
 						TimeDiff = Timestamp - LastTimestamp;
 						LastTimestamp = Timestamp;
 						UpdateData(data, false);
-						m_vwEeg.UpdateTime(Timestamp);
+						UI.Get<EegView>().UpdateTime(Timestamp);
 						if (m_nReplaySpeed == 1)
 							await Task.Delay((int)TimeDiff.TotalMilliseconds);
 						else
@@ -615,10 +618,10 @@ public class MuseEeg : Eeg
 					}
 				}
 			}
-			m_vwEeg.UpdateTime(FirstTimestamp, LastTimestamp);
+			UI.Get<EegView>().UpdateTime(FirstTimestamp, LastTimestamp);
 		}
 		m_bConnected = false;
-		m_vwEeg.EnableEegControls(true, true);
+		UI.Get<EegView>().EnableEegControls(true, true);
 	}
 
 	public override void Summary(string file)
@@ -631,7 +634,7 @@ public class MuseEeg : Eeg
 			ArrayList data = new() { 0.1f, 0.2f };
 			DateTime FirstTimestamp = DateTime.Now;
 			DateTime LastTimestamp = DateTime.Now;
-			m_vwEeg.SetAppTitle(Path.GetFileName(file) + " - Yijing");
+			UI.Get<EegView>().SetAppTitle(Path.GetFileName(file) + " - Yijing");
 
 			string s1 = sr.ReadLine();
 			if ((s1 = sr.ReadLine()) != null)
@@ -656,7 +659,7 @@ public class MuseEeg : Eeg
 						UpdateData(data, true);
 					}
 				}
-				m_vwEeg.UpdateTime(FirstTimestamp, LastTimestamp);
+				UI.Get<EegView>().UpdateTime(FirstTimestamp, LastTimestamp);
 			}
 		}
 	}
@@ -680,7 +683,7 @@ public class MuseEeg : Eeg
 			SocketFlags sf = SocketFlags.None;
 			try { nSize = m_socMuse.ReceiveMessageFrom(buffer, 0, 1024, ref sf, ref m_epMuse, out pi); }
 			catch {
-				m_vwEeg.UpdateTime(m_dtEegStart, DateTime.Now);
+				UI.Get<EegView>().UpdateTime(m_dtEegStart, DateTime.Now);
 				return; 
 			}
 
@@ -688,7 +691,7 @@ public class MuseEeg : Eeg
 			{
 				bTitle = true;
 				string ip = pi.Address.ToString();
-				m_vwEeg.SetAppTitle("Received from " + ip + " - Yijing");
+				UI.Get<EegView>().SetAppTitle("Received from " + ip + " - Yijing");
 			}
 
 			Span<byte> bytes = new Span<byte>(buffer, 0, nSize);
@@ -739,7 +742,7 @@ public class MuseEeg : Eeg
 					string date = $"{DateTime.Now.Year,4:#0000}-{DateTime.Now.Month,2:#00}-{DateTime.Now.Day,2:#00} {DateTime.Now.Hour,2:#00}:{DateTime.Now.Minute,2:#00}:{DateTime.Now.Second,2:#00}.{DateTime.Now.Millisecond,3:#000}";
 					m_alMuseData[0] = date;
 					UpdateData(m_alMuseData, false);
-					m_vwEeg.UpdateTime(DateTime.Now);
+					UI.Get<EegView>().UpdateTime(DateTime.Now);
 					WriteFile(m_fsMuse, m_alMuseData, false, false);
 				}
 				Thread.Sleep(10);
@@ -815,7 +818,7 @@ public class EmotivEeg : Eeg
 	{
 		if (m_dsEmotiv != null)
 		{
-			m_vwEeg.EnableEegControls(true, true);
+			UI.Get<EegView>().EnableEegControls(true, true);
 			m_dsEmotiv.UnSubscribe();
 			Thread.Sleep(2000);
 			m_dsEmotiv.CloseSession();
@@ -835,7 +838,7 @@ public class EmotivEeg : Eeg
 			DateTime Timestamp = DateTime.Now;
 			DateTime LastTimestamp = DateTime.Now;
 			TimeSpan TimeDiff;
-			m_vwEeg.SetAppTitle(Path.GetFileName(file) + " - Yijing");
+			UI.Get<EegView>().SetAppTitle(Path.GetFileName(file) + " - Yijing");
 
 			if (AppPreferences.EegGoal == (int)eGoal.eYijingCast)
 				ViewDirectory.Invoke<DiagramView>(v => v.SetDiagramMode(eDiagramMode.eMindCast));
@@ -861,14 +864,14 @@ public class EmotivEeg : Eeg
 						TimeDiff = Timestamp - LastTimestamp;
 						LastTimestamp = Timestamp;
 						UpdateData(data, false);
-						m_vwEeg.UpdateTime(Timestamp);
+						UI.Get<EegView>().UpdateTime(Timestamp);
 						await Task.Delay((int)TimeDiff.TotalMilliseconds / m_nReplaySpeed);
 					}
 				}
 			}
 		}
 		m_bConnected = false;
-		m_vwEeg.EnableEegControls(true, true);
+		UI.Get<EegView>().EnableEegControls(true, true);
 	}
 
 	public override void Summary(string file)
@@ -881,7 +884,7 @@ public class EmotivEeg : Eeg
 			ArrayList data = new() { 0.1f, 0.2f };
 			DateTime FirstTimestamp = DateTime.Now;
 			DateTime LastTimestamp = DateTime.Now;
-			m_vwEeg.SetAppTitle(Path.GetFileName(file) + " - Yijing");
+			UI.Get<EegView>().SetAppTitle(Path.GetFileName(file) + " - Yijing");
 			string s1 = sr.ReadLine();
 			if ((s1 = sr.ReadLine()) != null) {
 				string[] s2 = s1.Split(",", 2);
@@ -901,7 +904,7 @@ public class EmotivEeg : Eeg
 						UpdateData(data, true);
 					}
 				}
-				m_vwEeg.UpdateTime(FirstTimestamp, LastTimestamp);
+				UI.Get<EegView>().UpdateTime(FirstTimestamp, LastTimestamp);
 			}
 		}
 	}
@@ -993,7 +996,7 @@ public class EmotivEeg : Eeg
 		//ArrayList data2 = Emotiv2Muse(data, false, false);
 
 		UpdateData(data1, false);
-		m_vwEeg.UpdateTime(DateTime.Now);
+		UI.Get<EegView>().UpdateTime(DateTime.Now);
 		WriteFile(m_fsEmotiv, data1, false, true);
 		//WriteFile(m_fsMuse, data2, false, false);
 	}

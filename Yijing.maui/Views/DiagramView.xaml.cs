@@ -107,10 +107,10 @@ public partial class DiagramView : ContentView
 	{
 		var b = new RegisterInViewDirectoryBehavior(); // { Key = "DiagramView1" };
 		Behaviors.Add(b);
-		//ViewDirectory.InvokeByKey<DiagramView>("DiagramView1", v => v.EndCast());
-
 		InitializeComponent();
-		Eeg.SetDiagramView(this);
+
+		//ViewDirectory.InvokeByKey<DiagramView>("DiagramView1", v => v.EndCast());
+		//Eeg.SetDiagramView(this);
 
 		m_brMonoColor = App.Current.RequestedTheme == AppTheme.Dark ? Brush.LightGray : Brush.DarkGray;
 		m_brMovingYang = App.Current.RequestedTheme == AppTheme.Dark ? Brush.Black : Brush.White;
@@ -331,6 +331,7 @@ public partial class DiagramView : ContentView
 
 	protected void btnFirst_Clicked(object sender, EventArgs e)
 	{
+		System.Diagnostics.Debug.WriteLine(ViewDirectory.DebugDump());
 		SetFirst();
 		//Test6502();
 	}
