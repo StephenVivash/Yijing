@@ -1,4 +1,4 @@
-﻿
+
 using Yijing.Services;
 using Yijing.Views;
 
@@ -6,16 +6,14 @@ namespace Yijing.Pages;
 
 public partial class DiagramPage : ContentPage
 {
-
-	private static DiagramPage _this;
-
-	public static Editor SessionLog() { return _this.edtSessionLog; }
-	public static WebView WebView() { return _this.webview; }
+	public Editor SessionLog() => edtSessionLog;
+	public WebView WebView() => webview; 
 
 	public DiagramPage()
 	{
-		_this = this;
+		Behaviors.Add(new RegisterInViewDirectoryBehavior());
 		InitializeComponent();
+
 		picAiChatService.SelectedIndex = AppPreferences.AiChatService;
 		//picAiMode.SelectedIndex = 0;
 		chbIncludeCast.IsChecked = true;
@@ -45,12 +43,15 @@ public partial class DiagramPage : ContentPage
 #elif IOS
 		string s = "file:///xxx/Hexagram";
 #endif
+
 		//if (e.NavigationEvent == WebNavigationEvent.Back)
 		if (e.Url.StartsWith(s))
 		{
 			s = e.Url.Substring(s.Length, e.Url.Length - s.Length);
-			if (DiagramView.IsExploreMode() && !string.IsNullOrEmpty(s))
-				DiagramView.SetHexagramValue(int.Parse(s));
+			bool b = false;
+			ViewDirectory.Invoke<DiagramView>(v => b = v.IsExploreMode());
+			if (b && !string.IsNullOrEmpty(s))
+				ViewDirectory.Invoke<DiagramView>(v => v.SetHexagramValue(int.Parse(s)));
 			e.Cancel = true;
 		}
 	}
@@ -71,8 +72,8 @@ public partial class DiagramPage : ContentPage
 	//{
 	//	if (picAiMode.SelectedIndex == 1)
 	//	{
-			//MauiProgram.BuildKernelMemory();
-			//DiagramView.UpdateSessionLog(" ***** Started Kernel Memory", true, true);
+	//MauiProgram.BuildKernelMemory();
+	//DiagramView.UpdateSessionLog(" ***** Started Kernel Memory", true, true);
 	//	}
 	//}
 

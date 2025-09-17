@@ -1,4 +1,4 @@
-﻿
+
 /************************************************************************************************
 *************************************************************************************************
 *************************************************************************************************
@@ -58,7 +58,6 @@ namespace Yijing.Views;
 
 public partial class DiagramView : ContentView
 {
-	private static DiagramView _this;
 	private Random m_rand = new Random(DateTime.Now.Millisecond);
 
 	private CHexagramValueSequencer m_hvsCurrent;
@@ -90,7 +89,7 @@ public partial class DiagramView : ContentView
 	private RoundRectangle[,] m_recLine = new RoundRectangle[6, 2];
 	private Ellipse[] m_ellLine = new Ellipse[6];
 
-	private static Timer m_timDiagram = new Timer(DiagramTimer, null, Timeout.Infinite, 0);
+	private Timer m_timDiagram = new Timer(DiagramTimer, null, Timeout.Infinite, 0);
 
 	private Task m_tskAutoCast = null;
 
@@ -101,16 +100,14 @@ public partial class DiagramView : ContentView
 	private SolidColorBrush m_brDarkGray = new SolidColorBrush(Color.FromRgba(0x40, 0x40, 0x40, 0xFF));
 	private SolidColorBrush m_brLightGray = new SolidColorBrush(Colors.LightGray);
 
-	//public static string m_strLineStart = "";
-	//public static string m_strLineEnd = "";
-	//public static IntPtr WindowHandle { get; private set; }
-
-	public static bool _saveChat = false;
-	public Ai _ai = new Ai();
+	private bool _saveChat = false;
+	private Ai _ai = new Ai();
 
 	public DiagramView()
 	{
-		_this = this;
+		var b = new RegisterInViewDirectoryBehavior(); // { Key = "DiagramView1" };
+		Behaviors.Add(b);
+		//ViewDirectory.InvokeByKey<DiagramView>("DiagramView1", v => v.EndCast());
 
 		InitializeComponent();
 		Eeg.SetDiagramView(this);
@@ -206,6 +203,8 @@ public partial class DiagramView : ContentView
 
 	protected void Page_Loaded(object sender, EventArgs e)
 	{
+		//UpdateText();
+
 #if WINDOWS
 		HWND hWnd = PInvoke.GetActiveWindow();
 		hWnd = PInvoke.GetDesktopWindow();
@@ -421,9 +420,7 @@ public partial class DiagramView : ContentView
 		}
 		m_bTimerOn = false;
 		if (m_nDiagramMode == (int)eDiagramMode.eExplore)
-		{
 			EnableDiagramControls(true, false);
-		}
 		else
 		if (m_nDiagramMode == (int)eDiagramMode.eAnimate)
 		{
@@ -450,7 +447,6 @@ public partial class DiagramView : ContentView
 		}
 		else
 		if (m_nDiagramMode == (int)eDiagramMode.eMindCast)
-		{
 			if (AppSettings.EegChannel(0) is not null)
 			{
 				EnableDiagramControls(false, true);
@@ -459,7 +455,6 @@ public partial class DiagramView : ContentView
 			}
 			else
 				picDiagramMode.SelectedIndex = (int)eDiagramMode.eExplore;
-		}
 	}
 
 	protected void picDiagramType_ValueChanged(object sender, EventArgs e)
@@ -615,25 +610,24 @@ public partial class DiagramView : ContentView
 		}
 	}
 
-	public static void AutoCastHexagram()
+	public void AutoCastHexagram()
 	{
 		//UpdateSessionLog("KernelFunction AutoCastHexagram", true, true);
-		void action() => _this.picDiagramMode.SelectedIndex = (int)eDiagramMode.eAutoCast;
-		_this.Dispatcher.Dispatch(action);
+		picDiagramMode.SelectedIndex = (int)eDiagramMode.eAutoCast;
 	}
 
-	public static void SetHexagram(int sequence)
+	public void SetHexagram(int sequence)
 	{
 		//UpdateSessionLog($"KernelFunction SetHexagram {sequence}", true, true);
-		_this.m_vsCurrent.Sequence = sequence - 1;
+		m_vsCurrent.Sequence = sequence - 1;
 		Transition();
 		UpdateDiagram(true);
 	}
 
-	public static int GetHexagram()
+	public int GetHexagram()
 	{
 		//UpdateSessionLog($"KernelFunction GetHexagram {_this.m_vsCurrent.Sequence + 1}", true, true);
-		return _this.m_vsCurrent.Sequence + 1;
+		return m_vsCurrent.Sequence + 1;
 	}
 
 	public void LoadDiagramSettings()
@@ -700,186 +694,185 @@ public partial class DiagramView : ContentView
 		picLineRatio.SelectedIndex = AppPreferences.LineRatio;
 	}
 
-	public static void SetDiagramMode(eDiagramMode eMode)
+	public void SetDiagramMode(eDiagramMode eMode)
 	{
-		void action() => _this.picDiagramMode.SelectedIndex = (int)eMode;
-		_this.Dispatcher.Dispatch(action);
+		picDiagramMode.SelectedIndex = (int)eMode;
 	}
 
-	public static void SetDiagramColor(eDiagramColor eColor)
+	public void SetDiagramColor(eDiagramColor eColor)
 	{
-		_this.picDiagramColor.SelectedIndex = (int)eColor;
+		picDiagramColor.SelectedIndex = (int)eColor;
 	}
 
-	public static void SetDiagramSpeed(eDiagramSpeed eSpeed)
+	public void SetDiagramSpeed(eDiagramSpeed eSpeed)
 	{
-		_this.picDiagramSpeed.SelectedIndex = (int)eSpeed;
+		picDiagramSpeed.SelectedIndex = (int)eSpeed;
 	}
 
-	public static void SetDiagramLsb(int nLsb)
+	public void SetDiagramLsb(int nLsb)
 	{
 		Sequences.DiagramLsb = nLsb;
 		Sequences.SetLSB(Sequences.DiagramLsb == 0);
 		UpdateDiagram(true);
 	}
 
-	public static void SetLineSequence(int nSequence)
+	public void SetLineSequence(int nSequence)
 	{
 		Sequences.LineSequence = nSequence;
 		CLineValueSequencer.SetCurrentSequence(nSequence);
 		UpdateDiagram(true);
 	}
 
-	public static void SetLineRatio(int nRatio)
+	public void SetLineRatio(int nRatio)
 	{
 		Sequences.LineRatio = nRatio;
 		CLineValueSequencer.SetCurrentRatio(nRatio);
 		UpdateDiagram(true);
 	}
 
-	public static void SetLineLabel(int nLabel)
+	public void SetLineLabel(int nLabel)
 	{
 		Sequences.LineLabel = nLabel;
 		CLineValueSequencer.SetCurrentLabel(nLabel);
 		UpdateDiagram(false);
 	}
 
-	public static void SetLineText(int nText)
+	public void SetLineText(int nText)
 	{
 		Sequences.LineText = nText;
 	}
 
-	public static void SetTrigramSequence(int nSequence)
+	public void SetTrigramSequence(int nSequence)
 	{
 		Sequences.TrigramSequence = nSequence;
 		CTrigramValueSequencer.SetCurrentSequence(nSequence);
 		UpdateDiagram(true);
 	}
 
-	public static void SetTrigramRatio(int nRatio)
+	public void SetTrigramRatio(int nRatio)
 	{
 		Sequences.TrigramRatio = nRatio;
 		CTrigramValueSequencer.SetCurrentRatio(nRatio);
 		UpdateDiagram(true);
 	}
 
-	public static void SetTrigramLabel(int nLabel)
+	public void SetTrigramLabel(int nLabel)
 	{
 		Sequences.TrigramLabel = nLabel;
 		CTrigramValueSequencer.SetCurrentLabel(nLabel);
 		UpdateDiagram(false);
 	}
 
-	public static void SetTrigramText(int nText)
+	public void SetTrigramText(int nText)
 	{
 		Sequences.TrigramText = nText;
 	}
 
-	public static void SetHexagramSequence(int nSequence)
+	public void SetHexagramSequence(int nSequence)
 	{
 		Sequences.HexagramSequence = nSequence;
 		CHexagramValueSequencer.SetCurrentSequence(nSequence);
 		UpdateDiagram(true);
 	}
 
-	public static void SetHexagramRatio(int nRatio)
+	public void SetHexagramRatio(int nRatio)
 	{
 		Sequences.HexagramRatio = nRatio;
 		CHexagramValueSequencer.SetCurrentRatio(nRatio);
 		UpdateDiagram(true);
 	}
 
-	public static void SetHexagramLabel(int nLabel)
+	public void SetHexagramLabel(int nLabel)
 	{
 		Sequences.HexagramLabel = nLabel;
 		CHexagramValueSequencer.SetCurrentLabel(nLabel);
 		UpdateDiagram(false);
 	}
 
-	public static void SetHexagramText(int nText)
+	public void SetHexagramText(int nText)
 	{
 		Sequences.HexagramText = nText;
 	}
 
-	public static void SetHexagramValue(int nValue)
+	public void SetHexagramValue(int nValue)
 	{
-		_this.m_hvsCurrent.Value = nValue;
+		m_hvsCurrent.Value = nValue;
 		UpdateDiagram(true);
 		UpdateText();
 	}
 
-	private static void Transition()
+	private void Transition()
 	{
-		_this.m_hvsPrimary = null;
+		m_hvsPrimary = null;
 		UpdateDiagram(false);
 		UpdateText();
 	}
 
-	public static void SetFirst()
+	public void SetFirst()
 	{
 		//UpdateSessionLog("KernelFunction SetFirst", true, true);
-		_this.m_vsCurrent.First();
+		m_vsCurrent.First();
 		Transition();
 	}
 
-	public static void SetPrevious()
+	public void SetPrevious()
 	{
 		//UpdateSessionLog("KernelFunction SetPrevious", true, true);
-		_this.m_vsCurrent.Previous();
+		m_vsCurrent.Previous();
 		Transition();
 	}
 
-	public static void SetNext()
+	public void SetNext()
 	{
 		//UpdateSessionLog("KernelFunction SetNext", true, true);
-		_this.m_vsCurrent.Next();
+		m_vsCurrent.Next();
 		Transition();
 	}
 
-	public static void SetLast()
+	public void SetLast()
 	{
 		//UpdateSessionLog("KernelFunction SetLast", true, true);
-		_this.m_vsCurrent.Last();
+		m_vsCurrent.Last();
 		Transition();
 	}
 
-	public static void SetMove()
+	public void SetMove()
 	{
 		//UpdateSessionLog("KernelFunction SetMove", true, true);
-		_this.SetMove(0);
+		SetMove(0);
 	}
 
-	public static void SetHome()
+	public void SetHome()
 	{
 		//UpdateSessionLog("KernelFunction SetHome", true, true);
-		_this.SetHome(0);
+		SetHome(0);
 	}
 
-	public static void SetInverse()
+	public void SetInverse()
 	{
 		//UpdateSessionLog("KernelFunction SetInverse", true, true);
-		_this.m_vsCurrent.Inverse();
+		m_vsCurrent.Inverse();
 		Transition();
 	}
 
-	public static void SetOpposite()
+	public void SetOpposite()
 	{
 		//UpdateSessionLog("KernelFunction SetOpposite", true, true);
-		_this.m_vsCurrent.Opposite();
+		m_vsCurrent.Opposite();
 		Transition();
 	}
 
-	public static void SetTransverse()
+	public void SetTransverse()
 	{
 		//UpdateSessionLog("KernelFunction SetTransverse", true, true);
-		_this.m_vsCurrent.Transverse();
+		m_vsCurrent.Transverse();
 		Transition();
 	}
 
-	public static void SetNuclear()
+	public void SetNuclear()
 	{
 		//UpdateSessionLog("KernelFunction SetNuclear", true, true);
-		_this.m_vsCurrent.Nuclear();
+		m_vsCurrent.Nuclear();
 		Transition();
 	}
 
@@ -1068,23 +1061,18 @@ public partial class DiagramView : ContentView
 		catch { }
 	}
 
-	private static void UpdateDiagram(bool bCurrent)
+	private void UpdateDiagram(bool bCurrent)
 	{
 		if (bCurrent)
-			_this.m_hvsCurrent.Update();
-		void action() => _this.UpdateDiagram();
-		_this.Dispatcher.Dispatch(action);
+			m_hvsCurrent.Update();
+		UpdateDiagram();
 	}
 
-	private static void UpdateText(bool resetSession = true) 
+	private void UpdateText(bool resetSession = true) 
 	{
-        if (resetSession)
-		{
-            void action1() => _this.picSession.SelectedIndex = 0;
-            _this.Dispatcher.Dispatch(action1);
-        }
-        void action2() => _this.UpdateText(_this.m_hvsCurrent);
-		_this.Dispatcher.Dispatch(action2);
+		if (resetSession)
+			picSession.SelectedIndex = 0;
+		UpdateText(m_hvsCurrent);
 	}
 
 	private void DiagramTimer()
@@ -1099,8 +1087,7 @@ public partial class DiagramView : ContentView
 
 	private static void DiagramTimer(object state)
 	{
-		void action() => _this.DiagramTimer();
-		_this.Dispatcher.Dispatch(action);
+		ViewDirectory.Invoke<DiagramView>(v => v.DiagramTimer());
 	}
 
 	private async void AutoCast()
@@ -1117,7 +1104,7 @@ public partial class DiagramView : ContentView
 		Dispatcher.Dispatch(action);
 	}
 
-	public static void SoundTrigger(float fBand, float fTrigger)
+	public void SoundTrigger(float fBand, float fTrigger)
 	{
 #if WINDOWS
 
@@ -1214,7 +1201,7 @@ public partial class DiagramView : ContentView
 		}
 		await Task.Delay(100);
 		if (AppPreferences.TriggerSounding)
-			Services.AudioPlayer.PlayHexagramEnd(Dispatcher);
+			AudioPlayer.PlayHexagramEnd(Dispatcher);
 		void action() => EndCast();
 		Dispatcher.Dispatch(action);
 	}
@@ -1270,12 +1257,12 @@ public partial class DiagramView : ContentView
 		}
 	}
 
-	public static bool IsExploreMode()
+	public bool IsExploreMode()
 	{
-		return _this.m_nDiagramMode == (int)eDiagramMode.eExplore;
+		return m_nDiagramMode == (int)eDiagramMode.eExplore;
 	}
 
-	public void UpdateText(CHexagramValueSequencer hvsPrimary)
+	public bool UpdateText(CHexagramValueSequencer hvsPrimary)
 	{
 
 		////////////////////////////////////////////////////////////////////////////////////
@@ -1370,7 +1357,7 @@ public partial class DiagramView : ContentView
 			}
 			for (int i = 0; i < 64; ++i)
 				if (i != hvsPrimary.Value)
-					if (strHtml1.Contains(Sequences.strHexagramLabels[9, i],StringComparison.CurrentCultureIgnoreCase))
+					if (strHtml1.Contains(Sequences.strHexagramLabels[9, i], StringComparison.CurrentCultureIgnoreCase))
 					{
 						String strHref = "<a href=\"Hexagram" + i + "\">" + Sequences.strHexagramLabels[9, i] + "</a>";
 						Regex rgx = new Regex("\\b(?i)" + Sequences.strHexagramLabels[9, i] +
@@ -1393,24 +1380,24 @@ public partial class DiagramView : ContentView
 		else
 		if (strText == "Heyboer")
 		{
-			DiagramPage.WebView().Source = Heyboer.strText[hvsPrimary.Value];
-			return;
+			ViewDirectory.Invoke<DiagramPage>(p => p.WebView().Source = Heyboer.strText[hvsPrimary.Value]);
+			return true;
 		}
 		else
 		if (strText == "YellowBridge")
 		{
-			DiagramPage.WebView().Source = YellowBridge.strText[hvsPrimary.Value];
-			return;
+			ViewDirectory.Invoke<DiagramPage>(p => p.WebView().Source = YellowBridge.strText[hvsPrimary.Value]);
+			return true;
 		}
 		else
 		if (strText == "Regis")
 		{
-			DiagramPage.WebView().Source = Regis.strText[hvsPrimary.Value];
-			return;
+			ViewDirectory.Invoke<DiagramPage>(p => p.WebView().Source = Regis.strText[hvsPrimary.Value]);
+			return true;
 		}
-
-		DiagramPage.WebView().Source = new HtmlWebViewSource { Html = strHtml };
-		//DiagramPage.WebView().HeightRequest = 0;
+		ViewDirectory.Invoke<DiagramPage>(p => p.WebView().Source = new HtmlWebViewSource { Html = strHtml });
+		//UI.Get<DiagramPage>().WebView().Source = new HtmlWebViewSource { Html = strHtml };
+		return true;
 
 		/*
 		strUrl +=
@@ -1436,21 +1423,19 @@ public partial class DiagramView : ContentView
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public static void UpdateSessionLog(string str, bool append, bool newline)
+	public void UpdateSessionLog(string str, bool append, bool newline)
 	{
-		void action()
-		{
-			if (append)
-				DiagramPage.SessionLog().Text += str + (newline ? "\n" : "");
-			else
-				DiagramPage.SessionLog().Text = str + (newline ? "\n" : "");
-		}
-		_this.Dispatcher.Dispatch(action);
+		if (append)
+			ViewDirectory.Invoke<DiagramPage>(p => p.SessionLog().Text += str + (newline ? "\n" : ""));
+		else
+			ViewDirectory.Invoke<DiagramPage>(p => p.SessionLog().Text = str + (newline ? "\n" : ""));
 	}
 
 	public void AiChat(bool includeCast)
 	{
-		string s = DiagramPage.SessionLog().Text;
+		string s = "";
+		ViewDirectory.Invoke<DiagramPage>(p => s = p.SessionLog().Text);
+
 		if (includeCast)
 			s += " I consulted the oracle and the Yijing responded with hexagram " + m_hvsCurrent.DescribeCast();
 
@@ -1506,18 +1491,20 @@ public partial class DiagramView : ContentView
 		picSession.Focus();
 	}
 	
-	public static void StartNewChat()
+	public void StartNewChat()
 	{
-		_this.StartChat();
+		ViewDirectory.Invoke<DiagramView>(v => v.StartChat());
 	}
 
-	public static void SelectChat(string name)
+	public void SelectChat(string name)
 	{
-		if (_this.picSession.Items.IndexOf(name) != -1)
-			_this.picSession.SelectedItem = name;
+		int i = -1;
+		ViewDirectory.Invoke<DiagramView>(v => i = v.picSession.Items.IndexOf(name));
+		if (i != -1)
+			ViewDirectory.Invoke<DiagramView>(v => v.picSession.SelectedItem = name);
 		else
 		{
-			_this.picSession.SelectedIndex = 0;
+			ViewDirectory.Invoke<DiagramView>(v => v.picSession.SelectedIndex = 0);
 			EegView._strSession = name;
 		}
 	}
@@ -1531,7 +1518,7 @@ public partial class DiagramView : ContentView
 
 		_ai._userPrompts = [[], []];
 		_ai._chatReponses = [[], []];
-		_this.UpdateChat();
+		ViewDirectory.Invoke<DiagramView>(v => v.UpdateChat());
 	}
 
 	public void SaveChat(string name)
@@ -1600,7 +1587,7 @@ public partial class DiagramView : ContentView
 			UpdateSessionLog("Failed to load " + str, true, true);
 	}
 
-	public void UpdateChat()
+	public bool UpdateChat()
 	{
 		String strText = Sequences.strDiagramSettings[16, Sequences.HexagramText + 1];
 		string strBC = App.Current.RequestedTheme == AppTheme.Dark ? "black" : "white";
@@ -1658,9 +1645,8 @@ public partial class DiagramView : ContentView
 			}
 
 		strHtml += "</body></html>";
-
-		void action1() => DiagramPage.WebView().Source = new HtmlWebViewSource { Html = strHtml };
-		Dispatcher.Dispatch(action1);
+		ViewDirectory.TryInvoke<DiagramPage>(p => p.WebView().Source = new HtmlWebViewSource { Html = strHtml });
+		return true;
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////////////////////////

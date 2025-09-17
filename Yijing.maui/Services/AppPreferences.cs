@@ -1,4 +1,4 @@
-﻿
+
 using Microsoft.Extensions.Configuration;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -6,6 +6,8 @@ using System.Text.Json.Nodes;
 using ValueSequencer;
 
 namespace Yijing.Services;
+
+#nullable enable
 
 public enum eDiagramMode { eExplore, eAnimate, eTouchCast, eAutoCast, eMindCast };
 public enum eDiagramType { eLine, eTrigram, eHexagram };
@@ -136,7 +138,7 @@ public static class AppPreferences
 
 			JsonObject openAIObject = providersObject["OpenAI"] as JsonObject ?? new JsonObject();
 			providersObject["OpenAI"] = openAIObject;
-			if (string.IsNullOrWhiteSpace((string)openAIObject["EndPoint"]))
+			if (string.IsNullOrWhiteSpace((string?)openAIObject["EndPoint"]))
 			{
 				openAIObject["EndPoint"] = DefaultOpenAiEndpoint;
 				AiEndPoint[(int)eAiService.eOpenAi] = DefaultOpenAiEndpoint;
@@ -145,7 +147,7 @@ public static class AppPreferences
 
 			JsonObject ollamaObject = providersObject["Ollama"] as JsonObject ?? new JsonObject();
 			providersObject["Ollama"] = ollamaObject;
-			if (string.IsNullOrWhiteSpace((string)ollamaObject["Key"]))
+			if (string.IsNullOrWhiteSpace((string?)ollamaObject["Key"]))
 			{
 				ollamaObject["Key"] = DefaultOllamaKey;
 				AiKey[(int)eAiService.eOllama] = DefaultOllamaKey;
@@ -156,9 +158,7 @@ public static class AppPreferences
 			if (save)
 				File.WriteAllText(settingsPath, rootObject.ToJsonString(jsonOptions));
 		}
-		catch (Exception ex)
-		{
-		}
+		catch (Exception) {}
 	}
 
 	private static JsonObject LoadConfigurationObject(string settingsPath)

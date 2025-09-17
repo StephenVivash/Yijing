@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -107,6 +107,8 @@ public class Eeg
 		m_bLive = bLive;
 		m_dtEegStart = DateTime.Now;
 		m_nSummaryCount = 0;
+
+		//UI.Get<EegView>().EnableEegControls(false, bLive);
 		m_vwEeg.EnableEegControls(false, bLive);
 		InitialiseChannels();
 
@@ -290,11 +292,11 @@ public class Eeg
 			if (TimeDiff.TotalSeconds >= 10)
 			{
 				_dtSoundingUpdate = Timestamp;
-
 				// single shot - hit target
-
-				DiagramView.SoundTrigger(m_eegChannel[AppPreferences.TriggerIndex].m_fCurrentValue * AppPreferences.AudioScale, 
-					m_eegChannel[AppPreferences.TriggerIndex].m_fHigh * AppPreferences.AudioScale);
+				ViewDirectory.Invoke<DiagramView>(v => v.SoundTrigger(m_eegChannel[AppPreferences.TriggerIndex].m_fCurrentValue * AppPreferences.AudioScale,
+					m_eegChannel[AppPreferences.TriggerIndex].m_fHigh * AppPreferences.AudioScale));
+				//DiagramView.SoundTrigger(m_eegChannel[AppPreferences.TriggerIndex].m_fCurrentValue * AppPreferences.AudioScale, 
+				//	m_eegChannel[AppPreferences.TriggerIndex].m_fHigh * AppPreferences.AudioScale);
 			}
 		}
 
@@ -377,6 +379,8 @@ public class Eeg
 			}
 			*/
 			m_vwEeg.UpdateData();
+			//ViewDirectory.Invoke<EegView>(v => v.UpdateData());
+			//UI.Try<EegView>(v => v.UpdateData());
 		}
 	}
 	public int MinuteTimer()
@@ -571,7 +575,7 @@ public class MuseEeg : Eeg
 			m_vwEeg.SetAppTitle(Path.GetFileName(file) + " - Yijing");
 
 			if (AppPreferences.EegGoal == (int)eGoal.eYijingCast)
-				DiagramView.SetDiagramMode(eDiagramMode.eMindCast);
+				ViewDirectory.Invoke<DiagramView>(v => v.SetDiagramMode(eDiagramMode.eMindCast));
 
 			string s1 = sr.ReadLine();
 			if ((s1 = sr.ReadLine()) != null)
@@ -668,7 +672,7 @@ public class MuseEeg : Eeg
 		AppSettings._lastEegDataTime = DateTime.Now;
 
 		if (AppPreferences.EegGoal == (int)eGoal.eYijingCast)
-			DiagramView.SetDiagramMode(eDiagramMode.eMindCast);
+			ViewDirectory.Invoke<DiagramView>(v => v.SetDiagramMode(eDiagramMode.eMindCast));
 
 		while (true)
 		{
@@ -834,7 +838,7 @@ public class EmotivEeg : Eeg
 			m_vwEeg.SetAppTitle(Path.GetFileName(file) + " - Yijing");
 
 			if (AppPreferences.EegGoal == (int)eGoal.eYijingCast)
-				DiagramView.SetDiagramMode(eDiagramMode.eMindCast);
+				ViewDirectory.Invoke<DiagramView>(v => v.SetDiagramMode(eDiagramMode.eMindCast));
 
 			string s1 = sr.ReadLine();
 			if ((s1 = sr.ReadLine()) != null)
@@ -962,7 +966,7 @@ public class EmotivEeg : Eeg
 	{
 
 		if (AppPreferences.EegGoal == (int)eGoal.eYijingCast)
-			DiagramView.SetDiagramMode(eDiagramMode.eMindCast);
+			ViewDirectory.Invoke<DiagramView>(v => v.SetDiagramMode(eDiagramMode.eMindCast));
 
 		foreach (string key in e.Keys)
 		{

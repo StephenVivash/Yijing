@@ -1,5 +1,5 @@
-﻿using CommunityToolkit.Maui.Core;
-using CommunityToolkit.Maui.Layouts;
+
+using Yijing.Services;
 using Yijing.Views;
 
 namespace Yijing.Pages;
@@ -29,8 +29,10 @@ public partial class WebPage : ContentPage
 		if (e.Url.StartsWith(s))
 		{
 			s = e.Url.Substring(s.Length, e.Url.Length - s.Length);
-			if (DiagramView.IsExploreMode() && !string.IsNullOrEmpty(s))
-				DiagramView.SetHexagramValue(int.Parse(s));
+			bool b = false;
+			ViewDirectory.Invoke<DiagramView>(v => b = v.IsExploreMode());
+			if (b && !string.IsNullOrEmpty(s))
+				ViewDirectory.Invoke<DiagramView>(v => v.SetHexagramValue(int.Parse(s)));
 			e.Cancel = true;
 		}
 	}

@@ -1,8 +1,10 @@
-﻿//using Microsoft.Extensions.AI;
+//using Microsoft.Extensions.AI;
 
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
+
+using System.ComponentModel;
 
 //using OpenAI;
 //using OpenAI.Chat;
@@ -13,6 +15,8 @@ using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Yijing.Views;
 
 namespace Yijing.Services;
+
+#nullable enable
 
 public class Ai
 {
@@ -167,9 +171,104 @@ public class YijingPlugin
 {
 
 	[KernelFunction("autocast_hexagram")]
-	public static void autocast_hexagram()
+	[Description("Trigger autocasting on a DiagramView. If the view isn't live yet, you can queue the action until it appears.")]
+	public string AutocastHexagram(
+		[Description("Optional key of the target DiagramView; if omitted, uses the most recent instance.")]
+		string? key = null,
+
+		[Description("If true (default), queue the action until the view exists; if false, only execute if the view is live now.")]
+		bool queue = true)
 	{
-		DiagramView.AutoCastHexagram();
+		if (queue)
+		{
+			if (!string.IsNullOrEmpty(key))
+				ViewDirectory.InvokeByKey<DiagramView>(key!, v => v.AutoCastHexagram());
+			else
+				ViewDirectory.Invoke<DiagramView>(v => v.AutoCastHexagram());
+
+			return $"Autocast scheduled (or executed immediately) for {(key is null ? "latest DiagramView" : $"key '{key}'")}.";
+		}
+		else
+		{
+			var ran = !string.IsNullOrEmpty(key)
+				? ViewDirectory.TryInvokeByKey<DiagramView>(key!, v => v.AutoCastHexagram())
+				: ViewDirectory.TryInvoke<DiagramView>(v => v.AutoCastHexagram());
+
+			return ran
+				? $"Autocast executed on {(key is null ? "latest DiagramView" : $"key '{key}'")}."
+				: $"No DiagramView {(key is null ? "instance" : $"with key '{key}'")} is live; nothing ran.";
+		}
+	}
+
+	// ---------- write actions (queue until the view exists) ----------
+
+	[KernelFunction("set_hexagram")]
+	public void SetHexagram(int sequence) =>
+		ViewDirectory.Invoke<DiagramView>(v => v.SetHexagram(sequence));
+
+	[KernelFunction("first_hexagram")]
+	public void FirstHexagram() =>
+		ViewDirectory.Invoke<DiagramView>(v => v.SetFirst());
+
+	[KernelFunction("previous_hexagram")]
+	public void PreviousHexagram() =>
+		ViewDirectory.Invoke<DiagramView>(v => v.SetPrevious());
+
+	[KernelFunction("next_hexagram")]
+	public void NextHexagram() =>
+		ViewDirectory.Invoke<DiagramView>(v => v.SetNext());
+
+	[KernelFunction("last_hexagram")]
+	public void LastHexagram() =>
+		ViewDirectory.Invoke<DiagramView>(v => v.SetLast());
+
+	[KernelFunction("move_hexagram")]
+	public void MoveHexagram() =>
+		ViewDirectory.Invoke<DiagramView>(v => v.SetMove());
+
+	[KernelFunction("last_cast_hexagram")]
+	public void LastCastHexagram() =>
+		ViewDirectory.Invoke<DiagramView>(v => v.SetHome());
+
+	[KernelFunction("inverse_hexagram")]
+	public void InverseHexagram() =>
+		ViewDirectory.Invoke<DiagramView>(v => v.SetInverse());
+
+	[KernelFunction("opposite_hexagram")]
+	public void OppositeHexagram() =>
+		ViewDirectory.Invoke<DiagramView>(v => v.SetOpposite());
+
+	[KernelFunction("transverse_hexagram")]
+	public void TransverseHexagram() =>
+		ViewDirectory.Invoke<DiagramView>(v => v.SetTransverse());
+
+	[KernelFunction("nuclear_hexagram")]
+	public void NuclearHexagram() =>
+		ViewDirectory.Invoke<DiagramView>(v => v.SetNuclear());
+
+	// ---------- read (sync) ----------
+	[KernelFunction("get_hexagram")]
+	public int GetHexagram()
+	{
+		// Grab the latest DiagramView if it exists right now
+		var v = ViewDirectory.Get<DiagramView>();
+		if (v is null) return -1; // or throw / choose a sentinel that suits you
+
+		// Read on the UI thread (safe even if GetHexagram touches UI-bound state)
+		int value = -1;
+		if (v.Dispatcher?.IsDispatchRequired == true)
+			v.Dispatcher.Dispatch(() => value = v.GetHexagram());
+		else
+			value = v.GetHexagram();
+
+		return value;
+	}
+
+/*
+	[KernelFunction("autocast_hexagram")]
+	public void autocast_hexagram()
+	{
+		ViewDirectory.TryInvoke<DiagramView>(v => v.AutoCastHexagram());
 	}
 
 	[KernelFunction("set_hexagram")]
@@ -243,6 +342,7 @@ public class YijingPlugin
 	{
 		DiagramView.SetNuclear();
 	}
+*/
 }
 
 /*

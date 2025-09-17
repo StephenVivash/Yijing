@@ -1,27 +1,25 @@
-﻿using LiveChartsCore.Measure;
+using LiveChartsCore.Measure;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Maui;
 
 using System.Collections.ObjectModel;
 
 using Yijing.Models;
+using Yijing.Services;
 
 namespace Yijing.Pages;
 
 public partial class EegPage : ContentPage
 {
+	private ObservableCollection<string> _timeAxisLabels = new();// { "0" };
 
-	private static EegPage _this;
-	private static ObservableCollection<string> _timeAxisLabels = new() { "0" };
-
-	public static Editor SessionLog() { return _this.edtSessionLog; }
-	public static CartesianChart CartesianChart() { return _this.chaEeg; }
-	public static ObservableCollection<string> TimeAxisLabels() => _timeAxisLabels;
+	public Editor SessionLog() => edtSessionLog;
+	public CartesianChart CartesianChart() => chaEeg;
+	public ObservableCollection<string> TimeAxisLabels() => _timeAxisLabels;
 
 	public EegPage()
 	{
-		_this = this;
-
+		Behaviors.Add(new RegisterInViewDirectoryBehavior());
 		InitializeComponent();
 
 		EegSeries eegChart = new();
@@ -37,7 +35,6 @@ public partial class EegPage : ContentPage
 		chaEeg.LegendPosition = LegendPosition.Hidden;
 		chaEeg.AnimationsSpeed = new TimeSpan();
 		chaEeg.AutoUpdateEnabled = true;
-
 	}
 
 	private void Page_Loaded(object sender, EventArgs e)
