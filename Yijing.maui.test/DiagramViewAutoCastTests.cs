@@ -102,7 +102,10 @@ public sealed class DiagramViewAutoCastTests : IAsyncLifetime
     [Fact(DisplayName = "AutoCast")]
     public void AutoCast()
     {
-        Skip.If(_skipReason is not null, _skipReason ?? string.Empty);
+        if (_skipReason is not null)
+        {
+            throw new SkipException(_skipReason);
+        }
 
         if (_driver is null)
         {
