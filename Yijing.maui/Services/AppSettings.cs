@@ -3,18 +3,12 @@ namespace Yijing.Services;
 
 public static class AppSettings
 {
-
 	private static string _documentHome = null;
 	private static string _eegDataHome = null;
-
 	public static DateTime _lastEegDataTime = DateTime.Now;
-
-	private static Eeg _eeg = null;
 
 	public static string DocumentHome() { return _documentHome; }
 	public static string EegDataHome() { return _eegDataHome; }
-
-	public static Eeg Eeg() { return _eeg; }
 
 	public static async void SetDocumentHome()
 	{
@@ -86,55 +80,4 @@ public static class AppSettings
 		DateTime dt = DateTime.Now;
 		return $"{dt.Year}-{dt.Month,2:#00}-{dt.Day,2:#00}-{dt.Hour,2:#00}-{dt.Minute,2:#00}-{dt.Second,2:#00}";
 	}
-
-	public static void EegCreate()
-	{
-		_eeg = AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? new EmotivEeg() : new MuseEeg();
-	}
-
-	public static bool EegIsConnected()
-	{
-		return _eeg.m_bConnected;
-	}
-
-	public static int EegReplaySpeed()
-	{
-		return _eeg.m_nReplaySpeed;
-	}
-
-	public static void EegSetTriggers(bool bHigh, bool bLow)
-	{
-		_eeg.SetTriggers(bHigh, bLow);
-	}
-
-	public static void EegCalculateTriggers()
-	{
-		_eeg.CalculateTriggers();
-	}
-
-	public static void EegIncreaseTriggers(float amount)
-	{
-		_eeg.IncreaseTriggers(amount);
-	}
-
-	public static void EegDecreaseTriggers(float amount)
-	{
-		_eeg.DecreaseTriggers(amount);
-	}
-
-	public static bool EegIsTriggerOn()
-	{
-		return _eeg.IsTriggerOn();
-	}
-
-	public static bool EegIsTriggerOff()
-	{
-		return _eeg.IsTriggerOff();
-	}
-
-	public static EegChannel EegChannel(int index)
-	{
-		return _eeg.m_eegChannel[index];
-	}
-
 }

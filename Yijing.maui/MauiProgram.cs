@@ -1,4 +1,4 @@
-﻿
+
 // dotnet nuget why Yijing.maui.csproj Microsoft.SemanticKernel
 
 using Microsoft.Extensions.Logging;
@@ -17,7 +17,6 @@ public static class MauiProgram
 	public static MauiApp CreateMauiApp()
 	{
 		AppSettings.SetDocumentHome();
-		AppSettings.EegCreate();
 		AppPreferences.Load();
 
 		MauiAppBuilder builder = MauiApp.CreateBuilder();

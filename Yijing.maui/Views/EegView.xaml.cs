@@ -43,7 +43,7 @@ public partial class EegView : ContentView
 	private Task m_tskReplay = null;
 	//private Task m_tskLoadAnalysis = null;
 
-	//private Eeg _eeg = new();
+	private Eeg _eeg = new();
 	private Ai _ai = new();
 
 	public EegView()
@@ -53,13 +53,13 @@ public partial class EegView : ContentView
 		InitializeComponent();
 
 		Eeg.SetEegView(this);
-		AppSettings.Eeg().InitialiseChannels();
+		_eeg.InitialiseChannels();
 
 		picMode.SelectedIndex = (int)eEegMode.eIdle;
 		picGoal.SelectedIndex = AppPreferences.EegGoal;
 		picAmbience.SelectedIndex = AppPreferences.Ambience;
 		picTimer.SelectedIndex = AppPreferences.Timer;
-		picReplaySpeed.SelectedIndex = AppSettings.Eeg().m_nReplaySpeed == 1 ? (int)eReplaySpeed.eNormal : (int)eReplaySpeed.eFast;
+		picReplaySpeed.SelectedIndex = _eeg.m_nReplaySpeed == 1 ? (int)eReplaySpeed.eNormal : (int)eReplaySpeed.eFast;
 		picChartBands.SelectedIndex = AppPreferences.ChartBands;
 		picChartTime.SelectedIndex = AppPreferences.ChartTime;
 		picTriggerBand.SelectedIndex = AppPreferences.TriggerBand;
@@ -154,12 +154,11 @@ public partial class EegView : ContentView
 
 	private void picDevice_SelectedIndexChanged(object sender, EventArgs e) 
 	{
-		AppSettings.Eeg().m_bCancelReplay = true;
-		AppSettings.Eeg().Disconnect();
+		_eeg.m_bCancelReplay = true;
+		_eeg.Disconnect();
 		AppPreferences.EegDevice = picDevice.SelectedIndex;
 
-		AppSettings.EegCreate();
-		//_eeg = AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? new EmotivEeg() : new MuseEeg();
+		EegCreate();
 
 		AppSettings.SetDocumentHome();
 		LoadSessions();
@@ -176,8 +175,8 @@ public partial class EegView : ContentView
 
 	private async void picMode_SelectedIndexChanged(object sender, EventArgs e)
 	{
-		AppSettings.Eeg().m_bCancelReplay = true;
-		AppSettings.Eeg().Disconnect();
+		_eeg.m_bCancelReplay = true;
+		_eeg.Disconnect();
 		if ((m_nEegMode == (int)eEegMode.eLive) || (m_nEegMode == (int)eEegMode.eReplay)) // was
 			await Task.Delay(1000);
 
@@ -199,7 +198,7 @@ public partial class EegView : ContentView
 			UI.Call<EegPage>(p => p.SessionLog().Text = "");
 			UI.Call<DiagramView>(v => v.StartNewChat());
 			AudioPlayer.Ambience(Dispatcher, true);
-			AppSettings.Eeg().Connect();
+			_eeg.Connect();
 		}
 		else
 		if (m_nEegMode == (int)eEegMode.eReplay)
@@ -209,8 +208,8 @@ public partial class EegView : ContentView
 			{
 				if (picAiAnalysis.SelectedIndex != (int) eAiService.eNone)
 					UI.Call<EegPage>(p => p.SessionLog().Text = "");
-				AppSettings.Eeg().m_bCancelReplay = false;
-				void action() => AppSettings.Eeg().Replay(Path.Combine(AppSettings.EegDataHome(), s + (AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? "-Emotiv.csv" : "-Muse.csv")));
+				_eeg.m_bCancelReplay = false;
+				void action() => _eeg.Replay(Path.Combine(AppSettings.EegDataHome(), s + (AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? "-Emotiv.csv" : "-Muse.csv")));
 				m_tskReplay = new Task(action);
 				m_tskReplay.Start();
 			}
@@ -224,8 +223,8 @@ public partial class EegView : ContentView
 				UI.Call<DiagramView>(v => v.SelectChat(s));
 				_strSession = s;
 				LoadAnalysis();
-				AppSettings.Eeg().m_bCancelReplay = false;
-				void action1() => AppSettings.Eeg().Summary(Path.Combine(AppSettings.EegDataHome(), s + (AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? "-Emotiv.csv" : "-Muse.csv")));
+				_eeg.m_bCancelReplay = false;
+				void action1() => _eeg.Summary(Path.Combine(AppSettings.EegDataHome(), s + (AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? "-Emotiv.csv" : "-Muse.csv")));
 				m_tskReplay = new Task(action1);
 				m_tskReplay.Start();
 			}
@@ -256,7 +255,7 @@ public partial class EegView : ContentView
 
 	private void picReplaySpeed_SelectedIndexChanged(object sender, EventArgs e)
 	{
-		AppSettings.Eeg().m_nReplaySpeed = picReplaySpeed.SelectedIndex == 0 ? 1 : 10;
+		_eeg.m_nReplaySpeed = picReplaySpeed.SelectedIndex == 0 ? 1 : 10;
 	}
 
 	private void picChartBands_SelectedIndexChanged(object sender, EventArgs e)
@@ -296,9 +295,9 @@ public partial class EegView : ContentView
 
 		IEnumerable<ISeries> ies = cc.Series;
 		((LineSeries<float>)ies.ElementAt(AppPreferences.TriggerIndex)).Stroke.StrokeThickness = EegSeries.m_fThinStoke;
-		AppSettings.EegChannel(AppPreferences.TriggerIndex).m_isTrigger = false;
+		_eeg.m_eegChannel[AppPreferences.TriggerIndex].m_isTrigger = false;
 		AppPreferences.TriggerIndex = (picTriggerBand.SelectedIndex* 5) + picTriggerChannel.SelectedIndex;
-		AppSettings.EegChannel(AppPreferences.TriggerIndex).m_isTrigger = true;
+		_eeg.m_eegChannel[AppPreferences.TriggerIndex].m_isTrigger = true;
 		((LineSeries<float>)ies.ElementAt(AppPreferences.TriggerIndex)).Stroke.StrokeThickness = EegSeries.m_fThickStoke;
 
 		picTriggerRange_SelectedIndexChanged(null, null);
@@ -318,9 +317,9 @@ public partial class EegView : ContentView
 	private void picTriggerRange_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		String[] str = ((String)picTriggerRange.SelectedItem).Split(" - ");
-		AppSettings.EegChannel(AppPreferences.TriggerIndex).m_fLow = AppSettings.EegChannel(AppPreferences.TriggerIndex).m_fInitialLow = float.Parse(str[0]); // picTriggerRange.SelectedIndex;
-		AppSettings.EegChannel(AppPreferences.TriggerIndex).m_fHigh = AppSettings.EegChannel(AppPreferences.TriggerIndex).m_fInitialHigh = float.Parse(str[1]); // picTriggerRange.SelectedIndex + 1;
-		AppSettings.EegChannel(AppPreferences.TriggerIndex).m_fDifference = AppSettings.EegChannel(AppPreferences.TriggerIndex).m_fInitialHigh - AppSettings.EegChannel(AppPreferences.TriggerIndex).m_fInitialLow;
+		_eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fLow = _eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fInitialLow = float.Parse(str[0]); // picTriggerRange.SelectedIndex;
+		_eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fHigh = _eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fInitialHigh = float.Parse(str[1]); // picTriggerRange.SelectedIndex + 1;
+		_eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fDifference = _eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fInitialHigh - _eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fInitialLow;
 	}
 
     private void picAiAnalysis_SelectedIndexChanged(object sender, EventArgs e)
@@ -516,8 +515,8 @@ public partial class EegView : ContentView
 
 	public void UpdateTime(DateTime dtCurrent)
 	{
-		TimeSpan ts = DateTime.Now - AppSettings.Eeg().m_dtEegStart;
-		ts = ts.Multiply(AppSettings.Eeg().m_nReplaySpeed);
+		TimeSpan ts = DateTime.Now - _eeg.m_dtEegStart;
+		ts = ts.Multiply(_eeg.m_nReplaySpeed);
 		void action() => lblTime.Text = $"{dtCurrent.ToLongTimeString()} - {ts.Hours,1:#00}:{ts.Minutes,1:#00}:{ts.Seconds,1:#00} " + Eeg.m_strPrediction;
 		Dispatcher.Dispatch(action);
 	}
@@ -573,7 +572,7 @@ public partial class EegView : ContentView
 						bDisplay = true;
 
 				if (bDisplay)
-					v.Add(AppSettings.EegChannel(index).m_fCurrentValue);
+					v.Add(_eeg.m_eegChannel[index].m_fCurrentValue);
 			}
 			else
 			if (index == 25)
@@ -582,13 +581,13 @@ public partial class EegView : ContentView
 			if (index == 26)
 			{
 				if (m_nEegMode != (int)eEegMode.eSummary)
-					v.Add(AppSettings.EegChannel(AppPreferences.TriggerIndex).m_fHigh);
+					v.Add(_eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fHigh);
 			}
 			else
 			if (index == 27)
 			{
 				if (m_nEegMode != (int)eEegMode.eSummary)
-					v.Add(AppSettings.EegChannel(AppPreferences.TriggerIndex).m_fLow);
+					v.Add(_eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fLow);
 			}
 
 			if (m_nEegMode != (int)eEegMode.eSummary)
@@ -596,8 +595,8 @@ public partial class EegView : ContentView
 					v.RemoveAt(0);
 		}
 		ObservableCollection<string> l = UI.Get<EegPage>().TimeAxisLabels();
-		TimeSpan ts = DateTime.Now - AppSettings.Eeg().m_dtEegStart;
-		ts = ts.Multiply(AppSettings.Eeg().m_nReplaySpeed);
+		TimeSpan ts = DateTime.Now - _eeg.m_dtEegStart;
+		ts = ts.Multiply(_eeg.m_nReplaySpeed);
 		l.Add($"{ts.Minutes:00}:{ts.Seconds:00}");
 		if (l.Count > m_nSeriesMax) 
 			l.RemoveAt(0);
@@ -624,5 +623,53 @@ public partial class EegView : ContentView
 		get => (Color)GetValue(CardColorProperty);
 		set => SetValue(CardColorProperty, value);
 	}
+	public void EegCreate()
+	{
+		_eeg = AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? new EmotivEeg() : new MuseEeg();
+	}
 
+	public bool EegIsConnected()
+	{
+		return _eeg.m_bConnected;
+	}
+
+	public int EegReplaySpeed()
+	{
+		return _eeg.m_nReplaySpeed;
+	}
+
+	public void EegSetTriggers(bool bHigh, bool bLow)
+	{
+		_eeg.SetTriggers(bHigh, bLow);
+	}
+
+	public void EegCalculateTriggers()
+	{
+		_eeg.CalculateTriggers();
+	}
+
+	public void EegIncreaseTriggers(float amount)
+	{
+		_eeg.IncreaseTriggers(amount);
+	}
+
+	public void EegDecreaseTriggers(float amount)
+	{
+		_eeg.DecreaseTriggers(amount);
+	}
+
+	public bool EegIsTriggerOn()
+	{
+		return _eeg.IsTriggerOn();
+	}
+
+	public bool EegIsTriggerOff()
+	{
+		return _eeg.IsTriggerOff();
+	}
+
+	public EegChannel EegChannel(int index)
+	{
+		return _eeg.m_eegChannel[index];
+	}
 }
