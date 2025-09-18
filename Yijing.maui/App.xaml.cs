@@ -6,7 +6,7 @@ namespace Yijing;
 public partial class App : Application
 {
 
-	public static App? GetApp()
+	public static App GetApp()
 	{
 		Window[] w1 = Application.Current.Windows.ToArray();
 		foreach (var item in w1)
@@ -43,7 +43,7 @@ public partial class App : Application
 		//MainPage.Navigation.PushAsync(MainPage);
 	}
 
-	protected override Window CreateWindow(IActivationState? activationState)
+	protected override Window CreateWindow(IActivationState activationState)
 	{
 		//Window window = base.CreateWindow(activationState);
 		Window window = new Window(new AppShell());

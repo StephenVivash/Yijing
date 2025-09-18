@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using SkiaSharp;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Maui;
 using LiveChartsCore.SkiaSharpView.Painting;
 
 using Platform = Yijing.Platforms.Platform;
@@ -34,8 +35,6 @@ public class DescendingOrder : Comparer<string>
 
 public partial class EegView : ContentView
 {
-	private EegPage _ep = null;
-
 	public int m_nEegMode = (int)eEegMode.eIdle;
 	private int m_nSeriesMax = 2000;
 
@@ -44,7 +43,8 @@ public partial class EegView : ContentView
 	private Task m_tskReplay = null;
 	//private Task m_tskLoadAnalysis = null;
 
-	public Ai _ai = new Ai();
+	//private Eeg _eeg = new();
+	private Ai _ai = new();
 
 	public EegView()
 	{
@@ -91,7 +91,6 @@ public partial class EegView : ContentView
 
 	protected void Page_Loaded(object sender, EventArgs e)
 	{
-		_ep = ViewDirectory.Get<EegPage>();
 		if (picMode.SelectedIndex == (int)eEegMode.eIdle)
 		{
 			picMode.SelectedIndex = (int)eEegMode.eSummary;
@@ -160,15 +159,17 @@ public partial class EegView : ContentView
 		AppPreferences.EegDevice = picDevice.SelectedIndex;
 
 		AppSettings.EegCreate();
+		//_eeg = AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? new EmotivEeg() : new MuseEeg();
+
 		AppSettings.SetDocumentHome();
 		LoadSessions();
 
-		if (_ep?.CartesianChart() == null)
+		CartesianChart cc;
+		if ((cc = UI.Get<EegPage>()?.CartesianChart()) == null)
 			return;
 
 		SKColor c = AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? SKColors.Olive : SKColors.Red;
-		//IEnumerable<ISeries> ies = EegPage.CartesianChart().Series;
-		IEnumerable<ISeries> ies = _ep?.CartesianChart().Series;
+		IEnumerable<ISeries> ies = cc.Series;
 		for (int i = 0; i < 5; ++i)
 			((LineSeries<float>)ies.ElementAt(i)).Stroke = new SolidColorPaint(c) { StrokeThickness = EegSeries.m_fThinStoke };
 	}
@@ -195,9 +196,8 @@ public partial class EegView : ContentView
 			picReplaySpeed.SelectedIndex = (int)eReplaySpeed.eNormal;
 			picReplaySpeed.IsEnabled = false;
 
-			ViewDirectory.Invoke<EegPage>(p => p.SessionLog().Text = "");
-			ViewDirectory.Invoke<DiagramView>(v => v.StartNewChat());
-			//DiagramView.StartNewChat();
+			UI.Call<EegPage>(p => p.SessionLog().Text = "");
+			UI.Call<DiagramView>(v => v.StartNewChat());
 			AudioPlayer.Ambience(Dispatcher, true);
 			AppSettings.Eeg().Connect();
 		}
@@ -208,7 +208,7 @@ public partial class EegView : ContentView
 			if (!string.IsNullOrEmpty(s))
 			{
 				if (picAiAnalysis.SelectedIndex != (int) eAiService.eNone)
-					ViewDirectory.Invoke<EegPage>(p => p.SessionLog().Text = "");
+					UI.Call<EegPage>(p => p.SessionLog().Text = "");
 				AppSettings.Eeg().m_bCancelReplay = false;
 				void action() => AppSettings.Eeg().Replay(Path.Combine(AppSettings.EegDataHome(), s + (AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? "-Emotiv.csv" : "-Muse.csv")));
 				m_tskReplay = new Task(action);
@@ -221,8 +221,7 @@ public partial class EegView : ContentView
 			string s = (string)picSession.SelectedItem;
 			if (!string.IsNullOrEmpty(s))
 			{
-				//DiagramView.SelectChat(s);
-				ViewDirectory.Invoke<DiagramView>(v => v.SelectChat(s));
+				UI.Call<DiagramView>(v => v.SelectChat(s));
 				_strSession = s;
 				LoadAnalysis();
 				AppSettings.Eeg().m_bCancelReplay = false;
@@ -262,7 +261,8 @@ public partial class EegView : ContentView
 
 	private void picChartBands_SelectedIndexChanged(object sender, EventArgs e)
 	{
-		if (_ep?.CartesianChart() == null)
+		CartesianChart cc;
+		if ((cc = UI.Get<EegPage>()?.CartesianChart()) == null)
 			return;
 
 		AppPreferences.ChartBands = picChartBands.SelectedIndex;
@@ -272,7 +272,7 @@ public partial class EegView : ContentView
 			return;
 		}
 
-		IEnumerable<ISeries> ies = _ep?.CartesianChart().Series;
+		IEnumerable<ISeries> ies = cc.Series;
 		foreach (var s in ies)
 		{
 			ObservableCollection<float> v = (ObservableCollection<float>)s.Values;
@@ -290,10 +290,11 @@ public partial class EegView : ContentView
 		if (picTriggerChannel.SelectedIndex == -1)
 			return;
 
-		if (_ep?.CartesianChart() == null)
+		CartesianChart cc;
+		if ((cc = UI.Get<EegPage>()?.CartesianChart()) == null)
 			return;
 
-		IEnumerable<ISeries> ies = _ep?.CartesianChart().Series;
+		IEnumerable<ISeries> ies = cc.Series;
 		((LineSeries<float>)ies.ElementAt(AppPreferences.TriggerIndex)).Stroke.StrokeThickness = EegSeries.m_fThinStoke;
 		AppSettings.EegChannel(AppPreferences.TriggerIndex).m_isTrigger = false;
 		AppPreferences.TriggerIndex = (picTriggerBand.SelectedIndex* 5) + picTriggerChannel.SelectedIndex;
@@ -373,17 +374,8 @@ public partial class EegView : ContentView
 		await _ai.ChatAsync(AppPreferences.AiEegService, data);
 		int i = _ai._userPrompts[1].Count() - 1;
 		//UpdateSessionLog(_ai._userPrompts[1][i] + "\n\n");
-		//UpdateSessionLog(_ai._chatReponses[1][i] + "\n\n");
-		ViewDirectory.Invoke<EegPage>(p => p.SessionLog().Text = _ai._chatReponses[1][i] + "\n\n");
+		UI.Call<EegPage>(p => p.SessionLog().Text += _ai._chatReponses[1][i] + "\n\n");
 	}
-/*
-	public void UpdateSessionLog(string str)
-	{
-		ViewDirectory.TryInvoke<EegPage>(p => p.SessionLog().Text = "");
-		//void action2 () => EegPage.lblSessionLog.CursorPosition = EegPage.lblSessionLog.Text.Length;
-		//void action3() => EegPage.lblSessionLog.CursorPosition.GenericLerp(0, EegPage.lblSessionLog.Text.Length, 0.5f);
-	}
-*/
 
 	//var result = await FilePicker.PickAsync(new PickOptions
 	//{
@@ -429,7 +421,7 @@ public partial class EegView : ContentView
 	public void SaveAnalysis()
 	{
 		string text = "";
-		ViewDirectory.Invoke<EegPage>(p => text = p.SessionLog().Text);
+		UI.Call<EegPage>(p => text = p.SessionLog().Text);
 		if (text.Length > 0)
 		{
 			string str = Path.Combine(AppSettings.DocumentHome(), "Analysis");
@@ -454,7 +446,7 @@ public partial class EegView : ContentView
 			using (StreamReader sr = File.OpenText(str))
 				while ((str = sr.ReadLine()) != null)
 					text += str + "\n";
-		ViewDirectory.Invoke<EegPage>(p => p.SessionLog().Text = text);
+		UI.Call<EegPage>(p => p.SessionLog().Text = text);
 	}
 
 	public void SetAppTitle(string title)
@@ -492,10 +484,11 @@ public partial class EegView : ContentView
 
 	public void InitialiseChart()
 	{
-		//int index = -1;
-		if (_ep?.CartesianChart() == null)
+		CartesianChart cc;
+		if ((cc = UI.Get<EegPage>()?.CartesianChart()) == null)
 			return;
-		IEnumerable<ISeries> ies = _ep?.CartesianChart().Series;
+
+		IEnumerable<ISeries> ies = cc.Series;
 		foreach (var s in ies)
 		{
 			ObservableCollection<float> v = (ObservableCollection<float>)s.Values;
@@ -505,7 +498,7 @@ public partial class EegView : ContentView
 			//else
 				v.Add(0.0f);
         }
-        ObservableCollection<string> l = _ep.TimeAxisLabels();
+        ObservableCollection<string> l = UI.Get<EegPage>().TimeAxisLabels();
 		l.Clear();
 	}
 
@@ -538,7 +531,7 @@ public partial class EegView : ContentView
 	private void UpdateChart()
 	{
 		int index = -1;
-		IEnumerable<ISeries> ies = _ep?.CartesianChart().Series;
+		IEnumerable<ISeries> ies = UI.Get<EegPage>()?.CartesianChart().Series;
 		foreach (var s in ies)
 		{
 			bool bDisplay = false;
@@ -602,7 +595,7 @@ public partial class EegView : ContentView
 				while (v.Count > m_nSeriesMax) 
 					v.RemoveAt(0);
 		}
-		ObservableCollection<string> l = _ep.TimeAxisLabels();
+		ObservableCollection<string> l = UI.Get<EegPage>().TimeAxisLabels();
 		TimeSpan ts = DateTime.Now - AppSettings.Eeg().m_dtEegStart;
 		ts = ts.Multiply(AppSettings.Eeg().m_nReplaySpeed);
 		l.Add($"{ts.Minutes:00}:{ts.Seconds:00}");

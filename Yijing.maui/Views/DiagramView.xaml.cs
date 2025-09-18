@@ -109,7 +109,7 @@ public partial class DiagramView : ContentView
 		Behaviors.Add(b);
 		InitializeComponent();
 
-		//ViewDirectory.InvokeByKey<DiagramView>("DiagramView1", v => v.EndCast());
+		//UI.CallByKey<DiagramView>("DiagramView1", v => v.EndCast());
 		//Eeg.SetDiagramView(this);
 
 		m_brMonoColor = App.Current.RequestedTheme == AppTheme.Dark ? Brush.LightGray : Brush.DarkGray;
@@ -1088,7 +1088,7 @@ public partial class DiagramView : ContentView
 
 	private static void DiagramTimer(object state)
 	{
-		ViewDirectory.Invoke<DiagramView>(v => v.DiagramTimer());
+		UI.Call<DiagramView>(v => v.DiagramTimer());
 	}
 
 	private async void AutoCast()
@@ -1381,22 +1381,22 @@ public partial class DiagramView : ContentView
 		else
 		if (strText == "Heyboer")
 		{
-			ViewDirectory.Invoke<DiagramPage>(p => p.WebView().Source = Heyboer.strText[hvsPrimary.Value]);
+			UI.Call<DiagramPage>(p => p.WebView().Source = Heyboer.strText[hvsPrimary.Value]);
 			return true;
 		}
 		else
 		if (strText == "YellowBridge")
 		{
-			ViewDirectory.Invoke<DiagramPage>(p => p.WebView().Source = YellowBridge.strText[hvsPrimary.Value]);
+			UI.Call<DiagramPage>(p => p.WebView().Source = YellowBridge.strText[hvsPrimary.Value]);
 			return true;
 		}
 		else
 		if (strText == "Regis")
 		{
-			ViewDirectory.Invoke<DiagramPage>(p => p.WebView().Source = Regis.strText[hvsPrimary.Value]);
+			UI.Call<DiagramPage>(p => p.WebView().Source = Regis.strText[hvsPrimary.Value]);
 			return true;
 		}
-		ViewDirectory.Invoke<DiagramPage>(p => p.WebView().Source = new HtmlWebViewSource { Html = strHtml });
+		UI.Call<DiagramPage>(p => p.WebView().Source = new HtmlWebViewSource { Html = strHtml });
 		//UI.Get<DiagramPage>().WebView().Source = new HtmlWebViewSource { Html = strHtml };
 		return true;
 
@@ -1427,15 +1427,15 @@ public partial class DiagramView : ContentView
 	public void UpdateSessionLog(string str, bool append, bool newline)
 	{
 		if (append)
-			ViewDirectory.Invoke<DiagramPage>(p => p.SessionLog().Text += str + (newline ? "\n" : ""));
+			UI.Call<DiagramPage>(p => p.SessionLog().Text += str + (newline ? "\n" : ""));
 		else
-			ViewDirectory.Invoke<DiagramPage>(p => p.SessionLog().Text = str + (newline ? "\n" : ""));
+			UI.Call<DiagramPage>(p => p.SessionLog().Text = str + (newline ? "\n" : ""));
 	}
 
 	public void AiChat(bool includeCast)
 	{
 		string s = "";
-		ViewDirectory.Invoke<DiagramPage>(p => s = p.SessionLog().Text);
+		UI.Call<DiagramPage>(p => s = p.SessionLog().Text);
 
 		if (includeCast)
 			s += " I consulted the oracle and the Yijing responded with hexagram " + m_hvsCurrent.DescribeCast();
@@ -1494,18 +1494,18 @@ public partial class DiagramView : ContentView
 	
 	public void StartNewChat()
 	{
-		ViewDirectory.Invoke<DiagramView>(v => v.StartChat());
+		UI.Call<DiagramView>(v => v.StartChat());
 	}
 
 	public void SelectChat(string name)
 	{
 		int i = -1;
-		ViewDirectory.Invoke<DiagramView>(v => i = v.picSession.Items.IndexOf(name));
+		UI.Call<DiagramView>(v => i = v.picSession.Items.IndexOf(name));
 		if (i != -1)
-			ViewDirectory.Invoke<DiagramView>(v => v.picSession.SelectedItem = name);
+			UI.Call<DiagramView>(v => v.picSession.SelectedItem = name);
 		else
 		{
-			ViewDirectory.Invoke<DiagramView>(v => v.picSession.SelectedIndex = 0);
+			UI.Call<DiagramView>(v => v.picSession.SelectedIndex = 0);
 			EegView._strSession = name;
 		}
 	}
@@ -1519,7 +1519,7 @@ public partial class DiagramView : ContentView
 
 		_ai._userPrompts = [[], []];
 		_ai._chatReponses = [[], []];
-		ViewDirectory.Invoke<DiagramView>(v => v.UpdateChat());
+		UI.Call<DiagramView>(v => v.UpdateChat());
 	}
 
 	public void SaveChat(string name)
@@ -1646,7 +1646,7 @@ public partial class DiagramView : ContentView
 			}
 
 		strHtml += "</body></html>";
-		ViewDirectory.TryInvoke<DiagramPage>(p => p.WebView().Source = new HtmlWebViewSource { Html = strHtml });
+		UI.Try<DiagramPage>(p => p.WebView().Source = new HtmlWebViewSource { Html = strHtml });
 		return true;
 	}
 

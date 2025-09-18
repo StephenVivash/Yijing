@@ -1,4 +1,4 @@
-﻿
+
 namespace Yijing.Services;
 
 public static class AppSettings

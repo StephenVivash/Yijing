@@ -49,9 +49,9 @@ public partial class DiagramPage : ContentPage
 		{
 			s = e.Url.Substring(s.Length, e.Url.Length - s.Length);
 			bool b = false;
-			ViewDirectory.Invoke<DiagramView>(v => b = v.IsExploreMode());
+			UI.Call<DiagramView>(v => b = v.IsExploreMode());
 			if (b && !string.IsNullOrEmpty(s))
-				ViewDirectory.Invoke<DiagramView>(v => v.SetHexagramValue(int.Parse(s)));
+				UI.Call<DiagramView>(v => v.SetHexagramValue(int.Parse(s)));
 			e.Cancel = true;
 		}
 	}

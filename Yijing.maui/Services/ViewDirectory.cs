@@ -63,72 +63,6 @@ public static class ViewDirectory
 		return result;
 	}
 
-	// --- Invoke<T>: try immediate across assignable types; else queue under the *requested* T ---
-	public static void Invoke<T>(Action<T> action) where T : VisualElement
-	{
-		var target = (VisualElement?)Get<T>();
-		if (target is not null) { RunOnUi(target, () => action((T)target)); return; }
-
-		lock (_gate)
-		{
-			if (!_pendingByType.TryGetValue(typeof(T), out var q))
-				_pendingByType[typeof(T)] = q = new Queue<Action<VisualElement>>();
-			q.Enqueue(ve => action((T)ve));
-		}
-	}
-
-	// --- Register: flush pending for *all base types* of v.GetType() that queued actions ---
-	internal static void Register(VisualElement v, string? key)
-	{
-		Queue<Action<VisualElement>>? toRunExact = null;
-		var toRunAssignable = new List<Action<VisualElement>>();
-
-		lock (_gate)
-		{
-			var type = v.GetType();
-			if (!_byType.TryGetValue(type, out var list))
-				_byType[type] = list = new LinkedList<WeakReference<VisualElement>>();
-			list.AddLast(new WeakReference<VisualElement>(v));
-			if (list.Count > 64) Prune(list);
-
-			if (!string.IsNullOrEmpty(key))
-				_byKey[key!] = new WeakReference<VisualElement>(v);
-
-			// exact-type queue
-			if (_pendingByType.TryGetValue(type, out var q1) && q1.Count > 0)
-			{
-				toRunExact = new Queue<Action<VisualElement>>(q1);
-				q1.Clear();
-			}
-
-			// base-type queues (any K where K.IsAssignableFrom(type))
-			foreach (var (k, q) in _pendingByType)
-				if (k != type && k.IsAssignableFrom(type) && q.Count > 0)
-					while (q.Count > 0) toRunAssignable.Add(q.Dequeue());
-
-			// key queue
-			if (key != null && _pendingByKey.TryGetValue(key, out var q2) && q2.Count > 0)
-				while (q2.Count > 0) toRunAssignable.Add(q2.Dequeue());
-		}
-
-		if (toRunExact != null)
-			while (toRunExact.Count > 0) { var a = toRunExact.Dequeue(); RunOnUi(v, () => a(v)); }
-
-		foreach (var a in toRunAssignable) RunOnUi(v, () => a(v));
-	}
-
-	/*/ ---- Getters ----
-	public static T? Get<T>() where T : VisualElement
-	{
-		lock (_gate)
-		{
-			if (_byType.TryGetValue(typeof(T), out var list))
-				for (var n = list.Last; n != null; n = n.Previous)
-					if (n.Value.TryGetTarget(out var v) && v is T tv) return tv;
-		}
-		return null;
-	}*/
-
 	public static T? GetByKey<T>(string key) where T : VisualElement
 	{
 		lock (_gate)
@@ -136,35 +70,21 @@ public static class ViewDirectory
 				return tv;
 		return null;
 	}
-	/*
-	public static IReadOnlyList<T> GetAll<T>() where T : VisualElement
-	{
-		var result = new List<T>();
-		lock (_gate)
-		{
-			if (_byType.TryGetValue(typeof(T), out var list))
-			{
-				for (var n = list.First; n != null; n = n.Next)
-					if (n.Value.TryGetTarget(out var v) && v is T tv) result.Add(tv);
-			}
-		}
-		return result;
-	}*/
 
-	/*  
-		Minimal API I recommend keeping
-		// 1) Only if live (no queue)
-		public static bool TryInvoke<T>(Action<T> action) where T : VisualElement;
-		public static bool TryInvokeByKey<T>(string key, Action<T> action) where T : VisualElement;
+/*  
+	Minimal API I recommend keeping
+	// 1) Only if live (no queue)
+	public static bool TryInvoke<T>(Action<T> action) where T : VisualElement;
+	public static bool TryInvokeByKey<T>(string key, Action<T> action) where T : VisualElement;
 
-		// 2) Run now or queue until target exists
-		public static void Invoke<T>(Action<T> action) where T : VisualElement;
-		public static void InvokeByKey<T>(string key, Action<T> action) where T : VisualElement;
+	// 2) Run now or queue until target exists
+	public static void Invoke<T>(Action<T> action) where T : VisualElement;
+	public static void InvokeByKey<T>(string key, Action<T> action) where T : VisualElement;
 
-		// 3) Await the instance, then act (use WaitAsync with a timeout at the callsite if needed)
-		public static Task<T> WhenReady<T>() where T : VisualElement;
-		public static Task<T> WhenReadyByKey<T>(string key) where T : VisualElement;
-	*/
+	// 3) Await the instance, then act (use WaitAsync with a timeout at the callsite if needed)
+	public static Task<T> WhenReady<T>() where T : VisualElement;
+	public static Task<T> WhenReadyByKey<T>(string key) where T : VisualElement;
+*/
 
 	public static bool TryInvoke<T>(Action<T> action) where T : VisualElement
 	{
@@ -190,27 +110,20 @@ public static class ViewDirectory
 		return targets.Count;
 	}
 
-	/*/ ---- Invoke (now or later) ----
 	// If at least one T exists, invokes on the latest one; otherwise queues until one registers.
+	// --- Invoke<T>: try immediate across assignable types; else queue under the *requested* T ---
 	public static void Invoke<T>(Action<T> action) where T : VisualElement
 	{
-		VisualElement? target = null;
+		var target = (VisualElement?)Get<T>();
+		if (target is not null) { RunOnUi(target, () => action((T)target)); return; }
+
 		lock (_gate)
 		{
-			if (_byType.TryGetValue(typeof(T), out var list))
-			{
-				for (var n = list.Last; n != null; n = n.Previous)
-					if (n.Value.TryGetTarget(out var v)) { target = v; break; }
-			}
-			if (target is null)
-			{
-				if (!_pendingByType.TryGetValue(typeof(T), out var q))
-					_pendingByType[typeof(T)] = q = new Queue<Action<VisualElement>>();
-				q.Enqueue(ve => action((T)ve));
-			}
+			if (!_pendingByType.TryGetValue(typeof(T), out var q))
+				_pendingByType[typeof(T)] = q = new Queue<Action<VisualElement>>();
+			q.Enqueue(ve => action((T)ve));
 		}
-		if (target is not null) RunOnUi(target, () => action((T)target));
-	}*/
+	}
 
 	// If key exists, invokes; otherwise queues until that key registers.
 	public static void InvokeByKey<T>(string key, Action<T> action) where T : VisualElement
@@ -257,11 +170,11 @@ public static class ViewDirectory
 		return tcs.Task;
 	}
 
-	/*/ ---- Registration from behavior ----
+	// --- Register: flush pending for *all base types* of v.GetType() that queued actions ---
 	internal static void Register(VisualElement v, string? key)
 	{
-		Queue<Action<VisualElement>>? toRunType = null;
-		Queue<Action<VisualElement>>? toRunKey = null;
+		Queue<Action<VisualElement>>? toRunExact = null;
+		var toRunAssignable = new List<Action<VisualElement>>();
 
 		lock (_gate)
 		{
@@ -274,25 +187,28 @@ public static class ViewDirectory
 			if (!string.IsNullOrEmpty(key))
 				_byKey[key!] = new WeakReference<VisualElement>(v);
 
+			// exact-type queue
 			if (_pendingByType.TryGetValue(type, out var q1) && q1.Count > 0)
 			{
-				toRunType = new Queue<Action<VisualElement>>(q1);
+				toRunExact = new Queue<Action<VisualElement>>(q1);
 				q1.Clear();
 			}
 
+			// base-type queues (any K where K.IsAssignableFrom(type))
+			foreach (var (k, q) in _pendingByType)
+				if (k != type && k.IsAssignableFrom(type) && q.Count > 0)
+					while (q.Count > 0) toRunAssignable.Add(q.Dequeue());
+
+			// key queue
 			if (key != null && _pendingByKey.TryGetValue(key, out var q2) && q2.Count > 0)
-			{
-				toRunKey = new Queue<Action<VisualElement>>(q2);
-				q2.Clear();
-			}
+				while (q2.Count > 0) toRunAssignable.Add(q2.Dequeue());
 		}
 
-		if (toRunType != null)
-			while (toRunType.Count > 0) { var a = toRunType.Dequeue(); RunOnUi(v, () => a(v)); }
+		if (toRunExact != null)
+			while (toRunExact.Count > 0) { var a = toRunExact.Dequeue(); RunOnUi(v, () => a(v)); }
 
-		if (toRunKey != null)
-			while (toRunKey.Count > 0) { var a = toRunKey.Dequeue(); RunOnUi(v, () => a(v)); }
-	}*/
+		foreach (var a in toRunAssignable) RunOnUi(v, () => a(v));
+	}
 
 	internal static void Unregister(VisualElement v, string? key)
 	{
@@ -400,45 +316,6 @@ public sealed class RegisterInViewDirectoryBehavior : Behavior<VisualElement>
 	}
 }
 
-/*
-public sealed class RegisterInViewDirectoryBehavior : Behavior<VisualElement>
-{
-	public static readonly BindableProperty KeyProperty =
-		BindableProperty.Create(nameof(Key), typeof(string), typeof(RegisterInViewDirectoryBehavior), default(string));
-
-	public string? Key
-	{
-		get => (string?)GetValue(KeyProperty);
-		set => SetValue(KeyProperty, value);
-	}
-
-	protected override void OnAttachedTo(VisualElement bindable)
-	{
-		base.OnAttachedTo(bindable);
-		bindable.HandlerChanged += OnHandlerChanged;   // attach → register
-		bindable.HandlerChanging += OnHandlerChanging;  // detach → unregister
-	}
-
-	protected override void OnDetachingFrom(VisualElement bindable)
-	{
-		bindable.HandlerChanged -= OnHandlerChanged;
-		bindable.HandlerChanging -= OnHandlerChanging;
-		base.OnDetachingFrom(bindable);
-	}
-
-	void OnHandlerChanged(object? s, EventArgs e)
-	{
-		var v = (VisualElement)s!;
-		if (v.Handler != null) ViewDirectory.Register(v, Key);
-	}
-
-	void OnHandlerChanging(object? s, HandlerChangingEventArgs e)
-	{
-		if (e.NewHandler == null) ViewDirectory.Unregister((VisualElement)s!, Key);
-	}
-}
-*/
-
 public static class UI
 {
 	// Get the latest instance (or null). Feels like GetPageA().
@@ -473,147 +350,18 @@ public static class UI
 //////////////////////////////////////////////////////////////////
 
 /*
-public static class PageDirectory
-{
-	static readonly object _gate = new();
-	static readonly Dictionary<Type, WeakReference<Page>> _live = new();
-	static readonly Dictionary<Type, Queue<Action<Page>>> _pending = new();
+	// List all windows:
+	var windows = MauiIntrospectionExtensions.GetAllWindows();
+	foreach (var w in windows)
+		Console.WriteLine($"Window: {w.Title}  (Id {w.GetHashCode():X})");
 
-	internal static void Register(Page p)
-	{
-		Queue<Action<Page>>? toRun = null;
-		lock (_gate)
-		{
-			_live[p.GetType()] = new WeakReference<Page>(p);
-			if (_pending.TryGetValue(p.GetType(), out var q) && q.Count > 0)
-			{
-				toRun = new Queue<Action<Page>>(q);
-				q.Clear();
-			}
-		}
-		if (toRun != null)
-			while (toRun.Count > 0)
-			{
-				var act = toRun.Dequeue();
-				RunOnUi(p, () => act(p));
-			}
-	}
+	// List all realized pages:
+	var pages = await MauiIntrospectionExtensions.GetAllPagesAsync();
+	foreach (var p in pages)
+		Console.WriteLine($"Page: {p.GetType().Name}  Title='{p.Title}'");
 
-	internal static void Unregister(Page p)
-	{
-		lock (_gate)
-			if (_live.TryGetValue(p.GetType(), out var wr) &&
-				wr.TryGetTarget(out var t) && ReferenceEquals(t, p))
-				_live.Remove(p.GetType());
-		// _pending stays; queued work will run when another instance registers.
-	}
-	public static T? Get<T>() where T : Page
-	{
-		lock (_gate)
-			if (_live.TryGetValue(typeof(T), out var wr) && wr.TryGetTarget(out var p))
-				return (T)p;
-		return null;
-	}
-
-	public static bool TryInvoke<T>(Action<T> action) where T : Page
-	{
-		var p = Get<T>();
-		if (p == null)
-			return false;
-		Invoke<T>(action); // already UI-thread safe
-		return true;
-	}
-
-	// Call now if present; otherwise queue until the page registers.
-	static void Invoke<T>(Action<T> action) where T : Page
-	{
-		Page? p = null;
-		lock (_gate)
-		{
-			if (_live.TryGetValue(typeof(T), out var wr) && wr.TryGetTarget(out var t))
-				p = t;
-			else
-			{
-				if (!_pending.TryGetValue(typeof(T), out var q))
-					_pending[typeof(T)] = q = new Queue<Action<Page>>();
-				q.Enqueue(pg => action((T)pg));
-			}
-		}
-		if (p != null)
-			RunOnUi(p, () => action((T)p));
-	}
-
-	// await the page coming to life (e.g., to chain work)
-	public static Task<T> WhenReady<T>() where T : Page
-	{
-		var existing = Get<T>();
-		if (existing is T ready)
-			return Task.FromResult(ready);
-		var tcs = new TaskCompletionSource<T>();
-		Invoke<T>(p => tcs.TrySetResult(p)); // will run immediately or when it registers
-		return tcs.Task;
-	}
-
-	static void RunOnUi(Page p, Action a)
-	{
-		void Safe() { try { a(); } catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); } }
-		var d = p.Dispatcher;
-		if (d?.IsDispatchRequired == true) d.Dispatch(Safe);
-		else if (d != null) Safe();
-		else MainThread.BeginInvokeOnMainThread(Safe);
-	}
-	static void RunOnUiOld(Page p, Action a)
-	{
-		var disp = p.Dispatcher;
-		if (disp?.IsDispatchRequired == true) disp.Dispatch(a);
-		else if (disp != null) a();
-		else MainThread.BeginInvokeOnMainThread(a); // fallback if no dispatcher yet
-	}
-}
-
-public sealed class RegisterInDirectoryBehavior : Behavior<Page>
-{
-	protected override void OnAttachedTo(Page page)
-	{
-		base.OnAttachedTo(page);
-		page.HandlerChanged += OnHandlerChanged;    // attach → register
-		page.HandlerChanging += OnHandlerChanging;   // detach → unregister
-	}
-
-	protected override void OnDetachingFrom(Page page)
-	{
-		page.HandlerChanged -= OnHandlerChanged;
-		page.HandlerChanging -= OnHandlerChanging;
-		base.OnDetachingFrom(page);
-	}
-
-	static void OnHandlerChanged(object? s, EventArgs e)
-	{
-		var p = (Page)s!;
-		if (p.Handler != null) PageDirectory.Register(p); // now has Dispatcher/window
-	}
-
-	static void OnHandlerChanging(object? s, HandlerChangingEventArgs e)
-	{
-		if (e.NewHandler == null) PageDirectory.Unregister((Page)s!); // being torn down
-	}
-}
-
-		// List all windows:
-		var windows = MauiIntrospectionExtensions.GetAllWindows();
-		foreach (var w in windows)
-			Console.WriteLine($"Window: {w.Title}  (Id {w.GetHashCode():X})");
-
-		// List all realized pages:
-		var pages = await MauiIntrospectionExtensions.GetAllPagesAsync();
-		foreach (var p in pages)
-			Console.WriteLine($"Page: {p.GetType().Name}  Title='{p.Title}'");
-
-		// Just the topmost visible page per window:
-		var visible = await MauiIntrospectionExtensions.GetVisiblePagesAsync();
-
-
-
+	// Just the topmost visible page per window:
+	var visible = await MauiIntrospectionExtensions.GetVisiblePagesAsync();
 
 public static class MauiIntrospectionExtensions
 {
