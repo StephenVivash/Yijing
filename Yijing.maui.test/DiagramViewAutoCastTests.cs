@@ -52,7 +52,7 @@ public sealed class DiagramViewAutoCastTests : IAsyncLifetime
 
         if (!string.IsNullOrWhiteSpace(automationName))
         {
-            _options.AddAdditionalCapability("automationName", automationName);
+            _options.AddAdditionalAppiumOption("automationName", automationName);
         }
 
         foreach (var (capability, variable) in new (string capability, string variable)[]
@@ -67,7 +67,7 @@ public sealed class DiagramViewAutoCastTests : IAsyncLifetime
             var value = Environment.GetEnvironmentVariable(variable);
             if (!string.IsNullOrWhiteSpace(value))
             {
-                _options.AddAdditionalCapability(capability, value);
+                _options.AddAdditionalAppiumOption(capability, value);
             }
         }
     }
@@ -102,10 +102,7 @@ public sealed class DiagramViewAutoCastTests : IAsyncLifetime
     [Fact(DisplayName = "AutoCast")]
     public void AutoCast()
     {
-        if (_skipReason is not null)
-        {
-            throw new SkipException(_skipReason);
-        }
+        Skip.If(_skipReason is not null, _skipReason ?? string.Empty);
 
         if (_driver is null)
         {
