@@ -104,8 +104,9 @@ public sealed class DiagramViewAutoCastTests : IAsyncLifetime
     {
         if (_skipReason is not null)
         {
-            throw new SkipException(_skipReason);
-        }
+            //throw new SkipException(_skipReason);
+			throw SkipException.ForSkip(_skipReason);
+		}
 
         if (_driver is null)
         {
