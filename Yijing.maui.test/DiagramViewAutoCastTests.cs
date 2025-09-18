@@ -18,7 +18,7 @@ public sealed class DiagramViewAutoCastTests : IAsyncLifetime
     private readonly Uri? _serverUri;
     private readonly AppiumOptions? _options;
     private readonly string? _platformName;
-    private AppiumDriver<AppiumWebElement>? _driver;
+    private AppiumDriver? _driver;
 
     public DiagramViewAutoCastTests()
     {
@@ -81,9 +81,9 @@ public sealed class DiagramViewAutoCastTests : IAsyncLifetime
 
         _driver = _platformName switch
         {
-            "android" => new AndroidDriver<AppiumWebElement>(_serverUri!, _options!, TimeSpan.FromSeconds(180)),
-            "ios" => new IOSDriver<AppiumWebElement>(_serverUri!, _options!, TimeSpan.FromSeconds(180)),
-            "windows" => new WindowsDriver<AppiumWebElement>(_serverUri!, _options!, TimeSpan.FromSeconds(180)),
+            "android" => new AndroidDriver(_serverUri!, _options!, TimeSpan.FromSeconds(180)),
+            "ios" => new IOSDriver(_serverUri!, _options!, TimeSpan.FromSeconds(180)),
+            "windows" => new WindowsDriver(_serverUri!, _options!, TimeSpan.FromSeconds(180)),
             _ => throw new NotSupportedException($"Unsupported platform '{_platformName}'."),
         };
 
@@ -112,10 +112,11 @@ public sealed class DiagramViewAutoCastTests : IAsyncLifetime
             throw new InvalidOperationException("Appium driver was not initialised.");
         }
 
-        var wait = new WebDriverWait(new SystemClock(), _driver, TimeSpan.FromSeconds(60), TimeSpan.FromMilliseconds(500));
+        var driver = _driver!;
+        var wait = new WebDriverWait(new SystemClock(), driver, TimeSpan.FromSeconds(60), TimeSpan.FromMilliseconds(500));
 
-        var diagramModePicker = wait.Until(driver =>
-            FindElement((AppiumDriver<AppiumWebElement>)driver, new[]
+        var diagramModePicker = wait.Until(_ =>
+            FindElement(driver, new[]
             {
                 MobileBy.AccessibilityId("picDiagramMode"),
                 MobileBy.Id("picDiagramMode"),
@@ -124,8 +125,8 @@ public sealed class DiagramViewAutoCastTests : IAsyncLifetime
 
         diagramModePicker.Click();
 
-        var autoCastOption = wait.Until(driver =>
-            FindElement((AppiumDriver<AppiumWebElement>)driver, new[]
+        var autoCastOption = wait.Until(_ =>
+            FindElement(driver, new[]
             {
                 MobileBy.AccessibilityId("Auto Cast"),
                 MobileBy.Name("Auto Cast"),
@@ -144,7 +145,7 @@ public sealed class DiagramViewAutoCastTests : IAsyncLifetime
         Assert.Contains("Auto Cast", selectedText, StringComparison.OrdinalIgnoreCase);
     }
 
-    private static AppiumWebElement? FindElement(AppiumDriver<AppiumWebElement> driver, IEnumerable<By> selectors)
+    private static AppiumElement? FindElement(AppiumDriver driver, IEnumerable<By> selectors)
     {
         foreach (var selector in selectors)
         {
@@ -165,7 +166,7 @@ public sealed class DiagramViewAutoCastTests : IAsyncLifetime
         return null;
     }
 
-    private static string? GetElementText(AppiumWebElement element)
+    private static string? GetElementText(AppiumElement element)
     {
         var text = element.Text;
         if (!string.IsNullOrWhiteSpace(text))
