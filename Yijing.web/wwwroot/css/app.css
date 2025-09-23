@@ -112,6 +112,8 @@ h1, h2, h3 {
     flex-direction: column;
     gap: 0.5rem;
     margin: 1.5rem 0;
+    --line-length: 220px;
+    --yin-gap: 18px;
 }
 
 .hex-line {
@@ -131,31 +133,27 @@ h1, h2, h3 {
     display: flex;
     align-items: center;
     gap: 0;
-}
-
-.hex-line.yang .segments {
-    gap: 0;
+    width: var(--line-length);
 }
 
 .hex-line .segment {
     height: 21px;
-    width: 110px;
     border-radius: 12px;
     background: linear-gradient(90deg, #111827, #1f2937);
 }
 
 .hex-line .segment.full {
-    width: 220px;
+    width: 100%;
 }
 
 .hex-line .gap {
     height: 21px;
-    width: 18px;
+    width: var(--yin-gap);
     background-color: transparent;
 }
 
 .hex-line.yin .segment {
-    width: 90px;
+    width: calc((var(--line-length) - var(--yin-gap)) / 2);
 }
 
 .hex-line.yin .segment:first-child {
