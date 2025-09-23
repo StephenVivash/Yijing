@@ -1,20 +1,31 @@
-import { CLineValueSequencer } from "./CLineValueSequencer.ts";
-import { CTrigramValueSequencer } from "./CTrigramValueSequencer.ts";
-import { CHexagramValueSequencer } from "./CHexagramValueSequencer.ts";
-  class RandomGenerator {
+declare function require(moduleName: string): any;
+
+class RandomGenerator {
   public next(max: number): number {
     return Math.floor(Math.random() * max);
   }
 }
-  export enum ValueType {
+
+export enum ValueType {
   Bit = 0,
   Line = 1,
   Duogram = 2,
   Trigram = 3,
   Hexagram = 4,
 }
-  export class Sequences {
-public static TextType: string[] = [ "Text", "Image", "Judgement", "Line1", "Line2", "Line3", "Line4", "Line5", "Line6" ];
+
+export class Sequences {
+  public static TextType: string[] = [
+    "Text",
+    "Image",
+    "Judgement",
+    "Line1",
+    "Line2",
+    "Line3",
+    "Line4",
+    "Line5",
+    "Line6",
+  ];
   public static DiagramLsb = 1;
   public static LineSequence = 1;
   public static LineRatio = 1;
@@ -29,7 +40,7 @@ public static TextType: string[] = [ "Text", "Image", "Judgement", "Line1", "Lin
   public static HexagramLabel = 9;
   public static HexagramText = 1; // 6
   public static randomSession = new RandomGenerator();
-public static strDiagramSettings: string[][] = [
+  public static strDiagramSettings: string[][] = [
   ["Diagram Mode", "Explore", "Animate", "Touch Cast", "Mind Cast", "Auto Cast", "", "", "", "", "", "", "", ""],
   ["Diagram Type", "Hexagram", "Trigram", "Line", "", "", "", "", "", "", "", "", "", ""],
   ["Diagram Color", "Mono", "Dual", "Trigram", "Rgb", "", "", "", "", "", "", "", "", ""],
@@ -246,123 +257,78 @@ public static strDiagramSettings: string[][] = [
   ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fiveteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen", "Twenty", "Twenty One", "Twenty Two", "Twenty Three", "Twenty Four", "Twenty Five", "Twenty Six", "Twenty Seven", "Twenty Eight", "Twenty Nine", "Thirty", "Thirty One", "Thirty Two", "Thirty Three", "Thirty Four", "Thirty Five", "Thirty Six", "Thirty Seven", "Thirty Eight", "Thirty Nine", "Fourty", "Fourty One", "Fourty Two", "Fourty Three", "Fourty Four", "Fourty Five", "Fourty Six", "Fourty Seven", "Fourty Eight", "Fourty Nine", "Fifty", "Fifty One", "Fifty Two", "Fifty Three", "Fifty Four", "Fifty Five", "Fifty Six", "Fifty Seven", "Fifty Eight", "Fifty Nine", "Sixty", "Sixty One", "Sixty Two", "Sixty Three"],
   ];
   public static nHatcherPage: number[] = [
-  67, 74, 81, 87, 93, 99, 105, 111, 117, 123,
-  129, 135, 141, 147, 153, 159, 165, 171, 177, 183,
-  189, 195, 201, 207, 213, 219, 225, 231, 237, 243,
-  249, 255, 261, 267, 273, 279, 285, 291, 297, 303,
-  309, 315, 321, 327, 333, 339, 245, 351, 357, 363,
-  369, 375, 381, 387, 393, 399, 405, 411, 417, 423,
-  429, 435, 441, 447
+    67, 74, 81, 87, 93, 99, 105, 111, 117, 123,
+    129, 135, 141, 147, 153, 159, 165, 171, 177, 183,
+    189, 195, 201, 207, 213, 219, 225, 231, 237, 243,
+    249, 255, 261, 267, 273, 279, 285, 291, 297, 303,
+    309, 315, 321, 327, 333, 339, 245, 351, 357, 363,
+    369, 375, 381, 387, 393, 399, 405, 411, 417, 423,
+    429, 435, 441, 447,
   ];
-  public Sequences() {
-  }
-  public static void SetLSB(bool bTop)
-  {
-    if (bTop)
-  {
-  for (int i = 0; i < 8; ++i)
-  {
-  nTrigramSequences[0, i] = nTrigramLsbs[0, i];
-  strTrigramLabels[0, i] = strTrigramLsbs[0, i];
-  strTrigramLabels[1, i] = strTrigramLsbs[1, i];
-  }
-  for (int i = 0; i < 64; ++i)
-  {
-  nHexagramSequences[0, i] = nHexagramLsbs[0, i];
-  strHexagramLabels[0, i] = strHexagramLsbs[0, i];
-  strHexagramLabels[1, i] = strHexagramLsbs[1, i];
-  }
-  }
-  else
-  {
-  for (int i = 0; i < 8; ++i)
-  {
-  nTrigramSequences[0, i] = nTrigramLsbs[1, i];
-  strTrigramLabels[0, i] = strTrigramLsbs[2, i];
-  strTrigramLabels[1, i] = strTrigramLsbs[3, i];
-  }
-  for (int i = 0; i < 64; ++i)
-  {
-  nHexagramSequences[0, i] = nHexagramLsbs[1, i];
-  strHexagramLabels[0, i] = strHexagramLsbs[2, i];
-  strHexagramLabels[1, i] = strHexagramLsbs[3, i];
-  }
-  }
-  }
-  public static String DiagramSetting(int nIndex, int nValue)
-  {
-    return strDiagramSettings[nIndex, nValue + 1];
-  }
-  public static String DiagramSetting(String strName, int nValue)
-  {
-  for (int i = 0; i < 17; ++i)
-  if(strDiagramSettings[i, 0] == strName)
-    return DiagramSetting(i, nValue);
-    return "";
-  }
-  public static int DiagramSetting(int nIndex, String strName)
-  {
-  int nLength = 17;
-  for (int i = 0; i < nLength; ++i)
-  if(strDiagramSettings[nIndex, i] == strName)
-    return i - 1;
-    return 0;
-  }
   public static initialise(): void {
     this.setLSB(this.DiagramLsb === 1);
-  CLineValueSequencer.setCurrentSequence(this.LineSequence);
-  CLineValueSequencer.setCurrentRatio(this.LineRatio);
-  CLineValueSequencer.setCurrentLabel(this.LineLabel);
-  CTrigramValueSequencer.setCurrentSequence(this.TrigramSequence);
-  CTrigramValueSequencer.setCurrentRatio(this.TrigramRatio);
-  CTrigramValueSequencer.setCurrentLabel(this.TrigramLabel);
-  CHexagramValueSequencer.setCurrentSequence(this.HexagramSequence);
-  CHexagramValueSequencer.setCurrentRatio(this.HexagramRatio);
-  CHexagramValueSequencer.setCurrentLabel(this.HexagramLabel);
+    // Lazy-load the sequencers to avoid circular module dependencies.
+    const { CLineValueSequencer } = require("./CLineValueSequencer.ts");
+    const { CTrigramValueSequencer } = require("./CTrigramValueSequencer.ts");
+    const { CHexagramValueSequencer } = require("./CHexagramValueSequencer.ts");
+
+    CLineValueSequencer.setCurrentSequence(this.LineSequence);
+    CLineValueSequencer.setCurrentRatio(this.LineRatio);
+    CLineValueSequencer.setCurrentLabel(this.LineLabel);
+    CTrigramValueSequencer.setCurrentSequence(this.TrigramSequence);
+    CTrigramValueSequencer.setCurrentRatio(this.TrigramRatio);
+    CTrigramValueSequencer.setCurrentLabel(this.TrigramLabel);
+    CHexagramValueSequencer.setCurrentSequence(this.HexagramSequence);
+    CHexagramValueSequencer.setCurrentRatio(this.HexagramRatio);
+    CHexagramValueSequencer.setCurrentLabel(this.HexagramLabel);
   }
+
   public static setLSB(top: boolean): void {
     if (top) {
-    for (let i = 0; i < 8; ++i) {
-    this.nTrigramSequences[0][i] = this.nTrigramLsbs[0][i];
-    this.strTrigramLabels[0][i] = this.strTrigramLsbs[0][i];
-    this.strTrigramLabels[1][i] = this.strTrigramLsbs[1][i];
+      for (let i = 0; i < 8; ++i) {
+        this.nTrigramSequences[0][i] = this.nTrigramLsbs[0][i];
+        this.strTrigramLabels[0][i] = this.strTrigramLsbs[0][i];
+        this.strTrigramLabels[1][i] = this.strTrigramLsbs[1][i];
+      }
+      for (let i = 0; i < 64; ++i) {
+        this.nHexagramSequences[0][i] = this.nHexagramLsbs[0][i];
+        this.strHexagramLabels[0][i] = this.strHexagramLsbs[0][i];
+        this.strHexagramLabels[1][i] = this.strHexagramLsbs[1][i];
+      }
+    } else {
+      for (let i = 0; i < 8; ++i) {
+        this.nTrigramSequences[0][i] = this.nTrigramLsbs[1][i];
+        this.strTrigramLabels[0][i] = this.strTrigramLsbs[2][i];
+        this.strTrigramLabels[1][i] = this.strTrigramLsbs[3][i];
+      }
+      for (let i = 0; i < 64; ++i) {
+        this.nHexagramSequences[0][i] = this.nHexagramLsbs[1][i];
+        this.strHexagramLabels[0][i] = this.strHexagramLsbs[2][i];
+        this.strHexagramLabels[1][i] = this.strHexagramLsbs[3][i];
+      }
+    }
   }
-    for (let i = 0; i < 64; ++i) {
-    this.nHexagramSequences[0][i] = this.nHexagramLsbs[0][i];
-    this.strHexagramLabels[0][i] = this.strHexagramLsbs[0][i];
-    this.strHexagramLabels[1][i] = this.strHexagramLsbs[1][i];
-  }
-  } else {
-    for (let i = 0; i < 8; ++i) {
-    this.nTrigramSequences[0][i] = this.nTrigramLsbs[1][i];
-    this.strTrigramLabels[0][i] = this.strTrigramLsbs[2][i];
-    this.strTrigramLabels[1][i] = this.strTrigramLsbs[3][i];
-  }
-    for (let i = 0; i < 64; ++i) {
-    this.nHexagramSequences[0][i] = this.nHexagramLsbs[1][i];
-    this.strHexagramLabels[0][i] = this.strHexagramLsbs[2][i];
-    this.strHexagramLabels[1][i] = this.strHexagramLsbs[3][i];
-  }
-  }
-  }
+
   public static diagramSetting(index: number, value: number): string {
     return this.strDiagramSettings[index][value + 1] ?? "";
   }
+
   public static diagramSettingByName(name: string, value: number): string {
     for (let i = 0; i < 17; ++i) {
-    if (this.strDiagramSettings[i][0] === name) {
-    return this.diagramSetting(i, value);
-  }
-  }
+      if (this.strDiagramSettings[i][0] === name) {
+        return this.diagramSetting(i, value);
+      }
+    }
     return "";
   }
+
   public static diagramSettingIndex(index: number, name: string): number {
     const length = 17;
     for (let i = 0; i < length; ++i) {
-    if (this.strDiagramSettings[index][i] === name) {
-    return i - 1;
-  }
-  }
+      if (this.strDiagramSettings[index][i] === name) {
+        return i - 1;
+      }
+    }
     return 0;
   }
 }
