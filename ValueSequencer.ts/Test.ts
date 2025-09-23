@@ -1,18 +1,23 @@
-import { CHexagramValueSequencer } from "./CHexagramValueSequencer.ts";
 import { Sequences } from "./Sequences.ts";
+import { CHexagramArray } from "./CHexagramSequences.ts";
+import { CHexagramValueSequencer } from "./CHexagramValueSequencer.ts";
 
 function main(): void {
-  CHexagramValueSequencer.setCurrentSequence(Sequences.HexagramSequence);
-  CHexagramValueSequencer.setCurrentRatio(Sequences.HexagramRatio);
-  CHexagramValueSequencer.setCurrentLabel(Sequences.HexagramLabel);
+	Sequences.initialise();
+	CHexagramValueSequencer.setCurrentSequence(2);
 
-  const wenSequence = Sequences.nHexagramSequences[Sequences.HexagramSequence];
-  const hexagram = new CHexagramValueSequencer(0).first();
+	const hvs = new CHexagramValueSequencer(0).last();
+	for (let i = 0; i < 64; i++) {
+		console.log(hvs.next().describeCast());
+	}
 
-  for (let i = 0; i < wenSequence.length; i++) {
-    console.log(hexagram.describeCast());
-    hexagram.next();
-  }
+	const ha = new CHexagramArray();
+	ha.multiCast(10000);
+	ha.hexagramArray().forEach(h => {
+		if (h.count > 0) {
+			console.log(h.count + " : " + h.describeCast );
+		}
+	});
 }
 
 main();
