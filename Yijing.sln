@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yijing.db", "Yijing.db\Yiji
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yijing.maui.test", "Yijing.maui.test\Yijing.maui.test.csproj", "{2767AD26-70D8-4289-9FF5-FFF75F5140AF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yijing.web", "Yijing.web\Yijing.web.csproj", "{A0DE2C8C-DE26-4B80-B6EF-F4E0A7EDD30A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,9 +116,21 @@ Global
 		{2767AD26-70D8-4289-9FF5-FFF75F5140AF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2767AD26-70D8-4289-9FF5-FFF75F5140AF}.Release|x64.ActiveCfg = Release|Any CPU
 		{2767AD26-70D8-4289-9FF5-FFF75F5140AF}.Release|x64.Build.0 = Release|Any CPU
-		{2767AD26-70D8-4289-9FF5-FFF75F5140AF}.Release|x86.ActiveCfg = Release|Any CPU
-		{2767AD26-70D8-4289-9FF5-FFF75F5140AF}.Release|x86.Build.0 = Release|Any CPU
-	EndGlobalSection
+                {2767AD26-70D8-4289-9FF5-FFF75F5140AF}.Release|x86.ActiveCfg = Release|Any CPU
+                {2767AD26-70D8-4289-9FF5-FFF75F5140AF}.Release|x86.Build.0 = Release|Any CPU
+                {A0DE2C8C-DE26-4B80-B6EF-F4E0A7EDD30A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+                {A0DE2C8C-DE26-4B80-B6EF-F4E0A7EDD30A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+                {A0DE2C8C-DE26-4B80-B6EF-F4E0A7EDD30A}.Debug|x64.ActiveCfg = Debug|Any CPU
+                {A0DE2C8C-DE26-4B80-B6EF-F4E0A7EDD30A}.Debug|x64.Build.0 = Debug|Any CPU
+                {A0DE2C8C-DE26-4B80-B6EF-F4E0A7EDD30A}.Debug|x86.ActiveCfg = Debug|Any CPU
+                {A0DE2C8C-DE26-4B80-B6EF-F4E0A7EDD30A}.Debug|x86.Build.0 = Debug|Any CPU
+                {A0DE2C8C-DE26-4B80-B6EF-F4E0A7EDD30A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+                {A0DE2C8C-DE26-4B80-B6EF-F4E0A7EDD30A}.Release|Any CPU.Build.0 = Release|Any CPU
+                {A0DE2C8C-DE26-4B80-B6EF-F4E0A7EDD30A}.Release|x64.ActiveCfg = Release|Any CPU
+                {A0DE2C8C-DE26-4B80-B6EF-F4E0A7EDD30A}.Release|x64.Build.0 = Release|Any CPU
+                {A0DE2C8C-DE26-4B80-B6EF-F4E0A7EDD30A}.Release|x86.ActiveCfg = Release|Any CPU
+                {A0DE2C8C-DE26-4B80-B6EF-F4E0A7EDD30A}.Release|x86.Build.0 = Release|Any CPU
+        EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
