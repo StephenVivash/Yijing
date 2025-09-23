@@ -13,101 +13,103 @@ else
 {
     <div class="diagram-page">
         <section class="diagram-content">
-            <section class="diagram-controls">
-                <div class="control">
-                    <label for="sequenceSelect">Hexagram sequence</label>
-                    <select id="sequenceSelect" value="@_selectedSequence" @onchange="OnSequenceChanged">
-                        @foreach (var option in _sequenceOptions)
+            <div class="diagram-primary">
+                <div class="diagram-visual">
+                    <header class="diagram-header">
+                        <h2>@_primaryDescription</h2>
+                        @if (!string.IsNullOrWhiteSpace(_secondaryDescription))
                         {
-                            <option value="@option.Value">@option.Text</option>
+                            <p class="secondary">Changing to @(_secondaryDescription)</p>
                         }
-                    </select>
-                </div>
-                <div class="control">
-                    <label for="labelSelect">Hexagram label</label>
-                    <select id="labelSelect" value="@_selectedLabel" @onchange="OnLabelChanged">
-                        @foreach (var option in _labelOptions)
-                        {
-                            <option value="@option.Value">@option.Text</option>
-                        }
-                    </select>
-                </div>
-                <div class="control">
-                    <label for="lsbSelect">Diagram orientation</label>
-                    <select id="lsbSelect" value="@_selectedLsb" @onchange="OnLsbChanged">
-                        @foreach (var option in _lsbOptions)
-                        {
-                            <option value="@option.Value">@option.Text</option>
-                        }
-                    </select>
-                </div>
-                <div class="control">
-                    <label for="textSelect">Text source</label>
-                    <select id="textSelect" value="@_selectedTextSource" @onchange="OnTextChanged">
-                        @foreach (var option in _textOptions)
-                        {
-                            <option value="@option.Value">@option.Text</option>
-                        }
-                    </select>
-                </div>
-            </section>
+                        <p class="meta">Sequence @(_hexagram.SequenceStr) · Value @(_hexagram.ValueStr)</p>
+                    </header>
 
-            <div class="diagram-visual">
-                <header class="diagram-header">
-                    <h2>@_primaryDescription</h2>
-                    @if (!string.IsNullOrWhiteSpace(_secondaryDescription))
-                    {
-                        <p class="secondary">Changing to @(_secondaryDescription)</p>
-                    }
-                    <p class="meta">Sequence @(_hexagram.SequenceStr) · Value @(_hexagram.ValueStr)</p>
-                </header>
-
-                <div class="hexagram-lines">
-                    @foreach (var line in _lines)
-                    {
-                        <div class="hex-line @(line.IsYang ? "yang" : "yin") @(line.IsMoving ? "moving" : string.Empty)">
-                            <div class="segments">
-                                @if (line.IsYang)
-                                {
-                                    <div class="segment full"></div>
-                                }
-                                else
-                                {
-                                    <div class="segment"></div>
-                                    <div class="gap"></div>
-                                    <div class="segment"></div>
-                                }
+                    <div class="hexagram-lines">
+                        @foreach (var line in _lines)
+                        {
+                            <div class="hex-line @(line.IsYang ? "yang" : "yin") @(line.IsMoving ? "moving" : string.Empty)">
+                                <div class="segments">
+                                    @if (line.IsYang)
+                                    {
+                                        <div class="segment full"></div>
+                                    }
+                                    else
+                                    {
+                                        <div class="segment"></div>
+                                        <div class="gap"></div>
+                                        <div class="segment"></div>
+                                    }
+                                </div>
                             </div>
-                        </div>
-                    }
+                        }
+                    </div>
+
+                    <div class="diagram-actions">
+                        <button type="button" @onclick="SetFirst">First</button>
+                        <button type="button" @onclick="SetPrevious">Previous</button>
+                        <button type="button" @onclick="SetNext">Next</button>
+                        <button type="button" @onclick="SetLast">Last</button>
+                        <button type="button" class="primary" @onclick="CastHexagram">Cast</button>
+                        <button type="button" @onclick="SetHome" disabled="@(_castHexagram is null)">Home</button>
+                    </div>
+
+                    <div class="diagram-actions">
+                        <button type="button" @onclick="SetInverse">Inverse</button>
+                        <button type="button" @onclick="SetOpposite">Opposite</button>
+                        <button type="button" @onclick="SetTransverse">Transverse</button>
+                        <button type="button" @onclick="SetNuclear">Nuclear</button>
+                        <button type="button" @onclick="ToggleMove" disabled="@(!_hexagram.IsMoving && _primaryBeforeMove is null)">Toggle Move</button>
+                    </div>
+
+                    <section class="variation-summary">
+                        <h3>Related hexagrams</h3>
+                        <ul>
+                            <li><strong>Inverse:</strong> @DescribeVariation(h => h.Inverse())</li>
+                            <li><strong>Opposite:</strong> @DescribeVariation(h => h.Opposite())</li>
+                            <li><strong>Transverse:</strong> @DescribeVariation(h => h.Transverse())</li>
+                            <li><strong>Nuclear:</strong> @DescribeVariation(h => h.Nuclear())</li>
+                            <li><strong>Moved:</strong> @DescribeVariation(h => h.Move())</li>
+                        </ul>
+                    </section>
                 </div>
 
-                <div class="diagram-actions">
-                    <button type="button" @onclick="SetFirst">First</button>
-                    <button type="button" @onclick="SetPrevious">Previous</button>
-                    <button type="button" @onclick="SetNext">Next</button>
-                    <button type="button" @onclick="SetLast">Last</button>
-                    <button type="button" class="primary" @onclick="CastHexagram">Cast</button>
-                    <button type="button" @onclick="SetHome" disabled="@(_castHexagram is null)">Home</button>
-                </div>
-
-                <div class="diagram-actions">
-                    <button type="button" @onclick="SetInverse">Inverse</button>
-                    <button type="button" @onclick="SetOpposite">Opposite</button>
-                    <button type="button" @onclick="SetTransverse">Transverse</button>
-                    <button type="button" @onclick="SetNuclear">Nuclear</button>
-                    <button type="button" @onclick="ToggleMove" disabled="@(!_hexagram.IsMoving && _primaryBeforeMove is null)">Toggle Move</button>
-                </div>
-
-                <section class="variation-summary">
-                    <h3>Related hexagrams</h3>
-                    <ul>
-                        <li><strong>Inverse:</strong> @DescribeVariation(h => h.Inverse())</li>
-                        <li><strong>Opposite:</strong> @DescribeVariation(h => h.Opposite())</li>
-                        <li><strong>Transverse:</strong> @DescribeVariation(h => h.Transverse())</li>
-                        <li><strong>Nuclear:</strong> @DescribeVariation(h => h.Nuclear())</li>
-                        <li><strong>Moved:</strong> @DescribeVariation(h => h.Move())</li>
-                    </ul>
+                <section class="diagram-controls">
+                    <div class="control">
+                        <label for="sequenceSelect">Hexagram sequence</label>
+                        <select id="sequenceSelect" value="@_selectedSequence" @onchange="OnSequenceChanged">
+                            @foreach (var option in _sequenceOptions)
+                            {
+                                <option value="@option.Value">@option.Text</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="control">
+                        <label for="labelSelect">Hexagram label</label>
+                        <select id="labelSelect" value="@_selectedLabel" @onchange="OnLabelChanged">
+                            @foreach (var option in _labelOptions)
+                            {
+                                <option value="@option.Value">@option.Text</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="control">
+                        <label for="lsbSelect">Diagram orientation</label>
+                        <select id="lsbSelect" value="@_selectedLsb" @onchange="OnLsbChanged">
+                            @foreach (var option in _lsbOptions)
+                            {
+                                <option value="@option.Value">@option.Text</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="control">
+                        <label for="textSelect">Text source</label>
+                        <select id="textSelect" value="@_selectedTextSource" @onchange="OnTextChanged">
+                            @foreach (var option in _textOptions)
+                            {
+                                <option value="@option.Value">@option.Text</option>
+                            }
+                        </select>
+                    </div>
                 </section>
             </div>
 
