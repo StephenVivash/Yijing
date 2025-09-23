@@ -133,6 +133,10 @@ h1, h2, h3 {
     gap: 0.4rem;
 }
 
+.hex-line.yang .segments {
+    gap: 0;
+}
+
 .hex-line .segment {
     height: 14px;
     width: 110px;
@@ -237,6 +241,105 @@ h1, h2, h3 {
 .trigram-info dd {
     margin: 0;
     color: #475569;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #0f172a;
+        color: #e2e8f0;
+    }
+
+    main {
+        background-color: #111827;
+    }
+
+    .top-row {
+        background-color: #1f2937;
+        border-bottom: 1px solid #334155;
+    }
+
+    .top-row a {
+        color: #e2e8f0;
+    }
+
+    h1,
+    h2,
+    h3 {
+        color: #f8fafc;
+    }
+
+    .diagram-controls {
+        background: linear-gradient(135deg, rgba(96, 165, 250, 0.2), rgba(59, 130, 246, 0.1));
+        border: 1px solid rgba(147, 197, 253, 0.25);
+    }
+
+    .diagram-controls label {
+        color: #e2e8f0;
+    }
+
+    .diagram-controls select {
+        background-color: #1f2937;
+        color: #e2e8f0;
+        border-color: #334155;
+    }
+
+    .diagram-content {
+        color: #e2e8f0;
+    }
+
+    .diagram-visual,
+    .diagram-details {
+        background-color: #1f2937;
+        box-shadow: 0 20px 40px rgba(2, 6, 23, 0.55);
+    }
+
+    .diagram-header .meta {
+        color: #94a3b8;
+    }
+
+    .diagram-header .secondary {
+        color: #60a5fa;
+    }
+
+    .hex-line .line-index,
+    .hex-line .line-label {
+        color: #cbd5f5;
+    }
+
+    .hex-line .segment {
+        background: linear-gradient(90deg, #f1f5f9, #cbd5f5);
+    }
+
+    .hex-line.moving .segment {
+        background: linear-gradient(90deg, #fb7185, #fb923c);
+        box-shadow: 0 0 16px rgba(251, 146, 60, 0.5);
+    }
+
+    .diagram-actions button {
+        background-color: #334155;
+        color: #e2e8f0;
+    }
+
+    .diagram-actions button.primary {
+        background: linear-gradient(135deg, #2563eb, #3b82f6);
+        box-shadow: 0 12px 25px rgba(30, 64, 175, 0.35);
+    }
+
+    .diagram-actions button:hover:not(:disabled) {
+        box-shadow: 0 10px 18px rgba(30, 64, 175, 0.35);
+    }
+
+    .variation-summary ul {
+        color: #cbd5f5;
+    }
+
+    .trigram-info dt {
+        color: #e2e8f0;
+    }
+
+    .trigram-info dd {
+        color: #cbd5f5;
+    }
 }
 
 @media (max-width: 992px) {
