@@ -472,21 +472,33 @@ else
 
     private static DiagramSettingOption[] BuildOptions(string name)
     {
-        var options = new List<DiagramSettingOption>();
-        int index = 0;
-        while (true)
+        var settings = Sequences.strDiagramSettings;
+        int rowCount = settings.GetLength(0);
+        int columnCount = settings.GetLength(1);
+
+        for (int row = 0; row < rowCount; row++)
         {
-            string value = Sequences.DiagramSetting(name, index);
-            if (string.IsNullOrWhiteSpace(value))
+            if (settings[row, 0] != name)
             {
-                break;
+                continue;
             }
 
-            options.Add(new DiagramSettingOption(index, value));
-            index++;
+            var options = new List<DiagramSettingOption>();
+            for (int column = 1; column < columnCount; column++)
+            {
+                var value = settings[row, column];
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    break;
+                }
+
+                options.Add(new DiagramSettingOption(column - 1, value));
+            }
+
+            return options.ToArray();
         }
 
-        return options.ToArray();
+        return Array.Empty<DiagramSettingOption>();
     }
 
     private readonly record struct LineViewModel(int Index, bool IsYang, bool IsMoving, string Label);
