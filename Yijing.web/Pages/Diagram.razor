@@ -68,12 +68,16 @@ else
                         <div class="hex-line @(line.IsYang ? "yang" : "yin") @(line.IsMoving ? "moving" : string.Empty)">
                             <span class="line-index">Line @line.Index</span>
                             <div class="segments">
-                                <div class="segment"></div>
-                                @if (!line.IsYang)
+                                @if (line.IsYang)
                                 {
-                                    <div class="gap"></div>
+                                    <div class="segment full"></div>
                                 }
-                                <div class="segment"></div>
+                                else
+                                {
+                                    <div class="segment"></div>
+                                    <div class="gap"></div>
+                                    <div class="segment"></div>
+                                }
                             </div>
                             <span class="line-label">@line.Label</span>
                         </div>
