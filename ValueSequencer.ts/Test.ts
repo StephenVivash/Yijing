@@ -1,5 +1,5 @@
-import { CHexagramValueSequencer } from "./CHexagramValueSequencer";
-import { Sequences } from "./Sequences";
+import { CHexagramValueSequencer } from "./CHexagramValueSequencer.ts";
+import { Sequences } from "./Sequences.ts";
 
 function main(): void {
   CHexagramValueSequencer.setCurrentSequence(Sequences.HexagramSequence);

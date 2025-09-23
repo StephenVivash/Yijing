@@ -1,4 +1,4 @@
-import { Sequences } from "./Sequences";
+import { Sequences } from "./Sequences.ts";
 
 export abstract class CValueSequencer {
   protected m_nValue: number;

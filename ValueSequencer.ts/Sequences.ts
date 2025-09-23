@@ -1,6 +1,6 @@
-import { CLineValueSequencer } from "./CLineValueSequencer";
-import { CTrigramValueSequencer } from "./CTrigramValueSequencer";
-import { CHexagramValueSequencer } from "./CHexagramValueSequencer";
+import { CLineValueSequencer } from "./CLineValueSequencer.ts";
+import { CTrigramValueSequencer } from "./CTrigramValueSequencer.ts";
+import { CHexagramValueSequencer } from "./CHexagramValueSequencer.ts";
   class RandomGenerator {
   public next(max: number): number {
     return Math.floor(Math.random() * max);

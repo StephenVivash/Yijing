@@ -1,6 +1,6 @@
-import { CValueSequencer } from "./CValueSequencer";
-import { CBitValueSequencer } from "./CBitValueSequencer";
-import { Sequences } from "./Sequences";
+import { CValueSequencer } from "./CValueSequencer.ts";
+import { CBitValueSequencer } from "./CBitValueSequencer.ts";
+import { Sequences } from "./Sequences.ts";
 
 export class CLineValueSequencer extends CValueSequencer {
   private static m_nCurrentSequence = 0;

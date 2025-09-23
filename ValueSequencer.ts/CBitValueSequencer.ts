@@ -1,5 +1,5 @@
-import { CValueSequencer } from "./CValueSequencer";
-import { Sequences } from "./Sequences";
+import { CValueSequencer } from "./CValueSequencer.ts";
+import { Sequences } from "./Sequences.ts";
 
 export class CBitValueSequencer extends CValueSequencer {
   constructor(nValue: number) {

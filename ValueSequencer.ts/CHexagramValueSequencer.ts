@@ -1,6 +1,6 @@
-import { CValueSequencer } from "./CValueSequencer";
-import { CTrigramValueSequencer } from "./CTrigramValueSequencer";
-import { Sequences } from "./Sequences";
+import { CValueSequencer } from "./CValueSequencer.ts";
+import { CTrigramValueSequencer } from "./CTrigramValueSequencer.ts";
+import { Sequences } from "./Sequences.ts";
 
 export class CHexagramValueSequencer extends CValueSequencer {
   private static m_nCurrentSequence = 0;
