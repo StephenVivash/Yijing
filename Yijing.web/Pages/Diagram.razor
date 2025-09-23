@@ -12,46 +12,46 @@
 else
 {
     <div class="diagram-page">
-        <section class="diagram-controls">
-            <div class="control">
-                <label for="sequenceSelect">Hexagram sequence</label>
-                <select id="sequenceSelect" value="@_selectedSequence" @onchange="OnSequenceChanged">
-                    @foreach (var option in _sequenceOptions)
-                    {
-                        <option value="@option.Value">@option.Text</option>
-                    }
-                </select>
-            </div>
-            <div class="control">
-                <label for="labelSelect">Hexagram label</label>
-                <select id="labelSelect" value="@_selectedLabel" @onchange="OnLabelChanged">
-                    @foreach (var option in _labelOptions)
-                    {
-                        <option value="@option.Value">@option.Text</option>
-                    }
-                </select>
-            </div>
-            <div class="control">
-                <label for="lsbSelect">Diagram orientation</label>
-                <select id="lsbSelect" value="@_selectedLsb" @onchange="OnLsbChanged">
-                    @foreach (var option in _lsbOptions)
-                    {
-                        <option value="@option.Value">@option.Text</option>
-                    }
-                </select>
-            </div>
-            <div class="control">
-                <label for="textSelect">Text source</label>
-                <select id="textSelect" value="@_selectedTextSource" @onchange="OnTextChanged">
-                    @foreach (var option in _textOptions)
-                    {
-                        <option value="@option.Value">@option.Text</option>
-                    }
-                </select>
-            </div>
-        </section>
-
         <section class="diagram-content">
+            <section class="diagram-controls">
+                <div class="control">
+                    <label for="sequenceSelect">Hexagram sequence</label>
+                    <select id="sequenceSelect" value="@_selectedSequence" @onchange="OnSequenceChanged">
+                        @foreach (var option in _sequenceOptions)
+                        {
+                            <option value="@option.Value">@option.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="control">
+                    <label for="labelSelect">Hexagram label</label>
+                    <select id="labelSelect" value="@_selectedLabel" @onchange="OnLabelChanged">
+                        @foreach (var option in _labelOptions)
+                        {
+                            <option value="@option.Value">@option.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="control">
+                    <label for="lsbSelect">Diagram orientation</label>
+                    <select id="lsbSelect" value="@_selectedLsb" @onchange="OnLsbChanged">
+                        @foreach (var option in _lsbOptions)
+                        {
+                            <option value="@option.Value">@option.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="control">
+                    <label for="textSelect">Text source</label>
+                    <select id="textSelect" value="@_selectedTextSource" @onchange="OnTextChanged">
+                        @foreach (var option in _textOptions)
+                        {
+                            <option value="@option.Value">@option.Text</option>
+                        }
+                    </select>
+                </div>
+            </section>
+
             <div class="diagram-visual">
                 <header class="diagram-header">
                     <h2>@_primaryDescription</h2>
@@ -66,7 +66,6 @@ else
                     @foreach (var line in _lines)
                     {
                         <div class="hex-line @(line.IsYang ? "yang" : "yin") @(line.IsMoving ? "moving" : string.Empty)">
-                            <span class="line-index">Line @line.Index</span>
                             <div class="segments">
                                 @if (line.IsYang)
                                 {
@@ -79,7 +78,6 @@ else
                                     <div class="segment"></div>
                                 }
                             </div>
-                            <span class="line-label">@line.Label</span>
                         </div>
                     }
                 </div>
@@ -197,7 +195,7 @@ else
             var line = _hexagram.Trigram(i / 3).Line(i % 3);
             bool isYang = line.Value % 2 == 1;
             bool isMoving = line.Value == 0 || line.Value == 3;
-            lines.Add(new LineViewModel(Index: i + 1, IsYang: isYang, IsMoving: isMoving, Label: line.Label));
+            lines.Add(new LineViewModel(Index: i + 1, IsYang: isYang, IsMoving: isMoving));
         }
         _lines = lines
             .OrderByDescending(l => l.Index)
@@ -505,7 +503,7 @@ else
         return Array.Empty<DiagramSettingOption>();
     }
 
-    private readonly record struct LineViewModel(int Index, bool IsYang, bool IsMoving, string Label);
+    private readonly record struct LineViewModel(int Index, bool IsYang, bool IsMoving);
 
     private readonly record struct DiagramSettingOption(int Value, string Text);
 

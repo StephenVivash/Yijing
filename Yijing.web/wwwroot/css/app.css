@@ -64,6 +64,7 @@ h1, h2, h3 {
     background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(59, 130, 246, 0.05));
     border-radius: 1rem;
     border: 1px solid rgba(30, 64, 175, 0.15);
+    align-content: start;
 }
 
 .diagram-controls label {
@@ -83,7 +84,7 @@ h1, h2, h3 {
 
 .diagram-content {
     display: grid;
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 260px) minmax(0, 2fr) minmax(0, 1fr);
     gap: 1.5rem;
     align-items: start;
 }
@@ -117,16 +118,8 @@ h1, h2, h3 {
 }
 
 .hex-line {
-    display: grid;
-    grid-template-columns: 80px minmax(0, 1fr) 120px;
-    align-items: center;
-    gap: 1rem;
-}
-
-.hex-line .line-index {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #334155;
+    display: flex;
+    justify-content: center;
 }
 
 .hex-line .segments {
@@ -134,6 +127,8 @@ h1, h2, h3 {
     align-items: center;
     gap: 0;
     width: var(--line-length);
+    justify-content: center;
+    margin: 0 auto;
 }
 
 .hex-line .segment {
@@ -171,10 +166,6 @@ h1, h2, h3 {
     box-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
 }
 
-.hex-line .line-label {
-    font-size: 0.9rem;
-    color: #475569;
-}
 
 .diagram-actions {
     display: flex;
@@ -313,11 +304,6 @@ h1, h2, h3 {
         color: #60a5fa;
     }
 
-    .hex-line .line-index,
-    .hex-line .line-label {
-        color: #cbd5f5;
-    }
-
     .hex-line .segment {
         background: linear-gradient(90deg, #f1f5f9, #cbd5f5);
     }
@@ -357,6 +343,10 @@ h1, h2, h3 {
 @media (max-width: 992px) {
     .diagram-content {
         grid-template-columns: 1fr;
+    }
+
+    .diagram-controls {
+        grid-template-columns: minmax(0, 1fr);
     }
 
     .nav-menu {
