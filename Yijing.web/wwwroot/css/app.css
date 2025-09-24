@@ -1,0 +1,373 @@
+:root {
+    color-scheme: light dark;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    margin: 0;
+    background-color: #f5f5f5;
+    color: #1f2933;
+}
+
+.page {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    flex: 0 0 auto;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #ffffff;
+}
+
+.top-row {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 1rem;
+    background-color: #edf2f7;
+    border-bottom: 1px solid #d2d6dc;
+}
+
+.top-row a {
+    color: #1f2933;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.content {
+    flex: 1;
+    padding: 2rem;
+}
+
+h1, h2, h3 {
+    color: #102a43;
+}
+
+.diagram-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.diagram-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(59, 130, 246, 0.05));
+    border-radius: 1rem;
+    border: 1px solid rgba(30, 64, 175, 0.15);
+    align-content: start;
+}
+
+.diagram-controls label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+}
+
+.diagram-controls select {
+    width: 100%;
+    padding: 0.45rem 0.6rem;
+    border: 1px solid #d2d6dc;
+    border-radius: 0.5rem;
+    background-color: #ffffff;
+    font-size: 0.95rem;
+}
+
+.diagram-content {
+    display: grid;
+    grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.diagram-primary {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.diagram-visual {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08);
+}
+
+.diagram-header .meta {
+    margin-top: 0.3rem;
+    color: #52606d;
+    font-size: 0.95rem;
+}
+
+.diagram-header .secondary {
+    margin: 0.35rem 0 0;
+    color: #1d4ed8;
+    font-weight: 600;
+}
+
+.hexagram-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+    --line-length: 220px;
+    --yin-gap: 18px;
+}
+
+.hex-line {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.hex-line .segments {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    width: var(--line-length);
+    justify-content: flex-start;
+    margin: 0;
+}
+
+.hex-line .segment {
+    height: 21px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #111827, #1f2937);
+}
+
+.hex-line .segment.full {
+    width: 100%;
+}
+
+.hex-line .gap {
+    height: 21px;
+    width: var(--yin-gap);
+    background-color: transparent;
+}
+
+.hex-line.yin .segment {
+    width: calc((var(--line-length) - var(--yin-gap)) / 2);
+}
+
+.hex-line.yin .segment:first-child {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.hex-line.yin .segment:last-child {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.hex-line.moving .segment {
+    background: linear-gradient(90deg, #ec4899, #f97316);
+    box-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
+}
+
+
+.diagram-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+}
+
+.diagram-actions button {
+    padding: 0.55rem 0.9rem;
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+    background-color: #e2e8f0;
+    color: #1f2933;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.diagram-actions button.primary {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: #ffffff;
+    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
+}
+
+.diagram-actions button:disabled {
+    opacity: 0.6;
+    cursor: default;
+    box-shadow: none;
+}
+
+.diagram-actions button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 15px rgba(30, 64, 175, 0.2);
+}
+
+.variation-summary {
+    margin-top: 2rem;
+}
+
+.variation-summary ul {
+    margin: 0;
+    padding-left: 1.1rem;
+    color: #334155;
+}
+
+.diagram-details {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.hexagram-text {
+    max-height: 460px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    line-height: 1.55;
+}
+
+.trigram-info dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.35rem 0.75rem;
+}
+
+.trigram-info dt {
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.trigram-info dd {
+    margin: 0;
+    color: #475569;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #0f172a;
+        color: #e2e8f0;
+    }
+
+    main {
+        background-color: #111827;
+    }
+
+    .top-row {
+        background-color: #1f2937;
+        border-bottom: 1px solid #334155;
+    }
+
+    .top-row a {
+        color: #e2e8f0;
+    }
+
+    h1,
+    h2,
+    h3 {
+        color: #f8fafc;
+    }
+
+    .diagram-controls {
+        background: linear-gradient(135deg, rgba(96, 165, 250, 0.2), rgba(59, 130, 246, 0.1));
+        border: 1px solid rgba(147, 197, 253, 0.25);
+    }
+
+    .diagram-controls label {
+        color: #e2e8f0;
+    }
+
+    .diagram-controls select {
+        background-color: #1f2937;
+        color: #e2e8f0;
+        border-color: #334155;
+    }
+
+    .diagram-content {
+        color: #e2e8f0;
+    }
+
+    .diagram-visual,
+    .diagram-details {
+        background-color: #1f2937;
+        box-shadow: 0 20px 40px rgba(2, 6, 23, 0.55);
+    }
+
+    .diagram-header .meta {
+        color: #94a3b8;
+    }
+
+    .diagram-header .secondary {
+        color: #60a5fa;
+    }
+
+    .hex-line .segment {
+        background: linear-gradient(90deg, #f1f5f9, #cbd5f5);
+    }
+
+    .hex-line.moving .segment {
+        background: linear-gradient(90deg, #fb7185, #fb923c);
+        box-shadow: 0 0 16px rgba(251, 146, 60, 0.5);
+    }
+
+    .diagram-actions button {
+        background-color: #334155;
+        color: #e2e8f0;
+    }
+
+    .diagram-actions button.primary {
+        background: linear-gradient(135deg, #2563eb, #3b82f6);
+        box-shadow: 0 12px 25px rgba(30, 64, 175, 0.35);
+    }
+
+    .diagram-actions button:hover:not(:disabled) {
+        box-shadow: 0 10px 18px rgba(30, 64, 175, 0.35);
+    }
+
+    .variation-summary ul {
+        color: #cbd5f5;
+    }
+
+    .trigram-info dt {
+        color: #e2e8f0;
+    }
+
+    .trigram-info dd {
+        color: #cbd5f5;
+    }
+}
+
+@media (max-width: 992px) {
+    .diagram-content {
+        grid-template-columns: 1fr;
+    }
+
+    .diagram-controls {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .nav-menu {
+        min-height: auto;
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .nav-menu ul {
+        flex-direction: row;
+    }
+
+    .page {
+        flex-direction: column;
+    }
+}

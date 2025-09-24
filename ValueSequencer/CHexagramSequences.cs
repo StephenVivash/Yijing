@@ -5,9 +5,20 @@ using System.Text;
 
 namespace ValueSequencer
 {
-	public class CHexagramSequences
-	{
-	}
+        public class CHexagramSequences
+        {
+                public CHexagramValueSequencer AutoCast(ref CHexagramValueSequencer hvs)
+                {
+                        Random r = Sequences.m_ranSession ?? new Random(DateTime.Now.Millisecond);
+                        for (int l = 0; l < 6; ++l)
+                        {
+                                int count = (r.Next(5) + 1) * 100 + r.Next(100);
+                                for (int c = 0; c < count; ++c)
+                                        hvs.Trigram(l / 3).Line(l % 3).Next(true);
+                        }
+                        return hvs;
+                }
+        }
 	public class CHexagram : IComparable
 	{
 		public CHexagram(ref CHexagramValueSequencer hvsPrimary)

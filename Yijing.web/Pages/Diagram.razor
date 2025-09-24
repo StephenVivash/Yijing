@@ -1,0 +1,521 @@
+@page "/diagram"
+@using ValueSequencer
+
+<PageTitle>Diagram</PageTitle>
+
+<h1>Diagram</h1>
+
+@if (_hexagram is null)
+{
+    <p>Loading diagram…</p>
+}
+else
+{
+    <div class="diagram-page">
+        <section class="diagram-content">
+            <div class="diagram-primary">
+                <div class="diagram-visual">
+                    <header class="diagram-header">
+                        <h2>@_primaryDescription</h2>
+                        @if (!string.IsNullOrWhiteSpace(_secondaryDescription))
+                        {
+                            <p class="secondary">Changing to @(_secondaryDescription)</p>
+                        }
+                        <p class="meta">Sequence @(_hexagram.SequenceStr) · Value @(_hexagram.ValueStr)</p>
+                    </header>
+
+                    <div class="hexagram-lines">
+                        @foreach (var line in _lines)
+                        {
+                            <div class="hex-line @(line.IsYang ? "yang" : "yin") @(line.IsMoving ? "moving" : string.Empty)">
+                                <div class="segments">
+                                    @if (line.IsYang)
+                                    {
+                                        <div class="segment full"></div>
+                                    }
+                                    else
+                                    {
+                                        <div class="segment"></div>
+                                        <div class="gap"></div>
+                                        <div class="segment"></div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="diagram-actions">
+                        <button type="button" @onclick="SetFirst">First</button>
+                        <button type="button" @onclick="SetPrevious">Previous</button>
+                        <button type="button" @onclick="SetNext">Next</button>
+                        <button type="button" @onclick="SetLast">Last</button>
+                        <button type="button" class="primary" @onclick="CastHexagram">Cast</button>
+                        <button type="button" @onclick="SetHome" disabled="@(_castHexagram is null)">Home</button>
+                    </div>
+
+                    <div class="diagram-actions">
+                        <button type="button" @onclick="SetInverse">Inverse</button>
+                        <button type="button" @onclick="SetOpposite">Opposite</button>
+                        <button type="button" @onclick="SetTransverse">Transverse</button>
+                        <button type="button" @onclick="SetNuclear">Nuclear</button>
+                        <button type="button" @onclick="ToggleMove" disabled="@(!_hexagram.IsMoving && _primaryBeforeMove is null)">Toggle Move</button>
+                    </div>
+
+                    <section class="variation-summary">
+                        <h3>Related hexagrams</h3>
+                        <ul>
+                            <li><strong>Inverse:</strong> @DescribeVariation(h => h.Inverse())</li>
+                            <li><strong>Opposite:</strong> @DescribeVariation(h => h.Opposite())</li>
+                            <li><strong>Transverse:</strong> @DescribeVariation(h => h.Transverse())</li>
+                            <li><strong>Nuclear:</strong> @DescribeVariation(h => h.Nuclear())</li>
+                            <li><strong>Moved:</strong> @DescribeVariation(h => h.Move())</li>
+                        </ul>
+                    </section>
+                </div>
+
+                <section class="diagram-controls">
+                    <div class="control">
+                        <label for="sequenceSelect">Hexagram sequence</label>
+                        <select id="sequenceSelect" value="@_selectedSequence" @onchange="OnSequenceChanged">
+                            @foreach (var option in _sequenceOptions)
+                            {
+                                <option value="@option.Value">@option.Text</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="control">
+                        <label for="labelSelect">Hexagram label</label>
+                        <select id="labelSelect" value="@_selectedLabel" @onchange="OnLabelChanged">
+                            @foreach (var option in _labelOptions)
+                            {
+                                <option value="@option.Value">@option.Text</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="control">
+                        <label for="lsbSelect">Diagram orientation</label>
+                        <select id="lsbSelect" value="@_selectedLsb" @onchange="OnLsbChanged">
+                            @foreach (var option in _lsbOptions)
+                            {
+                                <option value="@option.Value">@option.Text</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="control">
+                        <label for="textSelect">Text source</label>
+                        <select id="textSelect" value="@_selectedTextSource" @onchange="OnTextChanged">
+                            @foreach (var option in _textOptions)
+                            {
+                                <option value="@option.Value">@option.Text</option>
+                            }
+                        </select>
+                    </div>
+                </section>
+            </div>
+
+            <aside class="diagram-details">
+                <section>
+                    <h3>@SelectedTextLabel</h3>
+                    <article class="hexagram-text">@HexagramText</article>
+                </section>
+
+                <section class="trigram-info">
+                    <h3>Trigrams</h3>
+                    <dl>
+                        <dt>@_upperTrigram.Name</dt>
+                        <dd>@_upperTrigram.Label (@_upperTrigram.SequenceStr)</dd>
+                        <dt>@_lowerTrigram.Name</dt>
+                        <dd>@_lowerTrigram.Label (@_lowerTrigram.SequenceStr)</dd>
+                    </dl>
+                </section>
+            </aside>
+        </section>
+    </div>
+}
+
+@code {
+    private CHexagramValueSequencer? _hexagram;
+    private CHexagramValueSequencer? _castHexagram;
+    private CHexagramValueSequencer? _primaryBeforeMove;
+    private readonly CHexagramSequences _hexagramSequences = new();
+
+    private IReadOnlyList<LineViewModel> _lines = Array.Empty<LineViewModel>();
+    private string _primaryDescription = string.Empty;
+    private string? _secondaryDescription;
+    private MarkupString HexagramText => new MarkupString(_hexagramText ?? string.Empty);
+    private string? _hexagramText;
+
+    private DiagramSettingOption[] _sequenceOptions = Array.Empty<DiagramSettingOption>();
+    private DiagramSettingOption[] _labelOptions = Array.Empty<DiagramSettingOption>();
+    private DiagramSettingOption[] _textOptions = Array.Empty<DiagramSettingOption>();
+    private DiagramSettingOption[] _lsbOptions = Array.Empty<DiagramSettingOption>();
+
+    private int _selectedSequence;
+    private int _selectedLabel;
+    private int _selectedTextSource;
+    private int _selectedLsb;
+
+    private TrigramInfo _upperTrigram = TrigramInfo.Empty("Upper");
+    private TrigramInfo _lowerTrigram = TrigramInfo.Empty("Lower");
+
+    protected override void OnInitialized()
+    {
+        Sequences.Initialise();
+        _hexagram = new CHexagramValueSequencer(1);
+        _hexagram.First();
+
+        _sequenceOptions = BuildOptions("Hexagram Sequence");
+        _labelOptions = BuildOptions("Hexagram Label");
+        _textOptions = BuildOptions("Hexagram Text");
+        _lsbOptions = BuildOptions("Diagram LSB");
+
+        if (_textOptions.Length == 0)
+        {
+            _textOptions = new[] { new DiagramSettingOption(0, "Legge") };
+        }
+
+        _selectedSequence = ClampSelection(Sequences.HexagramSequence, _sequenceOptions.Length);
+        _selectedLabel = ClampSelection(Sequences.HexagramLabel, _labelOptions.Length);
+        _selectedTextSource = ClampSelection(Sequences.HexagramText, _textOptions.Length);
+        _selectedLsb = ClampSelection(Sequences.DiagramLsb, _lsbOptions.Length);
+
+        UpdateFromSequencer();
+    }
+
+    private static int ClampSelection(int value, int length) => length == 0 ? 0 : Math.Clamp(value, 0, length - 1);
+
+    private void UpdateFromSequencer()
+    {
+        if (_hexagram is null)
+        {
+            return;
+        }
+
+        var lines = new List<LineViewModel>();
+        for (int i = 0; i < 6; i++)
+        {
+            var line = _hexagram.Trigram(i / 3).Line(i % 3);
+            bool isYang = line.Value % 2 == 1;
+            bool isMoving = line.Value == 0 || line.Value == 3;
+            lines.Add(new LineViewModel(Index: i + 1, IsYang: isYang, IsMoving: isMoving));
+        }
+        _lines = lines
+            .OrderByDescending(l => l.Index)
+            .ToArray();
+
+        _primaryDescription = _hexagram.DescribePrimary(true);
+        _secondaryDescription = _hexagram.DescribeSecondary(true);
+        _upperTrigram = TrigramInfo.From("Upper", _hexagram.Trigram(1));
+        _lowerTrigram = TrigramInfo.From("Lower", _hexagram.Trigram(0));
+        _hexagramText = GetHexagramText();
+        StateHasChanged();
+    }
+
+    private string GetHexagramText()
+    {
+        if (_hexagram is null)
+        {
+            return string.Empty;
+        }
+
+        return _selectedTextSource switch
+        {
+            0 => Legge.Text(_hexagram.Value),
+            1 => Wilhelm.Text(_hexagram.Value),
+            _ => Legge.Text(_hexagram.Value)
+        };
+    }
+
+    private string SelectedTextLabel => _textOptions.FirstOrDefault(o => o.Value == _selectedTextSource).Text ?? "Text";
+
+    private Task OnSequenceChanged(ChangeEventArgs args)
+    {
+        if (_hexagram is null)
+        {
+            return Task.CompletedTask;
+        }
+
+        if (TryParseSelection(args.Value, out var value) && value != _selectedSequence)
+        {
+            _selectedSequence = value;
+            Sequences.HexagramSequence = value;
+            CHexagramValueSequencer.SetCurrentSequence(value);
+            _hexagram.Update();
+            UpdateFromSequencer();
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private Task OnLabelChanged(ChangeEventArgs args)
+    {
+        if (_hexagram is null)
+        {
+            return Task.CompletedTask;
+        }
+
+        if (TryParseSelection(args.Value, out var value) && value != _selectedLabel)
+        {
+            _selectedLabel = value;
+            Sequences.HexagramLabel = value;
+            CHexagramValueSequencer.SetCurrentLabel(value);
+            UpdateFromSequencer();
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private Task OnTextChanged(ChangeEventArgs args)
+    {
+        if (_hexagram is null)
+        {
+            return Task.CompletedTask;
+        }
+
+        if (TryParseSelection(args.Value, out var value) && value != _selectedTextSource)
+        {
+            _selectedTextSource = value;
+            Sequences.HexagramText = value;
+            UpdateFromSequencer();
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private Task OnLsbChanged(ChangeEventArgs args)
+    {
+        if (_hexagram is null)
+        {
+            return Task.CompletedTask;
+        }
+
+        if (TryParseSelection(args.Value, out var value) && value != _selectedLsb)
+        {
+            _selectedLsb = value;
+            Sequences.DiagramLsb = value;
+            Sequences.SetLSB(Sequences.DiagramLsb == 0);
+            _hexagram.Update();
+            UpdateFromSequencer();
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private static bool TryParseSelection(object? value, out int parsed)
+    {
+        if (value is null)
+        {
+            parsed = 0;
+            return false;
+        }
+
+        if (value is int intValue)
+        {
+            parsed = intValue;
+            return true;
+        }
+
+        return int.TryParse(value.ToString(), out parsed);
+    }
+
+    private void SetFirst()
+    {
+        if (_hexagram is null)
+        {
+            return;
+        }
+
+        _hexagram.First();
+        _castHexagram = null;
+        _primaryBeforeMove = null;
+        UpdateFromSequencer();
+    }
+
+    private void SetPrevious()
+    {
+        if (_hexagram is null)
+        {
+            return;
+        }
+
+        _hexagram.Previous();
+        _primaryBeforeMove = null;
+        UpdateFromSequencer();
+    }
+
+    private void SetNext()
+    {
+        if (_hexagram is null)
+        {
+            return;
+        }
+
+        _hexagram.Next();
+        _primaryBeforeMove = null;
+        UpdateFromSequencer();
+    }
+
+    private void SetLast()
+    {
+        if (_hexagram is null)
+        {
+            return;
+        }
+
+        _hexagram.Last();
+        _primaryBeforeMove = null;
+        UpdateFromSequencer();
+    }
+
+    private void CastHexagram()
+    {
+        if (_hexagram is null)
+        {
+            return;
+        }
+
+        _hexagramSequences.AutoCast(ref _hexagram);
+        _hexagram.Update();
+        _castHexagram = new CHexagramValueSequencer(ref _hexagram);
+        _primaryBeforeMove = null;
+        UpdateFromSequencer();
+    }
+
+    private void SetHome()
+    {
+        if (_castHexagram is null)
+        {
+            return;
+        }
+
+        _hexagram = new CHexagramValueSequencer(ref _castHexagram);
+        _primaryBeforeMove = null;
+        UpdateFromSequencer();
+    }
+
+    private void SetInverse()
+    {
+        if (_hexagram is null)
+        {
+            return;
+        }
+
+        _hexagram.Inverse();
+        _primaryBeforeMove = null;
+        UpdateFromSequencer();
+    }
+
+    private void SetOpposite()
+    {
+        if (_hexagram is null)
+        {
+            return;
+        }
+
+        _hexagram.Opposite();
+        _primaryBeforeMove = null;
+        UpdateFromSequencer();
+    }
+
+    private void SetTransverse()
+    {
+        if (_hexagram is null)
+        {
+            return;
+        }
+
+        _hexagram.Transverse();
+        _primaryBeforeMove = null;
+        UpdateFromSequencer();
+    }
+
+    private void SetNuclear()
+    {
+        if (_hexagram is null)
+        {
+            return;
+        }
+
+        _hexagram.Nuclear();
+        _primaryBeforeMove = null;
+        UpdateFromSequencer();
+    }
+
+    private void ToggleMove()
+    {
+        if (_hexagram is null)
+        {
+            return;
+        }
+
+        if (_hexagram.IsMoving)
+        {
+            _primaryBeforeMove = new CHexagramValueSequencer(ref _hexagram);
+            _hexagram.Move();
+        }
+        else if (_primaryBeforeMove is not null)
+        {
+            _hexagram = new CHexagramValueSequencer(ref _primaryBeforeMove);
+            _primaryBeforeMove = null;
+        }
+
+        UpdateFromSequencer();
+    }
+
+    private string DescribeVariation(Func<CHexagramValueSequencer, CValueSequencer> transform)
+    {
+        if (_hexagram is null)
+        {
+            return "–";
+        }
+
+        var copy = new CHexagramValueSequencer(ref _hexagram);
+        transform(copy);
+        return copy.DescribePrimary(true);
+    }
+
+    private static DiagramSettingOption[] BuildOptions(string name)
+    {
+        var settings = Sequences.strDiagramSettings;
+        int rowCount = settings.GetLength(0);
+        int columnCount = settings.GetLength(1);
+
+        for (int row = 0; row < rowCount; row++)
+        {
+            if (settings[row, 0] != name)
+            {
+                continue;
+            }
+
+            var options = new List<DiagramSettingOption>();
+            for (int column = 1; column < columnCount; column++)
+            {
+                var value = settings[row, column];
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    break;
+                }
+
+                options.Add(new DiagramSettingOption(column - 1, value));
+            }
+
+            return options.ToArray();
+        }
+
+        return Array.Empty<DiagramSettingOption>();
+    }
+
+    private readonly record struct LineViewModel(int Index, bool IsYang, bool IsMoving);
+
+    private readonly record struct DiagramSettingOption(int Value, string Text);
+
+    private readonly record struct TrigramInfo(string Name, string Label, string SequenceStr)
+    {
+        public static TrigramInfo Empty(string name) => new(name, string.Empty, string.Empty);
+
+        public static TrigramInfo From(string name, CTrigramValueSequencer trigram)
+        {
+            return new TrigramInfo(name, trigram.Label, trigram.SequenceStr);
+        }
+    }
+}
