@@ -1,3 +1,5 @@
+// npx ts-node Test.ts
+
 import { Sequences } from "./Sequences.ts";
 import { CHexagramArray } from "./CHexagramSequences.ts";
 import { CHexagramValueSequencer } from "./CHexagramValueSequencer.ts";
@@ -18,6 +20,8 @@ function main(): void {
 			console.log(h.count + " : " + h.describeCast );
 		}
 	});
+
+	console.log(hvs.previous().previous().opposite().describeCast());
 }
 
 main();
