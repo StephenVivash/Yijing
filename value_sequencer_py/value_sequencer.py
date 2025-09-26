@@ -185,3 +185,9 @@ class CValueSequencer:
     def _decrement_ratio(self) -> bool:
         self._nRatio -= 1
         return self._nRatio == 0
+
+    def describe(self, use_value: bool = False) -> str:
+        return "vs"
+    
+    def describe_cast(self, use_value: bool = False) -> str:
+        return "vs"

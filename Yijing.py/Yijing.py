@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+from typing import List
 
 """
 from setuptools import setup, Extension
@@ -121,7 +124,13 @@ public func MultiCast(count: Int) {
 		hvs.Move()
 	}
 }
+
+from value_sequencer_py/hexagram_value_sequencer import CHexagramValueSequencer
+from sequences import Sequences
+
+def test_hexagram_value_sequencer() -> None:
+    hvs = CHexagramValueSequencer()
+    hvs.Move()
 """
 
-
-test_vs()	
+test_vs()
