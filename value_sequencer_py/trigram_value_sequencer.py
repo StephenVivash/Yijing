@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import List
 
-from value_sequencer_py.line_value_sequencer import CLineValueSequencer
-from value_sequencer_py.value_sequencer import CValueSequencer
-from value_sequencer_py.sequences import Sequences
+from line_value_sequencer import CLineValueSequencer
+from value_sequencer import CValueSequencer
+from sequences import Sequences
 
 
 class CTrigramValueSequencer(CValueSequencer):

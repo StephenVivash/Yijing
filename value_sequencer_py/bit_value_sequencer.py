@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from value_sequencer_py.value_sequencer import CValueSequencer
-from value_sequencer_py.sequences import Sequences
+from value_sequencer import CValueSequencer
+from sequences import Sequences
 
 
 class CBitValueSequencer(CValueSequencer):
