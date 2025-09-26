@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import List, Optional
 
-from .sequences import Sequences
+from value_sequencer_py.sequences import Sequences
 
 
 class CValueSequencer:

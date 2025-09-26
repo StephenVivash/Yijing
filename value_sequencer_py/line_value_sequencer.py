@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import List
 
-from .bit_value_sequencer import CBitValueSequencer
-from .value_sequencer import CValueSequencer
-from .sequences import Sequences
+from value_sequencer_py.bit_value_sequencer import CBitValueSequencer
+from value_sequencer_py.value_sequencer import CValueSequencer
+from value_sequencer_py.sequences import Sequences
 
 
 class CLineValueSequencer(CValueSequencer):

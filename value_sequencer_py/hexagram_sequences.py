@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import List
 
-from .hexagram_value_sequencer import CHexagramValueSequencer
-from .sequences import Sequences
+from value_sequencer_py.hexagram_value_sequencer import CHexagramValueSequencer
+from value_sequencer_py.sequences import Sequences
 
 
 class CHexagramSequences:
