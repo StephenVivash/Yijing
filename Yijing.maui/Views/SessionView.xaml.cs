@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
@@ -48,8 +49,8 @@ public partial class SessionView : ContentView
         private void OnLoaded(object? sender, EventArgs e)
         {
                 Loaded -= OnLoaded;
-                LoadSessions(null);
                 ResetChat();
+                LoadSessions(null);
         }
 
         public async Task AiChatAsync(string prompt)
@@ -66,10 +67,15 @@ public partial class SessionView : ContentView
 
         private void ResetChat()
         {
+                ClearChatState();
+                UpdateChat();
+        }
+
+        private void ClearChatState()
+        {
                 _ai._userPrompts = [[], []];
                 _ai._chatReponses = [[], []];
                 _ai._contextSessions = [];
-                UpdateChat();
         }
 
         private void UpdateChat()
@@ -83,6 +89,12 @@ public partial class SessionView : ContentView
                 sb.Append($"background-color:{background};color:{foreground};font-family:'Open Sans',sans-serif;font-size:16px;line-height:1.5;}");
                 sb.Append("strong{color:" + foreground + ";}");
                 sb.Append("</style></head><body>");
+
+                if (_selectedSession is not null)
+                {
+                        string title = WebUtility.HtmlEncode(_selectedSession.Session);
+                        sb.Append($"<h1>Session: {title}</h1>");
+                }
 
                 int count = Math.Max(_ai._userPrompts[1].Count, _ai._chatReponses[1].Count);
                 for (int i = 0; i < count; ++i)
@@ -200,7 +212,63 @@ public partial class SessionView : ContentView
                 return string.Join(" ", words);
         }
 
+        private void LoadSelectedSession(SessionSummary? summary)
+        {
+                ClearChatState();
+
+                if (summary is null)
+                {
+                        UpdateChat();
+                        return;
+                }
+
+                LoadChat(summary.FileName, "Question", _ai._userPrompts[1]);
+                LoadChat(summary.FileName, "Answer", _ai._chatReponses[1]);
+                UpdateChat();
+        }
+
+        private void LoadChat(string name, string type, List<string> list)
+        {
+                string documentHome = GetDocumentHome();
+                string directory = Path.Combine(documentHome, $"{type}s");
+                string path = Path.Combine(directory, name + ".txt");
+
+                if (!File.Exists(path))
+                        return;
+
+                string entry = string.Empty;
+
+                using StreamReader reader = File.OpenText(path);
+                string? line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                        if (string.IsNullOrEmpty(line))
+                                continue;
+
+                        if (line == $"$({type})")
+                        {
+                                if (!string.IsNullOrEmpty(entry))
+                                {
+                                        list.Add(entry);
+                                        entry = string.Empty;
+                                }
+                        }
+                        else
+                        {
+                                entry += line + "\n";
+                        }
+                }
+
+                if (!string.IsNullOrEmpty(entry))
+                        list.Add(entry);
+        }
+
         private static string GetQuestionsFolder()
+        {
+                return Path.Combine(GetDocumentHome(), "Questions");
+        }
+
+        private static string GetDocumentHome()
         {
                 string? documentHome = AppSettings.DocumentHome();
                 if (string.IsNullOrWhiteSpace(documentHome))
@@ -209,7 +277,7 @@ public partial class SessionView : ContentView
                         documentHome = Path.Combine(documents, "Yijing");
                 }
 
-                return Path.Combine(documentHome, "Questions");
+                return documentHome;
         }
 
         private async void OnAddSessionClicked(object? sender, EventArgs e)
@@ -250,6 +318,11 @@ public partial class SessionView : ContentView
                         if (File.Exists(path))
                                 File.Delete(path);
 
+                        string answersFolder = Path.Combine(GetDocumentHome(), "Answers");
+                        string answersPath = Path.Combine(answersFolder, _selectedSession.FileName + ".txt");
+                        if (File.Exists(answersPath))
+                                File.Delete(answersPath);
+
                         LoadSessions(null);
                 }
                 catch (Exception ex)
@@ -261,6 +334,7 @@ public partial class SessionView : ContentView
         private void OnSessionsSelectionChanged(object? sender, SelectionChangedEventArgs e)
         {
                 _selectedSession = e.CurrentSelection.FirstOrDefault() as SessionSummary;
+                LoadSelectedSession(_selectedSession);
         }
 
         private static Task ShowAlert(string title, string message)
