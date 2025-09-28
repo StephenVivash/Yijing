@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentView 
-	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	x:Class="Yijing.Views.EegView"
-	x:Name="eegView"
-	Loaded="Page_Loaded">
+<ContentView
+        xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+        xmlns:views="clr-namespace:Yijing.Views"
+        x:Class="Yijing.Views.EegView"
+        x:Name="eegView"
+        Loaded="Page_Loaded">
 
 	<!--BackgroundColor="{Binding CardColor}"
 		BorderColor="{Binding BorderColor}"-->
 
 	<ScrollView>
 		
-		<Border 
-			BindingContext="{x:Reference eegView}"
-			BackgroundColor="{Binding CardColor}"
+                <Border
+                        BindingContext="{x:Reference eegView}"
+                        x:DataType="views:EegView"
+                        BackgroundColor="{Binding CardColor}"
 			>
 
 			<StackLayout
