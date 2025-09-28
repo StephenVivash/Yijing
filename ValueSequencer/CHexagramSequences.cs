@@ -1,24 +1,24 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
 namespace ValueSequencer
 {
-        public class CHexagramSequences
-        {
-                public CHexagramValueSequencer AutoCast(ref CHexagramValueSequencer hvs)
-                {
-                        Random r = Sequences.m_ranSession ?? new Random(DateTime.Now.Millisecond);
-                        for (int l = 0; l < 6; ++l)
-                        {
-                                int count = (r.Next(5) + 1) * 100 + r.Next(100);
-                                for (int c = 0; c < count; ++c)
-                                        hvs.Trigram(l / 3).Line(l % 3).Next(true);
-                        }
-                        return hvs;
-                }
-        }
+	public class CHexagramSequences
+	{
+		public CHexagramValueSequencer AutoCast(ref CHexagramValueSequencer hvs)
+		{
+			Random r = Sequences.m_ranSession ?? new Random(DateTime.Now.Millisecond);
+			for (int l = 0; l < 6; ++l)
+			{
+				int count = (r.Next(5) + 1) * 100 + r.Next(100);
+				for (int c = 0; c < count; ++c)
+					hvs.Trigram(l / 3).Line(l % 3).Next(true);
+			}
+			return hvs;
+		}
+	}
 	public class CHexagram : IComparable
 	{
 		public CHexagram(ref CHexagramValueSequencer hvsPrimary)
@@ -78,8 +78,8 @@ namespace ValueSequencer
 				AutoCast(ref hvs);
 				CHexagram h = new CHexagram(ref hvs);
 				int nIndex = Array.BinarySearch<CHexagram>(m_arrHexagram, h);
-				if(nIndex >= 0)
-				m_arrHexagram[nIndex].Add();
+				if (nIndex >= 0)
+					m_arrHexagram[nIndex].Add();
 			}
 			return this;
 		}

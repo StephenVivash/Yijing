@@ -1,4 +1,4 @@
-﻿
+
 using Yijing.Pages;
 
 namespace Yijing;
@@ -55,13 +55,13 @@ public partial class AppShell : Shell
 	public static DiagramPage GetDiagramPage()
 	{
 		ShellContent x = thisShell.pagDiagram;
-		return (DiagramPage) x.Content;
+		return (DiagramPage)x.Content;
 	}
 
 	public static EegPage GetEegPage()
 	{
 		ShellContent x = thisShell.pagEeg;
-		return (EegPage) x.Content;
+		return (EegPage)x.Content;
 	}
 
 	public static App GetApp()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ValueSequencer
 {
@@ -28,38 +28,38 @@ namespace ValueSequencer
 					line.UpdateInnerValues();
 					line.UpdateOuterValues();
 				}
-		//UpdateInnerValues();
-		//UpdateOuterValues();
-		}
-			   
-/*			   
-		public CHexagramValueSequencer(ref CHexagramValueSequencer hvs) : this(0)
-		{
-			Trigram(1).Line(2).Value = hvs.Trigram(1).Line(2).Value;
-			Trigram(1).Line(1).Value = hvs.Trigram(1).Line(1).Value;
-			Trigram(1).Line(0).Value = hvs.Trigram(1).Line(0).Value;
-			Trigram(0).Line(2).Value = hvs.Trigram(0).Line(2).Value;
-			Trigram(0).Line(1).Value = hvs.Trigram(0).Line(1).Value;
-			Trigram(0).Line(0).Value = hvs.Trigram(0).Line(0).Value;
-
-			Trigram(1).Line(2).UpdateInnerValues();
-			Trigram(1).Line(1).UpdateInnerValues();
-			Trigram(1).Line(0).UpdateInnerValues();
-			Trigram(0).Line(2).UpdateInnerValues();
-			Trigram(0).Line(1).UpdateInnerValues();
-			Trigram(0).Line(0).UpdateInnerValues();
-
-			Trigram(1).Line(2).UpdateOuterValues();
-			Trigram(1).Line(1).UpdateOuterValues();
-			Trigram(1).Line(0).UpdateOuterValues();
-			Trigram(0).Line(2).UpdateOuterValues();
-			Trigram(0).Line(1).UpdateOuterValues();
-			Trigram(0).Line(0).UpdateOuterValues();
-
 			//UpdateInnerValues();
 			//UpdateOuterValues();
 		}
-*/
+
+		/*			   
+				public CHexagramValueSequencer(ref CHexagramValueSequencer hvs) : this(0)
+				{
+					Trigram(1).Line(2).Value = hvs.Trigram(1).Line(2).Value;
+					Trigram(1).Line(1).Value = hvs.Trigram(1).Line(1).Value;
+					Trigram(1).Line(0).Value = hvs.Trigram(1).Line(0).Value;
+					Trigram(0).Line(2).Value = hvs.Trigram(0).Line(2).Value;
+					Trigram(0).Line(1).Value = hvs.Trigram(0).Line(1).Value;
+					Trigram(0).Line(0).Value = hvs.Trigram(0).Line(0).Value;
+
+					Trigram(1).Line(2).UpdateInnerValues();
+					Trigram(1).Line(1).UpdateInnerValues();
+					Trigram(1).Line(0).UpdateInnerValues();
+					Trigram(0).Line(2).UpdateInnerValues();
+					Trigram(0).Line(1).UpdateInnerValues();
+					Trigram(0).Line(0).UpdateInnerValues();
+
+					Trigram(1).Line(2).UpdateOuterValues();
+					Trigram(1).Line(1).UpdateOuterValues();
+					Trigram(1).Line(0).UpdateOuterValues();
+					Trigram(0).Line(2).UpdateOuterValues();
+					Trigram(0).Line(1).UpdateOuterValues();
+					Trigram(0).Line(0).UpdateOuterValues();
+
+					//UpdateInnerValues();
+					//UpdateOuterValues();
+				}
+		*/
 
 		public CTrigramValueSequencer Trigram(int nIndex)
 		{
@@ -78,7 +78,7 @@ namespace ValueSequencer
 				((Trigram(0).Line(0).Value % 2 == 0 ? 0 : 1) * 4))) * 8);
 			UpdateInnerValues();
 			UpdateOuterValues();
-			RestoreMoving(bMoving,true,true);
+			RestoreMoving(bMoving, true, true);
 			return this;
 		}
 
@@ -126,19 +126,19 @@ namespace ValueSequencer
 				(Trigram(0).Line(0).Value % 2 == 0 ? 0 : 1);
 			UpdateInnerValues();
 			UpdateOuterValues();
-			if (bMoving[1,1])
+			if (bMoving[1, 1])
 				Trigram(1).Line(2).Old();
-			if (bMoving[1,0])
+			if (bMoving[1, 0])
 			{
 				Trigram(1).Line(0).Old();
 				Trigram(1).Line(1).Old();
 			}
-			if (bMoving[0,2])
+			if (bMoving[0, 2])
 			{
 				Trigram(0).Line(2).Old();
 				Trigram(0).Line(1).Old();
 			}
-			if (bMoving[0,1])
+			if (bMoving[0, 1])
 				Trigram(0).Line(0).Old();
 			return this;
 		}
@@ -190,7 +190,7 @@ namespace ValueSequencer
 								l1 = 2;
 							else
 								if (l1 == 2)
-									l1 = 0;
+								l1 = 0;
 						Trigram(bInverseTrigram ? 1 - t : t).Line(l1).Old();
 					}
 		}
@@ -200,19 +200,21 @@ namespace ValueSequencer
 			m_nCurrentSequence = nCurrentSequence;
 		}
 
-		public static void SetCurrentRatio(int nRatio) {
+		public static void SetCurrentRatio(int nRatio)
+		{
 			m_nCurrentRatio = nRatio;
 		}
-	
-		public static void SetCurrentLabel(int nLabel) {
+
+		public static void SetCurrentLabel(int nLabel)
+		{
 			m_nCurrentLabel = nLabel;
 		}
-	
+
 		protected override String GetLabel()
-		{ 
-			return Sequences.strHexagramLabels[GetCurrentLabel(),Value];	
+		{
+			return Sequences.strHexagramLabels[GetCurrentLabel(), Value];
 		}
-	
+
 		protected override bool GetMoving()
 		{
 			return Trigram(0).IsMoving || Trigram(1).IsMoving;
@@ -220,7 +222,7 @@ namespace ValueSequencer
 
 		public String HexagramId(bool bValue = false)
 		{
-			String s = String.Format("{0,2}", bValue ?  Value : Sequence + 1);
+			String s = String.Format("{0,2}", bValue ? Value : Sequence + 1);
 			if (IsMoving)
 			{
 				s = s + ".";

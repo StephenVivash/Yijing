@@ -1,4 +1,4 @@
-﻿namespace YijingDb
+namespace YijingDb
 {
 	using System;
 	using System.Collections.Generic;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ValueSequencer
 {
@@ -29,12 +29,12 @@ namespace ValueSequencer
 
 		public String ValueStr
 		{
-			get { return Sequences.nHexagramSequences[0, Value].ToString();	}
+			get { return Sequences.nHexagramSequences[0, Value].ToString(); }
 		}
 
 		public String SequenceStr
 		{
-			get	{ return (Sequence + 1).ToString(); }
+			get { return (Sequence + 1).ToString(); }
 		}
 
 		public String Label
@@ -122,7 +122,7 @@ namespace ValueSequencer
 
 		private CValueSequencer SetValue(int nValue)
 		{
-			if((nValue >= 0) && (nValue <= m_nValues))
+			if ((nValue >= 0) && (nValue <= m_nValues))
 			{
 				m_nValue = nValue;
 				m_nSequence = m_nSequences[GetCurrentSequence(), nValue];
@@ -161,8 +161,8 @@ namespace ValueSequencer
 
 		protected int GetLastSequence()
 		{
-			int nSequence1,nSequence2 = m_nValues;
-			while(nSequence2 > -1)
+			int nSequence1, nSequence2 = m_nValues;
+			while (nSequence2 > -1)
 				if ((nSequence1 = FindValue(--nSequence2)) != -1)
 					return nSequence1;
 			return -1;

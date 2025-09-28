@@ -1,4 +1,4 @@
-﻿namespace Yijing.Pages;
+namespace Yijing.Pages;
 
 using System.Collections.ObjectModel;
 using Yijing.Models;
@@ -6,48 +6,48 @@ using Yijing.Services;
 
 public partial class ListDetailPage : ContentPage
 {
-    readonly SampleDataService dataService;
-    private ObservableCollection<SampleItem> Items { get; set; }
+	readonly SampleDataService dataService;
+	private ObservableCollection<SampleItem> Items { get; set; }
 
-    public ListDetailPage(SampleDataService service)
-    {
-        InitializeComponent();
+	public ListDetailPage(SampleDataService service)
+	{
+		InitializeComponent();
 
-        dataService = service;
-    }
+		dataService = service;
+	}
 
-    protected override async void OnNavigatedTo(NavigatedToEventArgs args)
-    {
-        base.OnNavigatedTo(args);
+	protected override async void OnNavigatedTo(NavigatedToEventArgs args)
+	{
+		base.OnNavigatedTo(args);
 
-        await LoadDataAsync();
-    }
-    private async void OnRefreshing(object sender, EventArgs e)
-    {
-        refreshview.IsRefreshing = true;
+		await LoadDataAsync();
+	}
+	private async void OnRefreshing(object sender, EventArgs e)
+	{
+		refreshview.IsRefreshing = true;
 
-        try
-        {
-            await LoadDataAsync();
-        }
-        finally
-        {
-            refreshview.IsRefreshing = false;
-        }
-    }
+		try
+		{
+			await LoadDataAsync();
+		}
+		finally
+		{
+			refreshview.IsRefreshing = false;
+		}
+	}
 
-    private async Task LoadDataAsync()
-    {
-        Items = new ObservableCollection<SampleItem>(await dataService.GetItems());
+	private async Task LoadDataAsync()
+	{
+		Items = new ObservableCollection<SampleItem>(await dataService.GetItems());
 
-        collectionview.ItemsSource = Items;
-    }
+		collectionview.ItemsSource = Items;
+	}
 
-    private async void ItemTapped(object sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync(nameof(ListDetailDetailPage), true, new Dictionary<string, object>
-        {
-            { "Item", (sender as BindableObject).BindingContext as SampleItem }
-        });
-    }
+	private async void ItemTapped(object sender, EventArgs e)
+	{
+		await Shell.Current.GoToAsync(nameof(ListDetailDetailPage), true, new Dictionary<string, object>
+		{
+			{ "Item", (sender as BindableObject).BindingContext as SampleItem }
+		});
+	}
 }

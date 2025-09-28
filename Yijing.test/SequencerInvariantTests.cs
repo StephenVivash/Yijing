@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using Xunit;
 
@@ -7,6 +7,7 @@ using ValueSequencer;
 // ChatGPT's test sugestion ??????? 
 
 namespace YijingMachine;
+
 public interface IYijingMachine
 {
 	// Snapshot of full state
@@ -41,7 +42,7 @@ public sealed class VSAdapter : IYijingMachine
 	public int Hex => 0 /* map to 1..64 from your internal index */; // ??????????????????????????????????????????????????????????????????????????????????????????
 	public bool[] Lines => new bool[] { true, true, true, true, true, true } /* return 6 booleans bottom..top */;
 	public bool[] Lower => new bool[] { true, true, true } /* return 3 booleans bottom..top */;
-	public bool[] Upper => new bool[] {true, true, true} /* return 3 booleans bottom..top */;
+	public bool[] Upper => new bool[] { true, true, true } /* return 3 booleans bottom..top */;
 
 	public void ActivateHex() { /* set active to hexagram mode */ }
 	public void ActivateLower() { /* set active to lower trigram mode */ }

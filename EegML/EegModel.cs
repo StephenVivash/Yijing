@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace EegML
 {
@@ -31,9 +31,10 @@ namespace EegML
 			float fGamma_TP9,
 			float fGamma_AF7,
 			float fGamma_AF8,
-			float fGamma_TP10) 
+			float fGamma_TP10)
+		{
+			var sampleData = new EegML.ModelInput()
 			{
-			var sampleData = new EegML.ModelInput() {
 				//Delta_TP9 = fDelta_TP9,
 				Delta_AF7 = fDelta_AF7,
 				Delta_AF8 = fDelta_AF8,

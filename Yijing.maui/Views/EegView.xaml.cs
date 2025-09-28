@@ -26,9 +26,9 @@ public class DescendingOrder : Comparer<string>
 	public override int Compare(string x, string y)
 	{
 		if (x.StartsWith("museMonitor_"))
-			x = x.Remove(0,12);
+			x = x.Remove(0, 12);
 		if (y.StartsWith("museMonitor_"))
-			y = y.Remove(0,12);
+			y = y.Remove(0, 12);
 		return y.CompareTo(x);
 	}
 }
@@ -102,7 +102,7 @@ public partial class EegView : ContentView
 	{
 		base.OnSizeAllocated(width, height);
 
-		if((width == -1) || (height == -1))
+		if ((width == -1) || (height == -1))
 			return;
 
 		double w = width - 40;
@@ -152,7 +152,7 @@ public partial class EegView : ContentView
 		//btnEeg.WidthRequest = w;
 	}
 
-	private void picDevice_SelectedIndexChanged(object sender, EventArgs e) 
+	private void picDevice_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		_eeg.m_bCancelReplay = true;
 		_eeg.Disconnect();
@@ -206,7 +206,7 @@ public partial class EegView : ContentView
 			string s = (string)picSession.SelectedItem;
 			if (!string.IsNullOrEmpty(s))
 			{
-				if (picAiAnalysis.SelectedIndex != (int) eAiService.eNone)
+				if (picAiAnalysis.SelectedIndex != (int)eAiService.eNone)
 					UI.Call<EegPage>(p => p.SessionLog().Text = "");
 				_eeg.m_bCancelReplay = false;
 				void action() => _eeg.Replay(Path.Combine(AppSettings.EegDataHome(), s + (AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? "-Emotiv.csv" : "-Muse.csv")));
@@ -235,7 +235,7 @@ public partial class EegView : ContentView
 	{
 		if (picSession.SelectedIndex == -1)
 			return;
-		picMode_SelectedIndexChanged(null,null);
+		picMode_SelectedIndexChanged(null, null);
 	}
 
 	private void picGoal_SelectedIndexChanged(object sender, EventArgs e)
@@ -296,7 +296,7 @@ public partial class EegView : ContentView
 		IEnumerable<ISeries> ies = cc.Series;
 		((LineSeries<float>)ies.ElementAt(AppPreferences.TriggerIndex)).Stroke.StrokeThickness = EegSeries.m_fThinStoke;
 		_eeg.m_eegChannel[AppPreferences.TriggerIndex].m_isTrigger = false;
-		AppPreferences.TriggerIndex = (picTriggerBand.SelectedIndex* 5) + picTriggerChannel.SelectedIndex;
+		AppPreferences.TriggerIndex = (picTriggerBand.SelectedIndex * 5) + picTriggerChannel.SelectedIndex;
 		_eeg.m_eegChannel[AppPreferences.TriggerIndex].m_isTrigger = true;
 		((LineSeries<float>)ies.ElementAt(AppPreferences.TriggerIndex)).Stroke.StrokeThickness = EegSeries.m_fThickStoke;
 
@@ -322,19 +322,19 @@ public partial class EegView : ContentView
 		_eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fDifference = _eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fInitialHigh - _eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fInitialLow;
 	}
 
-    private void picAiAnalysis_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        AppPreferences.AiEegService = picAiAnalysis.SelectedIndex;
-    }
+	private void picAiAnalysis_SelectedIndexChanged(object sender, EventArgs e)
+	{
+		AppPreferences.AiEegService = picAiAnalysis.SelectedIndex;
+	}
 
-    private void picAiModel_SelectedIndexChanged(object sender, EventArgs e)
+	private void picAiModel_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		AppPreferences.AiEegMlModel = picAiModel.SelectedIndex;
 	}
 
 	private void chbTriggerFixed_CheckedChanged(object sender, EventArgs e)
 	{
-		if(chbTriggerFixed is not null)
+		if (chbTriggerFixed is not null)
 			AppPreferences.TriggerFixed = chbTriggerFixed.IsChecked;
 	}
 
@@ -403,7 +403,7 @@ public partial class EegView : ContentView
 				s = s.Substring(0, s.Length - 5);
 			else
 				if (s.EndsWith("-Emotiv"))
-					s = s.Substring(0, s.Length - 7);
+				s = s.Substring(0, s.Length - 7);
 
 			lf.Add(s);
 		}
@@ -457,14 +457,14 @@ public partial class EegView : ContentView
 		}
 		Dispatcher.Dispatch(action);
 	}
-	
+
 	public void EnableEegControls(bool bEnable, bool bLive)
 	{
 		void action1() => picReplaySpeed.IsEnabled = bEnable;
 		void action2() => picTriggerChannel.IsEnabled = bEnable;
 		void action3() => picTriggerRange.IsEnabled = bEnable;
 		void action4() => chbTriggerFixed.IsEnabled = bEnable;
-		
+
 		if (bEnable)
 		{
 			Dispatcher.Dispatch(action1);
@@ -495,9 +495,9 @@ public partial class EegView : ContentView
 			//if (++index < 25)
 			//	v.Add(AppSettings.EegChannel(index).m_fCurrentValue);
 			//else
-				v.Add(0.0f);
-        }
-        ObservableCollection<string> l = UI.Get<EegPage>().TimeAxisLabels();
+			v.Add(0.0f);
+		}
+		ObservableCollection<string> l = UI.Get<EegPage>().TimeAxisLabels();
 		l.Clear();
 	}
 
@@ -547,7 +547,7 @@ public partial class EegView : ContentView
 				if ((AppPreferences.ChartBands == (int)eChartBands.eFront &&
 					((index == 1) || (index == 3) ||
 					(index == 6) || (index == 8) ||
-					(index	== 11) || (index == 13) ||
+					(index == 11) || (index == 13) ||
 					(index == 16) || (index == 18) ||
 					(index == 21) || (index == 23)))
 					||
@@ -568,8 +568,8 @@ public partial class EegView : ContentView
 					(index == 21) || (index == 23)))
 					||
 
-					(AppPreferences.ChartBands == (int)eChartBands.eAll)) 
-						bDisplay = true;
+					(AppPreferences.ChartBands == (int)eChartBands.eAll))
+					bDisplay = true;
 
 				if (bDisplay)
 					v.Add(_eeg.m_eegChannel[index].m_fCurrentValue);
@@ -591,14 +591,14 @@ public partial class EegView : ContentView
 			}
 
 			if (m_nEegMode != (int)eEegMode.eSummary)
-				while (v.Count > m_nSeriesMax) 
+				while (v.Count > m_nSeriesMax)
 					v.RemoveAt(0);
 		}
 		ObservableCollection<string> l = UI.Get<EegPage>().TimeAxisLabels();
 		TimeSpan ts = DateTime.Now - _eeg.m_dtEegStart;
 		ts = ts.Multiply(_eeg.m_nReplaySpeed);
 		l.Add($"{ts.Minutes:00}:{ts.Seconds:00}");
-		if (l.Count > m_nSeriesMax) 
+		if (l.Count > m_nSeriesMax)
 			l.RemoveAt(0);
 	}
 

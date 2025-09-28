@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
@@ -367,32 +367,32 @@ public class EegSeries
 				Name="OffTrigger",
 			},
 		};
-/*
-	public Axis[] XAxes { get; set; }
-		= new Axis[]
-		{
-			new Axis
+	/*
+		public Axis[] XAxes { get; set; }
+			= new Axis[]
 			{
-				Name = "X Axis",
-				IsVisible = false,
-				Labels = null,
-				MaxLimit = 7,
-				MinLimit = 0,
-			},
-		};
+				new Axis
+				{
+					Name = "X Axis",
+					IsVisible = false,
+					Labels = null,
+					MaxLimit = 7,
+					MinLimit = 0,
+				},
+			};
 
-	public Axis[] YAxes { get; set; }
-		= new Axis[]
-		{
-			new Axis
+		public Axis[] YAxes { get; set; }
+			= new Axis[]
 			{
-				Name = "Y Axis",
-				IsVisible = false,
-				Labels = null,
-				MaxLimit = 7,
-				MinLimit = 0,
-			},
-		};
-*/
+				new Axis
+				{
+					Name = "Y Axis",
+					IsVisible = false,
+					Labels = null,
+					MaxLimit = 7,
+					MinLimit = 0,
+				},
+			};
+	*/
 }
 

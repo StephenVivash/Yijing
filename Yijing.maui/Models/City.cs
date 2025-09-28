@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace Yijing.Models;
@@ -9,7 +9,7 @@ public class City : INotifyPropertyChanged
 
 	public double Population { get => population; set { population = value; OnPropertyChanged(); } }
 
-	#nullable enable
+#nullable enable
 	public event PropertyChangedEventHandler? PropertyChanged;
 
 	protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)

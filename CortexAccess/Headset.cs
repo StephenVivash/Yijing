@@ -1,177 +1,177 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 using System.Collections;
 using System;
 
 namespace CortexAccess
 {
-    public class Headset
-    {
-        private string _headsetID;
-        private string _status;
-        private string _serialId;
-        private string _firmwareVersion;
-        private string _dongleSerial;
-        private ArrayList _sensors;
-        private ArrayList _motionSensors;
-        private JObject _settings;
-        private string _connectedBy;
-        private string _mode;
+	public class Headset
+	{
+		private string _headsetID;
+		private string _status;
+		private string _serialId;
+		private string _firmwareVersion;
+		private string _dongleSerial;
+		private ArrayList _sensors;
+		private ArrayList _motionSensors;
+		private JObject _settings;
+		private string _connectedBy;
+		private string _mode;
 
-        // Contructor
-        public Headset()
-        {
-        }
-        public Headset (JObject jHeadset)
-        {
-            HeadsetID = (string)jHeadset["id"];
-            Status = (string)jHeadset["status"];
-            FirmwareVersion = (string)jHeadset["firmware"];
-            DongleSerial = (string)jHeadset["dongle"];
-            Sensors = new ArrayList();
-            
-            foreach (JToken sensor in (JArray)jHeadset["sensors"])
-            {
-                Sensors.Add(sensor.ToString());
-            }
-            MotionSensors = new ArrayList();
-            foreach (JToken sensor in (JArray)jHeadset["motionSensors"])
-            {
-                MotionSensors.Add(sensor.ToString());
-            }
-            Mode = (string)jHeadset["mode"];
-            ConnectedBy = (string)jHeadset["connectedBy"];
-            Settings = (JObject)jHeadset["settings"];
-        }
+		// Contructor
+		public Headset()
+		{
+		}
+		public Headset(JObject jHeadset)
+		{
+			HeadsetID = (string)jHeadset["id"];
+			Status = (string)jHeadset["status"];
+			FirmwareVersion = (string)jHeadset["firmware"];
+			DongleSerial = (string)jHeadset["dongle"];
+			Sensors = new ArrayList();
 
-        // Properties
-        public string HeadsetID
-        {
-            get
-            {
-                return _headsetID;
-            }
+			foreach (JToken sensor in (JArray)jHeadset["sensors"])
+			{
+				Sensors.Add(sensor.ToString());
+			}
+			MotionSensors = new ArrayList();
+			foreach (JToken sensor in (JArray)jHeadset["motionSensors"])
+			{
+				MotionSensors.Add(sensor.ToString());
+			}
+			Mode = (string)jHeadset["mode"];
+			ConnectedBy = (string)jHeadset["connectedBy"];
+			Settings = (JObject)jHeadset["settings"];
+		}
 
-            set
-            {
-                _headsetID = value;
-            }
-        }
+		// Properties
+		public string HeadsetID
+		{
+			get
+			{
+				return _headsetID;
+			}
 
-        public string Status
-        {
-            get
-            {
-                return _status;
-            }
+			set
+			{
+				_headsetID = value;
+			}
+		}
 
-            set
-            {
-                _status = value;
-            }
-        }
+		public string Status
+		{
+			get
+			{
+				return _status;
+			}
 
-        public string SerialId
-        {
-            get
-            {
-                return _serialId;
-            }
+			set
+			{
+				_status = value;
+			}
+		}
 
-            set
-            {
-                _serialId = value;
-            }
-        }
+		public string SerialId
+		{
+			get
+			{
+				return _serialId;
+			}
 
-        public string FirmwareVersion
-        {
-            get
-            {
-                return _firmwareVersion;
-            }
+			set
+			{
+				_serialId = value;
+			}
+		}
 
-            set
-            {
-                _firmwareVersion = value;
-            }
-        }
+		public string FirmwareVersion
+		{
+			get
+			{
+				return _firmwareVersion;
+			}
 
-        public string DongleSerial
-        {
-            get
-            {
-                return _dongleSerial;
-            }
+			set
+			{
+				_firmwareVersion = value;
+			}
+		}
 
-            set
-            {
-                _dongleSerial = value;
-            }
-        }
+		public string DongleSerial
+		{
+			get
+			{
+				return _dongleSerial;
+			}
 
-        public ArrayList Sensors
-        {
-            get
-            {
-                return _sensors;
-            }
+			set
+			{
+				_dongleSerial = value;
+			}
+		}
 
-            set
-            {
-                _sensors = value;
-            }
-        }
+		public ArrayList Sensors
+		{
+			get
+			{
+				return _sensors;
+			}
 
-        public ArrayList MotionSensors
-        {
-            get
-            {
-                return _motionSensors;
-            }
+			set
+			{
+				_sensors = value;
+			}
+		}
 
-            set
-            {
-                _motionSensors = value;
-            }
-        }
+		public ArrayList MotionSensors
+		{
+			get
+			{
+				return _motionSensors;
+			}
 
-        public JObject Settings
-        {
-            get
-            {
-                return _settings;
-            }
+			set
+			{
+				_motionSensors = value;
+			}
+		}
 
-            set
-            {
-                _settings = value;
-            }
-        }
+		public JObject Settings
+		{
+			get
+			{
+				return _settings;
+			}
 
-        public string ConnectedBy
-        {
-            get
-            {
-                return _connectedBy;
-            }
+			set
+			{
+				_settings = value;
+			}
+		}
 
-            set
-            {
-                _connectedBy = value;
-            }
-        }
+		public string ConnectedBy
+		{
+			get
+			{
+				return _connectedBy;
+			}
 
-        public string Mode
-        {
-            get
-            {
-                return _mode;
-            }
+			set
+			{
+				_connectedBy = value;
+			}
+		}
 
-            set
-            {
-                _mode = value;
-            }
-        }
-    }
+		public string Mode
+		{
+			get
+			{
+				return _mode;
+			}
+
+			set
+			{
+				_mode = value;
+			}
+		}
+	}
 }

@@ -229,7 +229,7 @@ public partial class DiagramView : ContentView
 	{
 		base.OnSizeAllocated(width, height);
 
-		if((width == -1) ||(height == -1))
+		if ((width == -1) || (height == -1))
 			return;
 
 		double w = width - 20;
@@ -397,8 +397,8 @@ public partial class DiagramView : ContentView
 
 		if (picSession.SelectedIndex > 0)
 		{
-			bool delete = await Window.Page.DisplayAlert("Delete Session", 
-				"Are you sure you want to delete session " + 
+			bool delete = await Window.Page.DisplayAlert("Delete Session",
+				"Are you sure you want to delete session " +
 				(string)picSession.SelectedItem + " ?", "Yes", "No");
 			if (delete)
 			{
@@ -889,8 +889,8 @@ public partial class DiagramView : ContentView
 		rec.Y = 0;
 
 #if ANDROID || IOS
-	//if (width > height)
-	//	bLandscape = true;
+		//if (width > height)
+		//	bLandscape = true;
 #endif
 
 		if (width > 1800)
@@ -1069,7 +1069,7 @@ public partial class DiagramView : ContentView
 		UpdateDiagram();
 	}
 
-	private void UpdateText(bool resetSession = true) 
+	private void UpdateText(bool resetSession = true)
 	{
 		if (resetSession)
 			picSession.SelectedIndex = 0;
@@ -1468,9 +1468,9 @@ public partial class DiagramView : ContentView
 		if (!Directory.Exists(strTemp))
 			Directory.CreateDirectory(strTemp);
 
-        // wait Task.Delay(1000);
+		// wait Task.Delay(1000);
 
-        IEnumerable<string> ief = Directory.EnumerateFiles(strTemp, "*.txt", SearchOption.TopDirectoryOnly);
+		IEnumerable<string> ief = Directory.EnumerateFiles(strTemp, "*.txt", SearchOption.TopDirectoryOnly);
 		List<string> lf = new();
 		foreach (string f in ief)
 			lf.Add(System.IO.Path.GetFileNameWithoutExtension(f));
@@ -1492,7 +1492,7 @@ public partial class DiagramView : ContentView
 		picSession.SelectedIndex = index;
 		picSession.Focus();
 	}
-	
+
 	public void StartNewChat()
 	{
 		UI.Call<DiagramView>(v => v.StartChat());
@@ -1529,7 +1529,7 @@ public partial class DiagramView : ContentView
 			if ((_ai._userPrompts[1].Count() > 0) || (_ai._chatReponses[1].Count() > 0))
 			{
 				SaveChat(name, "Question", _ai._userPrompts[1]);
-				SaveChat(name, "Answer", _ai._chatReponses[1]); 
+				SaveChat(name, "Answer", _ai._chatReponses[1]);
 				_saveChat = false;
 			}
 	}

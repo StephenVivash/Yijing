@@ -7,7 +7,7 @@ namespace Yijing.Pages;
 public partial class DiagramPage : ContentPage
 {
 	public Editor SessionLog() => edtSessionLog;
-	public WebView WebView() => webview; 
+	public WebView WebView() => webview;
 
 	public DiagramPage()
 	{

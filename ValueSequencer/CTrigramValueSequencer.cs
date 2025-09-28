@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ValueSequencer
 {
@@ -136,7 +136,7 @@ namespace ValueSequencer
 							l1 = 2;
 						else
 							if (l1 == 2)
-								l1 = 0;
+							l1 = 0;
 					Line(l1).Old();
 				}
 		}
@@ -155,12 +155,12 @@ namespace ValueSequencer
 		{
 			m_nCurrentLabel = nLabel;
 		}
-	
+
 		protected override String GetLabel()
-		{ 
-			return Sequences.strTrigramLabels[GetCurrentLabel(),Value];
+		{
+			return Sequences.strTrigramLabels[GetCurrentLabel(), Value];
 		}
-	
+
 		protected override bool GetMoving()
 		{
 			return Line(0).IsMoving || Line(1).IsMoving || Line(2).IsMoving;

@@ -1,4 +1,4 @@
-﻿using LiveChartsCore.Measure;
+using LiveChartsCore.Measure;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Maui;
 using Yijing.Models;
@@ -26,9 +26,9 @@ public partial class ChartPage : ContentPage
 			TooltipPosition = TooltipPosition.Hidden,
 			ZoomMode = ZoomAndPanMode.None,
 			LegendPosition = LegendPosition.Hidden,
-			AnimationsSpeed= new TimeSpan(),
+			AnimationsSpeed = new TimeSpan(),
 			AutoUpdateEnabled = true,
-			 
+
 		};
 
 		Content = chaEeg;

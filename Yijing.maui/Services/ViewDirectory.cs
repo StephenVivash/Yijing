@@ -71,20 +71,20 @@ public static class ViewDirectory
 		return null;
 	}
 
-/*  
-	Minimal API I recommend keeping
-	// 1) Only if live (no queue)
-	public static bool TryInvoke<T>(Action<T> action) where T : VisualElement;
-	public static bool TryInvokeByKey<T>(string key, Action<T> action) where T : VisualElement;
+	/*  
+		Minimal API I recommend keeping
+		// 1) Only if live (no queue)
+		public static bool TryInvoke<T>(Action<T> action) where T : VisualElement;
+		public static bool TryInvokeByKey<T>(string key, Action<T> action) where T : VisualElement;
 
-	// 2) Run now or queue until target exists
-	public static void Invoke<T>(Action<T> action) where T : VisualElement;
-	public static void InvokeByKey<T>(string key, Action<T> action) where T : VisualElement;
+		// 2) Run now or queue until target exists
+		public static void Invoke<T>(Action<T> action) where T : VisualElement;
+		public static void InvokeByKey<T>(string key, Action<T> action) where T : VisualElement;
 
-	// 3) Await the instance, then act (use WaitAsync with a timeout at the callsite if needed)
-	public static Task<T> WhenReady<T>() where T : VisualElement;
-	public static Task<T> WhenReadyByKey<T>(string key) where T : VisualElement;
-*/
+		// 3) Await the instance, then act (use WaitAsync with a timeout at the callsite if needed)
+		public static Task<T> WhenReady<T>() where T : VisualElement;
+		public static Task<T> WhenReadyByKey<T>(string key) where T : VisualElement;
+	*/
 
 	public static bool TryInvoke<T>(Action<T> action) where T : VisualElement
 	{

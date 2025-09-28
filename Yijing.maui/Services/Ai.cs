@@ -59,11 +59,14 @@ public class Ai
 		try
 		{
 			var builder = Kernel.CreateBuilder();
-			var http = new HttpClient { Timeout = TimeSpan.FromMinutes(
-				aiService == (int)eAiService.eOllama ? 10 : 2) };
+			var http = new HttpClient
+			{
+				Timeout = TimeSpan.FromMinutes(
+				aiService == (int)eAiService.eOllama ? 10 : 2)
+			};
 
 			builder.AddOpenAIChatCompletion(AppPreferences.AiModelId[aiService],
-				new Uri(AppPreferences.AiEndPoint[aiService]), 
+				new Uri(AppPreferences.AiEndPoint[aiService]),
 				AppPreferences.AiKey[aiService], httpClient: http);
 
 			//builder.AddOpenAITextToAudio(AppPreferences.AiModelId[aiService], AppPreferences.AiKey[aiService]);
@@ -264,85 +267,85 @@ public class YijingPlugin
 		return value;
 	}
 
-/*
-	[KernelFunction("autocast_hexagram")]
-	public void autocast_hexagram()
-	{
-		ViewDirectory.TryInvoke<DiagramView>(v => v.AutoCastHexagram());
-	}
+	/*
+		[KernelFunction("autocast_hexagram")]
+		public void autocast_hexagram()
+		{
+			ViewDirectory.TryInvoke<DiagramView>(v => v.AutoCastHexagram());
+		}
 
-	[KernelFunction("set_hexagram")]
-	public static void set_hexagram(int sequence)
-	{
-		DiagramView.SetHexagram(sequence);
-	}
+		[KernelFunction("set_hexagram")]
+		public static void set_hexagram(int sequence)
+		{
+			DiagramView.SetHexagram(sequence);
+		}
 
-	[KernelFunction("get_hexagram")]
-	public static int get_hexagram()
-	{
-		return DiagramView.GetHexagram();
-	}
-	
-	[KernelFunction("first_hexagram")]
-	public static void first_hexagram()
-	{
-		DiagramView.SetFirst();
-	}
+		[KernelFunction("get_hexagram")]
+		public static int get_hexagram()
+		{
+			return DiagramView.GetHexagram();
+		}
 
-	[KernelFunction("previous_hexagram")]
-	public static void previous_hexagram()
-	{
-		DiagramView.SetPrevious();
-	}
+		[KernelFunction("first_hexagram")]
+		public static void first_hexagram()
+		{
+			DiagramView.SetFirst();
+		}
 
-	[KernelFunction("next_hexagram")]
-	public static void next_hexagram()
-	{
-		DiagramView.SetNext();
-	}
+		[KernelFunction("previous_hexagram")]
+		public static void previous_hexagram()
+		{
+			DiagramView.SetPrevious();
+		}
 
-	[KernelFunction("last_hexagram")]
-	public static void last_hexagram()
-	{
-		DiagramView.SetLast();
-	}
+		[KernelFunction("next_hexagram")]
+		public static void next_hexagram()
+		{
+			DiagramView.SetNext();
+		}
 
-	[KernelFunction("move_hexagram")]
-	public static void move_hexagram()
-	{
-		DiagramView.SetMove();
-	}
+		[KernelFunction("last_hexagram")]
+		public static void last_hexagram()
+		{
+			DiagramView.SetLast();
+		}
 
-	[KernelFunction("last_cast_hexagram")]
-	public static void last_cast_hexagram()
-	{
-		DiagramView.SetHome();
-	}
+		[KernelFunction("move_hexagram")]
+		public static void move_hexagram()
+		{
+			DiagramView.SetMove();
+		}
 
-	[KernelFunction("inverse_hexagram")]
-	public static void inverse_hexagram()
-	{
-		DiagramView.SetInverse();
-	}
+		[KernelFunction("last_cast_hexagram")]
+		public static void last_cast_hexagram()
+		{
+			DiagramView.SetHome();
+		}
 
-	[KernelFunction("opposite_hexagram")]
-	public static void opposite_hexagram()
-	{
-		DiagramView.SetOpposite();
-	}
+		[KernelFunction("inverse_hexagram")]
+		public static void inverse_hexagram()
+		{
+			DiagramView.SetInverse();
+		}
 
-	[KernelFunction("transverse_hexagram")]
-	public static void transverse_hexagram()
-	{
-		DiagramView.SetTransverse();
-	}
+		[KernelFunction("opposite_hexagram")]
+		public static void opposite_hexagram()
+		{
+			DiagramView.SetOpposite();
+		}
 
-	[KernelFunction("nuclear_hexagram")]
-	public static void nuclear_hexagram()
-	{
-		DiagramView.SetNuclear();
-	}
-*/
+		[KernelFunction("transverse_hexagram")]
+		public static void transverse_hexagram()
+		{
+			DiagramView.SetTransverse();
+		}
+
+		[KernelFunction("nuclear_hexagram")]
+		public static void nuclear_hexagram()
+		{
+			DiagramView.SetNuclear();
+		}
+	*/
 }
 
 /*

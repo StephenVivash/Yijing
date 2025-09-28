@@ -1,4 +1,4 @@
-﻿using LiveChartsCore.SkiaSharpView.Maui;
+using LiveChartsCore.SkiaSharpView.Maui;
 using Yijing.Pages;
 
 namespace Yijing.Platforms;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ValueSequencer
 {
@@ -50,7 +50,7 @@ namespace ValueSequencer
 				Value = 1;
 			else
 				if (Value == 3)
-					Value = 2;
+				Value = 2;
 			UpdateInnerValues();
 			UpdateOuterValues();
 			return this;
@@ -62,7 +62,7 @@ namespace ValueSequencer
 				Value = 2;
 			else
 				if (Value == 3)
-					Value = 1;
+				Value = 1;
 			UpdateInnerValues();
 			UpdateOuterValues();
 			return this;
@@ -74,7 +74,7 @@ namespace ValueSequencer
 				Value = 0;
 			else
 				if (Value == 1)
-					Value = 3;
+				Value = 3;
 			UpdateInnerValues();
 			UpdateOuterValues();
 			return this;
@@ -130,13 +130,13 @@ namespace ValueSequencer
 		{
 			m_nCurrentLabel = nLabel;
 		}
-	
+
 		protected override String GetLabel()
-		{ 
-			return Sequences.strLineLabels[GetCurrentLabel(),Value];
+		{
+			return Sequences.strLineLabels[GetCurrentLabel(), Value];
 		}
-	
-		protected override bool GetMoving() 
+
+		protected override bool GetMoving()
 		{
 			return (Value == 0) || (Value == 3);
 		}

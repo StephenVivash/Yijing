@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -297,7 +297,9 @@ namespace YijingDb
 				LabelSery ls2 = ye.LabelSeries.Where(ls1 => ls1.Name == "Vivash" &&
 					ls1.TypeId == (int)Sequences.ValueType.Hexagram).First(); // .OrderBy(ls1 => ls1.Name)
 				IEnumerable<LabelSery> iels = from ls3 in ye.LabelSeries
-					where ls3.TypeId == (int)Sequences.ValueType.Line orderby ls3.Name select ls3;
+											  where ls3.TypeId == (int)Sequences.ValueType.Line
+											  orderby ls3.Name
+											  select ls3;
 				List<LabelSery> lls = iels.ToList();
 
 				LabelSery ls4 = ye.LabelSeries.Include(ls => ls.Type).Include(ls => ls.Labels).Single(ls5 => ls5.Name == "Vivash");

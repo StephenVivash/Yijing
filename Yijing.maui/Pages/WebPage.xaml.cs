@@ -38,16 +38,16 @@ public partial class WebPage : ContentPage
 	}
 
 	private void WebView_Navigated(object sender, WebNavigatedEventArgs e)
-    {
-        if (e.Result == WebNavigationResult.Success)
-        {
-            //BackButton.IsEnabled = webview.CanGoBack;
-            //ForwardButton.IsEnabled = webview.CanGoForward;
-        }
-        else
-        {
-            //await DisplayAlert("Navigation failed", e.Result.ToString(), "OK");
-        }
-    }
+	{
+		if (e.Result == WebNavigationResult.Success)
+		{
+			//BackButton.IsEnabled = webview.CanGoBack;
+			//ForwardButton.IsEnabled = webview.CanGoForward;
+		}
+		else
+		{
+			//await DisplayAlert("Navigation failed", e.Result.ToString(), "OK");
+		}
+	}
 
 }

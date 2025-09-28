@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ValueSequencer
 {
@@ -28,7 +28,7 @@ namespace ValueSequencer
 
 		public static Random m_ranSession = new Random(DateTime.Now.Millisecond);
 
-		public static  void Initialise()
+		public static void Initialise()
 		{
 			SetLSB(DiagramLsb == 1);
 
@@ -301,7 +301,8 @@ namespace ValueSequencer
 			429, 435, 441, 447
 		};
 
-		public Sequences() {
+		public Sequences()
+		{
 		}
 
 		public static void SetLSB(bool bTop)
@@ -342,20 +343,20 @@ namespace ValueSequencer
 		{
 			return strDiagramSettings[nIndex, nValue + 1];
 		}
-	
+
 		public static String DiagramSetting(String strName, int nValue)
 		{
 			for (int i = 0; i < 17; ++i)
-				if(strDiagramSettings[i, 0] == strName)
+				if (strDiagramSettings[i, 0] == strName)
 					return DiagramSetting(i, nValue);
 			return "";
 		}
-	
+
 		public static int DiagramSetting(int nIndex, String strName)
 		{
 			int nLength = 17;
 			for (int i = 0; i < nLength; ++i)
-				if(strDiagramSettings[nIndex, i] == strName)
+				if (strDiagramSettings[nIndex, i] == strName)
 					return i - 1;
 			return 0;
 		}

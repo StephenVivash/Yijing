@@ -86,9 +86,9 @@ public class Eeg
 
 	private EegModel m_mlEEG = null;
 
-	public static void SetEegView(EegView eeg) 
-	{ 
-		m_vwEeg = eeg; 
+	public static void SetEegView(EegView eeg)
+	{
+		m_vwEeg = eeg;
 	}
 
 	public bool BadData()
@@ -113,7 +113,7 @@ public class Eeg
 		if (!Directory.Exists(str))
 			Directory.CreateDirectory(str);
 		str = Path.Combine(str, "Stephen V.mlnet"); // "John D.mlnet"
-		
+
 		if (File.Exists(str))
 			m_mlEEG = new(str);
 		else
@@ -270,19 +270,19 @@ public class Eeg
 			else
 				m_eegChannel[i].m_fCurrentValue = f1;
 
-            //if (f < m_eegChannel[i].m_fMinValue)
-            //	m_eegChannel[i].m_fMinValue = f;
-            //if (f > m_eegChannel[i].m_fMaxValue)
-            //	m_eegChannel[i].m_fMaxValue = f;
+			//if (f < m_eegChannel[i].m_fMinValue)
+			//	m_eegChannel[i].m_fMinValue = f;
+			//if (f > m_eegChannel[i].m_fMaxValue)
+			//	m_eegChannel[i].m_fMaxValue = f;
 
-            //if (f >= 8.0)
-            //	++nBadData;
-        }
-        //m_bBadData = nBadData > 3;
+			//if (f >= 8.0)
+			//	++nBadData;
+		}
+		//m_bBadData = nBadData > 3;
 
-        if (AppPreferences.TriggerSounding && ((AppPreferences.EegGoal == (int)eGoal.eMeditation)  ||
+		if (AppPreferences.TriggerSounding && ((AppPreferences.EegGoal == (int)eGoal.eMeditation) ||
 			// or MindCast is finished
-			((AppPreferences.EegGoal == (int)eGoal.eYijingCast) && (AppPreferences.DiagramMode == (int) eDiagramMode.eExplore))))
+			((AppPreferences.EegGoal == (int)eGoal.eYijingCast) && (AppPreferences.DiagramMode == (int)eDiagramMode.eExplore))))
 		{
 			DateTime Timestamp = DateTime.Now;
 			TimeSpan TimeDiff = Timestamp - _dtSoundingUpdate;
@@ -336,7 +336,7 @@ public class Eeg
 				{
 					_dtAiUpdate = Timestamp;
 					TimeDiff = Timestamp - m_dtEegStart;
-					String str = $"Minute={TimeDiff.TotalMinutes,1:#0}, Prediction={ prediction * 100, 1:#0.000}, " +
+					String str = $"Minute={TimeDiff.TotalMinutes,1:#0}, Prediction={prediction * 100,1:#0.000}, " +
 						$"Delta_TP9={m_eegChannel[0].m_fCurrentValue,1:#0.000}, " +
 						$"Delta_AF7={m_eegChannel[1].m_fCurrentValue,1:#0.000}, " +
 						$"Delta_AF8={m_eegChannel[3].m_fCurrentValue,1:#0.000}, " +
@@ -431,7 +431,7 @@ public class Eeg
 		CloseStreams();
 	}
 
-	public virtual void Replay(string file) 
+	public virtual void Replay(string file)
 	{
 		m_bConnected = true;
 	}
@@ -519,7 +519,7 @@ public class MuseEeg : Eeg
 			m_alMuseData.Add(0.0f);
 	}
 
-	public override bool Connect() 
+	public override bool Connect()
 	{
 		if (m_socMuse == null)
 		{
@@ -544,7 +544,7 @@ public class MuseEeg : Eeg
 		return base.Connect();
 	}
 
-	public override void Disconnect() 
+	public override void Disconnect()
 	{
 		if (m_socMuse != null)
 		{
@@ -674,9 +674,10 @@ public class MuseEeg : Eeg
 			IPPacketInformation pi;
 			SocketFlags sf = SocketFlags.None;
 			try { nSize = m_socMuse.ReceiveMessageFrom(buffer, 0, 1024, ref sf, ref m_epMuse, out pi); }
-			catch {
+			catch
+			{
 				UI.Call<EegView>(v => v.UpdateTime(m_dtEegStart, DateTime.Now));
-				return; 
+				return;
 			}
 
 			if (!bTitle)
@@ -791,7 +792,7 @@ public class EmotivEeg : Eeg
 		base.InitialiseChannels();
 	}
 
-	public override bool Connect() 
+	public override bool Connect()
 	{
 		if (m_dsEmotiv == null)
 		{
@@ -803,10 +804,10 @@ public class EmotivEeg : Eeg
 			m_dsEmotiv.OnBandPowerDataReceived += OnBandPowerDataReceived;
 			m_dsEmotiv.Start();
 		}
-		return base.Connect(); 
+		return base.Connect();
 	}
-	
-	public override void Disconnect() 
+
+	public override void Disconnect()
 	{
 		if (m_dsEmotiv != null)
 		{
@@ -870,7 +871,7 @@ public class EmotivEeg : Eeg
 	{
 		base.Summary(file);
 		Initialise(false);
-		using (StreamReader sr = File.OpenText(file)) 
+		using (StreamReader sr = File.OpenText(file))
 		{
 			float f = 0;
 			ArrayList data = new() { 0.1f, 0.2f };
@@ -878,16 +879,18 @@ public class EmotivEeg : Eeg
 			DateTime LastTimestamp = DateTime.Now;
 			UI.Call<EegView>(v => v.SetAppTitle(Path.GetFileName(file) + " - Yijing"));
 			string s1 = sr.ReadLine();
-			if ((s1 = sr.ReadLine()) != null) {
+			if ((s1 = sr.ReadLine()) != null)
+			{
 				string[] s2 = s1.Split(",", 2);
 				try { FirstTimestamp = LastTimestamp = DateTime.Parse(s2[0]); } catch { }
-				while (((s1 = sr.ReadLine()) != null) && !m_bCancelReplay) 
+				while (((s1 = sr.ReadLine()) != null) && !m_bCancelReplay)
 				{
 					s2 = s1.Split(",");
-					if (s2[1].Length > 0) {
+					if (s2[1].Length > 0)
+					{
 						data.Clear();
 						data.Add(0.0f);
-						for (int i = 1; i <= Eeg.m_nChannelMax; i++) 
+						for (int i = 1; i <= Eeg.m_nChannelMax; i++)
 						{
 							try { f = float.Parse(s2[i]); } catch { f = 0; }
 							data.Add(f);
@@ -1027,37 +1030,37 @@ public class EmotivEeg : Eeg
 		//	21 - "AF4/theta", "AF4/alpha", "AF4/betaL", "AF4/betaH", "AF4/gamma"
 
 		ArrayList data1 = new();
-		data1.Add(data[0]);					// Timestamp
+		data1.Add(data[0]);                 // Timestamp
 
-		data1.Add(data[8]);					// T7/betaL -> Delta_TP9
-		data1.Add(data[3]);					// AF3/betaL -> Delta_AF7
-		if (emotiv) data1.Add(data[13]);	// Pz/betaL -> 
-		data1.Add(data[23]);				// AF4/betaL -> Delta_AF8
-		data1.Add(data[18]);				// T8/betaL -> Delta_TP10
+		data1.Add(data[8]);                 // T7/betaL -> Delta_TP9
+		data1.Add(data[3]);                 // AF3/betaL -> Delta_AF7
+		if (emotiv) data1.Add(data[13]);    // Pz/betaL -> 
+		data1.Add(data[23]);                // AF4/betaL -> Delta_AF8
+		data1.Add(data[18]);                // T8/betaL -> Delta_TP10
 
-		data1.Add(data[6]);					// T7/theta -> Theta_TP9
-		data1.Add(data[1]);					// AF3/theta -> Theta_AF7
-		if (emotiv) data1.Add(data[11]);	// Pz/theta -> 
-		data1.Add(data[21]);				// AF4/theta -> Theta_AF8
-		data1.Add(data[16]);				// T8/theta -> Theta_TP10
+		data1.Add(data[6]);                 // T7/theta -> Theta_TP9
+		data1.Add(data[1]);                 // AF3/theta -> Theta_AF7
+		if (emotiv) data1.Add(data[11]);    // Pz/theta -> 
+		data1.Add(data[21]);                // AF4/theta -> Theta_AF8
+		data1.Add(data[16]);                // T8/theta -> Theta_TP10
 
-		data1.Add(data[7]);					// T7/alpha -> Alpha_TP9
-		data1.Add(data[2]);					// AF3/alpha -> Alpha_AF7
-		if (emotiv) data1.Add(data[12]);	// Pz/alpha -> 
-		data1.Add(data[22]);				// AF4/alpha -> Alpha_AF8
-		data1.Add(data[17]);				// T8/alpha -> Alpha_TP10
+		data1.Add(data[7]);                 // T7/alpha -> Alpha_TP9
+		data1.Add(data[2]);                 // AF3/alpha -> Alpha_AF7
+		if (emotiv) data1.Add(data[12]);    // Pz/alpha -> 
+		data1.Add(data[22]);                // AF4/alpha -> Alpha_AF8
+		data1.Add(data[17]);                // T8/alpha -> Alpha_TP10
 
-		data1.Add(data[9]);					// T7/betaH -> Beta_TP9
-		data1.Add(data[4]);					// AF3/betaH -> Beta_AF7
-		if (emotiv) data1.Add(data[14]);	// Pz/betaH -> 
-		data1.Add(data[24]);				// AF4/betaH -> Beta_AF8
-		data1.Add(data[19]);				// T8/betaH -> Beta_TP10
+		data1.Add(data[9]);                 // T7/betaH -> Beta_TP9
+		data1.Add(data[4]);                 // AF3/betaH -> Beta_AF7
+		if (emotiv) data1.Add(data[14]);    // Pz/betaH -> 
+		data1.Add(data[24]);                // AF4/betaH -> Beta_AF8
+		data1.Add(data[19]);                // T8/betaH -> Beta_TP10
 
-		data1.Add(data[10]);				// T7/gamma -> Gamma_TP9
-		data1.Add(data[5]);					// AF3/gamma -> Gamma_AF7
-		if (emotiv) data1.Add(data[15]);	// Pz/gamma -> 
-		data1.Add(data[25]);				// AF4/gamma -> Gamma_AF8
-		data1.Add(data[20]);				// T8/gamma -> Gamma_TP10
+		data1.Add(data[10]);                // T7/gamma -> Gamma_TP9
+		data1.Add(data[5]);                 // AF3/gamma -> Gamma_AF7
+		if (emotiv) data1.Add(data[15]);    // Pz/gamma -> 
+		data1.Add(data[25]);                // AF4/gamma -> Gamma_AF8
+		data1.Add(data[20]);                // T8/gamma -> Gamma_TP10
 
 		return data1;
 	}

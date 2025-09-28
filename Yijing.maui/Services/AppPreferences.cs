@@ -79,7 +79,7 @@ public static class AppPreferences
 		RawData = Preferences.Get("RawData", false);
 
 		AiChatService = Preferences.Get("AiChatService", (int)eAiService.eNone);
-		
+
 		AiEegService = Preferences.Get("AiEegService", (int)eAiService.eNone);
 		AiEegMlModel = Preferences.Get("AiEegMlModel", (int)eAiEegMlModel.eNone);
 
@@ -158,7 +158,7 @@ public static class AppPreferences
 			if (save)
 				File.WriteAllText(settingsPath, rootObject.ToJsonString(jsonOptions));
 		}
-		catch (Exception) {}
+		catch (Exception) { }
 	}
 
 	private static JsonObject LoadConfigurationObject(string settingsPath)
