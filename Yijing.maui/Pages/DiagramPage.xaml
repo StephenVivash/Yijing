@@ -9,7 +9,7 @@
 	xmlns:controls="clr-namespace:Yijing.Views"
 
 	x:Class="Yijing.Pages.DiagramPage"
-    Title="DiagramPage"
+	Title="DiagramPage"
 	Loaded="Page_Loaded">
 
 	<toolkit:DockLayout

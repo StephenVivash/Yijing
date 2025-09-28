@@ -11,7 +11,7 @@
 
 	<ScrollView>
 		
-		<Frame 
+		<Border 
 			BindingContext="{x:Reference eegView}"
 			BackgroundColor="{Binding CardColor}"
 			>
@@ -449,6 +449,6 @@
 				<Label 
 					Text="{Binding CardDescription, FallbackValue='Card description text.'}"/>
 			</VerticalStackLayout-->
-		</Frame>
+		</Border>
 	</ScrollView>
 </ContentView>

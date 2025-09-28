@@ -10,14 +10,8 @@
 	xmlns:controls="clr-namespace:Yijing.Views"
 
 	x:Class="Yijing.Pages.EegPage"
-			 
-			 
-			 
 	x:DataType="models:EegSeries"
-			 
-			 
-			 
-    Title="EegPage"
+	Title="EegPage"
 	Loaded="Page_Loaded">
 
 	<toolkit:DockLayout
