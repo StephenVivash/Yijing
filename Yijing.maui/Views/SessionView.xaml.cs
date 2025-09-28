@@ -54,6 +54,35 @@ public partial class SessionView : ContentView
 		LoadSessions(null);
 	}
 
+	protected override void OnSizeAllocated(double width, double height)
+	{
+		base.OnSizeAllocated(width, height);
+
+		if ((width == -1) || (height == -1))
+			return;
+
+		double w = width - 20;
+		if (width < 380)
+			w = width - 30;
+
+		w = width - 40;
+		//lblHexagram.WidthRequest = w;
+
+		w /= 2;
+
+		//lblDiagramMode.WidthRequest = w;
+
+		w -= 5;
+
+		//lblSession.WidthRequest = w - 50;
+		//picSession.WidthRequest = w;
+
+		w /= 2;
+		btnAdd.WidthRequest = w;
+		btnDelete.WidthRequest = w;
+	}
+
+
 	private void OnAddSessionClicked(object? sender, EventArgs e)
 	{
 		string fileName = AppSettings.ReverseDateString();
@@ -112,16 +141,12 @@ public partial class SessionView : ContentView
 		sb.Append("<html><head><meta charset=\"utf-8\"/><style>");
 		sb.Append("body{");
 		sb.Append($"background-color:{strBC};color:{strFC};font-family:'Open Sans',sans-serif;font-size:16px;line-height:1.5;");
-		//sb.Append($"background-color:{background};color:{foreground};font-family:'Open Sans',sans-serif;font-size:16px;line-height:1.5;");
 		sb.Append("}");
 		sb.Append("strong{color:" + strFC + ";}");
-		//sb.Append("strong{color:" + foreground + ";}");
-
 		sb.Append("a {" + $" color: {strAC};" + "} ");
 		sb.Append("h1 {" + $" color: {strAC};" + "} ");
 		sb.Append("h2 {" + $" color: {strAC};" + "} ");
 		sb.Append("h4 {" + $" color: {strAC};" + "} ");
-
 		sb.Append("</style></head><body>");
 
 		/*
@@ -324,6 +349,9 @@ public partial class SessionView : ContentView
 
 	public async Task AiChatAsync(string prompt, bool includeCast)
 	{
+
+		includeCast = false;
+
 		if (AppPreferences.AiChatService == (int)eAiService.eNone)
 		{
 			await Window.Page.DisplayAlert("No Service", "Please select the AI service.", "OK");

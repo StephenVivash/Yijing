@@ -100,8 +100,8 @@ public partial class DiagramView : ContentView
 	private SolidColorBrush m_brDarkGray = new SolidColorBrush(Color.FromRgba(0x40, 0x40, 0x40, 0xFF));
 	private SolidColorBrush m_brLightGray = new SolidColorBrush(Colors.LightGray);
 
-	private bool _saveChat = false;
-	private Ai _ai = new Ai();
+	//private bool _saveChat = false;
+	//private Ai _ai = new Ai();
 
 	public DiagramView()
 	{
@@ -166,6 +166,7 @@ public partial class DiagramView : ContentView
 		//_ai._contextSessions.Add("2025-07-06-19-55-13");
 
 		//_ai.AddSystemMessage(
+		/*
 		_ai._systemPrompts[0] =
 			"This app allows a user to consult the Yijing and engage in casual conversation with AI. " +
 
@@ -197,8 +198,10 @@ public partial class DiagramView : ContentView
 			"You may call functions when needed.";
 
 		LoadSessions(0);
+		*/
 
 		//YijingDB();
+		UpdateText();
 
 	}
 
@@ -374,6 +377,7 @@ public partial class DiagramView : ContentView
 
 	protected void picSession_SelectedIndexChanged(object sender, EventArgs e)
 	{
+		/*
 		if (picSession.SelectedIndex == -1)
 			return;
 
@@ -387,6 +391,7 @@ public partial class DiagramView : ContentView
 		}
 		else
 			LoadChat((string)picSession.SelectedItem, _ai._contextSessions);
+		*/
 	}
 
 	protected async void btnDeleteSession_Clicked(object sender, EventArgs e)
@@ -395,7 +400,7 @@ public partial class DiagramView : ContentView
 		//var x1 = Window.Parent as Yijing.App;
 		//x1.Test1();
 		//var x2 = Window.Page.GetParentWindow();
-
+		/*
 		if (picSession.SelectedIndex > 0)
 		{
 			bool delete = await Window.Page.DisplayAlert("Delete Session",
@@ -409,6 +414,7 @@ public partial class DiagramView : ContentView
 				LoadSessions(0);
 			}
 		}
+		*/
 	}
 
 	protected void picDiagramMode_ValueChanged(object sender, EventArgs e)
@@ -1271,7 +1277,7 @@ public partial class DiagramView : ContentView
 		return m_nDiagramMode == (int)eDiagramMode.eExplore;
 	}
 
-	public bool UpdateText(CHexagramValueSequencer hvsPrimary)
+	public void UpdateText(CHexagramValueSequencer hvsPrimary)
 	{
 
 		////////////////////////////////////////////////////////////////////////////////////
@@ -1284,28 +1290,19 @@ public partial class DiagramView : ContentView
 		string strBC = App.Current.RequestedTheme == AppTheme.Dark ? "black" : "white";
 		string strFC = App.Current.RequestedTheme == AppTheme.Dark ? "white" : "black";
 		string strAC = App.Current.RequestedTheme == AppTheme.Dark ? "gray" : "gray";
-		String strHtml = "<html xmlns=\"http://www.w3.org/1999/xhtml\">" +
-			"<head><title>Yijing</title>" +
-			"<link href=\"https://fonts.googleapis.com/css?family=Open+Sans\" rel=\"stylesheet\"/>" +
-			"<style>" +
-			"body {" +
-			$" background-color: {strBC};" +
-			$" color: {strFC};" +
-			"} " +
-			"html {" +
-			" font-size: 16px;" +
-			" font-family: \"Open Sans\", sans-serif;" +
-			"} " +
-			"a {" +
-			$" color: {strAC};" +
-			"} " +
-			"h1 {" +
-			$" color: {strAC};" +
-			"} " +
-			"h2 {" +
-			$" color: {strAC};" +
-			"} " +
-			"</style></head><body><h1>" + Sequences.strSymbols[hvsPrimary.Value] + "  ";
+
+		String strHtml =
+		"<html><head><meta charset=\"utf-8\"/><style> " +
+		"body{ " +
+		$"background-color:{strBC};color:{strFC};font-family:'Open Sans',sans-serif;font-size:16px;line-height:1.5; " +
+		"} " +
+		"strong{color:" + strFC + ";} " +
+		"a {" + $" color: {strAC};" + "} " +
+		"h1 {" + $" color: {strAC};" + "} " +
+		"h2 {" + $" color: {strAC};" + "} " +
+		"h4 {" + $" color: {strAC};" + "} " +
+		"</style></head><body><h1>";
+
 		strHtml += hvsPrimary.DescribeCast() + "</h1>";
 
 		if (strText == "Andrade")
@@ -1388,25 +1385,15 @@ public partial class DiagramView : ContentView
 		}
 		else
 		if (strText == "Heyboer")
-		{
 			UI.Call<DiagramPage>(p => p.WebView().Source = Heyboer.strText[hvsPrimary.Value]);
-			return true;
-		}
 		else
 		if (strText == "YellowBridge")
-		{
 			UI.Call<DiagramPage>(p => p.WebView().Source = YellowBridge.strText[hvsPrimary.Value]);
-			return true;
-		}
 		else
 		if (strText == "Regis")
-		{
 			UI.Call<DiagramPage>(p => p.WebView().Source = Regis.strText[hvsPrimary.Value]);
-			return true;
-		}
+
 		UI.Call<DiagramPage>(p => p.WebView().Source = new HtmlWebViewSource { Html = strHtml });
-		//UI.Get<DiagramPage>().WebView().Source = new HtmlWebViewSource { Html = strHtml };
-		return true;
 
 		/*
 		strUrl +=
@@ -1439,7 +1426,7 @@ public partial class DiagramView : ContentView
 		else
 			UI.Call<DiagramPage>(p => p.SessionLog().Text = str + (newline ? "\n" : ""));
 	}
-
+	/*
 	public void AiChat(bool includeCast)
 	{
 		string s = "";
@@ -1657,7 +1644,7 @@ public partial class DiagramView : ContentView
 		UI.Try<DiagramPage>(p => p.WebView().Source = new HtmlWebViewSource { Html = strHtml });
 		return true;
 	}
-
+	*/
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 	// //////////////////////////////////////////////////////////////////////////////////////////////////

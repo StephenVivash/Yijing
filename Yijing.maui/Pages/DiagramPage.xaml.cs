@@ -79,7 +79,7 @@ public partial class DiagramPage : ContentPage
 
 	protected void btnAskAi_Clicked(object sender, EventArgs e)
 	{
-		diagram.AiChat(chbIncludeCast.IsChecked);
+		//diagram.AiChat(chbIncludeCast.IsChecked);
 		chbIncludeCast.IsChecked = false;
 	}
 

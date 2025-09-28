@@ -6,6 +6,11 @@ using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Maui;
 using LiveChartsCore.SkiaSharpView.Painting;
 
+#if WINDOWS
+using Windows.Win32;
+using Windows.Win32.Foundation;
+#endif
+
 using Platform = Yijing.Platforms.Platform;
 using Yijing.Models;
 using Yijing.Services;
@@ -197,7 +202,7 @@ public partial class EegView : ContentView
 			picReplaySpeed.IsEnabled = false;
 
 			UI.Call<EegPage>(p => p.SessionLog().Text = "");
-			UI.Call<DiagramView>(v => v.StartNewChat());
+			//UI.Call<DiagramView>(v => v.StartNewChat());
 			AudioPlayer.Ambience(Dispatcher, true);
 			_eeg.Connect();
 		}
@@ -221,7 +226,7 @@ public partial class EegView : ContentView
 			string s = (string)picSession.SelectedItem;
 			if (!string.IsNullOrEmpty(s))
 			{
-				UI.Call<DiagramView>(v => v.SelectChat(s));
+				//UI.Call<DiagramView>(v => v.SelectChat(s));
 				_strSession = s;
 				LoadAnalysis();
 				_eeg.m_bCancelReplay = false;
@@ -361,6 +366,27 @@ public partial class EegView : ContentView
 	public void PlayTimer()
 	{
 		AudioPlayer.PlayTimer(Dispatcher);
+	}
+
+	public void SoundTrigger(float fBand, float fTrigger)
+	{
+#if WINDOWS
+
+		TimeSpan ts = DateTime.Now - AppSettings._lastEegDataTime;
+
+		if (ts.TotalSeconds > 30)
+		{
+			fBand = 0.01f;
+			fTrigger = 0.01f;
+		}
+
+		//PInvoke.Beep(261, 2000); // Middle C
+		uint freq = (uint)((fBand + 11.0) * 23.7);
+		PInvoke.Beep(freq, 200);
+		freq = (uint)((fTrigger + 11.0) * 23.7);
+		if (fTrigger != 0.0f)
+			PInvoke.Beep(freq, 200);
+#endif
 	}
 
 	public void AiData(string data)

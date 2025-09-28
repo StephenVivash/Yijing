@@ -15,10 +15,12 @@
 			Grid.Row="0"
 			Spacing="12">
 			<Button
+				x:Name="btnAdd"
 				Text="Add"
 				Clicked="OnAddSessionClicked"
 				StyleClass="PrimaryAction" />
 			<Button
+				x:Name="btnDelete"
 				Text="Delete"
 				Clicked="OnDeleteSessionClicked" />
 		</HorizontalStackLayout>
