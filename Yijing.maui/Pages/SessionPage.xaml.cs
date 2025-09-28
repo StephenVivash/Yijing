@@ -11,9 +11,7 @@ public partial class SessionPage : ContentPage
 	{
 		Behaviors.Add(new RegisterInViewDirectoryBehavior());
 		InitializeComponent();
-
 		picAiChatService.SelectedIndex = AppPreferences.AiChatService;
-		btnAskAi.IsEnabled = AppPreferences.AiChatService != (int)eAiService.eNone;
 	}
 
 	private void Page_Loaded(object sender, EventArgs e)
@@ -27,8 +25,7 @@ public partial class SessionPage : ContentPage
 
 	private async void btnAskAi_Clicked(object sender, EventArgs e)
 	{
-		await sessionView.AiChatAsync(edtSessionLog.Text ?? string.Empty);
-		edtSessionLog.Text = string.Empty;
+		await sessionView.AiChatAsync(edtSessionLog.Text ?? string.Empty, true);
 	}
 
 	private void picAiChatService_SelectedIndexChanged(object sender, EventArgs e)

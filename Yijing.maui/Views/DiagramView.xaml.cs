@@ -108,6 +108,7 @@ public partial class DiagramView : ContentView
 		var b = new RegisterInViewDirectoryBehavior(); // { Key = "DiagramView1" };
 		Behaviors.Add(b);
 		InitializeComponent();
+		BindingContext = this;
 
 		//UI.CallByKey<DiagramView>("DiagramView1", v => v.EndCast());
 		//Eeg.SetDiagramView(this);
@@ -331,7 +332,7 @@ public partial class DiagramView : ContentView
 
 	protected void btnFirst_Clicked(object sender, EventArgs e)
 	{
-		System.Diagnostics.Debug.WriteLine(ViewDirectory.DebugDump());
+		//System.Diagnostics.Debug.WriteLine(ViewDirectory.DebugDump());
 		SetFirst();
 		//Test6502();
 	}
@@ -611,26 +612,6 @@ public partial class DiagramView : ContentView
 		}
 	}
 
-	public void AutoCastHexagram()
-	{
-		//UpdateSessionLog("KernelFunction AutoCastHexagram", true, true);
-		picDiagramMode.SelectedIndex = (int)eDiagramMode.eAutoCast;
-	}
-
-	public void SetHexagram(int sequence)
-	{
-		//UpdateSessionLog($"KernelFunction SetHexagram {sequence}", true, true);
-		m_vsCurrent.Sequence = sequence - 1;
-		Transition();
-		UpdateDiagram(true);
-	}
-
-	public int GetHexagram()
-	{
-		//UpdateSessionLog($"KernelFunction GetHexagram {_this.m_vsCurrent.Sequence + 1}", true, true);
-		return m_vsCurrent.Sequence + 1;
-	}
-
 	public void LoadDiagramSettings()
 	{
 		int nLength = Sequences.strDiagramSettings.Length / 17;
@@ -875,6 +856,32 @@ public partial class DiagramView : ContentView
 		//UpdateSessionLog("KernelFunction SetNuclear", true, true);
 		m_vsCurrent.Nuclear();
 		Transition();
+	}
+
+	public string DescribrCastHexagram()
+	{
+		//UpdateSessionLog("KernelFunction DescribeCastHexagram", true, true);
+		return m_hvsCurrent.DescribeCast();
+	}
+
+	public void AutoCastHexagram()
+	{
+		//UpdateSessionLog("KernelFunction AutoCastHexagram", true, true);
+		picDiagramMode.SelectedIndex = (int)eDiagramMode.eAutoCast;
+	}
+
+	public void SetHexagram(int sequence)
+	{
+		//UpdateSessionLog($"KernelFunction SetHexagram {sequence}", true, true);
+		m_vsCurrent.Sequence = sequence - 1;
+		Transition();
+		UpdateDiagram(true);
+	}
+
+	public int GetHexagram()
+	{
+		//UpdateSessionLog($"KernelFunction GetHexagram {_this.m_vsCurrent.Sequence + 1}", true, true);
+		return m_vsCurrent.Sequence + 1;
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////////////////////////

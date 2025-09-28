@@ -31,20 +31,20 @@ public partial class SessionView : ContentView
 		BindingContext = this;
 
 		_ai._systemPrompts[0] =
-				"This app allows a user to consult the Yijing and engage in casual conversation with AI. " +
-				"Don't explain what the Yijing is or how it works unless explicitly asked. " +
-				"Not all consultations with the Yijing, and therefore AI, involve a question that needs an answer, like those " +
-				"which are simply a reflective statement that seeks to explore for enjoyment rather than map for remedy. " +
-				"The question/statement and the Yijing's response will then be sent to the AI for comment. " +
-				"Respond in light of the Yijing's answer unless told to ignore it. " +
-				"Focus on an explanation of question/statement and draw from any other relevant sources. " +
-				"After the initial response don't repeat or rehash the answer refering to the hexagram again unless explicitly asked to do so. " +
-				"Subsequent 'on topic' questions/statements won't necessarily be related to the cast hexagram, therefore don't include that information in the response. " +
-				"At least reference the ideas associated with hexagrams cast if mentioned in the current prompt " +
-				"Don't repeat or summarise previous answers unless explicitly ask to do so. " +
-				"Allow the user to change the subject or ask for clarification about past responses. " +
-				"Respond with prose rather than bullet points unless explicitly asked. " +
-				"You may call functions when needed.";
+			"This app allows a user to consult the Yijing and engage in casual conversation with AI. " +
+			"Don't explain what the Yijing is or how it works unless explicitly asked. " +
+			"Not all consultations with the Yijing, and therefore AI, involve a question that needs an answer, like those " +
+			"which are simply a reflective statement that seeks to explore for enjoyment rather than map for remedy. " +
+			"The question/statement and the Yijing's response will then be sent to the AI for comment. " +
+			"Respond in light of the Yijing's answer unless told to ignore it. " +
+			"Focus on an explanation of question/statement and draw from any other relevant sources. " +
+			"After the initial response don't repeat or rehash the answer refering to the hexagram again unless explicitly asked to do so. " +
+			"Subsequent 'on topic' questions/statements won't necessarily be related to the cast hexagram, therefore don't include that information in the response. " +
+			"At least reference the ideas associated with hexagrams cast if mentioned in the current prompt " +
+			"Don't repeat or summarise previous answers unless explicitly ask to do so. " +
+			"Allow the user to change the subject or ask for clarification about past responses. " +
+			"Respond with prose rather than bullet points unless explicitly asked. " +
+			"You may call functions when needed.";
 	}
 
 	private void OnLoaded(object? sender, EventArgs e)
@@ -54,29 +54,47 @@ public partial class SessionView : ContentView
 		LoadSessions(null);
 	}
 
-	public async Task AiChatAsync(string prompt)
+	private void OnAddSessionClicked(object? sender, EventArgs e)
 	{
-		if (string.IsNullOrWhiteSpace(prompt))
-			return;
-
-		if (AppPreferences.AiChatService == (int)eAiService.eNone)
-			return;
-
-		await _ai.ChatAsync(AppPreferences.AiChatService, prompt);
-		UpdateChat();
+		string fileName = AppSettings.ReverseDateString();
+		var summary = CreateSummary(fileName);
+		_sessions.Insert(0, summary);
+		sessionCollection.SelectedItem = summary;
 	}
 
-	private void ResetChat()
+	private async void OnDeleteSessionClicked(object? sender, EventArgs e)
 	{
-		ClearChatState();
-		UpdateChat();
+		if (_selectedSession is null)
+			return;
+
+		bool confirm = await Window.Page.DisplayAlert("Delete Session", $"Delete {_selectedSession.Session}?", "Yes", "No");
+		if (!confirm)
+			return;
+
+		try
+		{
+			string folder = Path.Combine(AppSettings.DocumentHome(), "Questions");
+			string path = Path.Combine(folder, _selectedSession.FileName + ".txt");
+			if (File.Exists(path))
+				File.Delete(path);
+
+			folder = Path.Combine(AppSettings.DocumentHome(), "Answers");
+			path = Path.Combine(folder, _selectedSession.FileName + ".txt");
+			if (File.Exists(path))
+				File.Delete(path);
+
+			LoadSessions(null);
+		}
+		catch (Exception ex)
+		{
+			await Window.Page.DisplayAlert("Delete Session", $"Unable to delete the session. {ex.Message}", "OK");
+		}
 	}
 
-	private void ClearChatState()
+	private void OnSessionsSelectionChanged(object? sender, SelectionChangedEventArgs e)
 	{
-		_ai._userPrompts = [[], []];
-		_ai._chatReponses = [[], []];
-		_ai._contextSessions = [];
+		_selectedSession = e.CurrentSelection.FirstOrDefault() as SessionSummary;
+		LoadSelectedSession(_selectedSession);
 	}
 
 	public void UpdateChat()
@@ -204,10 +222,9 @@ public partial class SessionView : ContentView
 	private void LoadSessions(string? selectFile)
 	{
 		_sessions.Clear();
-
 		try
 		{
-			string folder = GetQuestionsFolder();
+			string folder = Path.Combine(AppSettings.DocumentHome(), "Questions");
 			if (string.IsNullOrEmpty(folder))
 				return;
 
@@ -255,15 +272,13 @@ public partial class SessionView : ContentView
 	{
 		if (DateTime.TryParseExact(fileName, "yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture,
 				DateTimeStyles.AssumeLocal, out DateTime dt))
-		{
 			return dt.ToString("yyyy MMM dd HH:mm:ss", CultureInfo.InvariantCulture);
-		}
-
 		return fileName;
 	}
 
 	private static string GetSessionDescription(string filePath)
 	{
+		string s = "Yijing responded with hexagram ";
 		try
 		{
 			if (!File.Exists(filePath))
@@ -275,12 +290,18 @@ public partial class SessionView : ContentView
 
 			string? castLine = text.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)
 					.Select(line => line.Trim())
-					.FirstOrDefault(line => line.Contains("hexagram", StringComparison.OrdinalIgnoreCase));
+					.FirstOrDefault(line => line.Contains(s, StringComparison.OrdinalIgnoreCase));
 
 			if (!string.IsNullOrEmpty(castLine))
+			{
+				int i = castLine.IndexOf(s, StringComparison.OrdinalIgnoreCase);
+				castLine = castLine.Substring(i + s.Length).Trim();
 				return castLine;
+			}
 
-			return GetFirstWords(text, 10);
+			var words = text.Replace("$(Question)", "").Split(new[] { ' ', '\r', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries).Take(10);
+			return string.Join(" ", words);
+
 		}
 		catch (Exception ex)
 		{
@@ -289,154 +310,134 @@ public partial class SessionView : ContentView
 		}
 	}
 
-	private static string GetFirstWords(string text, int count)
-	{
-		if (string.IsNullOrWhiteSpace(text))
-			return string.Empty;
-
-		var words = text.Split(new[] { ' ', '\r', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries).Take(count);
-		return string.Join(" ", words);
-	}
-
 	private void LoadSelectedSession(SessionSummary? summary)
 	{
 		ClearChatState();
-
 		if (summary is null)
 		{
 			UpdateChat();
 			return;
 		}
-
-		LoadChat(summary.FileName, "Question", _ai._userPrompts[1]);
-		LoadChat(summary.FileName, "Answer", _ai._chatReponses[1]);
+		LoadChat(summary.FileName);
 		UpdateChat();
 	}
 
-	private void LoadChat(string name, string type, List<string> list)
+	public async Task AiChatAsync(string prompt, bool includeCast)
 	{
-		string documentHome = GetDocumentHome();
-		string directory = Path.Combine(documentHome, $"{type}s");
-		string path = Path.Combine(directory, name + ".txt");
-
-		if (!File.Exists(path))
-			return;
-
-		string entry = string.Empty;
-
-		using StreamReader reader = File.OpenText(path);
-		string? line;
-		while ((line = reader.ReadLine()) != null)
+		if (AppPreferences.AiChatService == (int)eAiService.eNone)
 		{
-			if (string.IsNullOrEmpty(line))
-				continue;
+			await Window.Page.DisplayAlert("No Service", "Please select the AI service.", "OK");
+			return;
+		}
 
-			if (line == $"$({type})")
+		string s = "";
+		if (includeCast)
+		{
+			UI.Try<DiagramView>(v => s = v.DescribrCastHexagram());
+			if (string.IsNullOrWhiteSpace(s))
 			{
+				await Window.Page.DisplayAlert("No Cast", "Please cast a hexagram first.", "OK");
+				return;
+			}
+			s = prompt + (prompt.Length > 0 ? "\n" : "") + "I consulted the oracle and the Yijing responded with hexagram " + s;
+		}
+		else
+			s = prompt;
+
+		if (string.IsNullOrWhiteSpace(s))
+		{
+			await Window.Page.DisplayAlert("No Prompt", "Please enter a prompt.", "OK");
+			return;
+		}
+
+		await _ai.ChatAsync(AppPreferences.AiChatService, s);
+		SaveChat(_selectedSession.FileName);
+		UpdateChat();
+		UpdateSessionLog("", false, false);
+	}
+
+	private void ResetChat()
+	{
+		ClearChatState();
+		UpdateChat();
+	}
+
+	private void ClearChatState()
+	{
+		_ai._userPrompts = [[], []];
+		_ai._chatReponses = [[], []];
+		_ai._contextSessions = [];
+	}
+
+	public void UpdateSessionLog(string str, bool append, bool newline)
+	{
+		if (append)
+			UI.Call<SessionPage>(p => p.SessionLog().Text += str + (newline ? "\n" : ""));
+		else
+			UI.Call<SessionPage>(p => p.SessionLog().Text = str + (newline ? "\n" : ""));
+	}
+
+	public void SaveChat(string name)
+	{
+		if ((_ai._userPrompts[1].Count > 0) || (_ai._chatReponses[1].Count > 0))
+		{
+			SaveChat(name, "Question", _ai._userPrompts[1]);
+			SaveChat(name, "Answer", _ai._chatReponses[1]);
+		}
+	}
+
+	public void SaveChat(string name, string type, List<string> list)
+	{
+		string str = Path.Combine(AppSettings.DocumentHome(), $"{type}s", name + ".txt");
+		using (FileStream fs = new(str, FileMode.Create, FileAccess.Write))
+			foreach (string s in list)
+			{
+				byte[] val = Encoding.UTF8.GetBytes($"$({type})\n" + s + "\n");
+				fs.Write(val, 0, val.Length);
+			}
+	}
+
+	public void LoadChat(string session)
+	{
+		for (int i = 0; i < _ai._contextSessions.Count; ++i)
+		{
+			LoadChat(_ai._contextSessions[i], "Question", _ai._userPrompts[0]);
+			LoadChat(_ai._contextSessions[i], "Answer", _ai._chatReponses[0]);
+		}
+		if (!string.IsNullOrEmpty(session))
+		{
+			//EegView._strSession = session;
+			LoadChat(session, "Question", _ai._userPrompts[1]);
+			LoadChat(session, "Answer", _ai._chatReponses[1]);
+			if ((_ai._userPrompts[1].Count() > 0) || (_ai._chatReponses[1].Count() > 0))
+				UpdateChat();
+		}
+	}
+
+	public void LoadChat(string name, string type, List<string> list)
+	{
+		string str = System.IO.Path.Combine(AppSettings.DocumentHome(), $"{type}s", name + ".txt");
+		string entry = "";
+		if (File.Exists(str))
+			using (StreamReader sr = File.OpenText(str))
+			{
+				while ((str = sr.ReadLine()) != null)
+					if (!string.IsNullOrEmpty(str))
+						if (str == $"$({type})")
+						{
+							if (!string.IsNullOrEmpty(entry))
+							{
+								list.Add(entry);
+								entry = "";
+							}
+						}
+						else
+							entry += str + "\n";
 				if (!string.IsNullOrEmpty(entry))
-				{
 					list.Add(entry);
-					entry = string.Empty;
-				}
 			}
-			else
-			{
-				entry += line + "\n";
-			}
-		}
-
-		if (!string.IsNullOrEmpty(entry))
-			list.Add(entry);
-	}
-
-	private static string GetQuestionsFolder()
-	{
-		return Path.Combine(GetDocumentHome(), "Questions");
-	}
-
-	private static string GetDocumentHome()
-	{
-		string? documentHome = AppSettings.DocumentHome();
-		if (string.IsNullOrWhiteSpace(documentHome))
-		{
-			string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			documentHome = Path.Combine(documents, "Yijing");
-		}
-
-		return documentHome;
-	}
-
-	private async void OnAddSessionClicked(object? sender, EventArgs e)
-	{
-		try
-		{
-			string folder = GetQuestionsFolder();
-			if (!Directory.Exists(folder))
-				Directory.CreateDirectory(folder);
-
-			string fileName = AppSettings.ReverseDateString();
-			string path = Path.Combine(folder, fileName + ".txt");
-			if (!File.Exists(path))
-				File.WriteAllText(path, string.Empty);
-
-			LoadSessions(fileName);
-		}
-		catch (Exception ex)
-		{
-			await ShowAlert("Add Session", $"Unable to create a session. {ex.Message}");
-		}
-	}
-
-	private async void OnDeleteSessionClicked(object? sender, EventArgs e)
-	{
-		if (_selectedSession is null)
-			return;
-
-		bool confirm = await ConfirmAsync("Delete Session",
-				$"Delete {_selectedSession.Session}?");
-		if (!confirm)
-			return;
-
-		try
-		{
-			string folder = GetQuestionsFolder();
-			string path = Path.Combine(folder, _selectedSession.FileName + ".txt");
-			if (File.Exists(path))
-				File.Delete(path);
-
-			string answersFolder = Path.Combine(GetDocumentHome(), "Answers");
-			string answersPath = Path.Combine(answersFolder, _selectedSession.FileName + ".txt");
-			if (File.Exists(answersPath))
-				File.Delete(answersPath);
-
-			LoadSessions(null);
-		}
-		catch (Exception ex)
-		{
-			await ShowAlert("Delete Session", $"Unable to delete the session. {ex.Message}");
-		}
-	}
-
-	private void OnSessionsSelectionChanged(object? sender, SelectionChangedEventArgs e)
-	{
-		_selectedSession = e.CurrentSelection.FirstOrDefault() as SessionSummary;
-		LoadSelectedSession(_selectedSession);
-	}
-
-	private static Task ShowAlert(string title, string message)
-	{
-		if (Application.Current?.MainPage is Page page)
-			return page.DisplayAlert(title, message, "OK");
-
-		return Task.CompletedTask;
-	}
-
-	private static Task<bool> ConfirmAsync(string title, string message)
-	{
-		if (Application.Current?.MainPage is Page page)
-			return page.DisplayAlert(title, message, "Yes", "No");
-
-		return Task.FromResult(false);
+		else
+			UpdateSessionLog("Failed to load " + str, true, true);
 	}
 }
 
