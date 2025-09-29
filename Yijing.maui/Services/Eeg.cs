@@ -122,7 +122,6 @@ public class Eeg
 
 	public virtual void InitialiseChannels()
 	{
-		int xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx;
 		int max = 0;
 		UI.Try<EegView>(v => max = v.m_nEegMode == (int)eEegMode.eSummary ? 400 : 200);
 		max = m_vwEeg.m_nEegMode == (int)eEegMode.eSummary ? 400 : 200;

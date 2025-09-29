@@ -394,7 +394,7 @@ public partial class DiagramView : ContentView
 		*/
 	}
 
-	protected async void btnDeleteSession_Clicked(object sender, EventArgs e)
+	protected void btnDeleteSession_Clicked(object sender, EventArgs e)
 	{
 
 		//var x1 = Window.Parent as Yijing.App;
@@ -782,13 +782,6 @@ public partial class DiagramView : ContentView
 		Sequences.HexagramText = nText;
 	}
 
-	public void SetHexagramValue(int nValue)
-	{
-		m_hvsCurrent.Value = nValue;
-		UpdateDiagram(true);
-		UpdateText();
-	}
-
 	private void Transition()
 	{
 		m_hvsPrimary = null;
@@ -876,6 +869,35 @@ public partial class DiagramView : ContentView
 		picDiagramMode.SelectedIndex = (int)eDiagramMode.eAutoCast;
 	}
 
+	public void SetHexagramValue(int nValue)
+	{
+		//UpdateSessionLog($"KernelFunction SetHexagram {sequence}", true, true);
+		m_hvsCurrent.Value = nValue;
+		UpdateDiagram(true);
+		UpdateText();
+	}
+
+	public void SetHexagramCast(string cast)
+	{
+		//UpdateSessionLog($"KernelFunction SetHexagram {sequence}", true, true);
+		string[] s1 = cast.Split(' ', '.');
+		if (s1.Length > 0)
+			if (int.TryParse(s1[0], out int sequence))
+			{
+				m_hvsCurrent.Sequence = sequence - 1;
+				m_hvsCurrent.Update();
+				if (s1.Length > 1)
+					for (int i = 0; i < s1[1].Length; ++i)
+						if (int.TryParse(s1[1][i].ToString(), out int line))
+							m_hvsCurrent.Trigram((line - 1) / 3).Line((line - 1) % 3).Next();
+						else
+							break;
+				m_hvsCast = new CHexagramValueSequencer(ref m_hvsCurrent);
+				m_vsCurrent = m_hvsCurrent;
+				UpdateDiagram(false);
+				UpdateText();
+		}
+	}
 	public void SetHexagram(int sequence)
 	{
 		//UpdateSessionLog($"KernelFunction SetHexagram {sequence}", true, true);
