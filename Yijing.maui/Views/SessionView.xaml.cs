@@ -14,6 +14,7 @@ using ValueSequencer;
 using Yijing.Pages;
 using Yijing.Services;
 
+using SessionDb;
 using SessionDb.Data;
 using SessionDb.Models;
 
@@ -75,8 +76,11 @@ public partial class SessionView : ContentView
                         IServiceProvider serviceProvider = MauiProgram.Services;
                         IReadOnlyList<SessionEntry> entries = await Task.Run(() =>
                         {
+                                SessionDatabaseInitializer.Initialize(serviceProvider);
+
                                 using IServiceScope scope = serviceProvider.CreateScope();
-                                SessionContext context = scope.ServiceProvider.GetRequiredService<SessionContext>();
+                                using SessionContext context = scope.ServiceProvider.GetRequiredService<SessionContext>();
+
                                 return (IReadOnlyList<SessionEntry>)context.Sessions
                                         .OrderBy(session => session.Id)
                                         .ToList();
