@@ -107,12 +107,13 @@
 		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" /-->
 	</ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\ValueSequencer\ValueSequencer.csproj" />
-		<ProjectReference Include="..\CortexAccess\CortexAccess.csproj" />
-		<ProjectReference Include="..\Yijing.db\Yijing.db.csproj" />
-		<ProjectReference Include="..\EegML\EegML.csproj" />
-	</ItemGroup>
+        <ItemGroup>
+                <ProjectReference Include="..\ValueSequencer\ValueSequencer.csproj" />
+                <ProjectReference Include="..\CortexAccess\CortexAccess.csproj" />
+                <ProjectReference Include="..\Yijing.db\Yijing.db.csproj" />
+                <ProjectReference Include="..\EegML\EegML.csproj" />
+                <ProjectReference Include="..\SessionDb\SessionDb.csproj" />
+        </ItemGroup>
 
 	<ItemGroup>
 	  <Folder Include="Properties\PublishProfiles\" />

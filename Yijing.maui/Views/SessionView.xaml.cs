@@ -2,14 +2,20 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+
+using Microsoft.Extensions.DependencyInjection;
 
 using ValueSequencer;
 
 using Yijing.Pages;
 using Yijing.Services;
+
+using SessionDb.Data;
+using SessionDb.Models;
 
 namespace Yijing.Views;
 
@@ -17,9 +23,12 @@ namespace Yijing.Views;
 
 public partial class SessionView : ContentView
 {
-	private ObservableCollection<Session> _sessions = new();
-	private Session? _selectedSession;
-	private readonly Ai _ai = new();
+        private ObservableCollection<Session> _sessions = new();
+        private Session? _selectedSession;
+        private readonly Ai _ai = new();
+        private IReadOnlyList<SessionEntry> _databaseSessions = Array.Empty<SessionEntry>();
+
+        public IReadOnlyList<SessionEntry> DatabaseSessions => _databaseSessions;
 
 	//public ObservableCollection<Session> Sessions => _sessions;
 
@@ -48,12 +57,38 @@ public partial class SessionView : ContentView
 			"You may call functions when needed.";
 	}
 
-	private void OnLoaded(object? sender, EventArgs e)
-	{
-		Loaded -= OnLoaded;
-		ResetChat();
-		LoadSessions(null);
-	}
+        private async void OnLoaded(object? sender, EventArgs e)
+        {
+                Loaded -= OnLoaded;
+                ResetChat();
+                LoadSessions(null);
+                await PrefetchDatabaseSessionsAsync();
+        }
+
+        private async Task PrefetchDatabaseSessionsAsync()
+        {
+                try
+                {
+                        if (MauiProgram.Services is null)
+                                return;
+
+                        IServiceProvider serviceProvider = MauiProgram.Services;
+                        IReadOnlyList<SessionEntry> entries = await Task.Run(() =>
+                        {
+                                using IServiceScope scope = serviceProvider.CreateScope();
+                                SessionContext context = scope.ServiceProvider.GetRequiredService<SessionContext>();
+                                return (IReadOnlyList<SessionEntry>)context.Sessions
+                                        .OrderBy(session => session.Id)
+                                        .ToList();
+                        });
+
+                        _databaseSessions = entries;
+                }
+                catch (Exception ex)
+                {
+                        System.Diagnostics.Debug.WriteLine($"Failed to load session entries from database: {ex.Message}");
+                }
+        }
 
 	protected override void OnSizeAllocated(double width, double height)
 	{
