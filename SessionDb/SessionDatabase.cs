@@ -37,6 +37,9 @@ public static class SessionDatabase
 
     private static void InitializeDatabase(SessionContext context)
     {
+        if (context is null)
+            throw new ArgumentNullException(nameof(context));
+
         if (context.Database.GetMigrations().Any())
         {
             context.Database.Migrate();
@@ -44,7 +47,8 @@ public static class SessionDatabase
         else
         {
             context.Database.EnsureCreated();
-            SessionSeed.EnsureSeedData(context);
         }
+
+        SessionSeed.EnsureSeedData(context);
     }
 }
