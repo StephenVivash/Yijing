@@ -1,15 +1,25 @@
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Maui.Storage;
 
 using ValueSequencer;
 
 using Yijing.Pages;
 using Yijing.Services;
+
+using SessionDb;
+using SessionDb.Entities;
 
 namespace Yijing.Views;
 
@@ -48,12 +58,12 @@ public partial class SessionView : ContentView
 			"You may call functions when needed.";
 	}
 
-	private void OnLoaded(object? sender, EventArgs e)
-	{
-		Loaded -= OnLoaded;
-		ResetChat();
-		LoadSessions(null);
-	}
+        private async void OnLoaded(object? sender, EventArgs e)
+        {
+                Loaded -= OnLoaded;
+                ResetChat();
+                await LoadSessionsAsync(null);
+        }
 
 	protected override void OnSizeAllocated(double width, double height)
 	{
@@ -227,68 +237,114 @@ public partial class SessionView : ContentView
 		ChatUpdated?.Invoke(this, sb.ToString());
 	}
 
-	private void LoadSessions(string? selectFile)
-	{
-		List<Session> sessions = new List<Session>();
-		try
-		{
-			IEnumerable<string>[] files = new IEnumerable<string>[3];
-			string[] folder = [Path.Combine(AppSettings.DocumentHome(), "Questions"),
-							   Path.Combine(AppSettings.DocumentHome(), "Muse"),
-							   Path.Combine(AppSettings.DocumentHome(), "Emotiv")];
+        private async Task LoadSessionsAsync(string? selectFile, CancellationToken cancellationToken = default)
+        {
+                List<Session> sessions = new();
+                Dictionary<string, SessionRecord> databaseSessions = await PrefetchDatabaseSessionsAsync(cancellationToken);
 
-			for (int i = 0; i < 3; ++i)
-			{
-				if (!Directory.Exists(folder[i]))
-					Directory.CreateDirectory(folder[i]);
+                try
+                {
+                        IEnumerable<string>[] files = new IEnumerable<string>[3];
+                        string[] folder = [Path.Combine(AppSettings.DocumentHome(), "Questions"),
+                                                           Path.Combine(AppSettings.DocumentHome(), "Muse"),
+                                                           Path.Combine(AppSettings.DocumentHome(), "Emotiv")];
 
-				files[i] = Directory.EnumerateFiles(folder[i], i == 0 ? "*.txt" : "*.csv", SearchOption.TopDirectoryOnly)
-						.OrderByDescending(f => f, StringComparer.OrdinalIgnoreCase);
+                        for (int i = 0; i < 3; ++i)
+                        {
+                                if (!Directory.Exists(folder[i]))
+                                        Directory.CreateDirectory(folder[i]);
 
-				foreach (string file in files[i])
-				{
-					var summary = CreateSession(file);
-					var match = sessions.FirstOrDefault(s => s.Name.Equals(summary.Name, StringComparison.OrdinalIgnoreCase));
-					if (match is not null)
-						match.Description = "* " + match.Description;
-					else
-						sessions.Add(summary);
-				}
-			}
+                                files[i] = Directory.EnumerateFiles(folder[i], i == 0 ? "*.txt" : "*.csv", SearchOption.TopDirectoryOnly)
+                                                .OrderByDescending(f => f, StringComparer.OrdinalIgnoreCase);
 
-			_sessions = new ObservableCollection<Session>(sessions.OrderByDescending(s => s.FileName, StringComparer.OrdinalIgnoreCase));
-			sessionCollection.ItemsSource = _sessions;
-			/*_sessions = new ObservableCollection<SessionSummary>(_sessions.OrderByDescending(s =>
-			{
-				if (DateTime.TryParseExact(s.FileName, "yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture,
-						DateTimeStyles.AssumeLocal, out DateTime dt))
-					return dt;
-				return DateTime.MinValue;
-			}));*/
+                                foreach (string file in files[i])
+                                {
+                                        var summary = CreateSession(file);
+                                        var match = sessions.FirstOrDefault(s => s.Name.Equals(summary.Name, StringComparison.OrdinalIgnoreCase));
+                                        if (match is not null)
+                                                match.Description = "* " + match.Description;
+                                        else
+                                                sessions.Add(summary);
+                                }
+                        }
 
-			if (!string.IsNullOrEmpty(selectFile))
-			{
-				var match = _sessions.FirstOrDefault(s => s.FileName.Equals(selectFile, StringComparison.OrdinalIgnoreCase));
-				if (match is not null)
-				{
-					sessionCollection.SelectedItem = match;
-					sessionCollection.ScrollTo(match, position: ScrollToPosition.Center, animate: false);
-				}
-			}
-			else if (_sessions.Count > 0)
-			{
-				sessionCollection.SelectedItem = _sessions[0];
-			}
-		}
-		catch (Exception ex)
-		{
-			System.Diagnostics.Debug.WriteLine($"Failed to load sessions: {ex.Message}");
-		}
-	}
+                        if (databaseSessions.Count > 0)
+                        {
+                                foreach (Session session in sessions)
+                                {
+                                        if (databaseSessions.TryGetValue(session.FileName, out SessionRecord record))
+                                        {
+                                                session.Id = record.Id;
+                                                if (!string.IsNullOrWhiteSpace(record.Name))
+                                                        session.Name = record.Name;
+                                                if (!string.IsNullOrWhiteSpace(record.Description))
+                                                        session.Description = record.Description;
+                                                if (!string.IsNullOrWhiteSpace(record.YijingCast))
+                                                        session.YijingCast = record.YijingCast;
+                                        }
+                                }
 
-	private Session CreateSession(string filePath)
-	{
-		string fileName = Path.GetFileNameWithoutExtension(filePath);
+                                foreach (SessionRecord record in databaseSessions.Values)
+                                {
+                                        bool exists = sessions.Any(s => s.FileName.Equals(record.FileName, StringComparison.OrdinalIgnoreCase));
+                                        if (!exists)
+                                                sessions.Add(new Session(record.Id, record.Name, record.FileName, record.Description, record.YijingCast));
+                                }
+                        }
+
+                        _sessions = new ObservableCollection<Session>(sessions.OrderByDescending(s => s.FileName, StringComparer.OrdinalIgnoreCase));
+                        sessionCollection.ItemsSource = _sessions;
+
+                        if (!string.IsNullOrEmpty(selectFile))
+                        {
+                                var match = _sessions.FirstOrDefault(s => s.FileName.Equals(selectFile, StringComparison.OrdinalIgnoreCase));
+                                if (match is not null)
+                                {
+                                        sessionCollection.SelectedItem = match;
+                                        sessionCollection.ScrollTo(match, position: ScrollToPosition.Center, animate: false);
+                                }
+                        }
+                        else if (_sessions.Count > 0)
+                        {
+                                sessionCollection.SelectedItem = _sessions[0];
+                        }
+                }
+                catch (Exception ex)
+                {
+                        Debug.WriteLine($"Failed to load sessions: {ex.Message}");
+                }
+        }
+
+        private static async Task<Dictionary<string, SessionRecord>> PrefetchDatabaseSessionsAsync(CancellationToken cancellationToken)
+        {
+                try
+                {
+                        string databasePath = GetSessionDatabasePath();
+                        using SessionContext context = SessionDatabase.Open(databasePath);
+                        List<SessionRecord> records = await context.Sessions.AsNoTracking().ToListAsync(cancellationToken);
+                        return records.ToDictionary(r => r.FileName, StringComparer.OrdinalIgnoreCase);
+                }
+                catch (Exception ex)
+                {
+                        Debug.WriteLine($"Failed to prefetch sessions: {ex.Message}");
+                        return new Dictionary<string, SessionRecord>(StringComparer.OrdinalIgnoreCase);
+                }
+        }
+
+        private static string GetSessionDatabasePath()
+        {
+                string documentHome = AppSettings.DocumentHome();
+                if (!string.IsNullOrWhiteSpace(documentHome))
+                        return Path.Combine(documentHome, SessionDatabase.DefaultFileName);
+
+                string appDataDirectory = FileSystem.Current.AppDataDirectory;
+                string directory = Path.Combine(appDataDirectory, "Yijing");
+                return Path.Combine(directory, SessionDatabase.DefaultFileName);
+        }
+
+        private Session CreateSession(string filePath)
+        {
+                string fileName = Path.GetFileNameWithoutExtension(filePath);
 		string extension = Path.GetExtension(filePath);
 		string name = FormatSessionName(fileName);
 		string description = "New session";

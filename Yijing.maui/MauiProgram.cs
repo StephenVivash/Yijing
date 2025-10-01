@@ -1,9 +1,12 @@
 
 // dotnet nuget why Yijing.maui.csproj Microsoft.SemanticKernel
 
-using Microsoft.Extensions.Logging;
+using System.IO;
 using CommunityToolkit.Maui;
 using LiveChartsCore.SkiaSharpView.Maui;
+using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Storage;
+using SessionDb;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 
 using Yijing.Services;
@@ -49,8 +52,30 @@ public static class MauiProgram
 		//builder.Services.AddTransient<Pages.ListDetailDetailPage>();
 #endif
 
-		Services.AudioPlayer.Load();
-		return builder.Build();
-	}
+                Services.AudioPlayer.Load();
 
+                MauiApp app = builder.Build();
+                InitializeSessionDatabaseIfNeeded();
+                return app;
+        }
+
+        private static void InitializeSessionDatabaseIfNeeded()
+        {
+                if (!AppPreferences.PrefetchSessionDatabase)
+                        return;
+
+                string databasePath = GetSessionDatabasePath();
+                using var context = SessionDatabase.Open(databasePath);
+        }
+
+        private static string GetSessionDatabasePath()
+        {
+                string documentHome = AppSettings.DocumentHome();
+                if (!string.IsNullOrWhiteSpace(documentHome))
+                        return Path.Combine(documentHome, SessionDatabase.DefaultFileName);
+
+                string appDataDirectory = FileSystem.Current.AppDataDirectory;
+                string directory = Path.Combine(appDataDirectory, "Yijing");
+                return Path.Combine(directory, SessionDatabase.DefaultFileName);
+        }
 }

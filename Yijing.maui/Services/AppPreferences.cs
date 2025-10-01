@@ -34,12 +34,14 @@ public static class AppPreferences
 	public static void Load()
 	{
 
-		var configuration = new ConfigurationBuilder()
-			.SetBasePath(AppSettings.DocumentHome())
-			.AddJsonFile("appsettings.json", optional: true)
-			.Build();
+                var configuration = new ConfigurationBuilder()
+                        .SetBasePath(AppSettings.DocumentHome())
+                        .AddJsonFile("appsettings.json", optional: true)
+                        .Build();
 
-		DiagramLsb = Preferences.Get("DiagramLsb", Sequences.DiagramLsb);
+                PrefetchSessionDatabase = configuration.GetValue("SessionDatabase:PrefetchOnStartup", false);
+
+                DiagramLsb = Preferences.Get("DiagramLsb", Sequences.DiagramLsb);
 
 		DiagramMode = Preferences.Get("DiagramMode", (int)eDiagramMode.eExplore);
 		DiagramType = Preferences.Get("DiagramType", (int)eDiagramType.eHexagram);
@@ -243,6 +245,8 @@ public static class AppPreferences
 
 	public static int MuseScale;
 	public static int AudioScale;
+
+	public static bool PrefetchSessionDatabase { get; private set; }
 
 	private const string DefaultOllamaKey = "Ollama";
 	private const string DefaultOpenAiEndpoint = "https://api.openai.com/v1";
