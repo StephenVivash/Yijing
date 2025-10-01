@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 using ValueSequencer;
@@ -74,17 +75,15 @@ public partial class SessionView : ContentView
                                 return;
 
                         IServiceProvider serviceProvider = MauiProgram.Services;
-                        IReadOnlyList<SessionEntry> entries = await Task.Run(() =>
-                        {
-                                SessionDatabaseInitializer.Initialize(serviceProvider);
+                        await SessionDatabaseInitializer.InitializeAsync(serviceProvider).ConfigureAwait(false);
 
-                                using IServiceScope scope = serviceProvider.CreateScope();
-                                using SessionContext context = scope.ServiceProvider.GetRequiredService<SessionContext>();
+                        using IServiceScope scope = serviceProvider.CreateScope();
+                        var context = scope.ServiceProvider.GetRequiredService<SessionContext>();
 
-                                return (IReadOnlyList<SessionEntry>)context.Sessions
-                                        .OrderBy(session => session.Id)
-                                        .ToList();
-                        });
+                        List<SessionEntry> entries = await context.Sessions
+                                .OrderBy(session => session.Id)
+                                .ToListAsync()
+                                .ConfigureAwait(false);
 
                         _databaseSessions = entries;
                 }

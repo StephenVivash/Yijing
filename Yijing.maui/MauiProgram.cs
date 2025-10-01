@@ -62,7 +62,7 @@ public static class MauiProgram
 
                 Services.AudioPlayer.Load();
                 MauiApp app = builder.Build();
-                SessionDatabaseInitializer.Initialize(app.Services);
+                SessionDatabaseInitializer.InitializeAsync(app.Services).GetAwaiter().GetResult();
                 Services = app.Services;
                 return app;
         }
