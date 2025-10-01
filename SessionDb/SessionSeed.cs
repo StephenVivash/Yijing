@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using SessionDb.Entities;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +12,10 @@ public static class SessionSeed
     {
         if (context is null)
             throw new ArgumentNullException(nameof(context));
+
+        var databaseCreator = context.Database.GetService<IDatabaseCreator>() as IRelationalDatabaseCreator;
+        if (databaseCreator is not null && !databaseCreator.HasTables())
+            return;
 
         if (context.Sessions.Any())
             return;

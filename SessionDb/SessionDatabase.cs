@@ -1,11 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 using System.Globalization;
+using SessionDb.Migrations;
 
 namespace SessionDb;
 
 public static class SessionDatabase
 {
+    static SessionDatabase()
+    {
+        _ = typeof(Migrations.InitialCreate);
+        _ = typeof(Migrations.AddEegFlag);
+    }
+
     public const string DefaultFileName = "sessions.db";
 
     public static SessionContext Open(string databasePath)
