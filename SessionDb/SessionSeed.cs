@@ -24,6 +24,7 @@ public static class SessionSeed
                 Name = "Introduction to the Yijing",
                 Description = "A guided walkthrough of the Yijing practice journal and how to record your first session.",
                 YijingCast = "Hexagram 1 - 乾 (Qián)",
+                Eeg = false,
                 CreatedAt = now.AddDays(-21),
                 UpdatedAt = now.AddDays(-14)
             },
@@ -33,6 +34,7 @@ public static class SessionSeed
                 Name = "Daily Reflection",
                 Description = "A morning ritual focusing on intention setting and drawing insight from the changing lines.",
                 YijingCast = "Hexagram 24 - 復 (Fù)",
+                Eeg = false,
                 CreatedAt = now.AddDays(-7),
                 UpdatedAt = now.AddDays(-2)
             },
@@ -42,6 +44,7 @@ public static class SessionSeed
                 Name = "Evening Review",
                 Description = "Close the day by reviewing prior guidance and journaling new observations for tomorrow.",
                 YijingCast = "Hexagram 63 - 既濟 (Jì Jì)",
+                Eeg = true,
                 CreatedAt = now.AddDays(-1)
             }
         };

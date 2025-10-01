@@ -12,6 +12,8 @@ public class SessionRecord
 
     public string YijingCast { get; set; } = string.Empty;
 
+    public bool Eeg { get; set; }
+
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public DateTime? UpdatedAt { get; set; }

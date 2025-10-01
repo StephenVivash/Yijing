@@ -28,6 +28,11 @@ namespace SessionDb.Migrations
                         .HasMaxLength(2048)
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("Eeg")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("EEG")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("FileName")
                         .IsRequired()
                         .HasMaxLength(256)

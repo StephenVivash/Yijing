@@ -34,6 +34,10 @@ public sealed class SessionContext : DbContext
               .HasMaxLength(2048);
         entity.Property(record => record.YijingCast)
               .HasMaxLength(128);
+        entity.Property(record => record.Eeg)
+              .HasColumnName("EEG")
+              .HasDefaultValue(false)
+              .IsRequired();
         entity.Property(record => record.CreatedAt)
               .IsRequired();
         entity.HasIndex(record => record.FileName)
