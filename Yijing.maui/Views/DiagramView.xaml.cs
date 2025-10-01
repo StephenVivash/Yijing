@@ -896,7 +896,7 @@ public partial class DiagramView : ContentView
 				m_vsCurrent = m_hvsCurrent;
 				UpdateDiagram(false);
 				UpdateText();
-		}
+			}
 	}
 	public void SetHexagram(int sequence)
 	{

@@ -53,14 +53,14 @@
 
 			<CollectionView.ItemTemplate>
 
-				<DataTemplate x:DataType="views:SessionSummary">
+				<DataTemplate x:DataType="views:Session">
 					<Grid
 						Padding="4,8"
 						ColumnDefinitions="*,2*"
 						ColumnSpacing="12">
 
 						<Label
-							Text="{Binding Session}"
+							Text="{Binding Name}"
 							VerticalTextAlignment="Center"
 							LineBreakMode="TailTruncation" />
 						<Label

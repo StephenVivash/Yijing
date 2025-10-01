@@ -60,12 +60,12 @@ public partial class DiagramPage : ContentPage
 	{
 		AppPreferences.AiChatService = picAiChatService.SelectedIndex;
 		//if (AppPreferences.AiChatService != (int)eAiService.eNone)
-			//!string.IsNullOrEmpty(AppPreferences.AiModelId[AppPreferences.AiChatService]) &&
-			//(((AppPreferences.AiChatService == (int)eAiChatService.eOllama)) || 
-			//!string.IsNullOrEmpty(AppPreferences.AiKey[AppPreferences.AiChatService])))
-			//btnAskAi.IsEnabled = true;
+		//!string.IsNullOrEmpty(AppPreferences.AiModelId[AppPreferences.AiChatService]) &&
+		//(((AppPreferences.AiChatService == (int)eAiChatService.eOllama)) || 
+		//!string.IsNullOrEmpty(AppPreferences.AiKey[AppPreferences.AiChatService])))
+		//btnAskAi.IsEnabled = true;
 		//else
-			btnAskAi.IsEnabled = false;
+		btnAskAi.IsEnabled = false;
 	}
 
 	//protected void picAiMode_SelectedIndexChanged(object sender, EventArgs e)

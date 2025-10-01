@@ -17,11 +17,11 @@ namespace Yijing.Views;
 
 public partial class SessionView : ContentView
 {
-	private ObservableCollection<SessionSummary> _sessions = new();
-	private SessionSummary? _selectedSession;
+	private ObservableCollection<Session> _sessions = new();
+	private Session? _selectedSession;
 	private readonly Ai _ai = new();
 
-	//public ObservableCollection<SessionSummary> Sessions => _sessions;
+	//public ObservableCollection<Session> Sessions => _sessions;
 
 	public event EventHandler<string>? ChatUpdated;
 
@@ -86,7 +86,7 @@ public partial class SessionView : ContentView
 	private void OnAddSessionClicked(object? sender, EventArgs e)
 	{
 		string fileName = AppSettings.ReverseDateString();
-		var summary = CreateSummary(fileName);
+		var summary = CreateSession(fileName);
 		_sessions.Insert(0, summary);
 		sessionCollection.SelectedItem = summary;
 	}
@@ -96,7 +96,7 @@ public partial class SessionView : ContentView
 		if (_selectedSession is null)
 			return;
 
-		bool confirm = await Window.Page!.DisplayAlert("Delete Session", $"Delete {_selectedSession.Session}?", "Yes", "No");
+		bool confirm = await Window.Page!.DisplayAlert("Delete Session", $"Delete {_selectedSession.Name}?", "Yes", "No");
 		if (!confirm)
 			return;
 
@@ -126,7 +126,7 @@ public partial class SessionView : ContentView
 
 	private void OnSessionsSelectionChanged(object? sender, SelectionChangedEventArgs e)
 	{
-		_selectedSession = e.CurrentSelection.FirstOrDefault() as SessionSummary;
+		_selectedSession = e.CurrentSelection.FirstOrDefault() as Session;
 		LoadSelectedSession(_selectedSession);
 		if (!string.IsNullOrEmpty(_selectedSession?.YijingCast))
 			UI.Call<DiagramView>(v => v.SetHexagramCast(_selectedSession?.YijingCast));
@@ -153,7 +153,7 @@ public partial class SessionView : ContentView
 
 		if (_selectedSession is not null)
 		{
-			sb.Append($"<h2>Session: {WebUtility.HtmlEncode(_selectedSession.Session)}");
+			sb.Append($"<h2>Session: {WebUtility.HtmlEncode(_selectedSession.Name)}");
 			string yjingCast = WebUtility.HtmlEncode(_selectedSession.YijingCast);
 			if (!string.IsNullOrEmpty(yjingCast))
 				sb.Append($" - ({yjingCast})");
@@ -204,7 +204,7 @@ public partial class SessionView : ContentView
 
 		if (_selectedSession is not null)
 		{
-			string title = WebUtility.HtmlEncode(_selectedSession.Session);
+			string title = WebUtility.HtmlEncode(_selectedSession.Name);
 			sb.Append($"<h1>Session: {title}</h1>");
 		}
 
@@ -229,7 +229,7 @@ public partial class SessionView : ContentView
 
 	private void LoadSessions(string? selectFile)
 	{
-		List<SessionSummary> sessions = new List<SessionSummary>();
+		List<Session> sessions = new List<Session>();
 		try
 		{
 			IEnumerable<string>[] files = new IEnumerable<string>[3];
@@ -247,8 +247,8 @@ public partial class SessionView : ContentView
 
 				foreach (string file in files[i])
 				{
-					var summary = CreateSummary(file);
-					var match = sessions.FirstOrDefault(s => s.Session.Equals(summary.Session, StringComparison.OrdinalIgnoreCase));
+					var summary = CreateSession(file);
+					var match = sessions.FirstOrDefault(s => s.Name.Equals(summary.Name, StringComparison.OrdinalIgnoreCase));
 					if (match is not null)
 						match.Description = "* " + match.Description;
 					else
@@ -256,7 +256,7 @@ public partial class SessionView : ContentView
 				}
 			}
 
-			_sessions = new ObservableCollection<SessionSummary>(sessions.OrderByDescending(s => s.FileName, StringComparer.OrdinalIgnoreCase));
+			_sessions = new ObservableCollection<Session>(sessions.OrderByDescending(s => s.FileName, StringComparer.OrdinalIgnoreCase));
 			sessionCollection.ItemsSource = _sessions;
 			/*_sessions = new ObservableCollection<SessionSummary>(_sessions.OrderByDescending(s =>
 			{
@@ -286,39 +286,38 @@ public partial class SessionView : ContentView
 		}
 	}
 
-	private SessionSummary CreateSummary(string filePath)
+	private Session CreateSession(string filePath)
 	{
 		string fileName = Path.GetFileNameWithoutExtension(filePath);
 		string extension = Path.GetExtension(filePath);
-		string display = FormatSessionName(fileName);
+		string name = FormatSessionName(fileName);
 		string description = "New session";
 		string yijingCast = "";
 
 		if (!string.IsNullOrEmpty(extension))
 			if (extension.Equals(".txt", StringComparison.OrdinalIgnoreCase))
-				ReadText(filePath,ref description, ref yijingCast);
-			else
-				if (extension.Equals(".csv", StringComparison.OrdinalIgnoreCase))
-					description = "EEG data";
+				ReadText(filePath, ref description, ref yijingCast);
+			else if (extension.Equals(".csv", StringComparison.OrdinalIgnoreCase))
+				description = "EEG data";
 
-		return new SessionSummary(fileName, display, description, yijingCast);
+		return new Session(0, name, fileName, description, yijingCast);
 	}
 
 	private static string FormatSessionName(string fileName)
 	{
 		if (fileName.EndsWith("-Muse"))
 			fileName = fileName.Substring(0, fileName.Length - 5);
-		else if  (fileName.EndsWith("-Emotiv"))
+		else if (fileName.EndsWith("-Emotiv"))
 			fileName = fileName.Substring(0, fileName.Length - 7);
 
 		if (DateTime.TryParseExact(fileName, "yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture,
-				DateTimeStyles.AssumeLocal, out DateTime dt))
+			DateTimeStyles.AssumeLocal, out DateTime dt))
 			return dt.ToString("MMM dd HH:mm:ss", CultureInfo.InvariantCulture);
-			//return dt.ToString("yyyy MMM dd HH:mm:ss", CultureInfo.InvariantCulture);
+		//return dt.ToString("yyyy MMM dd HH:mm:ss", CultureInfo.InvariantCulture);
 		return fileName;
 	}
 
-	private static void ReadText(string filePath, ref string description,ref string yijingCast )
+	private static void ReadText(string filePath, ref string description, ref string yijingCast)
 	{
 		string s = "Yijing responded with hexagram";
 		try
@@ -341,7 +340,7 @@ public partial class SessionView : ContentView
 				yijingCast = castLine;
 			}
 
-			var words = text.Replace("$(Question)", "").Split(new[] { ' ', '\r', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries).Take(10);
+			var words = text.Replace("$(Question)", "").Split([ ' ', '\r', '\n', '\t' ], StringSplitOptions.RemoveEmptyEntries).Take(10);
 			description = string.Join(" ", words);
 
 		}
@@ -352,7 +351,7 @@ public partial class SessionView : ContentView
 		}
 	}
 
-	private void LoadSelectedSession(SessionSummary? summary)
+	private void LoadSelectedSession(Session? summary)
 	{
 		ClearChatState();
 		if (summary is null)
@@ -486,21 +485,20 @@ public partial class SessionView : ContentView
 	}
 }
 
-public class SessionSummary
+public class Session
 {
-	public SessionSummary(string fileName, string session, string description, string yijingCast)
+	public Session(int id, string name, string fileName, string description, string yijingCast)
 	{
+		Id = id;
+		Name = name;
 		FileName = fileName;
-		Session = session;
 		Description = description;
 		YijingCast = yijingCast;
 	}
 
+	public int Id { get; set; }
+	public string Name { get; set; }
 	public string FileName { get; set; }
-
-	public string Session { get; set; }
-
-	public string Description { get; set;}
-
+	public string Description { get; set; }
 	public string YijingCast { get; set; }
 }
