@@ -110,7 +110,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\ValueSequencer\ValueSequencer.csproj" />
 		<ProjectReference Include="..\CortexAccess\CortexAccess.csproj" />
-		<ProjectReference Include="..\Yijing.db\Yijing.db.csproj" />
+		<ProjectReference Include="..\Yijing.data\Yijing.data.csproj" />
 		<ProjectReference Include="..\EegML\EegML.csproj" />
 	</ItemGroup>
 

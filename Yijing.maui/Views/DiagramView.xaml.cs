@@ -43,7 +43,7 @@ using Windows.Win32.Foundation;
 #endif
 
 using ValueSequencer;
-using YijingDb;
+//using YijingDb;
 
 using Yijing.Pages;
 using Yijing.Services;
@@ -1680,16 +1680,10 @@ public partial class DiagramView : ContentView
 		}
 		Dispatcher.Dispatch(action);
 	}
-
+	/*
 	void YijingDB()
 	{
-#if WINDOWS
-		String path = "C:\\Src\\Yijing\\Yijing.db\\Yijing.db";
-#else // if ANDROID
-		String s1 = FileSystem.Current.AppDataDirectory;
-		//String s2 = FileSystem.Current.CacheDirectory;
-		String path = System.IO.Path.Combine(s1, "Yijing.db");
-#endif
+		String path = System.IO.Path.Combine(AppSettings.DocumentHome(), "Yijing.db");
 		YijingData yd = new YijingData(path);
 		yd.InitialseDB();
 
@@ -1718,7 +1712,7 @@ public partial class DiagramView : ContentView
 		//	if (h.Count > 0)
 		//		lblValues.Text += $"{h.Count,4:D} {h.DescribeCast}\n";
 	}
-
+	*/
 	public static readonly BindableProperty CardTitleProperty = BindableProperty.Create(nameof(CardTitle),
 		typeof(string), typeof(DiagramView), string.Empty);
 

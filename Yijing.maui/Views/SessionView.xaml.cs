@@ -10,6 +10,7 @@ using ValueSequencer;
 
 using Yijing.Pages;
 using Yijing.Services;
+using YijingData;
 
 namespace Yijing.Views;
 
@@ -229,6 +230,22 @@ public partial class SessionView : ContentView
 
 	private void LoadSessions(string? selectFile)
 	{
+
+		var yd = new YijingDatabase(Path.Combine(AppSettings.DocumentHome(),"Yijing.db"));
+		yd.Initialse();
+		using (var yc = new YijingDbContext())
+		{
+			var ls = yc.Sessions.ToList();
+			var lt = yc.Texts.ToList();
+
+			ls = new List<YijingData.Session>();
+			//ls.Add(new Session(0, "Session 1", "Description 1", "File1.txt"));
+			//ls.Add(new Session(0, "Session 2", "Description 2", "File2.txt"));
+			//ls.Add(new Session(0, "Session 3", "Description 3", "File3.txt"));
+			//yc.Sessions.AddRange(ls);
+			//YijingDatabase.SaveChanges(yc);
+		}
+
 		List<Session> sessions = new List<Session>();
 		try
 		{
@@ -255,6 +272,9 @@ public partial class SessionView : ContentView
 						sessions.Add(summary);
 				}
 			}
+
+			//sessionCollection.
+			//.BindingContext = YijingData.Session;
 
 			_sessions = new ObservableCollection<Session>(sessions.OrderByDescending(s => s.FileName, StringComparer.OrdinalIgnoreCase));
 			sessionCollection.ItemsSource = _sessions;
@@ -300,7 +320,7 @@ public partial class SessionView : ContentView
 			else if (extension.Equals(".csv", StringComparison.OrdinalIgnoreCase))
 				description = "EEG data";
 
-		return new Session(0, name, fileName, description, yijingCast);
+		return new Session(0, name, description, fileName, yijingCast);
 	}
 
 	private static string FormatSessionName(string fileName)
@@ -487,18 +507,18 @@ public partial class SessionView : ContentView
 
 public class Session
 {
-	public Session(int id, string name, string fileName, string description, string yijingCast)
+	public Session(int id, string name, string description, string fileName, string yijingCast)
 	{
 		Id = id;
 		Name = name;
-		FileName = fileName;
 		Description = description;
+		FileName = fileName;
 		YijingCast = yijingCast;
 	}
 
 	public int Id { get; set; }
 	public string Name { get; set; }
-	public string FileName { get; set; }
-	public string Description { get; set; }
-	public string YijingCast { get; set; }
+	public string? Description { get; set; }
+	public string? FileName { get; set; }
+	public string? YijingCast { get; set; }
 }
