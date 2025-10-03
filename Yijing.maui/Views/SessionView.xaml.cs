@@ -1,4 +1,5 @@
 
+using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -230,23 +231,7 @@ public partial class SessionView : ContentView
 
 	private void LoadSessions(string? selectFile)
 	{
-
-		var yd = new YijingDatabase(Path.Combine(AppSettings.DocumentHome(),"Yijing.db"));
-		yd.Initialse();
-		using (var yc = new YijingDbContext())
-		{
-			var ls = yc.Sessions.ToList();
-			var lt = yc.Texts.ToList();
-
-			ls = new List<YijingData.Session>();
-			//ls.Add(new Session(0, "Session 1", "Description 1", "File1.txt"));
-			//ls.Add(new Session(0, "Session 2", "Description 2", "File2.txt"));
-			//ls.Add(new Session(0, "Session 3", "Description 3", "File3.txt"));
-			//yc.Sessions.AddRange(ls);
-			//YijingDatabase.SaveChanges(yc);
-		}
-
-		List<Session> sessions = new List<Session>();
+		var ls = new List<Session>();
 		try
 		{
 			IEnumerable<string>[] files = new IEnumerable<string>[3];
@@ -264,27 +249,30 @@ public partial class SessionView : ContentView
 
 				foreach (string file in files[i])
 				{
-					var summary = CreateSession(file);
-					var match = sessions.FirstOrDefault(s => s.Name.Equals(summary.Name, StringComparison.OrdinalIgnoreCase));
+					var session = CreateSession(file);
+					var match = ls.FirstOrDefault(s => s.Name.Equals(session.Name, StringComparison.OrdinalIgnoreCase));
 					if (match is not null)
 						match.Description = "* " + match.Description;
 					else
-						sessions.Add(summary);
+						ls.Add(session);
 				}
 			}
 
-			//sessionCollection.
-			//.BindingContext = YijingData.Session;
-
-			_sessions = new ObservableCollection<Session>(sessions.OrderByDescending(s => s.FileName, StringComparer.OrdinalIgnoreCase));
-			sessionCollection.ItemsSource = _sessions;
-			/*_sessions = new ObservableCollection<SessionSummary>(_sessions.OrderByDescending(s =>
+			using (var yc = new YijingDbContext())
 			{
-				if (DateTime.TryParseExact(s.FileName, "yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture,
-						DateTimeStyles.AssumeLocal, out DateTime dt))
-					return dt;
-				return DateTime.MinValue;
-			}));*/
+				if (yc.Sessions.Any())
+				{
+					IQueryable<Session> iqs = yc.Sessions;
+					yc.Sessions.RemoveRange(iqs);
+					YijingDatabase.SaveChanges(yc);
+				}
+				yc.Sessions.AddRange(ls);
+				YijingDatabase.SaveChanges(yc);
+				ls = yc.Sessions.AsNoTracking().ToList();
+			}
+
+			_sessions = new ObservableCollection<Session>(ls.OrderByDescending(s => s.FileName, StringComparer.OrdinalIgnoreCase));
+			sessionCollection.ItemsSource = _sessions;
 
 			if (!string.IsNullOrEmpty(selectFile))
 			{
@@ -332,7 +320,7 @@ public partial class SessionView : ContentView
 
 		if (DateTime.TryParseExact(fileName, "yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture,
 			DateTimeStyles.AssumeLocal, out DateTime dt))
-			return dt.ToString("MMM dd HH:mm:ss", CultureInfo.InvariantCulture);
+			return dt.ToString("MMM dd HH:mm", CultureInfo.InvariantCulture);
 		//return dt.ToString("yyyy MMM dd HH:mm:ss", CultureInfo.InvariantCulture);
 		return fileName;
 	}
@@ -503,22 +491,4 @@ public partial class SessionView : ContentView
 		else
 			UpdateSessionLog("Failed to load " + str, true, true);
 	}
-}
-
-public class Session
-{
-	public Session(int id, string name, string description, string fileName, string yijingCast)
-	{
-		Id = id;
-		Name = name;
-		Description = description;
-		FileName = fileName;
-		YijingCast = yijingCast;
-	}
-
-	public int Id { get; set; }
-	public string Name { get; set; }
-	public string? Description { get; set; }
-	public string? FileName { get; set; }
-	public string? YijingCast { get; set; }
 }

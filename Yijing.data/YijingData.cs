@@ -65,8 +65,8 @@ public class YijingDatabase
 		}
 		using (var yc = new YijingDbContext())
 		{
-			IQueryable<Text> iqtt = yc.Texts;
-			IQueryable<Session> iqts = yc.Sessions;
+			IQueryable<Text> iqt = yc.Texts;
+			IQueryable<Session> iqs = yc.Sessions;
 			//tc.Texts.RemoveRange(iqtt);
 			//SaveChanges(tc);
 		}

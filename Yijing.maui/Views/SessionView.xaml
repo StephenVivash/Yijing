@@ -4,6 +4,7 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:views="clr-namespace:Yijing.Views"
+	xmlns:models="clr-namespace:YijingData;assembly=Yijing.data"
 	x:Class="Yijing.Views.SessionView"
 	x:Name="sessionView"
 	Loaded="OnLoaded">
@@ -53,7 +54,7 @@
 
 			<CollectionView.ItemTemplate>
 
-				<DataTemplate x:DataType="views:Session">
+				<DataTemplate x:DataType="models:Session">
 					<Grid
 						Padding="4,8"
 						ColumnDefinitions="*,2*"

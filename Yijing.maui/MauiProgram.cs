@@ -1,23 +1,27 @@
 
 // dotnet nuget why Yijing.maui.csproj Microsoft.SemanticKernel
 
-using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
 using LiveChartsCore.SkiaSharpView.Maui;
+using Microsoft.Extensions.Logging;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 
 using Yijing.Services;
-using Yijing.Views;
+using YijingData;
 
 namespace Yijing;
 
 public static class MauiProgram
 {
+	static YijingDatabase _yd;
 
 	public static MauiApp CreateMauiApp()
 	{
 		AppSettings.SetDocumentHome();
 		AppPreferences.Load();
+
+		_yd = new YijingDatabase(Path.Combine(AppSettings.DocumentHome(), "Yijing.db"));
+		_yd.Initialse();
 
 		MauiAppBuilder builder = MauiApp.CreateBuilder();
 #if WINDOWS || ANDROID
