@@ -9,7 +9,8 @@ namespace YijingData;
 
 public class YijingDbContext: DbContext
 {
-	public static String _ds;
+	public static String? _ds = null;
+	public static List<string>? _lsMigrations = null;
 
 	public virtual DbSet<Session> Sessions { get; set; }
 	public virtual DbSet<Text> Texts { get; set; }
@@ -42,10 +43,16 @@ public class YijingDbContext: DbContext
 			.OnDelete(DeleteBehavior.Restrict);
 		*/
 	}
+
+	public bool Migrated(string migration)
+	{
+		return _lsMigrations?.IndexOf(migration) != -1;
+	}
 }
 
 public class YijingDatabase
 {
+
 	public YijingDatabase(String file)
 	{
 		YijingDbContext._ds = $"Data Source={file}";
@@ -55,13 +62,11 @@ public class YijingDatabase
 	{
 		using (var yc = new YijingDbContext())
 		{
-			//List<Type> lt1 = ye.Types.ToList(); // Force access
+			//yc.Database.EnsureDeleted();
+			//yc.Database.EnsureCreated();
 
-			//tc.Database.EnsureDeleted();
-			//ye.Database.EnsureCreated();
+			YijingDbContext._lsMigrations = yc.Database.GetPendingMigrations().ToList();
 			yc.Database.Migrate();
-
-			//List<Type> lt2 = ye.Types.ToList(); // Force access
 		}
 		using (var yc = new YijingDbContext())
 		{

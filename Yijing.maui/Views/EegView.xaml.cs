@@ -363,6 +363,36 @@ public partial class EegView : ContentView
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public void LoadSessions()
+	{
+		IEnumerable<string> ief = Directory.EnumerateFiles(AppSettings.EegDataHome(), "*.csv", SearchOption.TopDirectoryOnly);
+		List<string> lf = new();
+		foreach (string f in ief)
+		{
+			string s = Path.GetFileNameWithoutExtension(f);
+			if (s.EndsWith("-Muse"))
+				s = s.Substring(0, s.Length - 5);
+			else
+				if (s.EndsWith("-Emotiv"))
+				s = s.Substring(0, s.Length - 7);
+
+			lf.Add(s);
+		}
+		lf.Sort(new DescendingOrder());
+		picSession.SelectedIndex = -1;
+		picSession.ItemsSource = lf;
+		picSession.SelectedIndex = 0;
+
+		//_strSession = picSession.SelectedItem.ToString();
+
+		picSession.Focus();
+	}
+
+	public void SelectSession(string name)
+	{
+		picSession.SelectedItem = name;
+	}
+
 	public void PlayTimer()
 	{
 		AudioPlayer.PlayTimer(Dispatcher);
@@ -418,31 +448,6 @@ public partial class EegView : ContentView
 		{ DevicePlatform.Android, null }, // new[] { "text/plain", "text/csv" }
 		{ DevicePlatform.WinUI,new [] { ".txt", ".csv" } },
 	});
-
-	public void LoadSessions()
-	{
-		IEnumerable<string> ief = Directory.EnumerateFiles(AppSettings.EegDataHome(), "*.csv", SearchOption.TopDirectoryOnly);
-		List<string> lf = new();
-		foreach (string f in ief)
-		{
-			string s = Path.GetFileNameWithoutExtension(f);
-			if (s.EndsWith("-Muse"))
-				s = s.Substring(0, s.Length - 5);
-			else
-				if (s.EndsWith("-Emotiv"))
-				s = s.Substring(0, s.Length - 7);
-
-			lf.Add(s);
-		}
-		lf.Sort(new DescendingOrder());
-		picSession.SelectedIndex = -1;
-		picSession.ItemsSource = lf;
-		picSession.SelectedIndex = 0;
-
-		//_strSession = picSession.SelectedItem.ToString();
-
-		picSession.Focus();
-	}
 
 	public void SaveAnalysis()
 	{

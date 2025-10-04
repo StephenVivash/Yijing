@@ -19,7 +19,9 @@ namespace Yijing.Views;
 
 public partial class SessionView : ContentView
 {
-	private ObservableCollection<Session> _sessions = new();
+	//private ObservableCollection<Session> _sessions = new();
+	private List<Session> _sessions = new();
+
 	private Session? _selectedSession;
 	private readonly Ai _ai = new();
 
@@ -54,7 +56,7 @@ public partial class SessionView : ContentView
 	{
 		Loaded -= OnLoaded;
 		ResetChat();
-		LoadSessions(null);
+		LoadSessions();
 	}
 
 	protected override void OnSizeAllocated(double width, double height)
@@ -132,6 +134,10 @@ public partial class SessionView : ContentView
 		LoadSelectedSession(_selectedSession);
 		if (!string.IsNullOrEmpty(_selectedSession?.YijingCast))
 			UI.Call<DiagramView>(v => v.SetHexagramCast(_selectedSession?.YijingCast));
+
+		string? file = Path.GetFileNameWithoutExtension(_selectedSession?.FileName);
+		if (_selectedSession.Description.StartsWith("*") || _selectedSession.Description.StartsWith("EEG"))
+			UI.Call<EegView>(v => v.SelectSession(file));
 	}
 
 	public void UpdateChat()
@@ -229,64 +235,57 @@ public partial class SessionView : ContentView
 		ChatUpdated?.Invoke(this, sb.ToString());
 	}
 
-	private void LoadSessions(string? selectFile)
+	private void LoadSessions(bool reload = false)
 	{
-		var ls = new List<Session>();
 		try
 		{
-			IEnumerable<string>[] files = new IEnumerable<string>[3];
-			string[] folder = [Path.Combine(AppSettings.DocumentHome(), "Questions"),
-							   Path.Combine(AppSettings.DocumentHome(), "Muse"),
-							   Path.Combine(AppSettings.DocumentHome(), "Emotiv")];
-
-			for (int i = 0; i < 3; ++i)
-			{
-				if (!Directory.Exists(folder[i]))
-					Directory.CreateDirectory(folder[i]);
-
-				files[i] = Directory.EnumerateFiles(folder[i], i == 0 ? "*.txt" : "*.csv", SearchOption.TopDirectoryOnly)
-						.OrderByDescending(f => f, StringComparer.OrdinalIgnoreCase);
-
-				foreach (string file in files[i])
-				{
-					var session = CreateSession(file);
-					var match = ls.FirstOrDefault(s => s.Name.Equals(session.Name, StringComparison.OrdinalIgnoreCase));
-					if (match is not null)
-						match.Description = "* " + match.Description;
-					else
-						ls.Add(session);
-				}
-			}
-
 			using (var yc = new YijingDbContext())
 			{
-				if (yc.Sessions.Any())
+				if ((reload || yc.Migrated("20251004143755_SessionState")) && yc.Sessions.Any())
 				{
 					IQueryable<Session> iqs = yc.Sessions;
 					yc.Sessions.RemoveRange(iqs);
 					YijingDatabase.SaveChanges(yc);
 				}
-				yc.Sessions.AddRange(ls);
-				YijingDatabase.SaveChanges(yc);
-				ls = yc.Sessions.AsNoTracking().ToList();
-			}
-
-			_sessions = new ObservableCollection<Session>(ls.OrderByDescending(s => s.FileName, StringComparer.OrdinalIgnoreCase));
-			sessionCollection.ItemsSource = _sessions;
-
-			if (!string.IsNullOrEmpty(selectFile))
-			{
-				var match = _sessions.FirstOrDefault(s => s.FileName.Equals(selectFile, StringComparison.OrdinalIgnoreCase));
-				if (match is not null)
+				if (!yc.Sessions.Any())
 				{
-					sessionCollection.SelectedItem = match;
-					sessionCollection.ScrollTo(match, position: ScrollToPosition.Center, animate: false);
+					IEnumerable<string>[] files = new IEnumerable<string>[3];
+					string[] folder = [Path.Combine(AppSettings.DocumentHome(), "Questions"),
+						Path.Combine(AppSettings.DocumentHome(), "Muse"),
+						Path.Combine(AppSettings.DocumentHome(), "Emotiv")];
+
+					for (int i = 0; i < 3; ++i)
+					{
+						if (!Directory.Exists(folder[i]))
+							Directory.CreateDirectory(folder[i]);
+
+						files[i] = Directory.EnumerateFiles(folder[i], i == 0 ? "*.txt" : "*.csv", SearchOption.TopDirectoryOnly)
+								.OrderByDescending(f => f, StringComparer.OrdinalIgnoreCase);
+
+						foreach (string file in files[i])
+						{
+							var session = CreateSession(file);
+							var match = _sessions.FirstOrDefault(s => s.FileName.Equals(session.FileName, StringComparison.OrdinalIgnoreCase));
+							if (match is not null)
+							{
+								match.Muse = i == 1;
+								match.Emotiv = i == 2;
+								match.Description = (i == 1 ? "*M " : "*E  ") + match.Description;
+							}
+							else
+								_sessions.Add(session);
+						}
+					}
+					_sessions = new List<Session>(_sessions.OrderByDescending(s => s.FileName, StringComparer.OrdinalIgnoreCase));
+					yc.Sessions.AddRange(_sessions);
+					YijingDatabase.SaveChanges(yc);
 				}
+				else
+					_sessions = yc.Sessions.AsNoTracking().ToList();
 			}
-			else if (_sessions.Count > 0)
-			{
-				sessionCollection.SelectedItem = _sessions[0];
-			}
+
+			sessionCollection.ItemsSource = _sessions;
+			SelectSession(null);
 		}
 		catch (Exception ex)
 		{
@@ -297,6 +296,12 @@ public partial class SessionView : ContentView
 	private Session CreateSession(string filePath)
 	{
 		string fileName = Path.GetFileNameWithoutExtension(filePath);
+
+		if (fileName.EndsWith("-Muse"))
+			fileName = fileName.Substring(0, fileName.Length - 5);
+		else if (fileName.EndsWith("-Emotiv"))
+			fileName = fileName.Substring(0, fileName.Length - 7);
+
 		string extension = Path.GetExtension(filePath);
 		string name = FormatSessionName(fileName);
 		string description = "New session";
@@ -313,15 +318,9 @@ public partial class SessionView : ContentView
 
 	private static string FormatSessionName(string fileName)
 	{
-		if (fileName.EndsWith("-Muse"))
-			fileName = fileName.Substring(0, fileName.Length - 5);
-		else if (fileName.EndsWith("-Emotiv"))
-			fileName = fileName.Substring(0, fileName.Length - 7);
-
 		if (DateTime.TryParseExact(fileName, "yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture,
 			DateTimeStyles.AssumeLocal, out DateTime dt))
 			return dt.ToString("MMM dd HH:mm", CultureInfo.InvariantCulture);
-		//return dt.ToString("yyyy MMM dd HH:mm:ss", CultureInfo.InvariantCulture);
 		return fileName;
 	}
 
@@ -359,15 +358,28 @@ public partial class SessionView : ContentView
 		}
 	}
 
-	private void LoadSelectedSession(Session? summary)
+	private void SelectSession(string? selectSession)
+	{
+		if (!string.IsNullOrEmpty(selectSession))
+		{
+			var match = _sessions.FirstOrDefault(s => s.FileName.Equals(selectSession, StringComparison.OrdinalIgnoreCase));
+			if (match is not null)
+			{
+				sessionCollection.SelectedItem = match;
+				sessionCollection.ScrollTo(match, position: ScrollToPosition.Center, animate: false);
+			}
+		}
+		else if (_sessions.Count > 0)
+		{
+			sessionCollection.SelectedItem = _sessions[0];
+		}
+	}
+
+	private void LoadSelectedSession(Session? session)
 	{
 		ClearChatState();
-		if (summary is null)
-		{
-			UpdateChat();
-			return;
-		}
-		LoadChat(summary.FileName);
+		if (session is not null)
+			LoadChat(session.FileName);
 		UpdateChat();
 	}
 
