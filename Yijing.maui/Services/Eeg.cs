@@ -9,6 +9,7 @@ using CortexAccess;
 using EegML;
 
 using Yijing.Views;
+using YijingData;
 
 namespace Yijing.Services;
 

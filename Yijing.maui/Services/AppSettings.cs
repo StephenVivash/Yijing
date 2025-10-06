@@ -1,4 +1,6 @@
 
+using YijingData;
+
 namespace Yijing.Services;
 
 public static class AppSettings

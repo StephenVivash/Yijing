@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 
 using ValueSequencer;
+using YijingData;
 
 namespace Yijing.Services;
 
@@ -14,7 +15,7 @@ public enum eDiagramType { eLine, eTrigram, eHexagram };
 public enum eDiagramSpeed { eSlow, eMedium, eFast };
 public enum eDiagramColor { eMono, eDual, eTrigram, eHexagram };
 
-public enum eEegDevice { eMuse, eEmotiv };
+//public enum eEegDevice { eMuse, eEmotiv };
 public enum eEegMode { eIdle, eLive, eReplay, eSummary };
 public enum eGoal { eMeditation, eYijingCast };
 public enum eTimer { eNone, eTen, eFifteen, eTwenty, eThirty, eSixty };

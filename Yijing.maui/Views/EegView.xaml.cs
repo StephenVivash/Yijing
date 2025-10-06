@@ -15,6 +15,7 @@ using Platform = Yijing.Platforms.Platform;
 using Yijing.Models;
 using Yijing.Services;
 using Yijing.Pages;
+using YijingData;
 
 namespace Yijing.Views;
 

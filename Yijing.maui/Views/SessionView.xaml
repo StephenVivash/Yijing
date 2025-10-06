@@ -5,9 +5,18 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:views="clr-namespace:Yijing.Views"
 	xmlns:models="clr-namespace:YijingData;assembly=Yijing.data"
+	xmlns:conv="clr-namespace:Yijing.Services"	
 	x:Class="Yijing.Views.SessionView"
 	x:Name="sessionView"
 	Loaded="OnLoaded">
+
+	<ContentView.Resources>
+		<ResourceDictionary>
+			<conv:YijingCastConverter x:Key="YijingCastConverter" />
+			<conv:BoolToStringConverter x:Key="BoolToStringConverter" />
+			<conv:EegDeviceConverter x:Key="EegDeviceConverter" />
+		</ResourceDictionary>
+	</ContentView.Resources>
 
 	<Grid
 		RowDefinitions="Auto,Auto,*"
@@ -28,7 +37,8 @@
 
 		<Grid
 			Grid.Row="1"
-			ColumnDefinitions="*,2*"
+			Padding="4,8"
+			ColumnDefinitions="90,12,12,12,12,*"
 			ColumnSpacing="12">
 			<Label
 			Text="Session"
@@ -36,6 +46,26 @@
 			VerticalTextAlignment="Center" />
 			<Label
 			Grid.Column="1"
+			Text="Y"
+			FontAttributes="Bold"
+			VerticalTextAlignment="Center" />
+			<Label
+			Grid.Column="2"
+			Text="M"
+			FontAttributes="Bold"
+			VerticalTextAlignment="Center" />
+			<Label
+			Grid.Column="3"
+			Text="E"
+			FontAttributes="Bold"
+			VerticalTextAlignment="Center" />
+			<Label
+			Grid.Column="4"
+			Text="A"
+			FontAttributes="Bold"
+			VerticalTextAlignment="Center" />
+			<Label
+			Grid.Column="5"
 			Text="Description"
 			FontAttributes="Bold"
 			VerticalTextAlignment="Center" />
@@ -57,7 +87,7 @@
 				<DataTemplate x:DataType="models:Session">
 					<Grid
 						Padding="4,8"
-						ColumnDefinitions="*,2*"
+						ColumnDefinitions="90,12,12,12,12,*"
 						ColumnSpacing="12">
 
 						<Label
@@ -66,6 +96,26 @@
 							LineBreakMode="TailTruncation" />
 						<Label
 							Grid.Column="1"
+							Text="{Binding YijingCast, Converter={StaticResource YijingCastConverter}}"
+							VerticalTextAlignment="Center"
+							LineBreakMode="TailTruncation" />
+						<Label
+							Grid.Column="2"
+							Text="{Binding Meditation, Converter={StaticResource BoolToStringConverter}}"
+							VerticalTextAlignment="Center"
+							LineBreakMode="TailTruncation" />
+						<Label
+							Grid.Column="3"
+							Text="{Binding EegDevice, Converter={StaticResource EegDeviceConverter}}"
+							VerticalTextAlignment="Center"
+							LineBreakMode="TailTruncation" />
+						<Label
+							Grid.Column="4"
+							Text="{Binding EegAnalysis, Converter={StaticResource BoolToStringConverter}}"
+							VerticalTextAlignment="Center"
+							LineBreakMode="TailTruncation" />
+						<Label
+							Grid.Column="5"
 							Text="{Binding Description}"
 							VerticalTextAlignment="Center"
 							LineBreakMode="TailTruncation" />

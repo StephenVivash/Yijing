@@ -136,7 +136,7 @@ public partial class SessionView : ContentView
 			UI.Call<DiagramView>(v => v.SetHexagramCast(_selectedSession?.YijingCast));
 
 		string? file = Path.GetFileNameWithoutExtension(_selectedSession?.FileName);
-		if (_selectedSession.Description.StartsWith("*") || _selectedSession.Description.StartsWith("EEG"))
+		if (_selectedSession?.EegDevice != eEegDevice.eNone)
 			UI.Call<EegView>(v => v.SelectSession(file));
 	}
 
@@ -241,7 +241,7 @@ public partial class SessionView : ContentView
 		{
 			using (var yc = new YijingDbContext())
 			{
-				if ((reload || yc.Migrated("20251004143755_SessionState")) && yc.Sessions.Any())
+				if ((reload || yc.Migrated("SessionDevice")) && yc.Sessions.Any())
 				{
 					IQueryable<Session> iqs = yc.Sessions;
 					yc.Sessions.RemoveRange(iqs);
@@ -268,12 +268,24 @@ public partial class SessionView : ContentView
 							var match = _sessions.FirstOrDefault(s => s.FileName.Equals(session.FileName, StringComparison.OrdinalIgnoreCase));
 							if (match is not null)
 							{
-								match.Muse = i == 1;
-								match.Emotiv = i == 2;
-								match.Description = (i == 1 ? "*M " : "*E  ") + match.Description;
+								if (i > 0)
+								{
+									match.Meditation = true;
+									match.EegAnalysis = File.Exists(Path.Combine(AppSettings.DocumentHome(), "Analysis", Path.GetFileNameWithoutExtension(file) + ".txt"));
+								}
+								//match.Description = (i == 1 ? "*M " : "*E  ") + match.Description;
+								match.EegDevice = i == 1 ? eEegDevice.eMuse : eEegDevice.eEmotiv;
 							}
 							else
+							{
+								if (i > 0)
+								{
+									session.Meditation = true;
+									session.EegAnalysis = File.Exists(Path.Combine(AppSettings.DocumentHome(), "Analysis", Path.GetFileNameWithoutExtension(file) + ".txt"));
+									session.EegDevice = i == 1 ? eEegDevice.eMuse : eEegDevice.eEmotiv;
+								}
 								_sessions.Add(session);
+							}
 						}
 					}
 					_sessions = new List<Session>(_sessions.OrderByDescending(s => s.FileName, StringComparer.OrdinalIgnoreCase));

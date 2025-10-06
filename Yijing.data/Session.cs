@@ -2,11 +2,13 @@ namespace YijingData;
 
 using System.ComponentModel.DataAnnotations;
 
+public enum eEegDevice { eMuse, eEmotiv, eNone };
+
 public partial class Session
 {
 
 	public Session(int id, string name, string? description = null, string? fileName = null,
-		string? yijingCast = null, bool meditation = false, bool muse = false, bool emotiv = false)
+		string? yijingCast = null, bool meditation = false, eEegDevice eegDevice = eEegDevice.eNone, bool eegAnalysis = false)
 	{
 		Id = id;
 		Name = name;
@@ -14,8 +16,8 @@ public partial class Session
 		FileName = fileName;
 		YijingCast = yijingCast;
 		Meditation = meditation;
-		Muse = muse;
-		Emotiv = emotiv;
+		EegDevice = eegDevice;
+		EegAnalysis = eegAnalysis;
 	}
 
 	public int Id { get; set; }
@@ -25,13 +27,13 @@ public partial class Session
 
 	public string? Description { get; set; }
 
-	public string ?FileName { get; set; }
+	public string? FileName { get; set; }
 
 	public string? YijingCast { get; set; }
 	
 	public bool Meditation { get; set; }
 
-	public bool Muse {  get; set; }
+	public eEegDevice EegDevice { get; set; }
 
-	public bool Emotiv {  get; set; }
+	public bool EegAnalysis { get; set; }
 }
