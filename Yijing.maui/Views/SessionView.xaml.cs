@@ -1,7 +1,5 @@
 
 using Microsoft.EntityFrameworkCore;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Globalization;
 using System.Net;
 using System.Text;
@@ -20,12 +18,13 @@ namespace Yijing.Views;
 public partial class SessionView : ContentView
 {
 	//private ObservableCollection<Session> _sessions = new();
-	private List<Session> _sessions = new();
-
-	private Session? _selectedSession;
-	private readonly Ai _ai = new();
-
 	//public ObservableCollection<Session> Sessions => _sessions;
+
+	private List<Session> _sessions = new();
+	private Session? _selectedSession;
+	private List<string> _sessionNotes = [];
+
+	private readonly Ai _ai = new();
 
 	public event EventHandler<string>? ChatUpdated;
 
@@ -174,6 +173,9 @@ public partial class SessionView : ContentView
 
 		sb.Append("</h2>");
 
+		foreach (string s in _sessionNotes)
+			sb.Append("<p><h4>" + s.Replace("\n", "</p>") + "</h4></p>");
+
 		int count = int.Max(_ai._chatReponses[1].Count(), _ai._userPrompts[1].Count());
 		for (int i = 0; i < count; ++i)
 		{
@@ -232,7 +234,7 @@ public partial class SessionView : ContentView
 		}
 
 		sb.Append("</body></html>");
-		ChatUpdated?.Invoke(this, sb.ToString());
+		//ChatUpdated?.Invoke(this, sb.ToString());
 	}
 
 	private void LoadSessions(bool reload = false)
@@ -265,13 +267,15 @@ public partial class SessionView : ContentView
 						foreach (string file in files[i])
 						{
 							var session = CreateSession(file);
-							var match = _sessions.FirstOrDefault(s => s.FileName.Equals(session.FileName, StringComparison.OrdinalIgnoreCase));
+							var match = _sessions.FirstOrDefault(s => s.FileName.Equals(session.FileName,
+								StringComparison.OrdinalIgnoreCase));
 							if (match is not null)
 							{
 								if (i > 0)
 								{
 									match.Meditation = true;
-									match.EegAnalysis = File.Exists(Path.Combine(AppSettings.DocumentHome(), "Analysis", Path.GetFileNameWithoutExtension(file) + ".txt"));
+									match.EegAnalysis = File.Exists(Path.Combine(AppSettings.DocumentHome(), "Analysis",
+										Path.GetFileNameWithoutExtension(file) + ".txt"));
 								}
 								//match.Description = (i == 1 ? "*M " : "*E  ") + match.Description;
 								match.EegDevice = i == 1 ? eEegDevice.eMuse : eEegDevice.eEmotiv;
@@ -281,7 +285,8 @@ public partial class SessionView : ContentView
 								if (i > 0)
 								{
 									session.Meditation = true;
-									session.EegAnalysis = File.Exists(Path.Combine(AppSettings.DocumentHome(), "Analysis", Path.GetFileNameWithoutExtension(file) + ".txt"));
+									session.EegAnalysis = File.Exists(Path.Combine(AppSettings.DocumentHome(), "Analysis",
+										Path.GetFileNameWithoutExtension(file) + ".txt"));
 									session.EegDevice = i == 1 ? eEegDevice.eMuse : eEegDevice.eEmotiv;
 								}
 								_sessions.Add(session);
@@ -359,7 +364,8 @@ public partial class SessionView : ContentView
 				yijingCast = castLine;
 			}
 
-			var words = text.Replace("$(Question)", "").Split([ ' ', '\r', '\n', '\t' ], StringSplitOptions.RemoveEmptyEntries).Take(10);
+			var words = text.Replace("$(Question)", "").Replace("$(Note)", "").Split([ ' ', '\r', '\n', '\t' ],
+				StringSplitOptions.RemoveEmptyEntries).Take(10);
 			description = string.Join(" ", words);
 
 		}
@@ -395,18 +401,9 @@ public partial class SessionView : ContentView
 		UpdateChat();
 	}
 
-	public async Task AiChatAsync(string prompt, bool includeCast)
+	public async void AiOrNote(string prompt, bool includeCast)
 	{
-
-		includeCast = false;
-
-		if (AppPreferences.AiChatService == (int)eAiService.eNone)
-		{
-			await Window.Page!.DisplayAlert("No Service", "Please select the AI service.", "OK");
-			return;
-		}
-
-		string s = "";
+		string s = string.Empty;
 		if (includeCast)
 		{
 			UI.Try<DiagramView>(v => s = v.DescribrCastHexagram());
@@ -415,21 +412,28 @@ public partial class SessionView : ContentView
 				await Window.Page!.DisplayAlert("No Cast", "Please cast a hexagram first.", "OK");
 				return;
 			}
-			s = prompt + (prompt.Length > 0 ? "\n" : "") + "I consulted the oracle and the Yijing responded with hexagram " + s;
+			prompt += (prompt.Length > 0 ? "\n" : "") + "I consulted the oracle and the Yijing responded with hexagram " + s;
 		}
-		else
-			s = prompt;
 
-		if (string.IsNullOrWhiteSpace(s))
+		if (string.IsNullOrWhiteSpace(prompt))
 		{
 			await Window.Page!.DisplayAlert("No Prompt", "Please enter a prompt.", "OK");
 			return;
 		}
 
-		await _ai.ChatAsync(AppPreferences.AiChatService, s);
+		if (AppPreferences.AiChatService == (int)eAiService.eNone)
+			_sessionNotes.Add(prompt);
+		else
+			await _ai.ChatAsync(AppPreferences.AiChatService, prompt);
+
 		SaveChat(_selectedSession!.FileName);
 		UpdateChat();
 		UpdateSessionLog("", false, false);
+	}
+
+	public async Task AiChatAsync(string prompt)
+	{
+		await _ai.ChatAsync(AppPreferences.AiChatService, prompt);
 	}
 
 	private void ResetChat()
@@ -440,6 +444,8 @@ public partial class SessionView : ContentView
 
 	private void ClearChatState()
 	{
+		_sessionNotes = [];
+
 		_ai._userPrompts = [[], []];
 		_ai._chatReponses = [[], []];
 		_ai._contextSessions = [];
@@ -455,7 +461,7 @@ public partial class SessionView : ContentView
 
 	public void SaveChat(string name)
 	{
-		if ((_ai._userPrompts[1].Count > 0) || (_ai._chatReponses[1].Count > 0))
+		if ((_ai._userPrompts[1].Count > 0) || (_ai._chatReponses[1].Count > 0) || (_sessionNotes.Count > 0))
 		{
 			SaveChat(name, "Question", _ai._userPrompts[1]);
 			SaveChat(name, "Answer", _ai._chatReponses[1]);
@@ -466,11 +472,19 @@ public partial class SessionView : ContentView
 	{
 		string str = Path.Combine(AppSettings.DocumentHome(), $"{type}s", name + ".txt");
 		using (FileStream fs = new(str, FileMode.Create, FileAccess.Write))
+		{
+			if (type == "Question")
+				foreach (string s in _sessionNotes)
+				{
+					byte[] val = Encoding.UTF8.GetBytes($"$(Note)\n" + s + "\n");
+					fs.Write(val, 0, val.Length);
+				}
 			foreach (string s in list)
 			{
 				byte[] val = Encoding.UTF8.GetBytes($"$({type})\n" + s + "\n");
 				fs.Write(val, 0, val.Length);
 			}
+		}
 	}
 
 	public void LoadChat(string session)
@@ -493,6 +507,7 @@ public partial class SessionView : ContentView
 	public void LoadChat(string name, string type, List<string> list)
 	{
 		string? str = Path.Combine(AppSettings.DocumentHome(), $"{type}s", name + ".txt");
+		string entryType = "";
 		string entry = "";
 		if (File.Exists(str))
 			using (StreamReader sr = File.OpenText(str))
@@ -503,14 +518,36 @@ public partial class SessionView : ContentView
 						{
 							if (!string.IsNullOrEmpty(entry))
 							{
-								list.Add(entry);
+								if (!string.IsNullOrEmpty(entryType) && (entryType == type))
+									list.Add(entry);
+								else
+									_sessionNotes.Add(entry);
+								//list.Add(entry);
 								entry = "";
 							}
+							entryType = type;
 						}
 						else
-							entry += str + "\n";
+						if (str == $"$(Note)")
+						{
+							if (!string.IsNullOrEmpty(entry))
+							{
+								if (!string.IsNullOrEmpty(entryType) && (entryType == type))
+									list.Add(entry);
+								else
+									_sessionNotes.Add(entry);
+								//_sessionNotes.Add(entry);
+								entry = "";
+							}
+							entryType = "Note";
+						}
+						else entry += str + "\n";
+
 				if (!string.IsNullOrEmpty(entry))
-					list.Add(entry);
+					if (!string.IsNullOrEmpty(entryType) && (entryType == type))
+						list.Add(entry);
+					else
+						_sessionNotes.Add(entry);
 			}
 		else
 			UpdateSessionLog("Failed to load " + str, true, true);

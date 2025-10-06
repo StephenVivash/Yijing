@@ -46,8 +46,8 @@ public class YijingDbContext: DbContext
 
 	public bool Migrated(string migration)
 	{
-		foreach (string m in _lsMigrations!)
-			if (m.IndexOf(migration) != -1)
+		foreach (string? m in _lsMigrations!)
+			if (m?.IndexOf(migration) != -1)
 				return true;
 		return false; // _lsMigrations?.IndexOf(migration) != -1;
 	}

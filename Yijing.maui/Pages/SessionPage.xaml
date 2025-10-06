@@ -41,10 +41,23 @@
 					<x:String>None</x:String>
 				</Picker.Items>
 			</Picker>
+
+			<CheckBox 
+				x:Name="chbIncludeCast"
+				CheckedChanged="chbIncludeCast_CheckedChanged"
+				>
+			</CheckBox>
+
+			<Label
+				Text="Include Cast"
+				Padding="0,10,10,0"
+				/>
+
 			<Button
-				x:Name="btnAskAi"
-				Text="Ask AI"
-				Clicked="btnAskAi_Clicked" />
+			x:Name="btnAiOrNote"
+			Text="Save note"
+			Clicked="btnAiOrNote_Clicked" />
+
 		</HorizontalStackLayout>
 
 		<Editor
