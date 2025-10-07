@@ -51,24 +51,24 @@ public partial class AppShell : Shell
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
-
+	/*
 	public static DiagramPage GetDiagramPage()
 	{
 		ShellContent x = thisShell.pagDiagram;
 		return (DiagramPage)x.Content;
 	}
 
-        public static EegPage GetEegPage()
-        {
-                ShellContent x = thisShell.pagEeg;
-                return (EegPage)x.Content;
-        }
+	public static EegPage GetEegPage()
+	{
+		ShellContent x = thisShell.pagEeg;
+		return (EegPage)x.Content;
+	}
 
-        public static MeditationPage GetMeditationPage()
-        {
-                ShellContent x = thisShell.pagMeditation;
-                return (MeditationPage)x.Content;
-        }
+	public static MeditationPage GetMeditationPage()
+	{
+		ShellContent x = thisShell.pagMeditation;
+		return (MeditationPage)x.Content;
+	}
 
 	public static App GetApp()
 	{
@@ -83,5 +83,5 @@ public partial class AppShell : Shell
 
 		return a;
 	}
-
+	*/
 }

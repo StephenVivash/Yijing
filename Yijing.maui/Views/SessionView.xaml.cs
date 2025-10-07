@@ -364,7 +364,7 @@ public partial class SessionView : ContentView
 				yijingCast = castLine;
 			}
 
-			var words = text.Replace("$(Question)", "").Replace("$(Note)", "").Split([ ' ', '\r', '\n', '\t' ],
+			var words = text.Replace("$(Question)", "").Replace("$(Note)", "").Split([' ', '\r', '\n', '\t'],
 				StringSplitOptions.RemoveEmptyEntries).Take(10);
 			description = string.Join(" ", words);
 

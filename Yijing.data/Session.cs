@@ -30,7 +30,7 @@ public partial class Session
 	public string? FileName { get; set; }
 
 	public string? YijingCast { get; set; }
-	
+
 	public bool Meditation { get; set; }
 
 	public eEegDevice EegDevice { get; set; }

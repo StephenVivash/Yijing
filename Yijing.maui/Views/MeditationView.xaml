@@ -1,114 +1,114 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
 <ContentView
-        xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-        x:Class="Yijing.Views.MeditationView"
-        x:Name="meditationView"
-        Loaded="ContentView_Loaded">
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	x:Class="Yijing.Views.MeditationView"
+	x:Name="meditationView"
+	Loaded="ContentView_Loaded">
 
-        <ScrollView>
+	<ScrollView>
 
-                <Border
-                        BindingContext="{x:Reference meditationView}"
-                        BackgroundColor="{Binding CardColor}">
+		<Border
+			BindingContext="{x:Reference meditationView}"
+			BackgroundColor="{Binding CardColor}">
 
-                        <StackLayout
-                                Orientation="Vertical"
-                                Padding="0,10,0,10">
+			<StackLayout
+				Orientation="Vertical"
+				Padding="0,10,0,10">
 
-                                <Grid
-                                        ColumnDefinitions="Auto,Auto"
-                                        ColumnSpacing="2"
-                                        RowDefinitions="Auto,Auto,Auto"
-                                        RowSpacing="2">
+				<Grid
+					ColumnDefinitions="Auto,Auto"
+					ColumnSpacing="2"
+					RowDefinitions="Auto,Auto,Auto"
+					RowSpacing="2">
 
-                                        <Label
-                                                x:Name="lblGoal"
-                                                Text="Goal"
-                                                Padding="0,10,0,0"
-                                                Grid.Column="0"
-                                                Grid.Row="0" />
+					<Label
+						x:Name="lblGoal"
+						Text="Goal"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="0" />
 
-                                        <Picker
-                                                x:Name="picGoal"
-                                                SelectedIndexChanged="picGoal_SelectedIndexChanged"
-                                                Grid.Column="1"
-                                                Grid.Row="0">
-                                                <Picker.Items>
-                                                        <x:String>Meditation</x:String>
-                                                        <x:String>Yijing Cast</x:String>
-                                                </Picker.Items>
-                                        </Picker>
+					<Picker
+						x:Name="picGoal"
+						SelectedIndexChanged="picGoal_SelectedIndexChanged"
+						Grid.Column="1"
+						Grid.Row="0">
+						<Picker.Items>
+							<x:String>Meditation</x:String>
+							<x:String>Yijing Cast</x:String>
+						</Picker.Items>
+						</Picker>
 
-                                        <Label
-                                                x:Name="lblAmbience"
-                                                Text="Ambience"
-                                                Padding="0,10,0,0"
-                                                Grid.Column="0"
-                                                Grid.Row="1" />
+					<Label
+						x:Name="lblAmbience"
+						Text="Ambience"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="1" />
 
-                                        <Picker
-                                                x:Name="picAmbience"
-                                                SelectedIndexChanged="picAmbience_SelectedIndexChanged"
-                                                Grid.Column="1"
-                                                Grid.Row="1">
-                                                <Picker.Items>
-                                                        <x:String>None</x:String>
-                                                        <x:String>Light rain</x:String>
-                                                        <x:String>Quiet forest</x:String>
-                                                        <x:String>Meadow birds</x:String>
-                                                </Picker.Items>
-                                        </Picker>
+					<Picker
+						x:Name="picAmbience"
+						SelectedIndexChanged="picAmbience_SelectedIndexChanged"
+						Grid.Column="1"
+						Grid.Row="1">
+						<Picker.Items>
+							<x:String>None</x:String>
+							<x:String>Light rain</x:String>
+							<x:String>Quiet forest</x:String>
+							<x:String>Meadow birds</x:String>
+						</Picker.Items>
+						</Picker>
 
-                                        <Label
-                                                x:Name="lblTimer"
-                                                Text="Timer"
-                                                Padding="0,10,0,0"
-                                                Grid.Column="0"
-                                                Grid.Row="2" />
+					<Label
+						x:Name="lblTimer"
+						Text="Timer"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="2" />
 
-                                        <Picker
-                                                x:Name="picTimer"
-                                                SelectedIndexChanged="picTimer_SelectedIndexChanged"
-                                                Grid.Column="1"
-                                                Grid.Row="2">
-                                                <Picker.Items>
-                                                        <x:String>None</x:String>
-                                                        <x:String>Ten minutes</x:String>
-                                                        <x:String>Fifteen minutes</x:String>
-                                                        <x:String>Twenty minutes</x:String>
-                                                        <x:String>Thirty minutes</x:String>
-                                                        <x:String>Sixty minutes</x:String>
-                                                </Picker.Items>
-                                        </Picker>
+					<Picker
+						x:Name="picTimer"
+						SelectedIndexChanged="picTimer_SelectedIndexChanged"
+						Grid.Column="1"
+						Grid.Row="2">
+						<Picker.Items>
+							<x:String>None</x:String>
+							<x:String>Ten minutes</x:String>
+							<x:String>Fifteen minutes</x:String>
+							<x:String>Twenty minutes</x:String>
+							<x:String>Thirty minutes</x:String>
+							<x:String>Sixty minutes</x:String>
+						</Picker.Items>
+						</Picker>
 
-                                </Grid>
+				</Grid>
 
-                                <Label
-                                        x:Name="lblStatus"
-                                        FontAttributes="Bold"
-                                        FontSize="18"
-                                        HorizontalOptions="Start"
-                                        Margin="0,20,0,0"
-                                        Text="Meditation is idle" />
+				<Label
+					x:Name="lblStatus"
+					FontAttributes="Bold"
+					FontSize="18"
+					HorizontalOptions="Start"
+					Margin="0,20,0,0"
+					Text="Meditation is idle" />
 
-                                <Label
-                                        x:Name="lblElapsed"
-                                        FontSize="16"
-                                        HorizontalOptions="Start"
-                                        Text="Elapsed: 00:00:00" />
+				<Label
+					x:Name="lblElapsed"
+					FontSize="16"
+					HorizontalOptions="Start"
+					Text="Elapsed: 00:00:00" />
 
-                                <Button
-                                        x:Name="btnToggleMeditation"
-                                        Margin="0,20,0,0"
-                                        Text="Start Meditation"
-                                        Clicked="btnToggleMeditation_Clicked" />
+				<Button
+					x:Name="btnToggleMeditation"
+					Margin="0,20,0,0"
+					Text="Start Meditation"
+					Clicked="btnToggleMeditation_Clicked" />
 
-                        </StackLayout>
+			</StackLayout>
 
-                </Border>
+		</Border>
 
-        </ScrollView>
+	</ScrollView>
 
 </ContentView>
