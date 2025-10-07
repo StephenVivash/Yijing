@@ -1,0 +1,189 @@
+using System;
+using System.Diagnostics;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Dispatching;
+
+using Yijing.Services;
+using YijingData;
+
+namespace Yijing.Views;
+
+public partial class MeditationView : ContentView
+{
+        private DateTime? _meditationStart;
+        private IDispatcherTimer? _timer;
+        private TimeSpan? _targetDuration;
+        private bool _isMeditating;
+
+        public event EventHandler<MeditationSessionCompletedEventArgs>? MeditationCompleted;
+
+        public MeditationView()
+        {
+                var behavior = new RegisterInViewDirectoryBehavior();
+                Behaviors.Add(behavior);
+                InitializeComponent();
+        }
+
+        private void ContentView_Loaded(object sender, EventArgs e)
+        {
+                picGoal.SelectedIndex = AppPreferences.EegGoal;
+                picAmbience.SelectedIndex = AppPreferences.Ambience;
+                picTimer.SelectedIndex = AppPreferences.Timer;
+                UpdateStatus("Meditation is idle");
+                UpdateElapsed(TimeSpan.Zero);
+        }
+
+        private void btnToggleMeditation_Clicked(object sender, EventArgs e)
+        {
+                if (_isMeditating)
+                        StopMeditation(false);
+                else
+                        StartMeditation();
+        }
+
+        private void StartMeditation()
+        {
+                _meditationStart = DateTime.Now;
+                _isMeditating = true;
+                btnToggleMeditation.Text = "Stop Meditation";
+                UpdateStatus("Meditation in progress...");
+                UpdateElapsed(TimeSpan.Zero);
+                _targetDuration = SelectedTimerDuration();
+                EnsureTimer();
+                _timer?.Start();
+                AudioPlayer.Ambience(Dispatcher, true);
+        }
+
+        private void EnsureTimer()
+        {
+                _timer ??= Dispatcher.CreateTimer();
+                if (_timer is null)
+                        return;
+
+                _timer.Interval = TimeSpan.FromSeconds(1);
+                _timer.Tick -= Timer_Tick;
+                _timer.Tick += Timer_Tick;
+        }
+
+        private void Timer_Tick(object? sender, EventArgs e)
+        {
+                if (_meditationStart is null)
+                        return;
+
+                TimeSpan elapsed = DateTime.Now - _meditationStart.Value;
+                UpdateElapsed(elapsed);
+
+                if (_targetDuration.HasValue && elapsed >= _targetDuration.Value)
+                {
+                        AudioPlayer.PlayTimer(Dispatcher);
+                        StopMeditation(true);
+                }
+        }
+
+        private void StopMeditation(bool fromTimer)
+        {
+                if (_meditationStart is null)
+                        return;
+
+                _timer?.Stop();
+                TimeSpan elapsed = DateTime.Now - _meditationStart.Value;
+                int durationMinutes = Math.Max(1, (int)Math.Round(elapsed.TotalMinutes));
+
+                SaveMeditation(_meditationStart.Value, durationMinutes);
+
+                _meditationStart = null;
+                _isMeditating = false;
+                btnToggleMeditation.Text = "Start Meditation";
+                UpdateStatus(fromTimer ? "Meditation completed" : "Meditation stopped");
+                UpdateElapsed(TimeSpan.Zero);
+                AudioPlayer.Ambience(Dispatcher, false);
+        }
+
+        private void SaveMeditation(DateTime start, int durationMinutes)
+        {
+                try
+                {
+                        using var context = new YijingDbContext();
+                        var meditation = new Meditation
+                        {
+                                Start = start,
+                                Duration = durationMinutes
+                        };
+                        context.Meditations.Add(meditation);
+                        YijingDatabase.SaveChanges(context);
+                        MeditationCompleted?.Invoke(this, new MeditationSessionCompletedEventArgs(meditation));
+                }
+                catch (Exception ex)
+                {
+                        Debug.WriteLine($"Failed to save meditation: {ex.Message}");
+                }
+        }
+
+        private void UpdateStatus(string message)
+        {
+                lblStatus.Text = message;
+        }
+
+        private void UpdateElapsed(TimeSpan elapsed)
+        {
+                lblElapsed.Text = $"Elapsed: {elapsed:hh\\:mm\\:ss}";
+        }
+
+        private TimeSpan? SelectedTimerDuration()
+        {
+                return AppPreferences.Timer switch
+                {
+                        (int)eTimer.eTen => TimeSpan.FromMinutes(10),
+                        (int)eTimer.eFifteen => TimeSpan.FromMinutes(15),
+                        (int)eTimer.eTwenty => TimeSpan.FromMinutes(20),
+                        (int)eTimer.eThirty => TimeSpan.FromMinutes(30),
+                        (int)eTimer.eSixty => TimeSpan.FromMinutes(60),
+                        _ => null
+                };
+        }
+
+        private void picGoal_SelectedIndexChanged(object sender, EventArgs e)
+        {
+                AppPreferences.EegGoal = picGoal.SelectedIndex;
+        }
+
+        private void picAmbience_SelectedIndexChanged(object sender, EventArgs e)
+        {
+                AppPreferences.Ambience = picAmbience.SelectedIndex;
+        }
+
+        private void picTimer_SelectedIndexChanged(object sender, EventArgs e)
+        {
+                AppPreferences.Timer = picTimer.SelectedIndex;
+                _targetDuration = SelectedTimerDuration();
+        }
+
+        public static readonly BindableProperty CardTitleProperty = BindableProperty.Create(
+                nameof(CardTitle), typeof(string), typeof(MeditationView), string.Empty);
+
+        public static readonly BindableProperty CardColorProperty = BindableProperty.Create(
+                nameof(CardColor), typeof(Color), typeof(MeditationView),
+                App.Current.RequestedTheme == AppTheme.Dark ? Colors.Black : Colors.White);
+
+        public string CardTitle
+        {
+                get => (string)GetValue(CardTitleProperty);
+                set => SetValue(CardTitleProperty, value);
+        }
+
+        public Color CardColor
+        {
+                get => (Color)GetValue(CardColorProperty);
+                set => SetValue(CardColorProperty, value);
+        }
+}
+
+public sealed class MeditationSessionCompletedEventArgs : EventArgs
+{
+        public MeditationSessionCompletedEventArgs(Meditation meditation)
+        {
+                Meditation = meditation;
+        }
+
+        public Meditation Meditation { get; }
+}

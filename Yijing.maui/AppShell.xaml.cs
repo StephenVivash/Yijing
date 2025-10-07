@@ -58,11 +58,17 @@ public partial class AppShell : Shell
 		return (DiagramPage)x.Content;
 	}
 
-	public static EegPage GetEegPage()
-	{
-		ShellContent x = thisShell.pagEeg;
-		return (EegPage)x.Content;
-	}
+        public static EegPage GetEegPage()
+        {
+                ShellContent x = thisShell.pagEeg;
+                return (EegPage)x.Content;
+        }
+
+        public static MeditationPage GetMeditationPage()
+        {
+                ShellContent x = thisShell.pagMeditation;
+                return (MeditationPage)x.Content;
+        }
 
 	public static App GetApp()
 	{
