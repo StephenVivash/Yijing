@@ -12,8 +12,9 @@ public class YijingDbContext: DbContext
 	public static String? _ds = null;
 	public static List<string>? _lsMigrations = null;
 
-	public virtual DbSet<Session> Sessions { get; set; }
-	public virtual DbSet<Text> Texts { get; set; }
+        public virtual DbSet<Session> Sessions { get; set; }
+        public virtual DbSet<Text> Texts { get; set; }
+        public virtual DbSet<Meditation> Meditations { get; set; }
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
