@@ -33,7 +33,7 @@ Press OK.
 *************************************************************************************************
 *************************************************************************************************/
 
-using Microsoft.EntityFrameworkCore;
+//using Microsoft.EntityFrameworkCore;
 using Microsoft.Maui.Controls.Shapes;
 using System.Text.RegularExpressions;
 
@@ -100,18 +100,12 @@ public partial class DiagramView : ContentView
 	private SolidColorBrush m_brDarkGray = new SolidColorBrush(Color.FromRgba(0x40, 0x40, 0x40, 0xFF));
 	private SolidColorBrush m_brLightGray = new SolidColorBrush(Colors.LightGray);
 
-	//private bool _saveChat = false;
-	//private Ai _ai = new Ai();
-
 	public DiagramView()
 	{
 		var b = new RegisterInViewDirectoryBehavior(); // { Key = "DiagramView1" };
 		Behaviors.Add(b);
 		InitializeComponent();
 		BindingContext = this;
-
-		//UI.CallByKey<DiagramView>("DiagramView1", v => v.EndCast());
-		//Eeg.SetDiagramView(this);
 
 		m_brMonoColor = App.Current.RequestedTheme == AppTheme.Dark ? Brush.LightGray : Brush.DarkGray;
 		m_brMovingYang = App.Current.RequestedTheme == AppTheme.Dark ? Brush.Black : Brush.White;
@@ -163,46 +157,8 @@ public partial class DiagramView : ContentView
 		picDiagramColor.SelectedIndex = (int)eDiagramColor.eTrigram;
 		picDiagramLsb.SelectedIndex = 0;
 
-		//_ai._contextSessions.Add("2025-07-06-19-55-13");
-
-		//_ai.AddSystemMessage(
-		/*
-		_ai._systemPrompts[0] =
-			"This app allows a user to consult the Yijing and engage in casual conversation with AI. " +
-
-			"Don't explain what the Yijing is or how it works unless explicitly asked. " +
-
-			"Not all consultations with the Yijing, and therefore AI, involve a question that needs an answer, like those " +
-			"which are simply a reflective statement that seeks to explore for enjoyment rather than map for remedy. " +
-
-			"The question/statement and the Yijing's response will then be sent to the AI for comment. " +
-
-			"Respond in light of the Yijing's answer unless told to ignore it. " +
-
-			"Focus on an explanation of question/statement and draw from any other relevant sources. " +
-
-			"After the initial response don't repeat or rehash the answer refering to " +
-			"the hexagram again unless explicitly asked to do so. " +
-
-			"Subsequent 'on topic' questions/statements won't necessarily be related to the cast hexagram, " +
-			"therefore don't include that information in the response. " +
-
-			"At least reference the ideas associated with hexagrams cast if mentioned in the current prompt " +
-
-			"Don't repeat or summarise previous answers unless explicitly ask to do so. " +
-
-			"Allow the user to change the subject or ask for clarification about past responses. " +
-
-			"Respond with prose rather than bullet points unless explicitly asked. " +
-
-			"You may call functions when needed.";
-
-		LoadSessions(0);
-		*/
-
 		//YijingDB();
 		UpdateText();
-
 	}
 
 	protected void Page_Loaded(object sender, EventArgs e)
@@ -236,37 +192,60 @@ public partial class DiagramView : ContentView
 		if ((width == -1) || (height == -1))
 			return;
 
-		double w = width - 20;
-		if (width < 380)
-			w = width - 30;
+		double w = width - 10;
+		//if (width < 380)
+		//	w = width - 30;
 
 		ResizeDiagram(w, height);
 
 		w = width - 40;
+
 		lblHexagram.WidthRequest = w;
 
 		w /= 2;
 
 		lblDiagramMode.WidthRequest = w;
-		picDiagramMode.WidthRequest = w;
 		lblDiagramType.WidthRequest = w;
-		picDiagramType.WidthRequest = w;
 		lblDiagramSpeed.WidthRequest = w;
-		picDiagramSpeed.WidthRequest = w;
 		lblDiagramColor.WidthRequest = w;
+		lblDiagramLsb.WidthRequest = w;
+
+		lblHexagramText.WidthRequest = w;
+		lblHexagramLabel.WidthRequest = w;
+		lblHexagramSequence.WidthRequest = w;
+		lblHexagramRatio.WidthRequest = w;
+		lblTrigramText.WidthRequest = w;
+		lblTrigramLabel.WidthRequest = w;
+		lblTrigramSequence.WidthRequest = w;
+		lblTrigramRatio.WidthRequest = w;
+		lblLineText.WidthRequest = w;
+		lblLineLabel.WidthRequest = w;
+		lblLineSequence.WidthRequest = w;
+		lblLineRatio.WidthRequest = w;
+
+		picDiagramMode.WidthRequest = w;
+		picDiagramType.WidthRequest = w;
+		picDiagramSpeed.WidthRequest = w;
 		picDiagramColor.WidthRequest = w;
+		picDiagramLsb.WidthRequest = w;
 
-		w -= 5;
+		picHexagramText.WidthRequest = w;
+		picHexagramLabel.WidthRequest = w;
+		picHexagramSequence.WidthRequest = w;
+		picHexagramRatio.WidthRequest = w;
+		picTrigramText.WidthRequest = w;
+		picTrigramLabel.WidthRequest = w;
+		picTrigramSequence.WidthRequest = w;
+		picTrigramRatio.WidthRequest = w;
+		picLineText.WidthRequest = w;
+		picLineLabel.WidthRequest = w;
+		picLineSequence.WidthRequest = w;
+		picLineRatio.WidthRequest = w;
 
-		lblSession.WidthRequest = w - 50;
-
-		picSession.WidthRequest = w;
-		//picDiagramMode.WidthRequest = w;
-		//picDiagramType.WidthRequest = w;
-		//picDiagramSpeed.WidthRequest = w;
-		//picDiagramColor.WidthRequest = w;
+		w -= 10;
 
 		w /= 2;
+
 		btnMove.WidthRequest = w;
 		btnHome.WidthRequest = w;
 		btnFirst.WidthRequest = w;
@@ -1106,8 +1085,8 @@ public partial class DiagramView : ContentView
 
 	private void UpdateText(bool resetSession = true)
 	{
-		if (resetSession)
-			picSession.SelectedIndex = 0;
+		//if (resetSession)
+		//	picSession.SelectedIndex = 0;
 		UpdateText(m_hvsCurrent);
 	}
 

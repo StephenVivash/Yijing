@@ -3,6 +3,9 @@
 <ContentView
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:views="clr-namespace:Yijing.Views"
+	xmlns:models="clr-namespace:YijingData;assembly=Yijing.data"
+	xmlns:conv="clr-namespace:Yijing.Services"	
 	x:Class="Yijing.Views.MeditationView"
 	x:Name="meditationView"
 	Loaded="ContentView_Loaded">
@@ -11,21 +14,25 @@
 
 		<Border
 			BindingContext="{x:Reference meditationView}"
-			BackgroundColor="{Binding CardColor}">
+			BackgroundColor="{Binding CardColor}"
+			x:DataType="views:MeditationView"
+			Padding="10,0,0,0"
+			>
 
 			<StackLayout
 				Orientation="Vertical"
-				Padding="0,10,0,10">
+				>
 
 				<Grid
-					ColumnDefinitions="Auto,Auto"
-					ColumnSpacing="2"
-					RowDefinitions="Auto,Auto,Auto"
-					RowSpacing="2">
+					ColumnDefinitions="*,*"
+					RowDefinitions="*,*,*,*,*"
+					Padding="0,0,0,10"
+					>
 
 					<Label
 						x:Name="lblGoal"
 						Text="Goal"
+						LineBreakMode="TailTruncation"
 						Padding="0,10,0,0"
 						Grid.Column="0"
 						Grid.Row="0" />
@@ -44,6 +51,7 @@
 					<Label
 						x:Name="lblAmbience"
 						Text="Ambience"
+						LineBreakMode="TailTruncation"
 						Padding="0,10,0,0"
 						Grid.Column="0"
 						Grid.Row="1" />
@@ -64,6 +72,7 @@
 					<Label
 						x:Name="lblTimer"
 						Text="Timer"
+						LineBreakMode="TailTruncation"
 						Padding="0,10,0,0"
 						Grid.Column="0"
 						Grid.Row="2" />
@@ -81,29 +90,40 @@
 							<x:String>Thirty minutes</x:String>
 							<x:String>Sixty minutes</x:String>
 						</Picker.Items>
-						</Picker>
+					</Picker>
+
+					<Label
+						x:Name="lblElapsed1"
+						Text="Elapsed Time"
+						LineBreakMode="TailTruncation"
+						Padding="0,10,0,0"
+						Grid.Column="0"
+						Grid.Row="3"/>
+
+					<Label
+						x:Name="lblElapsed2"
+						Text="00:00:00"
+						Padding="12,10,0,0"
+						Grid.Column="1"
+						Grid.Row="3"/>
+
+					<Label
+						x:Name="lblMeditation"
+						Text="Meditation"
+						LineBreakMode="TailTruncation"
+						Padding="0,25,0,0"
+						Grid.Column="0"
+						Grid.Row="4"/>
+
+					<Button
+						x:Name="btnMeditation"
+						Text="Start"
+						Clicked="btnMeditation_Clicked"
+						Margin="0,15,0,0"
+						Grid.Column="1"
+						Grid.Row="4"/>
 
 				</Grid>
-
-				<Label
-					x:Name="lblStatus"
-					FontAttributes="Bold"
-					FontSize="18"
-					HorizontalOptions="Start"
-					Margin="0,20,0,0"
-					Text="Meditation is idle" />
-
-				<Label
-					x:Name="lblElapsed"
-					FontSize="16"
-					HorizontalOptions="Start"
-					Text="Elapsed: 00:00:00" />
-
-				<Button
-					x:Name="btnToggleMeditation"
-					Margin="0,20,0,0"
-					Text="Start Meditation"
-					Clicked="btnToggleMeditation_Clicked" />
 
 			</StackLayout>
 

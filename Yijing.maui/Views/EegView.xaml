@@ -4,6 +4,8 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:views="clr-namespace:Yijing.Views"
+	xmlns:models="clr-namespace:YijingData;assembly=Yijing.data"
+	xmlns:conv="clr-namespace:Yijing.Services"	
 	x:Class="Yijing.Views.EegView"
 	x:Name="eegView"
 	Loaded="Page_Loaded">
@@ -12,24 +14,25 @@
 		
 		<Border
 			BindingContext="{x:Reference eegView}"
+			BackgroundColor="{Binding CardColor}"
 			x:DataType="views:EegView"
-			BackgroundColor="{Binding CardColor}">
+			Padding="10,0,0,0"
+			>
 
 			<StackLayout
 				Orientation="Vertical"
 				>
 
 				<Grid 
-					ColumnDefinitions="Auto,Auto"
-					ColumnSpacing="2"
-					RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
-					RowSpacing="2" 
-					Padding="0,10,0,0"
+					ColumnDefinitions="*,*"
+					RowDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
+					Padding="0,0,0,10"
 					>
 
 					<Label
 						x:Name="lblDevice"
 						Text="Device"
+						LineBreakMode="TailTruncation"
 						Padding="0,10,0,0"
 						Grid.Column="0"
 						Grid.Row="0"
@@ -50,6 +53,7 @@
 					<Label
 						x:Name="lblMode"
 						Text="Mode"
+						LineBreakMode="TailTruncation"
 						Padding="0,10,0,0"
 						Grid.Column="0"
 						Grid.Row="1"
@@ -72,6 +76,7 @@
 					<Label
 						x:Name="lblSession"
 						Text="Session"
+						LineBreakMode="TailTruncation"
 						Padding="0,10,0,0"
 						Grid.Column="0"
 						Grid.Row="2"
@@ -89,6 +94,7 @@
 					<Label
 						x:Name="lblGoal"
 						Text="Goal"
+						LineBreakMode="TailTruncation"
 						Padding="0,10,0,0"
 						Grid.Column="0"
 						Grid.Row="3"
@@ -109,6 +115,7 @@
 					<Label
 						x:Name="lblAmbience"
 						Text="Ambience"
+						LineBreakMode="TailTruncation"
 						Padding="0,10,0,0"
 						Grid.Column="0"
 						Grid.Row="4"
@@ -131,6 +138,7 @@
 					<Label
 						x:Name="lblTimer"
 						Text="Timer"
+						LineBreakMode="TailTruncation"
 						Padding="0,10,0,0"
 						Grid.Column="0"
 						Grid.Row="5"
@@ -155,6 +163,7 @@
 					<Label
 						x:Name="lblReplaySpeed"
 						Text="Replay Speed"
+						LineBreakMode="TailTruncation"
 						Padding="0,10,0,0"
 						Grid.Column="0"
 						Grid.Row="6"
@@ -175,6 +184,7 @@
 					<Label
 						x:Name="lblChartBands"
 						Text="Chart Bands"
+						LineBreakMode="TailTruncation"
 						Padding="0,10,0,0"
 						Grid.Column="0"
 						Grid.Row="7"
@@ -197,6 +207,7 @@
 					<Label
 						x:Name="lblChartTime"
 						Text="Chart Time"
+						LineBreakMode="TailTruncation"
 						Padding="0,10,0,0"
 						Grid.Column="0"
 						Grid.Row="8"
@@ -217,6 +228,7 @@
 					<Label
 						x:Name="lblTriggerBand"
 						Text="Trigger Band"
+						LineBreakMode="TailTruncation"
 						Padding="0,10,0,0"
 						Grid.Column="0"
 						Grid.Row="9"
@@ -240,6 +252,7 @@
 					<Label
 						x:Name="lblTriggerChannel"
 						Text="Trigger Channel"
+						LineBreakMode="TailTruncation"
 						Padding="0,10,0,0"
 						Grid.Column="0"
 						Grid.Row="10"
@@ -263,6 +276,7 @@
 					<Label
 						x:Name="lblTriggerRange"
 						Text="Trigger Range"
+						LineBreakMode="TailTruncation"
 						Padding="0,10,0,0"
 						Grid.Column="0"
 						Grid.Row="11"
@@ -286,24 +300,10 @@
 						</Picker.Items>
 					</Picker>
 
-					<!--Label 
-						x:Name="lblAiKey"
-						Text="AI Key"
-						Padding="0,10,0,0"
-						Grid.Column="0"
-						Grid.Row="12"
-						/>
-
-					<Entry
-						x:Name="entAiKey"
-						Completed="entAiKey_Completed"
-						Grid.Column="1"
-						Grid.Row="12"
-						/-->
-
 					<Label 
 						x:Name="lblAiAnalysis"
 						Text="AI Analysis"
+						LineBreakMode="TailTruncation"
 						Padding="0,10,0,0"
 						Grid.Column="0"
 						Grid.Row="12"
@@ -327,6 +327,7 @@
 					<Label 
 						x:Name="lblAiModel"
 						Text="AI Model"
+						LineBreakMode="TailTruncation"
 						Padding="0,10,0,0"
 						Grid.Column="0"
 						Grid.Row="13"
@@ -347,6 +348,7 @@
 					<Label 
 						x:Name="lblTriggerFixed"
 						Text="Fixed Range"
+						LineBreakMode="TailTruncation"
 						Padding="0,10,0,0"
 						Grid.Column="0"
 						Grid.Row="14"
@@ -362,6 +364,7 @@
 					<Label 
 						x:Name="lblTriggerSounding"
 						Text="Trigger Sounding"
+						LineBreakMode="TailTruncation"
 						Padding="0,10,0,0"
 						Grid.Column="0"
 						Grid.Row="15"
@@ -377,6 +380,7 @@
 					<Label 
 						x:Name="lblRawData"
 						Text="Raw Data"
+						LineBreakMode="TailTruncation"
 						Padding="0,10,0,0"
 						Grid.Column="0"
 						Grid.Row="16"
@@ -395,18 +399,12 @@
 					x:Name="lblTime"
 					FontSize="22"
 					FontAttributes="Bold"
-					MaxLines="1"
 					LineBreakMode="TailTruncation"
+					MaxLines="1"
 					HorizontalOptions="Start"
 					VerticalOptions="Start"
 					Padding="0,10,0,0"
 					>
-
-					<!--VisualState x:Name="PointerOver">
-					<VisualState.Setters>
-					<Setter Property="Background"/>
-					</VisualState.Setters>
-					</VisualState-->
 
 				</Label>
 
@@ -414,8 +412,8 @@
 					x:Name="lblLineStart"
 					FontSize="18"
 					FontAttributes="Bold"
-					MaxLines="1"
 					LineBreakMode="TailTruncation"
+					MaxLines="1"
 					HorizontalOptions="Start"
 					VerticalOptions="Start"
 					Padding="0,10,0,0"
@@ -425,8 +423,8 @@
 					x:Name="lblLineEnd"
 					FontSize="18"
 					FontAttributes="Bold"
-					MaxLines="1"
 					LineBreakMode="TailTruncation"
+					MaxLines="1"
 					HorizontalOptions="Start"
 					VerticalOptions="Start"
 					Padding="0,10,0,0"

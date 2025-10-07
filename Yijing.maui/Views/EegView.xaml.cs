@@ -112,13 +112,16 @@ public partial class EegView : ContentView
 		if ((width == -1) || (height == -1))
 			return;
 
-		double w = width - 40;
-		lblTime.WidthRequest = w;
-		lblLineStart.WidthRequest = w;
-		lblLineEnd.WidthRequest = w;
+		double w = width - 10;
+		//if (width < 380)
+		//	w = width - 30;
 
-		w -= 5;
+		w = width - 40;
+
+		lblTime.WidthRequest = w;
+
 		w /= 2;
+
 		lblDevice.WidthRequest = w;
 		lblMode.WidthRequest = w;
 		lblSession.WidthRequest = w;
@@ -130,7 +133,6 @@ public partial class EegView : ContentView
 		lblChartTime.WidthRequest = w;
 		lblTriggerBand.WidthRequest = w;
 		lblTriggerChannel.WidthRequest = w;
-		//lblAiKey.WidthRequest = w;
 		lblAiAnalysis.WidthRequest = w;
 		lblAiModel.WidthRequest = w;
 		lblTriggerRange.WidthRequest = w;
@@ -148,7 +150,6 @@ public partial class EegView : ContentView
 		picChartTime.WidthRequest = w;
 		picTriggerBand.WidthRequest = w;
 		picTriggerChannel.WidthRequest = w;
-		//entAiKey.WidthRequest = w;
 		picAiAnalysis.WidthRequest = w;
 		picAiModel.WidthRequest = w;
 		picTriggerRange.WidthRequest = w;
@@ -156,7 +157,6 @@ public partial class EegView : ContentView
 		chbTriggerSounding.WidthRequest = w;
 
 		w /= 2;
-		//btnEeg.WidthRequest = w;
 	}
 
 	private void picDevice_SelectedIndexChanged(object sender, EventArgs e)

@@ -21,7 +21,7 @@
 		<views:MeditationView
 			x:Name="meditationView"
 			toolkit:DockLayout.DockPosition="Left"
-			WidthRequest="400"
+			WidthRequest="340"
 			CardTitle="Meditation"
 			MeditationCompleted="MeditationView_MeditationCompleted" />
 

@@ -20,10 +20,13 @@
 
 	<Grid
 		RowDefinitions="Auto,Auto,*"
-		RowSpacing="8">
+		>
+
 		<HorizontalStackLayout
 			Grid.Row="0"
-			Spacing="12">
+			Spacing="12"
+			>
+
 			<Button
 				x:Name="btnAdd"
 				Text="Add"
@@ -33,42 +36,51 @@
 				x:Name="btnDelete"
 				Text="Delete"
 				Clicked="OnDeleteSessionClicked" />
+			
 		</HorizontalStackLayout>
 
 		<Grid
 			Grid.Row="1"
 			Padding="4,8"
 			ColumnDefinitions="90,12,12,12,12,*"
-			ColumnSpacing="12">
+			ColumnSpacing="12"
+			>
+			
 			<Label
-			Text="Session"
-			FontAttributes="Bold"
-			VerticalTextAlignment="Center" />
+				Text="Session"
+				FontAttributes="Bold"
+				VerticalTextAlignment="Center" />
+
 			<Label
-			Grid.Column="1"
-			Text="Y"
-			FontAttributes="Bold"
-			VerticalTextAlignment="Center" />
+				Grid.Column="1"
+				Text="Y"
+				FontAttributes="Bold"
+				VerticalTextAlignment="Center" />
+
 			<Label
-			Grid.Column="2"
-			Text="M"
-			FontAttributes="Bold"
-			VerticalTextAlignment="Center" />
+				Grid.Column="2"
+				Text="M"
+				FontAttributes="Bold"
+				VerticalTextAlignment="Center" />
+
 			<Label
-			Grid.Column="3"
-			Text="E"
-			FontAttributes="Bold"
-			VerticalTextAlignment="Center" />
+				Grid.Column="3"
+				Text="E"
+				FontAttributes="Bold"
+				VerticalTextAlignment="Center" />
+
 			<Label
-			Grid.Column="4"
-			Text="A"
-			FontAttributes="Bold"
-			VerticalTextAlignment="Center" />
+				Grid.Column="4"
+				Text="A"
+				FontAttributes="Bold"
+				VerticalTextAlignment="Center" />
+
 			<Label
-			Grid.Column="5"
-			Text="Description"
-			FontAttributes="Bold"
-			VerticalTextAlignment="Center" />
+				Grid.Column="5"
+				Text="Description"
+				FontAttributes="Bold"
+				VerticalTextAlignment="Center" />
+
 		</Grid>
 
 		<CollectionView

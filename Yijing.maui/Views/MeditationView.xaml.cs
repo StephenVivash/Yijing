@@ -30,7 +30,41 @@ public partial class MeditationView : ContentView
 		UpdateElapsed(TimeSpan.Zero);
 	}
 
-	private void btnToggleMeditation_Clicked(object sender, EventArgs e)
+	protected override void OnSizeAllocated(double width, double height)
+	{
+		base.OnSizeAllocated(width, height);
+
+		if ((width == -1) || (height == -1))
+			return;
+
+		double w = width - 10;
+		//if (width < 380)
+		//	w = width - 30;
+
+		w = width - 40;
+
+		w /= 2;
+
+		lblGoal.WidthRequest = w;
+		lblAmbience.WidthRequest = w;
+		lblTimer.WidthRequest = w;
+		lblElapsed1.WidthRequest = w;
+		lblMeditation.WidthRequest = w;
+
+		picGoal.WidthRequest = w;
+		picAmbience.WidthRequest = w;
+		picTimer.WidthRequest = w;
+		lblElapsed2.WidthRequest = w;
+		btnMeditation.WidthRequest = w;
+		//btnMeditation.HeightRequest = 20;
+
+		w -= 5;
+
+		w /= 2;
+	}
+
+
+	private void btnMeditation_Clicked(object sender, EventArgs e)
 	{
 		if (_isMeditating)
 			StopMeditation(false);
@@ -42,8 +76,8 @@ public partial class MeditationView : ContentView
 	{
 		_meditationStart = DateTime.Now;
 		_isMeditating = true;
-		btnToggleMeditation.Text = "Stop Meditation";
-		UpdateStatus("Meditation in progress...");
+		btnMeditation.Text = "Stop";
+		//UpdateStatus("Meditation in progress...");
 		UpdateElapsed(TimeSpan.Zero);
 		_targetDuration = SelectedTimerDuration();
 		EnsureTimer();
@@ -90,8 +124,8 @@ public partial class MeditationView : ContentView
 
 		_meditationStart = null;
 		_isMeditating = false;
-		btnToggleMeditation.Text = "Start Meditation";
-		UpdateStatus(fromTimer ? "Meditation completed" : "Meditation stopped");
+		btnMeditation.Text = "Start";
+		//UpdateStatus(fromTimer ? "Meditation completed" : "Meditation stopped");
 		UpdateElapsed(TimeSpan.Zero);
 		AudioPlayer.Ambience(Dispatcher, false);
 	}
@@ -118,12 +152,12 @@ public partial class MeditationView : ContentView
 
 	private void UpdateStatus(string message)
 	{
-		lblStatus.Text = message;
+		//lblStatus.Text = message;
 	}
 
 	private void UpdateElapsed(TimeSpan elapsed)
 	{
-		lblElapsed.Text = $"Elapsed: {elapsed:hh\\:mm\\:ss}";
+		lblElapsed2.Text = $"{elapsed:hh\\:mm\\:ss}";
 	}
 
 	private TimeSpan? SelectedTimerDuration()

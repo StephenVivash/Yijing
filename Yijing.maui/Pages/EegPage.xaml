@@ -25,7 +25,7 @@
 		<controls:EegView
 			x:Name="eeg"
 			toolkit:DockLayout.DockPosition="Left"
-			WidthRequest="400"
+			WidthRequest="340"
 			CardTitle="Card 1"
 			/>
 

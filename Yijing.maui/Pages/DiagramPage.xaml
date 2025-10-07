@@ -23,7 +23,7 @@
 		<controls:DiagramView
 			x:Name="diagram"
 			toolkit:DockLayout.DockPosition="Left"
-			WidthRequest="400"
+			WidthRequest="340"
 			CardTitle="Card 1"
 			/>
 

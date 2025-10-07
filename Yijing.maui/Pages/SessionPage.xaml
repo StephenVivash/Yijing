@@ -17,7 +17,7 @@
 		<views:SessionView
 			x:Name="sessionView"
 			toolkit:DockLayout.DockPosition="Left"
-			WidthRequest="400"
+			WidthRequest="340"
 			ChatUpdated="SessionView_ChatUpdated" />
 
 		<VerticalStackLayout

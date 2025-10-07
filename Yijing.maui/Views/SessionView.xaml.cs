@@ -66,8 +66,8 @@ public partial class SessionView : ContentView
 			return;
 
 		double w = width - 20;
-		if (width < 380)
-			w = width - 30;
+		//if (width < 380)
+		//	w = width - 30;
 
 		w = width - 40;
 		//lblHexagram.WidthRequest = w;
