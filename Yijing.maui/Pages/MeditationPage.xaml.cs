@@ -65,6 +65,22 @@ public partial class MeditationPage : ContentPage
 		RefreshChart();
 	}
 
+	protected override void OnSizeAllocated(double width, double height)
+	{
+		if ((width == -1) || (height == -1))
+			return;
+
+#if ANDROID || IOS
+		//edtSessionLog.HeightRequest = 100;
+		if (width > height)
+			meditationView.WidthRequest = 200;
+		else
+			meditationView.WidthRequest = 340;
+#endif
+
+		base.OnSizeAllocated(width, height);
+	}
+
 	protected override void OnAppearing()
 	{
 		base.OnAppearing();

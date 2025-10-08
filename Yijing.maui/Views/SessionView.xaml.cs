@@ -60,8 +60,6 @@ public partial class SessionView : ContentView
 
 	protected override void OnSizeAllocated(double width, double height)
 	{
-		base.OnSizeAllocated(width, height);
-
 		if ((width == -1) || (height == -1))
 			return;
 
@@ -84,6 +82,8 @@ public partial class SessionView : ContentView
 		w /= 2;
 		btnAdd.WidthRequest = w;
 		btnDelete.WidthRequest = w;
+
+		base.OnSizeAllocated(width, height);
 	}
 
 	private void OnAddSessionClicked(object? sender, EventArgs e)
@@ -426,7 +426,7 @@ public partial class SessionView : ContentView
 		else
 			await _ai.ChatAsync(AppPreferences.AiChatService, prompt);
 
-		SaveChat(_selectedSession!.FileName);
+		SaveChat(_selectedSession.FileName);
 		UpdateChat();
 		UpdateSessionLog("", false, false);
 	}

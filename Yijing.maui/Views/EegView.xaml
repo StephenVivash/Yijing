@@ -3,9 +3,12 @@
 <ContentView
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+	
 	xmlns:views="clr-namespace:Yijing.Views"
 	xmlns:models="clr-namespace:YijingData;assembly=Yijing.data"
-	xmlns:conv="clr-namespace:Yijing.Services"	
+	xmlns:conv="clr-namespace:Yijing.Services"
+	
 	x:Class="Yijing.Views.EegView"
 	x:Name="eegView"
 	Loaded="Page_Loaded">
@@ -33,7 +36,7 @@
 						x:Name="lblDevice"
 						Text="Device"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="0"
 						/>
@@ -54,7 +57,7 @@
 						x:Name="lblMode"
 						Text="Mode"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="1"
 						/>
@@ -77,7 +80,7 @@
 						x:Name="lblSession"
 						Text="Session"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="2"
 						/>
@@ -95,7 +98,7 @@
 						x:Name="lblGoal"
 						Text="Goal"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="3"
 						/>
@@ -116,7 +119,7 @@
 						x:Name="lblAmbience"
 						Text="Ambience"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="4"
 						/>
@@ -139,7 +142,7 @@
 						x:Name="lblTimer"
 						Text="Timer"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="5"
 						/>
@@ -164,7 +167,7 @@
 						x:Name="lblReplaySpeed"
 						Text="Replay Speed"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="6"
 						/>
@@ -185,7 +188,7 @@
 						x:Name="lblChartBands"
 						Text="Chart Bands"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="7"
 						/>
@@ -208,7 +211,7 @@
 						x:Name="lblChartTime"
 						Text="Chart Time"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="8"
 						/>
@@ -229,7 +232,7 @@
 						x:Name="lblTriggerBand"
 						Text="Trigger Band"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="9"
 						/>
@@ -253,7 +256,7 @@
 						x:Name="lblTriggerChannel"
 						Text="Trigger Channel"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="10"
 						/>
@@ -277,7 +280,7 @@
 						x:Name="lblTriggerRange"
 						Text="Trigger Range"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="11"
 						/>
@@ -304,7 +307,7 @@
 						x:Name="lblAiAnalysis"
 						Text="AI Analysis"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="12"
 						/>
@@ -328,7 +331,7 @@
 						x:Name="lblAiModel"
 						Text="AI Model"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="13"
 						/>
@@ -349,7 +352,7 @@
 						x:Name="lblTriggerFixed"
 						Text="Fixed Range"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="14"
 						/>
@@ -365,7 +368,7 @@
 						x:Name="lblTriggerSounding"
 						Text="Trigger Sounding"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="15"
 						/>
@@ -381,7 +384,7 @@
 						x:Name="lblRawData"
 						Text="Raw Data"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="16"
 						/>
@@ -397,37 +400,10 @@
 
 				<Label
 					x:Name="lblTime"
-					FontSize="22"
-					FontAttributes="Bold"
-					LineBreakMode="TailTruncation"
-					MaxLines="1"
-					HorizontalOptions="Start"
-					VerticalOptions="Start"
-					Padding="0,10,0,0"
-					>
-
-				</Label>
-
-				<Label
-					x:Name="lblLineStart"
 					FontSize="18"
 					FontAttributes="Bold"
 					LineBreakMode="TailTruncation"
-					MaxLines="1"
-					HorizontalOptions="Start"
-					VerticalOptions="Start"
-					Padding="0,10,0,0"
-					/>
-
-				<Label
-					x:Name="lblLineEnd"
-					FontSize="18"
-					FontAttributes="Bold"
-					LineBreakMode="TailTruncation"
-					MaxLines="1"
-					HorizontalOptions="Start"
-					VerticalOptions="Start"
-					Padding="0,10,0,0"
+					VerticalTextAlignment="Center"
 					/>
 
 			</StackLayout>

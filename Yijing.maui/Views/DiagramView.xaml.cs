@@ -84,7 +84,7 @@ public partial class DiagramView : ContentView
 	private int m_nDiagramHeight;
 	private int m_nDiagramWidth;
 	private int m_nDiagramPadding;
-	private int m_nDiagramFontSize;
+	//private int m_nDiagramFontSize;
 
 	private RoundRectangle[,] m_recLine = new RoundRectangle[6, 2];
 	private Ellipse[] m_ellLine = new Ellipse[6];
@@ -187,8 +187,6 @@ public partial class DiagramView : ContentView
 
 	protected override void OnSizeAllocated(double width, double height)
 	{
-		base.OnSizeAllocated(width, height);
-
 		if ((width == -1) || (height == -1))
 			return;
 
@@ -255,6 +253,7 @@ public partial class DiagramView : ContentView
 		btnTransverse.WidthRequest = w;
 		btnNuclear.WidthRequest = w;
 
+		base.OnSizeAllocated(width, height);
 	}
 	/*
 	protected void lin_PointerEntered(object sender, PointerEventArgs e)
@@ -927,7 +926,7 @@ public partial class DiagramView : ContentView
 		m_nDiagramWidth = m_nDiagramHeight * 2;
 		m_nDiagramPadding = m_nDiagramHeight / 60;
 		m_nDiagramPadding = m_nDiagramPadding == 0 ? 2 : m_nDiagramPadding * 3;
-		m_nDiagramFontSize = m_nDiagramPadding * 6;
+		//m_nDiagramFontSize = m_nDiagramPadding * 6;
 
 		for (int i = 0; i < 6; ++i)
 		{
@@ -948,7 +947,7 @@ public partial class DiagramView : ContentView
 
 			rec.Y += m_nDiagramHeight + m_nDiagramPadding;
 		}
-		lblHexagram.FontSize = m_nDiagramFontSize;
+		//lblHexagram.FontSize = m_nDiagramFontSize;
 		UpdateDiagram(false);
 	}
 
@@ -1422,10 +1421,10 @@ public partial class DiagramView : ContentView
 
 	public void UpdateSessionLog(string str, bool append, bool newline)
 	{
-		if (append)
-			UI.Call<DiagramPage>(p => p.SessionLog().Text += str + (newline ? "\n" : ""));
-		else
-			UI.Call<DiagramPage>(p => p.SessionLog().Text = str + (newline ? "\n" : ""));
+		//if (append)
+		//	UI.Call<DiagramPage>(p => p.SessionLog().Text += str + (newline ? "\n" : ""));
+		//else
+		//	UI.Call<DiagramPage>(p => p.SessionLog().Text = str + (newline ? "\n" : ""));
 	}
 	/*
 	public void AiChat(bool includeCast)

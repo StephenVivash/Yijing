@@ -43,7 +43,23 @@ public partial class EegPage : ContentPage
 
 	protected override void OnSizeAllocated(double width, double height)
 	{
-		//diagram.WidthRequest = 600;
+		if ((width == -1) || (height == -1))
+			return;
+
+		//edtSessionLog.HeightRequest = 0;
+
+#if ANDROID || IOS
+		if (width > height)
+			eegView.WidthRequest = 200;
+		else
+			eegView.WidthRequest = 340;
+#endif
+
+		base.OnSizeAllocated(width, height);
 	}
 
+	public void ShowSessionLog(bool show)
+	{
+		edtSessionLog.IsVisible = show;
+	}
 }

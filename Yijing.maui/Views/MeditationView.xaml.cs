@@ -5,6 +5,8 @@ using YijingData;
 
 namespace Yijing.Views;
 
+#nullable enable
+
 public partial class MeditationView : ContentView
 {
 	private DateTime? _meditationStart;
@@ -32,8 +34,6 @@ public partial class MeditationView : ContentView
 
 	protected override void OnSizeAllocated(double width, double height)
 	{
-		base.OnSizeAllocated(width, height);
-
 		if ((width == -1) || (height == -1))
 			return;
 
@@ -55,14 +55,15 @@ public partial class MeditationView : ContentView
 		picAmbience.WidthRequest = w;
 		picTimer.WidthRequest = w;
 		lblElapsed2.WidthRequest = w;
-		btnMeditation.WidthRequest = w;
+		btnMeditation.WidthRequest = w - 20;
 		//btnMeditation.HeightRequest = 20;
 
 		w -= 5;
 
 		w /= 2;
-	}
 
+		base.OnSizeAllocated(width, height);
+	}
 
 	private void btnMeditation_Clicked(object sender, EventArgs e)
 	{
@@ -104,11 +105,11 @@ public partial class MeditationView : ContentView
 		TimeSpan elapsed = DateTime.Now - _meditationStart.Value;
 		UpdateElapsed(elapsed);
 
-		if (_targetDuration.HasValue && elapsed >= _targetDuration.Value)
-		{
-			AudioPlayer.PlayTimer(Dispatcher);
-			StopMeditation(true);
-		}
+		//if (_targetDuration.HasValue && elapsed >= _targetDuration.Value)
+		//{
+		//	AudioPlayer.PlayTimer(Dispatcher);
+		//	StopMeditation(true);
+		//}
 	}
 
 	private void StopMeditation(bool fromTimer)

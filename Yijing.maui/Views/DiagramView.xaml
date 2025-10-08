@@ -3,9 +3,12 @@
 <ContentView
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+	
 	xmlns:views="clr-namespace:Yijing.Views"
 	xmlns:models="clr-namespace:YijingData;assembly=Yijing.data"
-	xmlns:conv="clr-namespace:Yijing.Services"	
+	xmlns:conv="clr-namespace:Yijing.Services"
+	
 	x:Class="Yijing.Views.DiagramView"
 	x:Name="diaView"
 	Loaded="Page_Loaded">
@@ -285,11 +288,9 @@
 				<Label
 					x:Name="lblHexagram"
 					Text="1 Creative"
-					LineBreakMode="TailTruncation"
+					FontSize="16"
 					FontAttributes="Bold"
-					MaxLines="1"
-					HorizontalOptions="Start"
-					VerticalOptions="Start"
+					LineBreakMode="TailTruncation"
 					Padding="0,10,0,0"
 					/>
 
@@ -384,7 +385,7 @@
 						x:Name="lblDiagramMode"
 						Text="Diagram Mode"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="0"
 						/>
@@ -407,7 +408,7 @@
 						x:Name="lblDiagramType"
 						Text="Diagram Type"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="1"
 						/>
@@ -428,7 +429,7 @@
 						x:Name="lblDiagramSpeed"
 						Text="Diagram Speed"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="2"
 						/>
@@ -449,7 +450,7 @@
 						x:Name="lblDiagramColor"
 						Text="Diagram Color"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="3"
 						/>
@@ -471,7 +472,7 @@
 						x:Name="lblDiagramLsb"
 						Text="Diagram Lsb"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="4"
 						/>
@@ -491,7 +492,7 @@
 						x:Name="lblHexagramText"
 						Text="Hexagram Text"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="5"
 						/>
@@ -507,7 +508,7 @@
 						x:Name="lblHexagramLabel"
 						Text="Hexagram Label"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="6"
 						/>
@@ -523,7 +524,7 @@
 						x:Name="lblHexagramSequence"
 						Text="Hexagram Sequence"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="7"
 						/>
@@ -539,7 +540,7 @@
 						x:Name="lblHexagramRatio"
 						Text="Hexagram Ratio"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="8"
 						/>
@@ -555,7 +556,7 @@
 						x:Name="lblTrigramText"
 						Text="Trigram Text"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="9"
 						/>
@@ -571,7 +572,7 @@
 						x:Name="lblTrigramLabel"
 						Text="Trigram Label"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="10"
 						/>
@@ -587,7 +588,7 @@
 						x:Name="lblTrigramSequence"
 						Text="Trigram Sequence"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="11"
 						/>
@@ -603,7 +604,7 @@
 						x:Name="lblTrigramRatio"
 						Text="Trigram Ratio"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="12"
 						/>
@@ -619,7 +620,7 @@
 						x:Name="lblLineText"
 						Text="Line Text"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="13"
 						/>
@@ -635,7 +636,7 @@
 						x:Name="lblLineLabel"
 						Text="Line Label"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="14"
 						/>
@@ -651,7 +652,7 @@
 						x:Name="lblLineSequence"
 						Text="Line Sequence"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="15"
 						/>
@@ -667,7 +668,7 @@
 						x:Name="lblLineRatio"
 						Text="Line Ratio"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="16"
 						/>
@@ -678,25 +679,8 @@
 						Grid.Column="1"
 						Grid.Row="16"
 						/>
-
 				</Grid>
-
 			</StackLayout>
-
-			<!--VerticalStackLayout>
-				<Frame 
-					BorderColor="{Binding BorderColor, FallbackValue='Blue'}" 
-					BackgroundColor="{Binding IconBackgroundColor, FallbackValue='Blue'}">
-					<Image 
-						Source="{Binding IconImageSource}"/>
-				</Frame>
-				<Label 
-					Text="{Binding CardTitle, FallbackValue='Card Title'}"/>
-				<BoxView 
-					BackgroundColor="{Binding BorderColor, FallbackValue='Blue'}"/>
-				<Label 
-					Text="{Binding CardDescription, FallbackValue='Card description text.'}"/>
-			</VerticalStackLayout-->
 		</Border>
 	</ScrollView>
 </ContentView>

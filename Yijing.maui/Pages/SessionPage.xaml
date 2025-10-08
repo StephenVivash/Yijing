@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentPage
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+
+	xmlns:local="clr-namespace:Yijing"
+	xmlns:models="clr-namespace:YijingData;assembly=Yijing.data"
 	xmlns:views="clr-namespace:Yijing.Views"
+			 
 	x:Class="Yijing.Pages.SessionPage"
 	Title="Session"
 	Loaded="Page_Loaded">
 
 	<toolkit:DockLayout
-		Padding="10,10,10,10"
+		Padding="10"
 		VerticalSpacing="10"
 		HorizontalSpacing="10"
-		ShouldExpandLastChild="true">
+		ShouldExpandLastChild="true"
+		>
 
 		<views:SessionView
 			x:Name="sessionView"
@@ -21,48 +27,54 @@
 			ChatUpdated="SessionView_ChatUpdated" />
 
 		<VerticalStackLayout
+			x:Name="vslInput"
 			toolkit:DockLayout.DockPosition="Bottom"
-			HeightRequest="200"
-			Spacing="10">
+			HeightRequest="100"
+			>
 
-		<HorizontalStackLayout
-			Spacing="10">
-			<Label
-				Text="Chat Service"
-				VerticalTextAlignment="Center" />
-			<Picker
-				x:Name="picAiChatService"
-				SelectedIndexChanged="picAiChatService_SelectedIndexChanged">
-				<Picker.Items>
-					<x:String>OpenAi</x:String>
-					<x:String>Deepseek</x:String>
-					<x:String>Github</x:String>
-					<x:String>Ollama</x:String>
-					<x:String>None</x:String>
-				</Picker.Items>
-			</Picker>
+			<HorizontalStackLayout>
 
-			<CheckBox 
-				x:Name="chbIncludeCast"
-				CheckedChanged="chbIncludeCast_CheckedChanged"
-				>
-			</CheckBox>
+				<Label
+					Text="Chat Service"
+					VerticalTextAlignment="Center" />
 
-			<Label
-				Text="Include Cast"
-				Padding="0,10,10,0"
+				<Picker
+					x:Name="picAiChatService"
+					SelectedIndexChanged="picAiChatService_SelectedIndexChanged">
+					<Picker.Items>
+						<x:String>OpenAi</x:String>
+						<x:String>Deepseek</x:String>
+						<x:String>Github</x:String>
+						<x:String>Ollama</x:String>
+						<x:String>None</x:String>
+					</Picker.Items>
+				</Picker>
+
+				<CheckBox 
+					x:Name="chbIncludeCast"
+					CheckedChanged="chbIncludeCast_CheckedChanged"
+					>
+				</CheckBox>
+
+				<Label
+					Text="Include Cast"
+					VerticalTextAlignment="Center" />
+
+				<Button
+					x:Name="btnAiOrNote"
+					Text="Save note"
+					Margin="10,0,0,0"
+					Clicked="btnAiOrNote_Clicked" />
+
+			</HorizontalStackLayout>
+
+			<Editor
+				x:Name="edtSessionLog"
+				HeightRequest="100"
+				Focused="edtSessionLog_Focused"
+				Unfocused="edtSessionLog_Unfocused"
 				/>
 
-			<Button
-			x:Name="btnAiOrNote"
-			Text="Save note"
-			Clicked="btnAiOrNote_Clicked" />
-
-		</HorizontalStackLayout>
-
-		<Editor
-			x:Name="edtSessionLog"
-			HeightRequest="150" />
 		</VerticalStackLayout>
 
 		<WebView

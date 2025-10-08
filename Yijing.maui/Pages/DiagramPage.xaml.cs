@@ -6,7 +6,7 @@ namespace Yijing.Pages;
 
 public partial class DiagramPage : ContentPage
 {
-	public Editor SessionLog() => edtSessionLog;
+	//public Editor SessionLog() => edtSessionLog;
 	public WebView WebView() => webview;
 
 	public DiagramPage()
@@ -14,9 +14,9 @@ public partial class DiagramPage : ContentPage
 		Behaviors.Add(new RegisterInViewDirectoryBehavior());
 		InitializeComponent();
 
-		picAiChatService.SelectedIndex = AppPreferences.AiChatService;
+		//picAiChatService.SelectedIndex = AppPreferences.AiChatService;
 		//picAiMode.SelectedIndex = 0;
-		chbIncludeCast.IsChecked = true;
+		//chbIncludeCast.IsChecked = true;
 	}
 
 	private void Page_Loaded(object sender, EventArgs e)
@@ -27,9 +27,18 @@ public partial class DiagramPage : ContentPage
 
 	protected override void OnSizeAllocated(double width, double height)
 	{
+		if ((width == -1) || (height == -1))
+			return;
+
 #if ANDROID || IOS
-		//diagram.WidthRequest = 600;
+		//edtSessionLog.HeightRequest = 100;
+		if (width > height)
+			diagramView.WidthRequest = 200;
+		else
+			diagramView.WidthRequest = 340;
 #endif
+
+		base.OnSizeAllocated(width, height);
 	}
 
 	private void webview_Navigating(object sender, WebNavigatingEventArgs e)
@@ -58,14 +67,14 @@ public partial class DiagramPage : ContentPage
 
 	protected void picAiChatService_SelectedIndexChanged(object sender, EventArgs e)
 	{
-		AppPreferences.AiChatService = picAiChatService.SelectedIndex;
+		//AppPreferences.AiChatService = picAiChatService.SelectedIndex;
 		//if (AppPreferences.AiChatService != (int)eAiService.eNone)
 		//!string.IsNullOrEmpty(AppPreferences.AiModelId[AppPreferences.AiChatService]) &&
 		//(((AppPreferences.AiChatService == (int)eAiChatService.eOllama)) || 
 		//!string.IsNullOrEmpty(AppPreferences.AiKey[AppPreferences.AiChatService])))
 		//btnAskAi.IsEnabled = true;
 		//else
-		btnAskAi.IsEnabled = false;
+		//btnAskAi.IsEnabled = false;
 	}
 
 	//protected void picAiMode_SelectedIndexChanged(object sender, EventArgs e)
@@ -80,7 +89,7 @@ public partial class DiagramPage : ContentPage
 	protected void btnAskAi_Clicked(object sender, EventArgs e)
 	{
 		//diagram.AiChat(chbIncludeCast.IsChecked);
-		chbIncludeCast.IsChecked = false;
+		//chbIncludeCast.IsChecked = false;
 	}
 
 	private void chbIncludeCast_CheckedChanged(object sender, EventArgs e)

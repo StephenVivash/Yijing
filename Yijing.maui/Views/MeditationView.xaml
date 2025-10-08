@@ -3,9 +3,12 @@
 <ContentView
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+	
 	xmlns:views="clr-namespace:Yijing.Views"
 	xmlns:models="clr-namespace:YijingData;assembly=Yijing.data"
 	xmlns:conv="clr-namespace:Yijing.Services"	
+
 	x:Class="Yijing.Views.MeditationView"
 	x:Name="meditationView"
 	Loaded="ContentView_Loaded">
@@ -33,7 +36,7 @@
 						x:Name="lblGoal"
 						Text="Goal"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="0" />
 
@@ -52,7 +55,7 @@
 						x:Name="lblAmbience"
 						Text="Ambience"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="1" />
 
@@ -73,7 +76,7 @@
 						x:Name="lblTimer"
 						Text="Timer"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="2" />
 
@@ -96,14 +99,17 @@
 						x:Name="lblElapsed1"
 						Text="Elapsed Time"
 						LineBreakMode="TailTruncation"
-						Padding="0,10,0,0"
+						VerticalTextAlignment="Center"
+						Padding="0,10"
 						Grid.Column="0"
 						Grid.Row="3"/>
 
 					<Label
 						x:Name="lblElapsed2"
 						Text="00:00:00"
-						Padding="12,10,0,0"
+						LineBreakMode="TailTruncation"
+						VerticalTextAlignment="Center"
+						Padding="10,0"
 						Grid.Column="1"
 						Grid.Row="3"/>
 
@@ -111,7 +117,7 @@
 						x:Name="lblMeditation"
 						Text="Meditation"
 						LineBreakMode="TailTruncation"
-						Padding="0,25,0,0"
+						VerticalTextAlignment="Center"
 						Grid.Column="0"
 						Grid.Row="4"/>
 
@@ -119,7 +125,7 @@
 						x:Name="btnMeditation"
 						Text="Start"
 						Clicked="btnMeditation_Clicked"
-						Margin="0,15,0,0"
+						Margin="0,10,0,0"
 						Grid.Column="1"
 						Grid.Row="4"/>
 

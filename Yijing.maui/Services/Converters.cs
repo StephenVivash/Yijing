@@ -19,14 +19,14 @@ public sealed class YijingCastConverter : IValueConverter
 		=> throw new NotImplementedException(); // usually one-way
 }
 
-public sealed class BoolToStringConverter : IValueConverter
+public sealed class MeditationConverter : IValueConverter
 {
 	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 	{
 		if (value is null) return string.Empty;
 
 		if (value is bool b)
-			return b ? "Y" : string.Empty;
+			return b ? "M" : "";
 
 		return string.Empty;
 	}
@@ -42,9 +42,7 @@ public sealed class EegDeviceConverter : IValueConverter
 		if (value is null) return string.Empty;
 
 		if (value is eEegDevice eeg)
-			if (eeg == eEegDevice.eNone) return string.Empty;
-			else if (eeg == eEegDevice.eMuse) return "M";
-			else if (eeg == eEegDevice.eEmotiv) return "E";
+			return eeg == eEegDevice.eNone ? "" : "E";
 
 		return string.Empty;
 	}
@@ -52,3 +50,20 @@ public sealed class EegDeviceConverter : IValueConverter
 	public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		=> throw new NotImplementedException(); // usually one-way
 }
+
+public sealed class AnalysisConverter : IValueConverter
+{
+	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+	{
+		if (value is null) return string.Empty;
+
+		if (value is bool b)
+			return b ? "A" : "";
+
+		return string.Empty;
+	}
+
+	public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		=> throw new NotImplementedException(); // usually one-way
+}
+

@@ -107,8 +107,6 @@ public partial class EegView : ContentView
 
 	protected override void OnSizeAllocated(double width, double height)
 	{
-		base.OnSizeAllocated(width, height);
-
 		if ((width == -1) || (height == -1))
 			return;
 
@@ -138,6 +136,7 @@ public partial class EegView : ContentView
 		lblTriggerRange.WidthRequest = w;
 		lblTriggerFixed.WidthRequest = w;
 		lblTriggerSounding.WidthRequest = w;
+		lblRawData.WidthRequest = w;
 
 		picDevice.WidthRequest = w;
 		picMode.WidthRequest = w;
@@ -155,8 +154,11 @@ public partial class EegView : ContentView
 		picTriggerRange.WidthRequest = w;
 		chbTriggerFixed.WidthRequest = w;
 		chbTriggerSounding.WidthRequest = w;
+		chbRawData.WidthRequest = w;
 
 		w /= 2;
+
+		base.OnSizeAllocated(width, height);
 	}
 
 	private void picDevice_SelectedIndexChanged(object sender, EventArgs e)
@@ -332,6 +334,10 @@ public partial class EegView : ContentView
 	private void picAiAnalysis_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		AppPreferences.AiEegService = picAiAnalysis.SelectedIndex;
+		if (AppPreferences.AiEegService == (int)eAiService.eNone)
+			UI.Call<EegPage>(p => p.ShowSessionLog(false));
+		else
+			UI.Call<EegPage>(p => p.ShowSessionLog(true));
 	}
 
 	private void picAiModel_SelectedIndexChanged(object sender, EventArgs e)

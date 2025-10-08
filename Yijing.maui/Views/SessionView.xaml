@@ -3,9 +3,12 @@
 <ContentView
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+	
 	xmlns:views="clr-namespace:Yijing.Views"
 	xmlns:models="clr-namespace:YijingData;assembly=Yijing.data"
 	xmlns:conv="clr-namespace:Yijing.Services"	
+
 	x:Class="Yijing.Views.SessionView"
 	x:Name="sessionView"
 	Loaded="OnLoaded">
@@ -13,8 +16,9 @@
 	<ContentView.Resources>
 		<ResourceDictionary>
 			<conv:YijingCastConverter x:Key="YijingCastConverter" />
-			<conv:BoolToStringConverter x:Key="BoolToStringConverter" />
+			<conv:MeditationConverter x:Key="MeditationConverter" />
 			<conv:EegDeviceConverter x:Key="EegDeviceConverter" />
+			<conv:AnalysisConverter x:Key="AnalysisConverter" />
 		</ResourceDictionary>
 	</ContentView.Resources>
 
@@ -113,7 +117,7 @@
 							LineBreakMode="TailTruncation" />
 						<Label
 							Grid.Column="2"
-							Text="{Binding Meditation, Converter={StaticResource BoolToStringConverter}}"
+							Text="{Binding Meditation, Converter={StaticResource MeditationConverter}}"
 							VerticalTextAlignment="Center"
 							LineBreakMode="TailTruncation" />
 						<Label
@@ -123,7 +127,7 @@
 							LineBreakMode="TailTruncation" />
 						<Label
 							Grid.Column="4"
-							Text="{Binding EegAnalysis, Converter={StaticResource BoolToStringConverter}}"
+							Text="{Binding EegAnalysis, Converter={StaticResource AnalysisConverter}}"
 							VerticalTextAlignment="Center"
 							LineBreakMode="TailTruncation" />
 						<Label
