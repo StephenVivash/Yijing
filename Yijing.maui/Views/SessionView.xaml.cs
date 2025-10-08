@@ -63,21 +63,16 @@ public partial class SessionView : ContentView
 		if ((width == -1) || (height == -1))
 			return;
 
-		double w = width - 20;
-		//if (width < 380)
-		//	w = width - 30;
+		double w = width - 10;
 
 		w = width - 40;
 		//lblHexagram.WidthRequest = w;
 
 		w /= 2;
-
 		//lblDiagramMode.WidthRequest = w;
 
 		w -= 5;
-
 		//lblSession.WidthRequest = w - 50;
-		//picSession.WidthRequest = w;
 
 		w /= 2;
 		btnAdd.WidthRequest = w;
@@ -244,11 +239,13 @@ public partial class SessionView : ContentView
 			using (var yc = new YijingDbContext())
 			{
 				if ((reload || yc.Migrated("SessionDevice")) && yc.Sessions.Any())
-				{
-					IQueryable<Session> iqs = yc.Sessions;
-					yc.Sessions.RemoveRange(iqs);
-					YijingDatabase.SaveChanges(yc);
-				}
+					yc.Sessions.ExecuteDelete();
+				if ((reload || yc.Migrated("AddMeditation")) && yc.Meditations.Any())
+					yc.Meditations.ExecuteDelete();
+
+				List<Meditation> lm = [];
+				bool anyMeditations = yc.Meditations.Any();
+
 				if (!yc.Sessions.Any())
 				{
 					IEnumerable<string>[] files = new IEnumerable<string>[3];
@@ -267,6 +264,11 @@ public partial class SessionView : ContentView
 						foreach (string file in files[i])
 						{
 							var session = CreateSession(file);
+
+							if (DateTime.TryParseExact(session.FileName, "yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture,
+								DateTimeStyles.AssumeLocal, out DateTime dt))
+								lm.Add(new Meditation { Start = dt, Duration = 60 }); // ??????????????????
+
 							var match = _sessions.FirstOrDefault(s => s.FileName.Equals(session.FileName,
 								StringComparison.OrdinalIgnoreCase));
 							if (match is not null)
@@ -277,7 +279,6 @@ public partial class SessionView : ContentView
 									match.EegAnalysis = File.Exists(Path.Combine(AppSettings.DocumentHome(), "Analysis",
 										Path.GetFileNameWithoutExtension(file) + ".txt"));
 								}
-								//match.Description = (i == 1 ? "*M " : "*E  ") + match.Description;
 								match.EegDevice = i == 1 ? eEegDevice.eMuse : eEegDevice.eEmotiv;
 							}
 							else
@@ -293,12 +294,48 @@ public partial class SessionView : ContentView
 							}
 						}
 					}
-					_sessions = new List<Session>(_sessions.OrderByDescending(s => s.FileName, StringComparer.OrdinalIgnoreCase));
 					yc.Sessions.AddRange(_sessions);
+					yc.Meditations.AddRange(lm);
 					YijingDatabase.SaveChanges(yc);
 				}
-				else
-					_sessions = yc.Sessions.AsNoTracking().ToList();
+
+				string filePath = Path.Combine(AppSettings.DocumentHome(), "Meditation.txt");
+				if (!anyMeditations && File.Exists(filePath))
+				{
+					lm = [];
+					IEnumerable<string> text = File.ReadLines(filePath);
+					foreach (string line in text)
+					{
+						string[] parts = line.Split([' ', '\t'], StringSplitOptions.RemoveEmptyEntries);
+						if (parts.Length > 3)
+							if (DateTime.TryParseExact(parts[2], "yyyy-MM-ddTHH:mm:ss.ffffff", CultureInfo.InvariantCulture,
+								DateTimeStyles.AssumeLocal, out DateTime dt1) &&
+								DateTime.TryParseExact(parts[3], "yyyy-MM-ddTHH:mm:ss.ffffff", CultureInfo.InvariantCulture,
+								DateTimeStyles.AssumeLocal, out DateTime dt2))
+							{
+								TimeSpan ts = dt2 - dt1;
+								lm.Add(new Meditation { Start = dt1, Duration = (int)ts.TotalMinutes });
+								string matchname = dt1.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+								var match = _sessions.FirstOrDefault(s => s.FileName!.StartsWith(matchname,
+									StringComparison.OrdinalIgnoreCase));
+								if (match is null)
+								{
+									match = new Session(0, dt1.ToString("MMM dd HH:mm", CultureInfo.InvariantCulture),
+										"Meditation session", dt1.ToString("yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture),
+										"", true);
+									yc.Sessions.Add(match);
+								}
+								else
+									match.Meditation = true;
+								YijingDatabase.SaveChanges(yc);
+							}
+						}
+					yc.Meditations.AddRange(lm);
+					YijingDatabase.SaveChanges(yc);
+				}
+
+				_sessions = yc.Sessions.AsNoTracking().ToList();
+				_sessions = new List<Session>(_sessions.OrderByDescending(s => s.FileName, StringComparer.OrdinalIgnoreCase));
 			}
 
 			sessionCollection.ItemsSource = _sessions;
@@ -328,7 +365,7 @@ public partial class SessionView : ContentView
 			if (extension.Equals(".txt", StringComparison.OrdinalIgnoreCase))
 				ReadText(filePath, ref description, ref yijingCast);
 			else if (extension.Equals(".csv", StringComparison.OrdinalIgnoreCase))
-				description = "EEG data";
+				description = "EEG session";
 
 		return new Session(0, name, description, fileName, yijingCast);
 	}

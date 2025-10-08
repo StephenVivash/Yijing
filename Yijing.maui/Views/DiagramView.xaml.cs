@@ -191,17 +191,12 @@ public partial class DiagramView : ContentView
 			return;
 
 		double w = width - 10;
-		//if (width < 380)
-		//	w = width - 30;
-
 		ResizeDiagram(w, height);
 
 		w = width - 40;
-
 		lblHexagram.WidthRequest = w;
 
 		w /= 2;
-
 		lblDiagramMode.WidthRequest = w;
 		lblDiagramType.WidthRequest = w;
 		lblDiagramSpeed.WidthRequest = w;
@@ -243,7 +238,6 @@ public partial class DiagramView : ContentView
 		w -= 10;
 
 		w /= 2;
-
 		btnMove.WidthRequest = w;
 		btnHome.WidthRequest = w;
 		btnFirst.WidthRequest = w;

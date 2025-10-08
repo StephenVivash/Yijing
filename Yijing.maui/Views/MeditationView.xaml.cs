@@ -38,8 +38,6 @@ public partial class MeditationView : ContentView
 			return;
 
 		double w = width - 10;
-		//if (width < 380)
-		//	w = width - 30;
 
 		w = width - 40;
 

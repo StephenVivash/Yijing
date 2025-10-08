@@ -111,15 +111,11 @@ public partial class EegView : ContentView
 			return;
 
 		double w = width - 10;
-		//if (width < 380)
-		//	w = width - 30;
 
 		w = width - 40;
-
 		lblTime.WidthRequest = w;
 
 		w /= 2;
-
 		lblDevice.WidthRequest = w;
 		lblMode.WidthRequest = w;
 		lblSession.WidthRequest = w;
@@ -157,7 +153,6 @@ public partial class EegView : ContentView
 		chbRawData.WidthRequest = w;
 
 		w /= 2;
-
 		base.OnSizeAllocated(width, height);
 	}
 
