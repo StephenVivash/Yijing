@@ -103,11 +103,11 @@ public partial class MeditationView : ContentView
 		TimeSpan elapsed = DateTime.Now - _meditationStart.Value;
 		UpdateElapsed(elapsed);
 
-		//if (_targetDuration.HasValue && elapsed >= _targetDuration.Value)
-		//{
-		//	AudioPlayer.PlayTimer(Dispatcher);
+		if (_targetDuration.HasValue && elapsed >= _targetDuration.Value)
+		{
+			AudioPlayer.PlayTimer(Dispatcher);
 		//	StopMeditation(true);
-		//}
+		}
 	}
 
 	private void StopMeditation(bool fromTimer)

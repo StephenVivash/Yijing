@@ -197,7 +197,7 @@ public partial class MeditationPage : ContentPage
 		{
 			int index = meditation.Start.Month - 1;
 			if (index >= 0 && index < values.Length)
-				values[index] += meditation.Duration;
+				values[index] += meditation.Duration / 60;
 		}
 		return values;
 	}

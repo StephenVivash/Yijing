@@ -265,9 +265,10 @@ public partial class SessionView : ContentView
 						{
 							var session = CreateSession(file);
 
-							if (DateTime.TryParseExact(session.FileName, "yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture,
-								DateTimeStyles.AssumeLocal, out DateTime dt))
-								lm.Add(new Meditation { Start = dt, Duration = 60 }); // ??????????????????
+							if (i > 0)
+								if (DateTime.TryParseExact(session.FileName, "yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture,
+									DateTimeStyles.AssumeLocal, out DateTime dt))
+									lm.Add(new Meditation { Start = dt, Duration = 60 }); // ??????????????????
 
 							var match = _sessions.FirstOrDefault(s => s.FileName.Equals(session.FileName,
 								StringComparison.OrdinalIgnoreCase));
@@ -314,6 +315,7 @@ public partial class SessionView : ContentView
 								DateTimeStyles.AssumeLocal, out DateTime dt2))
 							{
 								TimeSpan ts = dt2 - dt1;
+								dt1 = new DateTime(dt1.Year, dt1.Month, dt1.Day, dt1.Hour, dt1.Minute, dt1.Second);
 								lm.Add(new Meditation { Start = dt1, Duration = (int)ts.TotalMinutes });
 								string matchname = dt1.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
 								var match = _sessions.FirstOrDefault(s => s.FileName!.StartsWith(matchname,
