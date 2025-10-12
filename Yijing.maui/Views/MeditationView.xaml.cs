@@ -9,7 +9,8 @@ namespace Yijing.Views;
 
 public partial class MeditationView : ContentView
 {
-	private DateTime? _meditationStart;
+	private DateTime? _dtElapsed;
+	private DateTime? _dtTimer;
 	private IDispatcherTimer? _timer;
 	private TimeSpan? _targetDuration;
 	private bool _isMeditating;
@@ -28,7 +29,7 @@ public partial class MeditationView : ContentView
 		picGoal.SelectedIndex = AppPreferences.EegGoal;
 		picAmbience.SelectedIndex = AppPreferences.Ambience;
 		picTimer.SelectedIndex = AppPreferences.Timer;
-		UpdateStatus("Meditation is idle");
+		//UpdateStatus("Meditation is idle");
 		UpdateElapsed(TimeSpan.Zero);
 	}
 
@@ -73,7 +74,8 @@ public partial class MeditationView : ContentView
 
 	private void StartMeditation()
 	{
-		_meditationStart = DateTime.Now;
+		_dtElapsed = DateTime.Now;
+		_dtTimer = _dtElapsed;
 		_isMeditating = true;
 		btnMeditation.Text = "Stop";
 		//UpdateStatus("Meditation in progress...");
@@ -97,14 +99,16 @@ public partial class MeditationView : ContentView
 
 	private void Timer_Tick(object? sender, EventArgs e)
 	{
-		if (_meditationStart is null)
-			return;
+		//if (_dtElapsed is null)
+		//	return;
 
-		TimeSpan elapsed = DateTime.Now - _meditationStart.Value;
+		TimeSpan elapsed = DateTime.Now - _dtElapsed!.Value;
 		UpdateElapsed(elapsed);
 
+		elapsed = DateTime.Now - _dtTimer!.Value;
 		if (_targetDuration.HasValue && elapsed >= _targetDuration.Value)
 		{
+			_dtTimer = DateTime.Now;
 			AudioPlayer.PlayTimer(Dispatcher);
 		//	StopMeditation(true);
 		}
@@ -112,16 +116,16 @@ public partial class MeditationView : ContentView
 
 	private void StopMeditation(bool fromTimer)
 	{
-		if (_meditationStart is null)
+		if (_dtElapsed is null)
 			return;
 
 		_timer?.Stop();
-		TimeSpan elapsed = DateTime.Now - _meditationStart.Value;
+		TimeSpan elapsed = DateTime.Now - _dtElapsed.Value;
 		int durationMinutes = Math.Max(1, (int)Math.Round(elapsed.TotalMinutes));
 
-		SaveMeditation(_meditationStart.Value, durationMinutes);
+		SaveMeditation(_dtElapsed.Value, durationMinutes);
 
-		_meditationStart = null;
+		_dtElapsed = null;
 		_isMeditating = false;
 		btnMeditation.Text = "Start";
 		//UpdateStatus(fromTimer ? "Meditation completed" : "Meditation stopped");
@@ -131,22 +135,15 @@ public partial class MeditationView : ContentView
 
 	private void SaveMeditation(DateTime start, int durationMinutes)
 	{
-		try
+		using var context = new YijingDbContext();
+		var meditation = new Meditation
 		{
-			using var context = new YijingDbContext();
-			var meditation = new Meditation
-			{
-				Start = start,
-				Duration = durationMinutes
-			};
-			context.Meditations.Add(meditation);
-			YijingDatabase.SaveChanges(context);
-			MeditationCompleted?.Invoke(this, new MeditationSessionCompletedEventArgs(meditation));
-		}
-		catch (Exception ex)
-		{
-			Debug.WriteLine($"Failed to save meditation: {ex.Message}");
-		}
+			Start = start,
+			Duration = durationMinutes
+		};
+		context.Meditations.Add(meditation);
+		YijingDatabase.SaveChanges(context);
+		MeditationCompleted?.Invoke(this, new MeditationSessionCompletedEventArgs(meditation));
 	}
 
 	private void UpdateStatus(string message)
