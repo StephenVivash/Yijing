@@ -29,7 +29,6 @@ public partial class MeditationView : ContentView
 		picGoal.SelectedIndex = AppPreferences.EegGoal;
 		picAmbience.SelectedIndex = AppPreferences.Ambience;
 		picTimer.SelectedIndex = AppPreferences.Timer;
-		//UpdateStatus("Meditation is idle");
 		UpdateElapsed(TimeSpan.Zero);
 	}
 
@@ -55,7 +54,6 @@ public partial class MeditationView : ContentView
 		picTimer.WidthRequest = w;
 		lblElapsed2.WidthRequest = w;
 		btnMeditation.WidthRequest = w - 20;
-		//btnMeditation.HeightRequest = 20;
 
 		w -= 5;
 
@@ -78,7 +76,6 @@ public partial class MeditationView : ContentView
 		_dtTimer = _dtElapsed;
 		_isMeditating = true;
 		btnMeditation.Text = "Stop";
-		//UpdateStatus("Meditation in progress...");
 		UpdateElapsed(TimeSpan.Zero);
 		_targetDuration = SelectedTimerDuration();
 		EnsureTimer();
@@ -99,9 +96,6 @@ public partial class MeditationView : ContentView
 
 	private void Timer_Tick(object? sender, EventArgs e)
 	{
-		//if (_dtElapsed is null)
-		//	return;
-
 		TimeSpan elapsed = DateTime.Now - _dtElapsed!.Value;
 		UpdateElapsed(elapsed);
 
@@ -110,15 +104,11 @@ public partial class MeditationView : ContentView
 		{
 			_dtTimer = DateTime.Now;
 			AudioPlayer.PlayTimer(Dispatcher);
-		//	StopMeditation(true);
 		}
 	}
 
 	private void StopMeditation(bool fromTimer)
 	{
-		if (_dtElapsed is null)
-			return;
-
 		_timer?.Stop();
 		TimeSpan elapsed = DateTime.Now - _dtElapsed.Value;
 		int durationMinutes = Math.Max(1, (int)Math.Round(elapsed.TotalMinutes));
@@ -128,7 +118,6 @@ public partial class MeditationView : ContentView
 		_dtElapsed = null;
 		_isMeditating = false;
 		btnMeditation.Text = "Start";
-		//UpdateStatus(fromTimer ? "Meditation completed" : "Meditation stopped");
 		UpdateElapsed(TimeSpan.Zero);
 		AudioPlayer.Ambience(Dispatcher, false);
 	}
@@ -144,11 +133,6 @@ public partial class MeditationView : ContentView
 		context.Meditations.Add(meditation);
 		YijingDatabase.SaveChanges(context);
 		MeditationCompleted?.Invoke(this, new MeditationSessionCompletedEventArgs(meditation));
-	}
-
-	private void UpdateStatus(string message)
-	{
-		//lblStatus.Text = message;
 	}
 
 	private void UpdateElapsed(TimeSpan elapsed)

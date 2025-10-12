@@ -34,6 +34,13 @@ public partial class SessionView : ContentView
 		InitializeComponent();
 		BindingContext = this;
 
+		if (App.Current!.RequestedTheme == AppTheme.Dark)
+		{
+			hslButtons.BackgroundColor = Colors.Black;
+			grdLabels.BackgroundColor = Colors.Black;
+			sessionCollection.BackgroundColor = Colors.Black;
+		}
+
 		_ai._systemPrompts[0] =
 			"This app allows a user to consult the Yijing and engage in casual conversation with AI. " +
 			"Don't explain what the Yijing is or how it works unless explicitly asked. " +
@@ -148,17 +155,17 @@ public partial class SessionView : ContentView
 		sb.Append("}");
 		sb.Append("strong{color:" + strFC + ";}");
 		sb.Append("a {" + $" color: {strAC};" + "} ");
-		sb.Append("h1 {" + $" color: {strAC};" + "} ");
+		sb.Append("h2 {" + $" color: {strAC};" + "} ");
 		sb.Append("h2 {" + $" color: {strAC};" + "} ");
 		sb.Append("h4 {" + $" color: {strAC};" + "} ");
 		sb.Append("</style></head><body>");
 
 		if (_selectedSession is not null)
 		{
-			sb.Append($"<h2>Session: {WebUtility.HtmlEncode(_selectedSession.Name)}");
+			sb.Append($"<h2>{WebUtility.HtmlEncode(_selectedSession.Name)}");
 			string yjingCast = WebUtility.HtmlEncode(_selectedSession.YijingCast);
 			if (!string.IsNullOrEmpty(yjingCast))
-				sb.Append($" - ({yjingCast})");
+				sb.Append($" - {yjingCast}");
 		}
 
 		if (_ai._contextSessions.Count() > 0)
@@ -210,7 +217,7 @@ public partial class SessionView : ContentView
 		if (_selectedSession is not null)
 		{
 			string title = WebUtility.HtmlEncode(_selectedSession.Name);
-			sb.Append($"<h1>Session: {title}</h1>");
+			sb.Append($"<h2>{title}</h2>");
 		}
 
 		int count = Math.Max(_ai._userPrompts[1].Count, _ai._chatReponses[1].Count);

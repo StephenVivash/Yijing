@@ -12,6 +12,13 @@ public partial class SessionPage : ContentPage
 	{
 		Behaviors.Add(new RegisterInViewDirectoryBehavior());
 		InitializeComponent();
+
+		if (App.Current!.RequestedTheme == AppTheme.Dark)
+		{
+			edtSessionLog.BackgroundColor = Colors.Black;
+			vslInput.BackgroundColor = Colors.Black;
+		}
+
 		picAiChatService.SelectedIndex = AppPreferences.AiChatService;
 		chbIncludeCast.IsChecked = true;
 	}
@@ -30,7 +37,7 @@ public partial class SessionPage : ContentPage
 		if (width > height)
 			sessionView.WidthRequest = 200;
 		else
-			sessionView.WidthRequest = 340;
+			sessionView.WidthRequest = width - 10;
 #endif
 
 		base.OnSizeAllocated(width, height);
@@ -65,6 +72,10 @@ public partial class SessionPage : ContentPage
 	}
 
 	private void edtSessionLog_Unfocused(object sender, FocusEventArgs e)
+	{
+	}
+
+	private void webview_Focused(object sender, FocusEventArgs e)
 	{
 		vslInput.HeightRequest = 100;
 		edtSessionLog.HeightRequest = 100;

@@ -304,7 +304,6 @@
 					<Button 
 						x:Name="btnFirst"
 						Text="First"
-						LineBreakMode="TailTruncation"
 						Clicked="btnFirst_Clicked"
 						Grid.Column="0"
 						Grid.Row="0"
@@ -313,7 +312,6 @@
 					<Button 
 						x:Name="btnLast"
 						Text="Last"
-						LineBreakMode="TailTruncation"
 						Clicked="btnLast_Clicked"
 						Grid.Column="1"
 						Grid.Row="0"
@@ -322,7 +320,6 @@
 					<Button 
 						x:Name="btnMove"
 						Text="Move"
-						LineBreakMode="TailTruncation"
 						Clicked="btnMove_Clicked"
 						Grid.Column="2"
 						Grid.Row="0"
@@ -331,7 +328,6 @@
 					<Button 
 						x:Name="btnHome"
 						Text="Home"
-						LineBreakMode="TailTruncation"
 						Clicked="btnHome_Clicked"
 						Grid.Column="3"
 						Grid.Row="0"
@@ -340,7 +336,6 @@
 					<Button 
 						x:Name="btnInverse"
 						Text="Inverse"
-						LineBreakMode="TailTruncation"
 						Clicked="btnInverse_Clicked"
 						Grid.Column="0"
 						Grid.Row="1"
@@ -349,7 +344,6 @@
 					<Button 
 						x:Name="btnOpposite"
 						Text="Opposite"
-						LineBreakMode="TailTruncation"
 						Clicked="btnOpposite_Clicked"
 						Grid.Column="1"
 						Grid.Row="1"
@@ -358,7 +352,6 @@
 					<Button 
 						x:Name="btnTransverse"
 						Text="Transverse"
-						LineBreakMode="TailTruncation"
 						Clicked="btnTransverse_Clicked"
 						Grid.Column="2"
 						Grid.Row="1"
@@ -367,7 +360,6 @@
 					<Button 
 						x:Name="btnNuclear"
 						Text="Nuclear"
-						LineBreakMode="TailTruncation"
 						Clicked="btnNuclear_Clicked"
 						Grid.Column="3"
 						Grid.Row="1"

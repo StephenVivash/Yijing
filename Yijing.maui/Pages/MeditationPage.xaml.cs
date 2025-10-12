@@ -33,6 +33,12 @@ public partial class MeditationPage : ContentPage
 		Behaviors.Add(new RegisterInViewDirectoryBehavior());
 		InitializeComponent();
 
+		if (App.Current!.RequestedTheme == AppTheme.Dark)
+		{
+			chaMeditation.BackgroundColor = Colors.Black;
+			hslSelection.BackgroundColor = Colors.Black;
+		}
+
 		BindingContext = _histogram;
 
 		_xAxis = new Axis
@@ -75,7 +81,7 @@ public partial class MeditationPage : ContentPage
 		if (width > height)
 			meditationView.WidthRequest = 200;
 		else
-			meditationView.WidthRequest = 340;
+			meditationView.WidthRequest = width - 10;
 #endif
 
 		base.OnSizeAllocated(width, height);

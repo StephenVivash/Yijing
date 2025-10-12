@@ -25,13 +25,13 @@
 		<views:MeditationView
 			x:Name="meditationView"
 			toolkit:DockLayout.DockPosition="Left"
-			WidthRequest="340"
+			WidthRequest="300"
 			CardTitle="Meditation"
 			MeditationCompleted="MeditationView_MeditationCompleted" />
 
-		<StackLayout
+		<HorizontalStackLayout
+			x:Name="hslSelection"
 			toolkit:DockLayout.DockPosition="Top"
-			Orientation="Horizontal"
 			Spacing="10"
 			VerticalOptions="Start"
 			HorizontalOptions="Start">
@@ -65,7 +65,7 @@
 				x:Name="lblRange"
 				VerticalOptions="Center" />
 
-		</StackLayout>
+		</HorizontalStackLayout>
 
 		<lvc:CartesianChart
 			x:Name="chaMeditation"

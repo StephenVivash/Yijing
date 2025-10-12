@@ -1292,12 +1292,12 @@ public partial class DiagramView : ContentView
 		"} " +
 		"strong{color:" + strFC + ";} " +
 		"a {" + $" color: {strAC};" + "} " +
-		"h1 {" + $" color: {strAC};" + "} " +
+		"h2 {" + $" color: {strAC};" + "} " +
 		"h2 {" + $" color: {strAC};" + "} " +
 		"h4 {" + $" color: {strAC};" + "} " +
-		"</style></head><body><h1>";
+		"</style></head><body><h2>";
 
-		strHtml += hvsPrimary.DescribeCast() + "</h1>";
+		strHtml += hvsPrimary.DescribeCast() + "</h2>";
 
 		if (strText == "Andrade")
 		{
@@ -1598,7 +1598,7 @@ public partial class DiagramView : ContentView
 			"a {" +
 			$" color: {strAC};" +
 			"} " +
-			"h1 {" +
+			"h2 {" +
 			$" color: {strAC};" +
 			"} " +
 			"h2 {" +
@@ -1607,14 +1607,14 @@ public partial class DiagramView : ContentView
 			"h4 {" +
 			$" color: {strAC};" +
 			"} " +
-			"</style></head><body><h1>" + " Chat Session: " + (picSession.SelectedItem as string);
+			"</style></head><body><h2>" + " Chat Session: " + (picSession.SelectedItem as string);
 
 		if (_ai._contextSessions.Count() > 0)
 			strHtml += "</p>Context Sessions: ";
 		foreach (var s in _ai._contextSessions)
 			strHtml += s + " ";
 
-		strHtml += "</h1>";
+		strHtml += "</h2>";
 
 		int count = int.Max(_ai._chatReponses[1].Count(), _ai._userPrompts[1].Count());
 		for (int i = 0; i < count; ++i)

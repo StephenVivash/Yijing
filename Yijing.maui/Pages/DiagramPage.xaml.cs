@@ -35,7 +35,7 @@ public partial class DiagramPage : ContentPage
 		if (width > height)
 			diagramView.WidthRequest = 200;
 		else
-			diagramView.WidthRequest = 340;
+			diagramView.WidthRequest = width - 10;
 #endif
 
 		base.OnSizeAllocated(width, height);

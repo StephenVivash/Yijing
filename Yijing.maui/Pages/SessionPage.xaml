@@ -23,7 +23,7 @@
 		<views:SessionView
 			x:Name="sessionView"
 			toolkit:DockLayout.DockPosition="Left"
-			WidthRequest="340"
+			WidthRequest="300"
 			ChatUpdated="SessionView_ChatUpdated" />
 
 		<VerticalStackLayout
@@ -78,6 +78,8 @@
 		</VerticalStackLayout>
 
 		<WebView
-			x:Name="webview" />
+			x:Name="webview"
+			Focused="webview_Focused"
+			/>
 	</toolkit:DockLayout>
 </ContentPage>

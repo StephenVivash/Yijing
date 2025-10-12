@@ -22,6 +22,12 @@ public partial class EegPage : ContentPage
 		Behaviors.Add(new RegisterInViewDirectoryBehavior());
 		InitializeComponent();
 
+		if (App.Current!.RequestedTheme == AppTheme.Dark)
+		{
+			edtSessionLog.BackgroundColor = Colors.Black;
+			chaEeg.BackgroundColor = Colors.Black;
+		}
+
 		EegSeries eegChart = new();
 		var xAxis = new Axis
 		{
@@ -52,7 +58,7 @@ public partial class EegPage : ContentPage
 		if (width > height)
 			eegView.WidthRequest = 200;
 		else
-			eegView.WidthRequest = 340;
+			eegView.WidthRequest = width - 10;
 #endif
 
 		base.OnSizeAllocated(width, height);

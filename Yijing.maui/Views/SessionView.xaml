@@ -27,8 +27,10 @@
 		>
 
 		<HorizontalStackLayout
+			x:Name="hslButtons"
 			Grid.Row="0"
-			Spacing="12"
+			Padding="10,10"
+			Spacing="5"
 			>
 
 			<Button
@@ -44,8 +46,9 @@
 		</HorizontalStackLayout>
 
 		<Grid
+			x:Name="grdLabels"
 			Grid.Row="1"
-			Padding="4,8"
+			Padding="10,4"
 			ColumnDefinitions="90,12,12,12,12,*"
 			ColumnSpacing="12"
 			>
@@ -82,6 +85,7 @@
 			<Label
 				Grid.Column="5"
 				Text="Description"
+				LineBreakMode="TailTruncation"
 				FontAttributes="Bold"
 				VerticalTextAlignment="Center" />
 
@@ -102,7 +106,7 @@
 
 				<DataTemplate x:DataType="models:Session">
 					<Grid
-						Padding="4,8"
+						Padding="10,4"
 						ColumnDefinitions="90,12,12,12,12,*"
 						ColumnSpacing="12">
 
@@ -113,23 +117,19 @@
 						<Label
 							Grid.Column="1"
 							Text="{Binding YijingCast, Converter={StaticResource YijingCastConverter}}"
-							VerticalTextAlignment="Center"
-							LineBreakMode="TailTruncation" />
+							VerticalTextAlignment="Center"/>
 						<Label
 							Grid.Column="2"
 							Text="{Binding Meditation, Converter={StaticResource MeditationConverter}}"
-							VerticalTextAlignment="Center"
-							LineBreakMode="TailTruncation" />
+							VerticalTextAlignment="Center"/>
 						<Label
 							Grid.Column="3"
 							Text="{Binding EegDevice, Converter={StaticResource EegDeviceConverter}}"
-							VerticalTextAlignment="Center"
-							LineBreakMode="TailTruncation" />
+							VerticalTextAlignment="Center"/>
 						<Label
 							Grid.Column="4"
 							Text="{Binding EegAnalysis, Converter={StaticResource AnalysisConverter}}"
-							VerticalTextAlignment="Center"
-							LineBreakMode="TailTruncation" />
+							VerticalTextAlignment="Center"/>
 						<Label
 							Grid.Column="5"
 							Text="{Binding Description}"
