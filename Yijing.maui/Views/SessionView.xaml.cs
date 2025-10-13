@@ -1,5 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Net;
 using System.Text;
@@ -17,14 +18,11 @@ namespace Yijing.Views;
 
 public partial class SessionView : ContentView
 {
-	//private ObservableCollection<Session> _sessions = new();
-	//public ObservableCollection<Session> Sessions => _sessions;
-
-	private List<Session> _sessions = new();
+	private ObservableCollection<Session> _sessions = new();
 	private Session? _selectedSession;
-	private List<string> _sessionNotes = [];
 
 	private readonly Ai _ai = new();
+	private List<string> _sessionNotes = [];
 
 	public event EventHandler<string>? ChatUpdated;
 
@@ -73,13 +71,10 @@ public partial class SessionView : ContentView
 		double w = width - 10;
 
 		w = width - 40;
-		//lblHexagram.WidthRequest = w;
 
 		w /= 2;
-		//lblDiagramMode.WidthRequest = w;
 
 		w -= 5;
-		//lblSession.WidthRequest = w - 50;
 
 		w /= 2;
 		btnAdd.WidthRequest = w;
@@ -94,6 +89,10 @@ public partial class SessionView : ContentView
 		var summary = CreateSession(fileName);
 		_sessions.Insert(0, summary);
 		sessionCollection.SelectedItem = summary;
+
+		using var yc = new YijingDbContext();
+		var x = yc.Sessions.Add(summary);
+		YijingDatabase.SaveChanges(yc);
 	}
 
 	private async void OnDeleteSessionClicked(object? sender, EventArgs e)
@@ -110,13 +109,16 @@ public partial class SessionView : ContentView
 			string path = Path.Combine(AppSettings.DocumentHome(), "Questions", _selectedSession.FileName + ".txt");
 			if (File.Exists(path))
 				File.Delete(path);
-
 			path = Path.Combine(AppSettings.DocumentHome(), "Answers", _selectedSession.FileName + ".txt");
 			if (File.Exists(path))
 				File.Delete(path);
 
+			using var yc = new YijingDbContext();
+			yc.Sessions.Where(s => s.Id == _selectedSession.Id).ExecuteDelete();
+
 			int i = _sessions.IndexOf(_selectedSession);
 			_sessions.Remove(_selectedSession);
+
 			if (_sessions.Count > 0)
 			{
 				sessionCollection.SelectedItem = _sessions[i == _sessions.Count ? --i : i];
@@ -163,7 +165,7 @@ public partial class SessionView : ContentView
 		if (_selectedSession is not null)
 		{
 			sb.Append($"<h2>{WebUtility.HtmlEncode(_selectedSession.Name)}");
-			string yjingCast = WebUtility.HtmlEncode(_selectedSession.YijingCast);
+			string? yjingCast = WebUtility.HtmlEncode(_selectedSession.YijingCast);
 			if (!string.IsNullOrEmpty(yjingCast))
 				sb.Append($" - {yjingCast}");
 		}
@@ -186,56 +188,9 @@ public partial class SessionView : ContentView
 			if (i < _ai._chatReponses[1].Count())
 				sb.Append("<p>" + _ai._chatReponses[1][i].Replace("\n", "</p>") + "</p>");
 		}
-		/*
-		for (int i = 0; i < 64; ++i)
-			if (strHtml.Contains(Sequences.strHexagramLabels[9, i], StringComparison.CurrentCultureIgnoreCase))
-			{
-				String strHref = "<a href=\"Hexagram" + i + "\">" + Sequences.strHexagramLabels[9, i] + "</a>";
-				Regex rgx = new Regex("\\b(?i)" + Sequences.strHexagramLabels[9, i] +
-					"(s)?(t)?(y)?(ty)?(ing)?(ed)?(ous)?(ment)?(ate)?(in)?\\b",
-					RegexOptions.Compiled | RegexOptions.NonBacktracking | RegexOptions.IgnoreCase); // RegexOptions.ExplicitCapture
-				strHtml = rgx.Replace(strHtml, strHref + "$1$2$3$4$5$6$7$8$9$10");
-			}
-		*/
+
 		sb.Append("</body></html>");
 		UI.Try<SessionPage>(p => p.WebView().Source = new HtmlWebViewSource { Html = sb.ToString() });
-		//ChatUpdated?.Invoke(this, sb.ToString());
-	}
-
-	private void UpdateChat1()
-	{
-		string background = App.Current?.RequestedTheme == AppTheme.Dark ? "#000000" : "#FFFFFF";
-		string foreground = App.Current?.RequestedTheme == AppTheme.Dark ? "#FFFFFF" : "#000000";
-
-		var sb = new StringBuilder();
-		sb.Append("<html><head><meta charset=\"utf-8\"/><style>");
-		sb.Append("body{");
-		sb.Append($"background-color:{background};color:{foreground};font-family:'Open Sans',sans-serif;font-size:16px;line-height:1.5;");
-		sb.Append("strong{color:" + foreground + ";}");
-		sb.Append("</style></head><body>");
-
-		if (_selectedSession is not null)
-		{
-			string title = WebUtility.HtmlEncode(_selectedSession.Name);
-			sb.Append($"<h2>{title}</h2>");
-		}
-
-		int count = Math.Max(_ai._userPrompts[1].Count, _ai._chatReponses[1].Count);
-		for (int i = 0; i < count; ++i)
-		{
-			if (i < _ai._userPrompts[1].Count)
-			{
-				string encodedPrompt = WebUtility.HtmlEncode(_ai._userPrompts[1][i]).Replace("\n", "<br/>");
-				sb.Append($"<p><strong>User:</strong> {encodedPrompt}</p>");
-			}
-			if (i < _ai._chatReponses[1].Count)
-			{
-				string encodedResponse = WebUtility.HtmlEncode(_ai._chatReponses[1][i]).Replace("\n", "<br/>");
-				sb.Append($"<p><strong>AI:</strong> {encodedResponse}</p>");
-			}
-		}
-
-		sb.Append("</body></html>");
 		//ChatUpdated?.Invoke(this, sb.ToString());
 	}
 
@@ -343,8 +298,8 @@ public partial class SessionView : ContentView
 					YijingDatabase.SaveChanges(yc);
 				}
 
-				_sessions = yc.Sessions.AsNoTracking().ToList();
-				_sessions = new List<Session>(_sessions.OrderByDescending(s => s.FileName, StringComparer.OrdinalIgnoreCase));
+				_sessions = new ObservableCollection<Session>(yc.Sessions.AsNoTracking().ToList()
+					.OrderByDescending(s => s.FileName, StringComparer.OrdinalIgnoreCase));
 			}
 
 			sessionCollection.ItemsSource = _sessions;
@@ -511,6 +466,21 @@ public partial class SessionView : ContentView
 		{
 			SaveChat(name, "Question", _ai._userPrompts[1]);
 			SaveChat(name, "Answer", _ai._chatReponses[1]);
+			
+			var summary = CreateSession(Path.Combine(AppSettings.DocumentHome(), "Questions", name + ".txt"));
+			_selectedSession!.Description = summary.Description;
+			_selectedSession.YijingCast = summary.YijingCast;
+			_selectedSession.EegAnalysis = summary.EegAnalysis;
+			_selectedSession.EegDevice = summary.EegDevice;
+
+			using var yc = new YijingDbContext();
+			yc.Sessions.Update(_selectedSession);
+			YijingDatabase.SaveChanges(yc);
+
+			int i = _sessions.IndexOf(_selectedSession);
+			_sessions[i] = _selectedSession;
+			sessionCollection.SelectedItem = _sessions[i == _sessions.Count ? --i : i];
+			sessionCollection.ScrollTo(i, position: ScrollToPosition.Start, animate: false);
 		}
 	}
 
@@ -595,7 +565,7 @@ public partial class SessionView : ContentView
 					else
 						_sessionNotes.Add(entry);
 			}
-		else
-			UpdateSessionLog("Failed to load " + str, true, true);
+		//else
+		//	UpdateSessionLog("Failed to load " + str, true, true);
 	}
 }
