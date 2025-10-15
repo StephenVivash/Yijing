@@ -331,7 +331,18 @@ public partial class SessionView : ContentView
 			else if (extension.Equals(".csv", StringComparison.OrdinalIgnoreCase))
 				description = "EEG session";
 
-		return new Session(0, name, description, fileName, yijingCast);
+		bool meditation = false;
+		if (DateTime.TryParseExact(fileName, "yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture,
+			DateTimeStyles.AssumeLocal, out var dt))
+		{
+			var dayStart = dt.Date;
+			var dayEnd = dayStart.AddDays(1);
+			using var yc = new YijingDbContext();
+			meditation = yc.Meditations.AsNoTracking()
+				.Any(m => m.Start >= dayStart && m.Start < dayEnd);
+		}
+
+		return new Session(0, name, description, fileName, yijingCast, meditation);
 	}
 
 	private static string FormatSessionName(string fileName)
@@ -449,7 +460,7 @@ public partial class SessionView : ContentView
 
 		_ai._userPrompts = [[], []];
 		_ai._chatReponses = [[], []];
-		_ai._contextSessions = [];
+		_ai._contextSessions = []; // ["2025-10-11-12-15-52"];
 	}
 
 	public void UpdateSessionLog(string str, bool append, bool newline)
@@ -468,19 +479,15 @@ public partial class SessionView : ContentView
 			SaveChat(name, "Answer", _ai._chatReponses[1]);
 			
 			var summary = CreateSession(Path.Combine(AppSettings.DocumentHome(), "Questions", name + ".txt"));
-			_selectedSession!.Description = summary.Description;
-			_selectedSession.YijingCast = summary.YijingCast;
-			_selectedSession.EegAnalysis = summary.EegAnalysis;
-			_selectedSession.EegDevice = summary.EegDevice;
+			summary.Id = _selectedSession?.Id ?? 0;
 
 			using var yc = new YijingDbContext();
-			yc.Sessions.Update(_selectedSession);
+			yc.Sessions.Update(summary);
 			YijingDatabase.SaveChanges(yc);
 
 			int i = _sessions.IndexOf(_selectedSession);
-			_sessions[i] = _selectedSession;
-			sessionCollection.SelectedItem = _sessions[i == _sessions.Count ? --i : i];
-			sessionCollection.ScrollTo(i, position: ScrollToPosition.Start, animate: false);
+			_sessions[i] = summary;
+			sessionCollection.SelectedItem = summary;
 		}
 	}
 
