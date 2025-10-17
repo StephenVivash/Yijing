@@ -5,6 +5,8 @@ using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 
 using System.ComponentModel;
+using Yijing.Pages;
+
 
 //using OpenAI;
 //using OpenAI.Chat;
@@ -16,7 +18,7 @@ using Yijing.Views;
 
 namespace Yijing.Services;
 
-#nullable enable
+//#nullable enable
 
 public class Ai
 {
@@ -172,35 +174,38 @@ public class Ai
 
 public class YijingPlugin
 {
-
 	[KernelFunction("autocast_hexagram")]
-	[Description("Trigger autocasting on a DiagramView. If the view isn't live yet, you can queue the action until it appears.")]
-	public string AutocastHexagram(
-		[Description("Optional key of the target DiagramView; if omitted, uses the most recent instance.")]
-		string? key = null,
+	[Description("Navigate to and autocast on a DiagramView, wait and return the cast description")]
 
-		[Description("If true (default), queue the action until the view exists; if false, only execute if the view is live now.")]
-		bool queue = true)
+	public async Task<string> AutocastHexagram()
 	{
-		if (queue)
-		{
-			if (!string.IsNullOrEmpty(key))
-				ViewDirectory.InvokeByKey<DiagramView>(key!, v => v.AutoCastHexagram());
-			else
-				ViewDirectory.Invoke<DiagramView>(v => v.AutoCastHexagram());
+		// Navigate to the DiagramPage
+		//void action() => Shell.Current.GoToAsync(nameof(DiagramPage));
+		//Dispatcher.GetForCurrentThread().DispatchAsync(action);
 
-			return $"Autocast scheduled (or executed immediately) for {(key is null ? "latest DiagramView" : $"key '{key}'")}.";
-		}
-		else
-		{
-			var ran = !string.IsNullOrEmpty(key)
-				? ViewDirectory.TryInvokeByKey<DiagramView>(key!, v => v.AutoCastHexagram())
-				: ViewDirectory.TryInvoke<DiagramView>(v => v.AutoCastHexagram());
+		ViewDirectory.Invoke<SessionView>(async v => await v.NavigateToDialogPage());
 
-			return ran
-				? $"Autocast executed on {(key is null ? "latest DiagramView" : $"key '{key}'")}."
-				: $"No DiagramView {(key is null ? "instance" : $"with key '{key}'")} is live; nothing ran.";
-		}
+		//if (Application.Current?.MainPage is NavigationPage nav && nav.CurrentPage is not DiagramPage)
+		//	_ = nav.Navigation.PushAsync(new DiagramPage());
+
+		var tcs = new TaskCompletionSource<string>();
+		ViewDirectory.Invoke<DiagramView>(async v =>
+		{
+			try
+			{
+				var result = await v.AutoCastHexagram();
+				tcs.TrySetResult(result);
+			}
+			catch (Exception ex)
+			{
+				tcs.TrySetException(ex);
+			}
+		});
+		return await tcs.Task.ConfigureAwait(false);
+
+		//Task<string> xxx = null;
+		//ViewDirectory.Invoke<DiagramView>(v => xxx = v.AutoCastHexagram());
+		//return xxx.Result;
 	}
 
 	// ---------- write actions (queue until the view exists) ----------
@@ -251,6 +256,8 @@ public class YijingPlugin
 
 	// ---------- read (sync) ----------
 	[KernelFunction("get_hexagram")]
+
+
 	public int GetHexagram()
 	{
 		// Grab the latest DiagramView if it exists right now

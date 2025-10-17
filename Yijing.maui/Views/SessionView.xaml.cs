@@ -332,7 +332,9 @@ public partial class SessionView : ContentView
 			var dayEnd = dayStart.AddDays(1);
 			using var yc = new YijingDbContext();
 			meditation = yc.Meditations.AsNoTracking()
-				.Any(m => m.Start >= dayStart && m.Start < dayEnd);
+				.Any(m => (m.Start >= dayStart) && (m.Start < dayEnd));
+			if (meditation && (description == "New session"))
+				description = "Meditation session";
 		}
 
 		return new Session(0, name, description, fileName, yijingCast, meditation);
@@ -391,6 +393,32 @@ public partial class SessionView : ContentView
 		using var yc = new YijingDbContext();
 		var x = yc.Sessions.Add(summary);
 		YijingDatabase.SaveChanges(yc);
+	}
+
+	public void AddMeditationSession()
+	{
+		DateTime dt = DateTime.Now;
+		string matchname = dt.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+		var match = _sessions.FirstOrDefault(s => s.FileName!.StartsWith(matchname,
+			StringComparison.OrdinalIgnoreCase) && !s.Meditation);
+		if (match is not null)
+		{
+			using var yc = new YijingDbContext();
+			sessionCollection.SelectedItem = match;
+			int i = _sessions.IndexOf(_selectedSession);
+			match = yc.Sessions.Find(match.Id);
+			if (match is not null)
+			{
+				match.Meditation = true;
+				if (match.Description == "New session")
+					match.Description = "Meditation session";
+				YijingDatabase.SaveChanges(yc);
+				_sessions[i] = match;
+				sessionCollection.SelectedItem = match;
+			}
+		}
+		else
+			AddSession();
 	}
 
 	private void SelectSession(string? selectSession)
@@ -580,4 +608,10 @@ public partial class SessionView : ContentView
 		//else
 		//	UpdateSessionLog("Failed to load " + str, true, true);
 	}
+
+	public async Task NavigateToDialogPage()
+	{
+		await Shell.Current.GoToAsync(nameof(DiagramPage),false);
+	}
+
 }

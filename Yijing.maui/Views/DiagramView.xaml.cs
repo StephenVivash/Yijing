@@ -422,8 +422,9 @@ public partial class DiagramView : ContentView
 		if (m_nDiagramMode == (int)eDiagramMode.eAutoCast)
 		{
 			EnableDiagramControls(false, true);
-			m_tskAutoCast = new Task(AutoCast);
-			m_tskAutoCast.Start();
+			AutoCast();
+			//m_tskAutoCast = new Task(AutoCast);
+			//m_tskAutoCast.Start();
 		}
 		else
 		if (m_nDiagramMode == (int)eDiagramMode.eMindCast)
@@ -835,10 +836,11 @@ public partial class DiagramView : ContentView
 		return m_hvsCurrent.DescribeCast();
 	}
 
-	public void AutoCastHexagram()
+	public async Task<string> AutoCastHexagram()
 	{
 		//UpdateSessionLog("KernelFunction AutoCastHexagram", true, true);
-		picDiagramMode.SelectedIndex = (int)eDiagramMode.eAutoCast;
+		//picDiagramMode.SelectedIndex = (int)eDiagramMode.eAutoCast;
+		return await AutoCastAsync();
 	}
 
 	public void SetHexagramValue(int nValue)
@@ -1098,7 +1100,15 @@ public partial class DiagramView : ContentView
 		UI.Call<DiagramView>(v => v.DiagramTimer());
 	}
 
-	private async void AutoCast()
+
+	private async Task<string> AutoCastAsync()
+	{
+		await AutoCast();
+		return m_hvsCurrent.DescribeCast();
+	}
+
+
+	private async Task AutoCast()
 	{
 		//Random r = true ? Sequences.m_ranSession : new Random(DateTime.Now.Millisecond);
 		for (int i = 0; i < 6; ++i)

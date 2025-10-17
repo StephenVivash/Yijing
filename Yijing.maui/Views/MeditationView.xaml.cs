@@ -134,7 +134,7 @@ public partial class MeditationView : ContentView
 		YijingDatabase.SaveChanges(context);
 		MeditationCompleted?.Invoke(this, new MeditationSessionCompletedEventArgs(meditation));
 
-		UI.Call<SessionView>(v => v.AddSession());
+		UI.Call<SessionView>(v => v.AddMeditationSession());
 	}
 
 	private void UpdateElapsed(TimeSpan elapsed)

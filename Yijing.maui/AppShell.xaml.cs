@@ -42,6 +42,11 @@ public partial class AppShell : Shell
 		*/
 
 		Routing.RegisterRoute(nameof(Pages.ListDetailDetailPage), typeof(Pages.ListDetailDetailPage));
+
+		Routing.RegisterRoute(nameof(SessionPage), typeof(SessionPage));
+		Routing.RegisterRoute(nameof(DiagramPage), typeof(DiagramPage));
+		Routing.RegisterRoute(nameof(EegPage), typeof(EegPage));
+		Routing.RegisterRoute(nameof(MeditationPage), typeof(MeditationPage));
 	}
 
 	private void Page_Loaded(object sender, EventArgs e)
