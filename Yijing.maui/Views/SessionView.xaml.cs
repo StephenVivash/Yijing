@@ -85,14 +85,7 @@ public partial class SessionView : ContentView
 
 	private void OnAddSessionClicked(object? sender, EventArgs e)
 	{
-		string fileName = AppSettings.ReverseDateString();
-		var summary = CreateSession(fileName);
-		_sessions.Insert(0, summary);
-		sessionCollection.SelectedItem = summary;
-
-		using var yc = new YijingDbContext();
-		var x = yc.Sessions.Add(summary);
-		YijingDatabase.SaveChanges(yc);
+		AddSession();
 	}
 
 	private async void OnDeleteSessionClicked(object? sender, EventArgs e)
@@ -386,6 +379,18 @@ public partial class SessionView : ContentView
 			System.Diagnostics.Debug.WriteLine($"Failed to read session '{filePath}': {ex.Message}");
 			return;
 		}
+	}
+
+	public void AddSession()
+	{
+		string fileName = AppSettings.ReverseDateString();
+		var summary = CreateSession(fileName);
+		_sessions.Insert(0, summary);
+		sessionCollection.SelectedItem = summary;
+
+		using var yc = new YijingDbContext();
+		var x = yc.Sessions.Add(summary);
+		YijingDatabase.SaveChanges(yc);
 	}
 
 	private void SelectSession(string? selectSession)
