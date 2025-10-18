@@ -53,7 +53,14 @@ public partial class SessionView : ContentView
 			"Don't repeat or summarise previous answers unless explicitly ask to do so. " +
 			"Allow the user to change the subject or ask for clarification about past responses. " +
 			"Respond with prose rather than bullet points unless explicitly asked. " +
-			"You may call functions when needed.";
+
+			"Always use the cast description format where the hexagram number is seperated from the moving lines with 1 period eg: 12.356 Stagnation > 62 Surplus " +
+
+			"You may call functions when needed." +
+			"You may call autocast_hexagram() initially if a question is asked without a cast description. " +
+			"If a cast description is provided don't call autocast_hexagram() and don't call on subsequent questions in that session unless asked to do so. " +
+			"Always report the autocast_hexagram() description in this format in your response eg: The Yijing cast yielded hexagram 12.356 Stagnation > 62 Surplus " +
+			"Obviously if a question is asked about the weather or something factual it may not be appropriate to call autocast_hexagram() ";
 	}
 
 	private void OnLoaded(object? sender, EventArgs e)
@@ -225,7 +232,7 @@ public partial class SessionView : ContentView
 									DateTimeStyles.AssumeLocal, out DateTime dt))
 									lm.Add(new Meditation { Start = dt, Duration = 60 }); // ??????????????????
 
-							var match = _sessions.FirstOrDefault(s => s.FileName.Equals(session.FileName,
+							var match = _sessions.FirstOrDefault(s => s.FileName!.Equals(session.FileName,
 								StringComparison.OrdinalIgnoreCase));
 							if (match is not null)
 							{
@@ -350,7 +357,8 @@ public partial class SessionView : ContentView
 
 	private static void ReadText(string filePath, ref string description, ref string yijingCast)
 	{
-		string s = "Yijing responded with hexagram";
+		string s1 = "Yijing responded with hexagram";
+		string s2 = "Yijing cast yielded hexagram";
 		try
 		{
 			if (!File.Exists(filePath))
@@ -362,12 +370,16 @@ public partial class SessionView : ContentView
 
 			string? castLine = text.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)
 					.Select(line => line.Trim())
-					.FirstOrDefault(line => line.Contains(s, StringComparison.OrdinalIgnoreCase));
+					.FirstOrDefault(line => line.Contains(s1, StringComparison.OrdinalIgnoreCase) ||
+						line.Contains(s2, StringComparison.OrdinalIgnoreCase));
 
 			if (!string.IsNullOrEmpty(castLine))
 			{
-				int i = castLine.IndexOf(s, StringComparison.OrdinalIgnoreCase);
-				castLine = castLine.Substring(i + s.Length + 1).Trim();
+				int index;
+				if ((index = castLine.IndexOf(s1, StringComparison.OrdinalIgnoreCase)) != -1)
+					castLine = castLine.Substring(index + s1.Length + 1).Trim();
+				else if ((index = castLine.IndexOf(s2, StringComparison.OrdinalIgnoreCase)) != -1)
+					castLine = castLine.Substring(index + s2.Length + 1).Trim();
 				yijingCast = castLine;
 			}
 
@@ -405,7 +417,7 @@ public partial class SessionView : ContentView
 		{
 			using var yc = new YijingDbContext();
 			sessionCollection.SelectedItem = match;
-			int i = _sessions.IndexOf(_selectedSession);
+			int i = _sessions.IndexOf(_selectedSession!);
 			match = yc.Sessions.Find(match.Id);
 			if (match is not null)
 			{
@@ -425,7 +437,7 @@ public partial class SessionView : ContentView
 	{
 		if (!string.IsNullOrEmpty(selectSession))
 		{
-			var match = _sessions.FirstOrDefault(s => s.FileName.Equals(selectSession, StringComparison.OrdinalIgnoreCase));
+			var match = _sessions.FirstOrDefault(s => s.FileName!.Equals(selectSession, StringComparison.OrdinalIgnoreCase));
 			if (match is not null)
 			{
 				sessionCollection.SelectedItem = match;
@@ -442,7 +454,7 @@ public partial class SessionView : ContentView
 	{
 		ClearChatState();
 		if (session is not null)
-			LoadChat(session.FileName);
+			LoadChat(session.FileName!);
 		UpdateChat();
 	}
 
@@ -457,7 +469,9 @@ public partial class SessionView : ContentView
 				await Window.Page!.DisplayAlert("No Cast", "Please cast a hexagram first.", "OK");
 				return;
 			}
-			prompt += (prompt.Length > 0 ? "\n" : "") + "I consulted the oracle and the Yijing responded with hexagram " + s;
+
+			prompt += (prompt.Length > 0 ? "\n" : "") + "The Yijing cast yielded hexagram " + s;
+			//prompt += (prompt.Length > 0 ? "\n" : "") + "I consulted the oracle and the Yijing responded with hexagram " + s;
 		}
 
 		if (string.IsNullOrWhiteSpace(prompt))
@@ -471,7 +485,7 @@ public partial class SessionView : ContentView
 		else
 			await _ai.ChatAsync(AppPreferences.AiChatService, prompt);
 
-		SaveChat(_selectedSession.FileName);
+		SaveChat(_selectedSession!.FileName!);
 		UpdateChat();
 		UpdateSessionLog("", false, false);
 	}
@@ -518,7 +532,7 @@ public partial class SessionView : ContentView
 			yc.Sessions.Update(summary);
 			YijingDatabase.SaveChanges(yc);
 
-			int i = _sessions.IndexOf(_selectedSession);
+			int i = _sessions.IndexOf(_selectedSession!);
 			_sessions[i] = summary;
 			sessionCollection.SelectedItem = summary;
 		}

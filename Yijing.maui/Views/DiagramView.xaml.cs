@@ -91,7 +91,7 @@ public partial class DiagramView : ContentView
 
 	private Timer m_timDiagram = new Timer(DiagramTimer, null, Timeout.Infinite, 0);
 
-	private Task m_tskAutoCast = null;
+	//private Task m_tskAutoCast = null;
 
 	private SolidColorBrush m_brMonoColor;
 	private SolidColorBrush m_brMovingYang;
@@ -431,8 +431,9 @@ public partial class DiagramView : ContentView
 			if (UI.Get<EegView>().EegChannel(0) is not null)
 			{
 				EnableDiagramControls(false, true);
-				m_tskAutoCast = new Task(MindCast);
-				m_tskAutoCast.Start();
+				MindCast();
+				//m_tskAutoCast = new Task(MindCast);
+				//m_tskAutoCast.Start();
 			}
 			else
 				picDiagramMode.SelectedIndex = (int)eDiagramMode.eExplore;
@@ -1122,7 +1123,7 @@ public partial class DiagramView : ContentView
 		Dispatcher.Dispatch(action);
 	}
 
-	public void SoundTrigger(float fBand, float fTrigger)
+	public async Task SoundTrigger(float fBand, float fTrigger)
 	{
 #if WINDOWS
 
@@ -1143,7 +1144,7 @@ public partial class DiagramView : ContentView
 #endif
 	}
 
-	private async void MindCast()
+	private async Task MindCast()
 	{
 		//Random r = true ? Sequences.m_ranSession : new Random(DateTime.Now.Millisecond);
 		EegView ev = UI.Get<EegView>();
@@ -1169,7 +1170,7 @@ public partial class DiagramView : ContentView
 			{
 				await Task.Delay(200);
 				if (AppPreferences.TriggerSounding && (ev.EegReplaySpeed() == 1) && (++count % 50 == 0))
-					SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale,
+					await SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale,
 						ev.EegChannel(AppPreferences.TriggerIndex).m_fHigh * AppPreferences.AudioScale);
 				ts = DateTime.Now - start;
 				int speed = m_nTriggerSpeed * ev.EegReplaySpeed();
@@ -1184,7 +1185,7 @@ public partial class DiagramView : ContentView
 			if (!ev.EegIsConnected())
 				break;
 			if (AppPreferences.TriggerSounding)
-				SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale, 0.0f);
+				await SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale, 0.0f);
 
 			m_timDiagram.Change(0, m_nSpeeds[(int)eDiagramSpeed.eFast]);
 
@@ -1198,7 +1199,7 @@ public partial class DiagramView : ContentView
 			{
 				await Task.Delay(200);
 				if (AppPreferences.TriggerSounding && (ev.EegReplaySpeed() == 1) && (++count % 50 == 0))
-					SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale,
+					await SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale,
 						ev.EegChannel(AppPreferences.TriggerIndex).m_fLow * AppPreferences.AudioScale);
 				ts = DateTime.Now - start;
 				int speed = m_nTriggerSpeed * ev.EegReplaySpeed();
@@ -1216,7 +1217,7 @@ public partial class DiagramView : ContentView
 			if (!ev.EegIsConnected())
 				break;
 			if (AppPreferences.TriggerSounding)
-				SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale, 0.0f);
+				await SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale, 0.0f);
 		}
 		await Task.Delay(100);
 		if (AppPreferences.TriggerSounding)

@@ -100,7 +100,7 @@ public class Ai
 			};
 
 			var reply = await chatService.GetChatMessageContentAsync(_chatHistory, settings, kernel);
-			string? response = reply.Content;
+			string response = reply.Content;
 
 			response = response?.Replace("**", ""); // Remove .md
 			response = response?.Replace("###", "");
@@ -179,15 +179,12 @@ public class YijingPlugin
 
 	public async Task<string> AutocastHexagram()
 	{
-		// Navigate to the DiagramPage
-		//void action() => Shell.Current.GoToAsync(nameof(DiagramPage));
-		//Dispatcher.GetForCurrentThread().DispatchAsync(action);
-
 		ViewDirectory.Invoke<SessionView>(async v => await v.NavigateToDialogPage());
 
-		//if (Application.Current?.MainPage is NavigationPage nav && nav.CurrentPage is not DiagramPage)
-		//	_ = nav.Navigation.PushAsync(new DiagramPage());
-
+		//string result = "";
+		//ViewDirectory.Invoke<DiagramView>(async v => result = await v.AutoCastHexagram());
+		//return result;
+		
 		var tcs = new TaskCompletionSource<string>();
 		ViewDirectory.Invoke<DiagramView>(async v =>
 		{
@@ -202,13 +199,8 @@ public class YijingPlugin
 			}
 		});
 		return await tcs.Task.ConfigureAwait(false);
-
-		//Task<string> xxx = null;
-		//ViewDirectory.Invoke<DiagramView>(v => xxx = v.AutoCastHexagram());
-		//return xxx.Result;
+		
 	}
-
-	// ---------- write actions (queue until the view exists) ----------
 
 	[KernelFunction("set_hexagram")]
 	public void SetHexagram(int sequence) =>

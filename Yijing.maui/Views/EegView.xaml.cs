@@ -399,8 +399,8 @@ public partial class EegView : ContentView
 	{
 		AudioPlayer.PlayTimer(Dispatcher);
 	}
-
-	public void SoundTrigger(float fBand, float fTrigger)
+	/*
+	public async Task SoundTrigger(float fBand, float fTrigger)
 	{
 #if WINDOWS
 
@@ -420,7 +420,7 @@ public partial class EegView : ContentView
 			PInvoke.Beep(freq, 200);
 #endif
 	}
-
+	*/
 	public void AiData(string data)
 	{
 		void action() => AiData(data, true);
