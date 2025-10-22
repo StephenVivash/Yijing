@@ -77,20 +77,20 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.9" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.9" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.10" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.10" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.10" />
 
 		<PackageReference Include="Microsoft.SemanticKernel" Version="1.66.0" />
-		<PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="9.10.0" />
-		<PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="9.10.0-preview.1.25513.3" />
+		<PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="9.10.1" />
+		<PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="9.10.1-preview.1.25521.4" />
 
 		<!--PackageReference Include="Microsoft.Extensions.AI" Version="9.9.0" /-->
 		<!--PackageReference Include="Microsoft.Extensions.AI.Ollama" Version="9.7.0-preview.1.25356.2" /-->
 		<!--PackageReference Include="OllamaSharp" Version="*" /-->
 		
-		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.110" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.110" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.120" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.120" />
 		<PackageReference Include="CommunityToolkit.Maui" Version="12.2.0" />
 
 		<PackageReference Include="System.Private.Uri" Version="4.3.2" />

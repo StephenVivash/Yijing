@@ -17,6 +17,6 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Appium.WebDriver" Version="8.0.1" />
-    <PackageReference Include="Selenium.Support" Version="4.36.0" />
+    <PackageReference Include="Selenium.Support" Version="4.37.0" />
   </ItemGroup>
 </Project>
