@@ -10,9 +10,9 @@
     <Product>Yijing</Product>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.ML" Version="5.0.0-preview.25503.2" />
-    <PackageReference Include="Microsoft.ML.FastTree" Version="5.0.0-preview.25503.2" />
-    <PackageReference Include="Microsoft.ML.LightGbm" Version="5.0.0-preview.25503.2" />
+    <PackageReference Include="Microsoft.ML" Version="5.0.0-preview.25527.5" />
+    <PackageReference Include="Microsoft.ML.FastTree" Version="5.0.0-preview.25527.5" />
+    <PackageReference Include="Microsoft.ML.LightGbm" Version="5.0.0-preview.25527.5" />
     <PackageReference Include="Plotly.NET" Version="3.0.1" />
   </ItemGroup>
   <ItemGroup Label="EegML">
