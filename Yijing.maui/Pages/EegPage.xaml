@@ -11,7 +11,6 @@
 	x:DataType="models:EegSeries"
 
 	x:Class="Yijing.Pages.EegPage"
-	Title="EegPage"
 	Loaded="Page_Loaded">
 
 	<toolkit:DockLayout

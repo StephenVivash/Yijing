@@ -55,8 +55,9 @@ public partial class SessionView : ContentView
 			"Respond with prose rather than bullet points unless explicitly asked. " +
 
 			"Always use the cast description format where the hexagram number is seperated from the moving lines with 1 period eg: 12.356 Stagnation > 62 Surplus " +
+			"The example 12.356 represents hexagram 12 with 3 moving lines 3, 5 and 6 " +
 
-			"You may call functions when needed." +
+			"You may call functions when needed. " +
 			"You may call autocast_hexagram() initially if a question is asked without a cast description. " +
 			"If a cast description is provided don't call autocast_hexagram() and don't call on subsequent questions in that session unless asked to do so. " +
 			"Always report the autocast_hexagram() description in this format in your response eg: The Yijing cast yielded hexagram 12.356 Stagnation > 62 Surplus " +

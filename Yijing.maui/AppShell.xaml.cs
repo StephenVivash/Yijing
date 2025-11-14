@@ -5,15 +5,21 @@ namespace Yijing;
 
 public partial class AppShell : Shell
 {
-	private static AppShell thisShell;
+	//private static AppShell thisShell;
 	public AppShell()
 	{
-		thisShell = this;
+		//thisShell = this;
 		InitializeComponent();
+
+		//pagSession.Title = "Session";
 
 		//ShellContent.ContentTemplate = new DataTemplate { "local:Pages.DiagramPage" };
 		//ShellContent.Route = "Pages.DiagramPage";
+		//ShellContent
+		//Shell.NavBarIsVisibleProperty.
+		//.NavBarIsVisible = "false"
 
+		/*
 		DataTemplate x = new DataTemplate();// {   "local:Pages.DiagramPage" },
 		ShellContent sc = new ShellContent()
 		{
@@ -23,6 +29,7 @@ public partial class AppShell : Shell
 			ContentTemplate = x,
 			Route = "Pages.DiagramPage"
 		};
+		*/
 
 		/*
 		<ShellContent
@@ -41,7 +48,7 @@ public partial class AppShell : Shell
 			Route="Pages.EegPage" />
 		*/
 
-		Routing.RegisterRoute(nameof(Pages.ListDetailDetailPage), typeof(Pages.ListDetailDetailPage));
+		//Routing.RegisterRoute(nameof(Pages.ListDetailDetailPage), typeof(Pages.ListDetailDetailPage));
 
 		Routing.RegisterRoute(nameof(SessionPage), typeof(SessionPage));
 		Routing.RegisterRoute(nameof(DiagramPage), typeof(DiagramPage));

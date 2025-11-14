@@ -39,7 +39,6 @@ public partial class SessionPage : ContentPage
 		else
 			sessionView.WidthRequest = width - 10;
 #endif
-
 		base.OnSizeAllocated(width, height);
 	}
 

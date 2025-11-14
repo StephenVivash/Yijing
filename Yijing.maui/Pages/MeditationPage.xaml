@@ -11,7 +11,6 @@
 	x:DataType="models:MeditationSeries"
 
 	x:Class="Yijing.Pages.MeditationPage"
-	Title="Meditation"
 	Loaded="Page_Loaded">
 
 	<toolkit:DockLayout
