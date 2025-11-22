@@ -6,7 +6,6 @@ namespace Yijing.Pages;
 
 public partial class DiagramPage : ContentPage
 {
-	//public Editor SessionLog() => edtSessionLog;
 	public WebView WebView() => webview;
 
 	public DiagramPage()
@@ -14,15 +13,12 @@ public partial class DiagramPage : ContentPage
 		Behaviors.Add(new RegisterInViewDirectoryBehavior());
 		InitializeComponent();
 
-		//picAiChatService.SelectedIndex = AppPreferences.AiChatService;
-		//picAiMode.SelectedIndex = 0;
-		//chbIncludeCast.IsChecked = true;
+		horMenu.Create(ePages.eDiagram, StackOrientation.Horizontal);
+		verMenu.Create(ePages.eDiagram, StackOrientation.Vertical);
 	}
 
 	private void Page_Loaded(object sender, EventArgs e)
 	{
-		//var button = new Button { Text = "New Bottom", HeightRequest = 200 };
-		//DockLayout.SetDockPosition(button, DockPosition.Bottom);
 	}
 
 	protected override void OnSizeAllocated(double width, double height)
@@ -31,11 +27,21 @@ public partial class DiagramPage : ContentPage
 			return;
 
 #if ANDROID || IOS
-		//edtSessionLog.HeightRequest = 100;
 		if (width > height)
+		{
+			horMenu.IsVisible = false;
+			verMenu.IsVisible = true;
 			diagramView.WidthRequest = 200;
+		}
 		else
-			diagramView.WidthRequest = width - 10;
+		{
+			horMenu.IsVisible = true;
+			verMenu.IsVisible = false;
+			diagramView.WidthRequest = width;// - 10;
+		}
+#else
+		horMenu.IsVisible = false;
+		verMenu.IsVisible = true;
 #endif
 
 		base.OnSizeAllocated(width, height);
@@ -63,37 +69,6 @@ public partial class DiagramPage : ContentPage
 				UI.Call<DiagramView>(v => v.SetHexagramValue(int.Parse(s)));
 			e.Cancel = true;
 		}
-	}
-
-	protected void picAiChatService_SelectedIndexChanged(object sender, EventArgs e)
-	{
-		//AppPreferences.AiChatService = picAiChatService.SelectedIndex;
-		//if (AppPreferences.AiChatService != (int)eAiService.eNone)
-		//!string.IsNullOrEmpty(AppPreferences.AiModelId[AppPreferences.AiChatService]) &&
-		//(((AppPreferences.AiChatService == (int)eAiChatService.eOllama)) || 
-		//!string.IsNullOrEmpty(AppPreferences.AiKey[AppPreferences.AiChatService])))
-		//btnAskAi.IsEnabled = true;
-		//else
-		//btnAskAi.IsEnabled = false;
-	}
-
-	//protected void picAiMode_SelectedIndexChanged(object sender, EventArgs e)
-	//{
-	//	if (picAiMode.SelectedIndex == 1)
-	//	{
-	//MauiProgram.BuildKernelMemory();
-	//DiagramView.UpdateSessionLog(" ***** Started Kernel Memory", true, true);
-	//	}
-	//}
-
-	protected void btnAskAi_Clicked(object sender, EventArgs e)
-	{
-		//diagram.AiChat(chbIncludeCast.IsChecked);
-		//chbIncludeCast.IsChecked = false;
-	}
-
-	private void chbIncludeCast_CheckedChanged(object sender, EventArgs e)
-	{
 	}
 
 	/*

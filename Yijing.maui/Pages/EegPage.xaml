@@ -15,11 +15,20 @@
 
 	<toolkit:DockLayout
 		x:Name="layDock"
-		Padding="10"
-		VerticalSpacing="10"
-		HorizontalSpacing="10"
 		ShouldExpandLastChild="true"
 		>
+
+		<views:MenuView
+			x:Name="horMenu"
+			toolkit:DockLayout.DockPosition="Bottom"
+			CardTitle="Card 1"
+			/>
+
+		<views:MenuView
+			x:Name="verMenu"
+			toolkit:DockLayout.DockPosition="Right"
+			CardTitle="Card 1"
+			/>
 
 		<views:EegView
 			x:Name="eegView"

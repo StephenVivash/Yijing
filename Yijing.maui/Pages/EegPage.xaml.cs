@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 
 using Yijing.Models;
 using Yijing.Services;
+using Yijing.Views;
 
 namespace Yijing.Pages;
 
@@ -41,6 +42,9 @@ public partial class EegPage : ContentPage
 		chaEeg.LegendPosition = LegendPosition.Hidden;
 		chaEeg.AnimationsSpeed = new TimeSpan();
 		chaEeg.AutoUpdateEnabled = true;
+
+		horMenu.Create(ePages.eEeg, StackOrientation.Horizontal);
+		verMenu.Create(ePages.eEeg, StackOrientation.Vertical);
 	}
 
 	private void Page_Loaded(object sender, EventArgs e)
@@ -52,13 +56,22 @@ public partial class EegPage : ContentPage
 		if ((width == -1) || (height == -1))
 			return;
 
-		//edtSessionLog.HeightRequest = 0;
-
 #if ANDROID || IOS
 		if (width > height)
+		{
+			horMenu.IsVisible = false;
+			verMenu.IsVisible = true;
 			eegView.WidthRequest = 200;
+		}
 		else
+		{
+			horMenu.IsVisible = true;
+			verMenu.IsVisible = false;
 			eegView.WidthRequest = width - 10;
+		}
+#else
+		horMenu.IsVisible = false;
+		verMenu.IsVisible = true;
 #endif
 
 		base.OnSizeAllocated(width, height);

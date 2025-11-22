@@ -30,6 +30,8 @@ public enum eTriggerRange { eZeroOne, eOneTwo, eTwoThree, eTwoFour, eThreeFour, 
 public enum eAiService { eOpenAi, eDeepseek, eGithub, eOllama, eNone };
 public enum eAiEegMlModel { eStephenV, eNone }; // eJohnD
 
+public enum ePages { eNone, eSession, eDiagram, eEeg, eMeditation, eSettings, eAbout };
+
 public static class AppPreferences
 {
 	public static void Load()

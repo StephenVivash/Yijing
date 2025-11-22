@@ -21,6 +21,9 @@ public partial class SessionPage : ContentPage
 
 		picAiChatService.SelectedIndex = AppPreferences.AiChatService;
 		chbIncludeCast.IsChecked = true;
+
+		horMenu.Create(ePages.eSession, StackOrientation.Horizontal);
+		verMenu.Create(ePages.eSession, StackOrientation.Vertical);
 	}
 
 	private void Page_Loaded(object sender, EventArgs e)
@@ -35,10 +38,22 @@ public partial class SessionPage : ContentPage
 #if ANDROID || IOS
 		edtSessionLog.HeightRequest = 100;
 		if (width > height)
+		{
+			horMenu.IsVisible = false;
+			verMenu.IsVisible = true;
 			sessionView.WidthRequest = 200;
+		}
 		else
+		{
+			horMenu.IsVisible = true;
+			verMenu.IsVisible = false;
 			sessionView.WidthRequest = width - 10;
+		}
+#else
+		horMenu.IsVisible = false;
+		verMenu.IsVisible = true;
 #endif
+
 		base.OnSizeAllocated(width, height);
 	}
 

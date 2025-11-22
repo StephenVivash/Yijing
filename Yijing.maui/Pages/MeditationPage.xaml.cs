@@ -64,6 +64,9 @@ public partial class MeditationPage : ContentPage
 
 		picRange.SelectedIndex = 0;
 		_rangeStart = StartOfWeek(DateTime.Today);
+
+		horMenu.Create(ePages.eMeditation, StackOrientation.Horizontal);
+		verMenu.Create(ePages.eMeditation, StackOrientation.Vertical);
 	}
 
 	private void Page_Loaded(object sender, EventArgs e)
@@ -77,11 +80,21 @@ public partial class MeditationPage : ContentPage
 			return;
 
 #if ANDROID || IOS
-		//edtSessionLog.HeightRequest = 100;
 		if (width > height)
+		{
+			horMenu.IsVisible = false;
+			verMenu.IsVisible = true;
 			meditationView.WidthRequest = 200;
+		}
 		else
+		{
+			horMenu.IsVisible = true;
+			verMenu.IsVisible = false;
 			meditationView.WidthRequest = width - 10;
+		}
+#else
+		horMenu.IsVisible = false;
+		verMenu.IsVisible = true;
 #endif
 
 		base.OnSizeAllocated(width, height);

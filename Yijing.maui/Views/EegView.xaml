@@ -15,413 +15,394 @@
 
 	<ScrollView>
 		
-		<Border
+		<StackLayout
 			BindingContext="{x:Reference eegView}"
 			BackgroundColor="{Binding CardColor}"
 			x:DataType="views:EegView"
 			Padding="10,0,0,0"
+			Orientation="Vertical"
 			>
 
-			<StackLayout
-				Orientation="Vertical"
+			<Grid 
+				ColumnDefinitions="*,*"
+				RowDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
+				Padding="0,0,0,10"
 				>
 
-				<Grid 
-					ColumnDefinitions="*,*"
-					RowDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
-					Padding="0,0,0,10"
-					>
-
-					<Label
-						x:Name="lblDevice"
-						Text="Device"
-						LineBreakMode="TailTruncation"
-						VerticalTextAlignment="Center"
-						Grid.Column="0"
-						Grid.Row="0"
-						/>
-
-					<Picker
-						x:Name="picDevice"
-						SelectedIndexChanged="picDevice_SelectedIndexChanged"
-						Grid.Column="1"
-						Grid.Row="0"
-						>
-						<Picker.Items>
-							<x:String>Muse</x:String>
-							<x:String>Emotiv</x:String>
-						</Picker.Items>
-					</Picker>
-
-					<Label
-						x:Name="lblMode"
-						Text="Mode"
-						LineBreakMode="TailTruncation"
-						VerticalTextAlignment="Center"
-						Grid.Column="0"
-						Grid.Row="1"
-						/>
-
-					<Picker
-						x:Name="picMode"
-						SelectedIndexChanged="picMode_SelectedIndexChanged"
-						Grid.Column="1"
-						Grid.Row="1"
-						>
-						<Picker.Items>
-							<x:String>Idle</x:String>
-							<x:String>Live</x:String>
-							<x:String>Replay</x:String>
-							<x:String>Summary</x:String>
-						</Picker.Items>
-					</Picker>
-
-					<Label
-						x:Name="lblSession"
-						Text="Session"
-						LineBreakMode="TailTruncation"
-						VerticalTextAlignment="Center"
-						Grid.Column="0"
-						Grid.Row="2"
-						/>
-
-					<Picker
-						x:Name="picSession"
-						SelectedIndexChanged="picSession_SelectedIndexChanged"
-						Grid.Column="1"
-						Grid.Row="2"
-						>
-						<Picker.Items/>
-					</Picker>
-
-					<Label
-						x:Name="lblGoal"
-						Text="Goal"
-						LineBreakMode="TailTruncation"
-						VerticalTextAlignment="Center"
-						Grid.Column="0"
-						Grid.Row="3"
-						/>
-
-					<Picker
-						x:Name="picGoal"
-						SelectedIndexChanged="picGoal_SelectedIndexChanged"
-						Grid.Column="1"
-						Grid.Row="3"
-						>
-						<Picker.Items>
-							<x:String>Meditation</x:String>
-							<x:String>Yijing Cast</x:String>
-						</Picker.Items>
-					</Picker>
-
-					<Label
-						x:Name="lblAmbience"
-						Text="Ambience"
-						LineBreakMode="TailTruncation"
-						VerticalTextAlignment="Center"
-						Grid.Column="0"
-						Grid.Row="4"
-						/>
-
-					<Picker
-						x:Name="picAmbience"
-						SelectedIndexChanged="picAmbience_SelectedIndexChanged"
-						Grid.Column="1"
-						Grid.Row="4"
-						>
-						<Picker.Items>
-							<x:String>None</x:String>
-							<x:String>Light rain</x:String>
-							<x:String>Quiet forest</x:String>
-							<x:String>Meadow birds</x:String>
-						</Picker.Items>
-					</Picker>
-
-					<Label
-						x:Name="lblTimer"
-						Text="Timer"
-						LineBreakMode="TailTruncation"
-						VerticalTextAlignment="Center"
-						Grid.Column="0"
-						Grid.Row="5"
-						/>
-
-					<Picker
-						x:Name="picTimer"
-						SelectedIndexChanged="picTimer_SelectedIndexChanged"
-						Grid.Column="1"
-						Grid.Row="5"
-						>
-						<Picker.Items>
-							<x:String>None</x:String>
-							<x:String>Ten minutes</x:String>
-							<x:String>Fifteen minutes</x:String>
-							<x:String>Twenty minutes</x:String>
-							<x:String>Thirty minutes</x:String>
-							<x:String>Sixty minutes</x:String>
-						</Picker.Items>
-					</Picker>
-
-					<Label
-						x:Name="lblReplaySpeed"
-						Text="Replay Speed"
-						LineBreakMode="TailTruncation"
-						VerticalTextAlignment="Center"
-						Grid.Column="0"
-						Grid.Row="6"
-						/>
-
-					<Picker
-						x:Name="picReplaySpeed"
-						SelectedIndexChanged="picReplaySpeed_SelectedIndexChanged"
-						Grid.Column="1"
-						Grid.Row="6"
-						>
-						<Picker.Items>
-							<x:String>Normal</x:String>
-							<x:String>Fast</x:String>
-						</Picker.Items>
-					</Picker>
-
-					<Label
-						x:Name="lblChartBands"
-						Text="Chart Bands"
-						LineBreakMode="TailTruncation"
-						VerticalTextAlignment="Center"
-						Grid.Column="0"
-						Grid.Row="7"
-						/>
-
-					<Picker
-						x:Name="picChartBands"
-						SelectedIndexChanged="picChartBands_SelectedIndexChanged"
-						Grid.Column="1"
-						Grid.Row="7"
-						>
-						<Picker.Items>
-							<x:String>Front</x:String>
-							<x:String>Back</x:String>
-							<x:String>Mixed</x:String>
-							<x:String>All</x:String>
-						</Picker.Items>
-					</Picker>
-
-					<Label
-						x:Name="lblChartTime"
-						Text="Chart Time"
-						LineBreakMode="TailTruncation"
-						VerticalTextAlignment="Center"
-						Grid.Column="0"
-						Grid.Row="8"
-						/>
-
-					<Picker
-						x:Name="picChartTime"
-						SelectedIndexChanged="picChartTime_SelectedIndexChanged"
-						Grid.Column="1"
-						Grid.Row="8"
-						>
-						<Picker.Items>
-							<x:String>02:30</x:String>
-							<x:String>05:00</x:String>
-						</Picker.Items>
-					</Picker>
-
-					<Label
-						x:Name="lblTriggerBand"
-						Text="Trigger Band"
-						LineBreakMode="TailTruncation"
-						VerticalTextAlignment="Center"
-						Grid.Column="0"
-						Grid.Row="9"
-						/>
-
-					<Picker
-						x:Name="picTriggerBand"
-						SelectedIndexChanged="picTriggerChannel_SelectedIndexChanged"
-						Grid.Column="1"
-						Grid.Row="9"
-						>
-						<Picker.Items>
-							<x:String>Delta</x:String>
-							<x:String>Theta</x:String>
-							<x:String>Alpha</x:String>
-							<x:String>Beta</x:String>
-							<x:String>Gamma</x:String>
-						</Picker.Items>
-					</Picker>
-
-					<Label
-						x:Name="lblTriggerChannel"
-						Text="Trigger Channel"
-						LineBreakMode="TailTruncation"
-						VerticalTextAlignment="Center"
-						Grid.Column="0"
-						Grid.Row="10"
-						/>
-
-					<Picker
-						x:Name="picTriggerChannel"
-						SelectedIndexChanged="picTriggerChannel_SelectedIndexChanged"
-						Grid.Column="1"
-						Grid.Row="10"
-						>
-						<Picker.Items>
-							<x:String>Back Left</x:String>
-							<x:String>Front Left</x:String>
-							<x:String>Back Center</x:String>
-							<x:String>Front Right</x:String>
-							<x:String>Back Right</x:String>
-						</Picker.Items>
-					</Picker>
-
-					<Label
-						x:Name="lblTriggerRange"
-						Text="Trigger Range"
-						LineBreakMode="TailTruncation"
-						VerticalTextAlignment="Center"
-						Grid.Column="0"
-						Grid.Row="11"
-						/>
-
-					<Picker
-						x:Name="picTriggerRange"
-						SelectedIndexChanged="picTriggerRange_SelectedIndexChanged"
-						Grid.Column="1"
-						Grid.Row="11"
-						>
-						<Picker.Items>
-							<x:String>0.0 - 0.1</x:String>
-							<x:String>0.1 - 0.2</x:String>
-							<x:String>0.2 - 0.3</x:String>
-							<x:String>0.2 - 0.4</x:String>
-							<x:String>0.3 - 0.4</x:String>
-							<x:String>0.3 - 0.5</x:String>
-							<x:String>0.4 - 0.5</x:String>
-							<x:String>0.4 - 0.6</x:String>
-						</Picker.Items>
-					</Picker>
-
-					<Label 
-						x:Name="lblAiAnalysis"
-						Text="AI Analysis"
-						LineBreakMode="TailTruncation"
-						VerticalTextAlignment="Center"
-						Grid.Column="0"
-						Grid.Row="12"
-						/>
-
-					<Picker
-						x:Name="picAiAnalysis"
-						SelectedIndexChanged="picAiAnalysis_SelectedIndexChanged"
-						Grid.Column="1"
-						Grid.Row="12"
-						>
-						<Picker.Items>
-							<x:String>OpenAi</x:String>
-							<x:String>Deepseek</x:String>
-							<x:String>Github</x:String>
-							<x:String>Ollama</x:String>
-							<x:String>None</x:String>
-						</Picker.Items>
-					</Picker>
-
-					<Label 
-						x:Name="lblAiModel"
-						Text="AI Model"
-						LineBreakMode="TailTruncation"
-						VerticalTextAlignment="Center"
-						Grid.Column="0"
-						Grid.Row="13"
-						/>
-
-					<Picker
-						x:Name="picAiModel"
-						SelectedIndexChanged="picAiModel_SelectedIndexChanged"
-						Grid.Column="1"
-						Grid.Row="13"
-						>
-						<Picker.Items>
-							<x:String>Stephen V</x:String>
-							<x:String>None</x:String>
-						</Picker.Items>
-					</Picker>
-
-					<Label 
-						x:Name="lblTriggerFixed"
-						Text="Fixed Range"
-						LineBreakMode="TailTruncation"
-						VerticalTextAlignment="Center"
-						Grid.Column="0"
-						Grid.Row="14"
-						/>
-
-					<CheckBox 
-						x:Name="chbTriggerFixed"
-						CheckedChanged="chbTriggerFixed_CheckedChanged"
-						Grid.Column="1"
-						Grid.Row="14"
-						/>
-
-					<Label 
-						x:Name="lblTriggerSounding"
-						Text="Trigger Sounding"
-						LineBreakMode="TailTruncation"
-						VerticalTextAlignment="Center"
-						Grid.Column="0"
-						Grid.Row="15"
-						/>
-
-					<CheckBox 
-						x:Name="chbTriggerSounding"
-						CheckedChanged="chbTriggerSounding_CheckedChanged"
-						Grid.Column="1"
-						Grid.Row="15"
-						/>
-
-					<Label 
-						x:Name="lblRawData"
-						Text="Raw Data"
-						LineBreakMode="TailTruncation"
-						VerticalTextAlignment="Center"
-						Grid.Column="0"
-						Grid.Row="16"
-						/>
-
-					<CheckBox 
-						x:Name="chbRawData"
-						CheckedChanged="chbRawData_CheckedChanged"
-						Grid.Column="1"
-						Grid.Row="16"
-						/>
-
-				</Grid>
-
 				<Label
-					x:Name="lblTime"
-					FontSize="18"
-					FontAttributes="Bold"
+					x:Name="lblDevice"
+					Text="Device"
 					LineBreakMode="TailTruncation"
 					VerticalTextAlignment="Center"
+					Grid.Column="0"
+					Grid.Row="0"
 					/>
 
-			</StackLayout>
+				<Picker
+					x:Name="picDevice"
+					SelectedIndexChanged="picDevice_SelectedIndexChanged"
+					Grid.Column="1"
+					Grid.Row="0"
+					>
+					<Picker.Items>
+						<x:String>Muse</x:String>
+						<x:String>Emotiv</x:String>
+					</Picker.Items>
+				</Picker>
 
-			<!--VerticalStackLayout>
-				<Frame 
-					BorderColor="{Binding BorderColor, FallbackValue='Blue'}" 
-					BackgroundColor="{Binding IconBackgroundColor, FallbackValue='Blue'}">
-					<Image 
-						Source="{Binding IconImageSource}"/>
-				</Frame>
+				<Label
+					x:Name="lblMode"
+					Text="Mode"
+					LineBreakMode="TailTruncation"
+					VerticalTextAlignment="Center"
+					Grid.Column="0"
+					Grid.Row="1"
+					/>
+
+				<Picker
+					x:Name="picMode"
+					SelectedIndexChanged="picMode_SelectedIndexChanged"
+					Grid.Column="1"
+					Grid.Row="1"
+					>
+					<Picker.Items>
+						<x:String>Idle</x:String>
+						<x:String>Live</x:String>
+						<x:String>Replay</x:String>
+						<x:String>Summary</x:String>
+					</Picker.Items>
+				</Picker>
+
+				<Label
+					x:Name="lblSession"
+					Text="Session"
+					LineBreakMode="TailTruncation"
+					VerticalTextAlignment="Center"
+					Grid.Column="0"
+					Grid.Row="2"
+					/>
+
+				<Picker
+					x:Name="picSession"
+					SelectedIndexChanged="picSession_SelectedIndexChanged"
+					Grid.Column="1"
+					Grid.Row="2"
+					>
+					<Picker.Items/>
+				</Picker>
+
+				<Label
+					x:Name="lblGoal"
+					Text="Goal"
+					LineBreakMode="TailTruncation"
+					VerticalTextAlignment="Center"
+					Grid.Column="0"
+					Grid.Row="3"
+					/>
+
+				<Picker
+					x:Name="picGoal"
+					SelectedIndexChanged="picGoal_SelectedIndexChanged"
+					Grid.Column="1"
+					Grid.Row="3"
+					>
+					<Picker.Items>
+						<x:String>Meditation</x:String>
+						<x:String>Yijing Cast</x:String>
+					</Picker.Items>
+				</Picker>
+
+				<Label
+					x:Name="lblAmbience"
+					Text="Ambience"
+					LineBreakMode="TailTruncation"
+					VerticalTextAlignment="Center"
+					Grid.Column="0"
+					Grid.Row="4"
+					/>
+
+				<Picker
+					x:Name="picAmbience"
+					SelectedIndexChanged="picAmbience_SelectedIndexChanged"
+					Grid.Column="1"
+					Grid.Row="4"
+					>
+					<Picker.Items>
+						<x:String>None</x:String>
+						<x:String>Light rain</x:String>
+						<x:String>Quiet forest</x:String>
+						<x:String>Meadow birds</x:String>
+					</Picker.Items>
+				</Picker>
+
+				<Label
+					x:Name="lblTimer"
+					Text="Timer"
+					LineBreakMode="TailTruncation"
+					VerticalTextAlignment="Center"
+					Grid.Column="0"
+					Grid.Row="5"
+					/>
+
+				<Picker
+					x:Name="picTimer"
+					SelectedIndexChanged="picTimer_SelectedIndexChanged"
+					Grid.Column="1"
+					Grid.Row="5"
+					>
+					<Picker.Items>
+						<x:String>None</x:String>
+						<x:String>Ten minutes</x:String>
+						<x:String>Fifteen minutes</x:String>
+						<x:String>Twenty minutes</x:String>
+						<x:String>Thirty minutes</x:String>
+						<x:String>Sixty minutes</x:String>
+					</Picker.Items>
+				</Picker>
+
+				<Label
+					x:Name="lblReplaySpeed"
+					Text="Replay Speed"
+					LineBreakMode="TailTruncation"
+					VerticalTextAlignment="Center"
+					Grid.Column="0"
+					Grid.Row="6"
+					/>
+
+				<Picker
+					x:Name="picReplaySpeed"
+					SelectedIndexChanged="picReplaySpeed_SelectedIndexChanged"
+					Grid.Column="1"
+					Grid.Row="6"
+					>
+					<Picker.Items>
+						<x:String>Normal</x:String>
+						<x:String>Fast</x:String>
+					</Picker.Items>
+				</Picker>
+
+				<Label
+					x:Name="lblChartBands"
+					Text="Chart Bands"
+					LineBreakMode="TailTruncation"
+					VerticalTextAlignment="Center"
+					Grid.Column="0"
+					Grid.Row="7"
+					/>
+
+				<Picker
+					x:Name="picChartBands"
+					SelectedIndexChanged="picChartBands_SelectedIndexChanged"
+					Grid.Column="1"
+					Grid.Row="7"
+					>
+					<Picker.Items>
+						<x:String>Front</x:String>
+						<x:String>Back</x:String>
+						<x:String>Mixed</x:String>
+						<x:String>All</x:String>
+					</Picker.Items>
+				</Picker>
+
+				<Label
+					x:Name="lblChartTime"
+					Text="Chart Time"
+					LineBreakMode="TailTruncation"
+					VerticalTextAlignment="Center"
+					Grid.Column="0"
+					Grid.Row="8"
+					/>
+
+				<Picker
+					x:Name="picChartTime"
+					SelectedIndexChanged="picChartTime_SelectedIndexChanged"
+					Grid.Column="1"
+					Grid.Row="8"
+					>
+					<Picker.Items>
+						<x:String>02:30</x:String>
+						<x:String>05:00</x:String>
+					</Picker.Items>
+				</Picker>
+
+				<Label
+					x:Name="lblTriggerBand"
+					Text="Trigger Band"
+					LineBreakMode="TailTruncation"
+					VerticalTextAlignment="Center"
+					Grid.Column="0"
+					Grid.Row="9"
+					/>
+
+				<Picker
+					x:Name="picTriggerBand"
+					SelectedIndexChanged="picTriggerChannel_SelectedIndexChanged"
+					Grid.Column="1"
+					Grid.Row="9"
+					>
+					<Picker.Items>
+						<x:String>Delta</x:String>
+						<x:String>Theta</x:String>
+						<x:String>Alpha</x:String>
+						<x:String>Beta</x:String>
+						<x:String>Gamma</x:String>
+					</Picker.Items>
+				</Picker>
+
+				<Label
+					x:Name="lblTriggerChannel"
+					Text="Trigger Channel"
+					LineBreakMode="TailTruncation"
+					VerticalTextAlignment="Center"
+					Grid.Column="0"
+					Grid.Row="10"
+					/>
+
+				<Picker
+					x:Name="picTriggerChannel"
+					SelectedIndexChanged="picTriggerChannel_SelectedIndexChanged"
+					Grid.Column="1"
+					Grid.Row="10"
+					>
+					<Picker.Items>
+						<x:String>Back Left</x:String>
+						<x:String>Front Left</x:String>
+						<x:String>Back Center</x:String>
+						<x:String>Front Right</x:String>
+						<x:String>Back Right</x:String>
+					</Picker.Items>
+				</Picker>
+
+				<Label
+					x:Name="lblTriggerRange"
+					Text="Trigger Range"
+					LineBreakMode="TailTruncation"
+					VerticalTextAlignment="Center"
+					Grid.Column="0"
+					Grid.Row="11"
+					/>
+
+				<Picker
+					x:Name="picTriggerRange"
+					SelectedIndexChanged="picTriggerRange_SelectedIndexChanged"
+					Grid.Column="1"
+					Grid.Row="11"
+					>
+					<Picker.Items>
+						<x:String>0.0 - 0.1</x:String>
+						<x:String>0.1 - 0.2</x:String>
+						<x:String>0.2 - 0.3</x:String>
+						<x:String>0.2 - 0.4</x:String>
+						<x:String>0.3 - 0.4</x:String>
+						<x:String>0.3 - 0.5</x:String>
+						<x:String>0.4 - 0.5</x:String>
+						<x:String>0.4 - 0.6</x:String>
+					</Picker.Items>
+				</Picker>
+
 				<Label 
-					Text="{Binding CardTitle, FallbackValue='Card Title'}"/>
-				<BoxView 
-					BackgroundColor="{Binding BorderColor, FallbackValue='Blue'}"/>
+					x:Name="lblAiAnalysis"
+					Text="AI Analysis"
+					LineBreakMode="TailTruncation"
+					VerticalTextAlignment="Center"
+					Grid.Column="0"
+					Grid.Row="12"
+					/>
+
+				<Picker
+					x:Name="picAiAnalysis"
+					SelectedIndexChanged="picAiAnalysis_SelectedIndexChanged"
+					Grid.Column="1"
+					Grid.Row="12"
+					>
+					<Picker.Items>
+						<x:String>OpenAi</x:String>
+						<x:String>Deepseek</x:String>
+						<x:String>Github</x:String>
+						<x:String>Ollama</x:String>
+						<x:String>None</x:String>
+					</Picker.Items>
+				</Picker>
+
 				<Label 
-					Text="{Binding CardDescription, FallbackValue='Card description text.'}"/>
-			</VerticalStackLayout-->
-		</Border>
+					x:Name="lblAiModel"
+					Text="AI Model"
+					LineBreakMode="TailTruncation"
+					VerticalTextAlignment="Center"
+					Grid.Column="0"
+					Grid.Row="13"
+					/>
+
+				<Picker
+					x:Name="picAiModel"
+					SelectedIndexChanged="picAiModel_SelectedIndexChanged"
+					Grid.Column="1"
+					Grid.Row="13"
+					>
+					<Picker.Items>
+						<x:String>Stephen V</x:String>
+						<x:String>None</x:String>
+					</Picker.Items>
+				</Picker>
+
+				<Label 
+					x:Name="lblTriggerFixed"
+					Text="Fixed Range"
+					LineBreakMode="TailTruncation"
+					VerticalTextAlignment="Center"
+					Grid.Column="0"
+					Grid.Row="14"
+					/>
+
+				<CheckBox 
+					x:Name="chbTriggerFixed"
+					CheckedChanged="chbTriggerFixed_CheckedChanged"
+					Grid.Column="1"
+					Grid.Row="14"
+					/>
+
+				<Label 
+					x:Name="lblTriggerSounding"
+					Text="Trigger Sounding"
+					LineBreakMode="TailTruncation"
+					VerticalTextAlignment="Center"
+					Grid.Column="0"
+					Grid.Row="15"
+					/>
+
+				<CheckBox 
+					x:Name="chbTriggerSounding"
+					CheckedChanged="chbTriggerSounding_CheckedChanged"
+					Grid.Column="1"
+					Grid.Row="15"
+					/>
+
+				<Label 
+					x:Name="lblRawData"
+					Text="Raw Data"
+					LineBreakMode="TailTruncation"
+					VerticalTextAlignment="Center"
+					Grid.Column="0"
+					Grid.Row="16"
+					/>
+
+				<CheckBox 
+					x:Name="chbRawData"
+					CheckedChanged="chbRawData_CheckedChanged"
+					Grid.Column="1"
+					Grid.Row="16"
+					/>
+
+			</Grid>
+
+			<Label
+				x:Name="lblTime"
+				FontSize="18"
+				FontAttributes="Bold"
+				LineBreakMode="TailTruncation"
+				VerticalTextAlignment="Center"
+				/>
+
+		</StackLayout>
 	</ScrollView>
 </ContentView>
