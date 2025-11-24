@@ -30,26 +30,19 @@
 		<HorizontalStackLayout
 			x:Name="hslButtons"
 			Grid.Row="0"
-			Padding="10,10"
-			Spacing="5"
+			HeightRequest="43"
 			>
 
 			<Button
 				x:Name="btnAdd"
-				Text="Add"
-				TextColor="White"
+				ImageSource = "iconlistdetail.png"
 				BackgroundColor="Black"
-				BorderColor="White"
-				BorderWidth="1"
 				Clicked="OnAddSessionClicked"
-				StyleClass="PrimaryAction" />
+				/>
 			<Button
 				x:Name="btnDelete"
-				Text="Delete"
-				TextColor="White"
+				ImageSource = "iconlistdetail.png"
 				BackgroundColor="Black"
-				BorderColor="White"
-				BorderWidth="1"
 				Clicked="OnDeleteSessionClicked" />
 			
 		</HorizontalStackLayout>

@@ -73,8 +73,9 @@
 
 					<Button
 						x:Name="btnAiOrNote"
-						Text="Save note"
-						Margin="10,0,0,0"
+						ImageSource = "iconlistdetail.png"
+						BackgroundColor="Black"
+						HeightRequest="43"
 						Clicked="btnAiOrNote_Clicked" />
 
 				</HorizontalStackLayout>

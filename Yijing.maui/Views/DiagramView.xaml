@@ -293,15 +293,14 @@
 				/>
 
 			<Grid 
-				ColumnDefinitions="*,*,*,*"
-				RowDefinitions="*,*"
-				RowSpacing="3" 
-				Padding="0,10,20,0"
+				ColumnDefinitions="Auto,Auto,Auto,Auto"
+				RowDefinitions="43,43"
 				>
 
 				<Button 
 					x:Name="btnFirst"
-					Text="First"
+					ImageSource = "iconlistdetail.png"
+					BackgroundColor="Black"
 					Clicked="btnFirst_Clicked"
 					Grid.Column="0"
 					Grid.Row="0"
@@ -309,7 +308,8 @@
 
 				<Button 
 					x:Name="btnLast"
-					Text="Last"
+					ImageSource = "iconlistdetail.png"
+					BackgroundColor="Black"
 					Clicked="btnLast_Clicked"
 					Grid.Column="1"
 					Grid.Row="0"
@@ -317,7 +317,8 @@
 
 				<Button 
 					x:Name="btnMove"
-					Text="Move"
+					ImageSource = "iconlistdetail.png"
+					BackgroundColor="Black"
 					Clicked="btnMove_Clicked"
 					Grid.Column="2"
 					Grid.Row="0"
@@ -325,7 +326,8 @@
 
 				<Button 
 					x:Name="btnHome"
-					Text="Home"
+					ImageSource = "iconlistdetail.png"
+					BackgroundColor="Black"
 					Clicked="btnHome_Clicked"
 					Grid.Column="3"
 					Grid.Row="0"
@@ -333,7 +335,8 @@
 
 				<Button 
 					x:Name="btnInverse"
-					Text="Inverse"
+					ImageSource = "iconlistdetail.png"
+					BackgroundColor="Black"
 					Clicked="btnInverse_Clicked"
 					Grid.Column="0"
 					Grid.Row="1"
@@ -341,7 +344,8 @@
 
 				<Button 
 					x:Name="btnOpposite"
-					Text="Opposite"
+					ImageSource = "iconlistdetail.png"
+					BackgroundColor="Black"
 					Clicked="btnOpposite_Clicked"
 					Grid.Column="1"
 					Grid.Row="1"
@@ -349,7 +353,8 @@
 
 				<Button 
 					x:Name="btnTransverse"
-					Text="Transverse"
+					ImageSource = "iconlistdetail.png"
+					BackgroundColor="Black"
 					Clicked="btnTransverse_Clicked"
 					Grid.Column="2"
 					Grid.Row="1"
@@ -357,7 +362,8 @@
 
 				<Button 
 					x:Name="btnNuclear"
-					Text="Nuclear"
+					ImageSource = "iconlistdetail.png"
+					BackgroundColor="Black"
 					Clicked="btnNuclear_Clicked"
 					Grid.Column="3"
 					Grid.Row="1"
@@ -366,8 +372,8 @@
 			</Grid>
 
 			<Grid 
-				ColumnDefinitions="*,*"
-				RowDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
+				ColumnDefinitions="Auto,Auto"
+				RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
 				Padding="0,10,0,0"
 				>
 
