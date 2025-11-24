@@ -13,55 +13,34 @@
 	x:Class="Yijing.Pages.EegPage"
 	Loaded="Page_Loaded">
 
-	<toolkit:DockLayout
-		x:Name="layDock"
-		ShouldExpandLastChild="true"
-		>
-
-		<views:MenuView
-			x:Name="horMenu"
-			toolkit:DockLayout.DockPosition="Bottom"
-			CardTitle="Card 1"
-			/>
-
-		<views:MenuView
-			x:Name="verMenu"
-			toolkit:DockLayout.DockPosition="Left"
-			CardTitle="Card 1"
-			/>
-
-		<views:EegView
-			x:Name="eegView"
-			toolkit:DockLayout.DockPosition="Left"
-			WidthRequest="300"
-			CardTitle="Card 1"
-			/>
-
-		<Editor x:Name="edtSessionLog" 
-			toolkit:DockLayout.DockPosition="Bottom" 
-			HeightRequest="100" />
-
-		<lvc:CartesianChart
-			x:Name="chaEeg"
-			Series="{Binding Series}"
-			TooltipPosition="Hidden"
-			ZoomMode="None" 
-			LegendPosition="Hidden"
-			AnimationsSpeed="0"
-			AutoUpdateEnabled="True"
-			/>
-
-	</toolkit:DockLayout>
-
-	<!--ScrollView>
-		<StackLayout
-			Orientation="Vertical"
+	<Border>
+		<toolkit:DockLayout
+			x:Name="layDock"
+			ShouldExpandLastChild="true"
 			>
 
-			<controls:EegView
-				x:Name="eeg"
+			<views:MenuView
+				x:Name="horMenu"
+				toolkit:DockLayout.DockPosition="Bottom"
 				CardTitle="Card 1"
 				/>
+
+			<views:MenuView
+				x:Name="verMenu"
+				toolkit:DockLayout.DockPosition="Left"
+				CardTitle="Card 1"
+				/>
+
+			<views:EegView
+				x:Name="eegView"
+				toolkit:DockLayout.DockPosition="Left"
+				WidthRequest="300"
+				CardTitle="Card 1"
+				/>
+
+			<Editor x:Name="edtSessionLog" 
+				toolkit:DockLayout.DockPosition="Bottom" 
+				HeightRequest="100" />
 
 			<lvc:CartesianChart
 				x:Name="chaEeg"
@@ -71,15 +50,8 @@
 				LegendPosition="Hidden"
 				AnimationsSpeed="0"
 				AutoUpdateEnabled="True"
-				HeightRequest="400"
 				/>
 
-			<Editor x:Name="edtSessionLog" 
-				Text="Info: Session started" 
-				HeightRequest="200"
-				/>
-
-		</StackLayout>
-	</ScrollView-->
-
+		</toolkit:DockLayout>
+	</Border>
 </ContentPage>

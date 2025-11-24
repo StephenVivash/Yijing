@@ -12,82 +12,86 @@
 	x:Class="Yijing.Pages.SessionPage"
 	Loaded="Page_Loaded">
 
-	<toolkit:DockLayout
-		ShouldExpandLastChild="true"
-		>
+	<Border>
 
-		<views:MenuView
-			x:Name="horMenu"
-			toolkit:DockLayout.DockPosition="Bottom"
-			CardTitle="Card 1"
-			/>
-
-		<views:MenuView
-			x:Name="verMenu"
-			toolkit:DockLayout.DockPosition="Left"
-			CardTitle="Card 1"
-			/>
-
-		<views:SessionView
-			x:Name="sessionView"
-			toolkit:DockLayout.DockPosition="Left"
-			WidthRequest="300"
-			ChatUpdated="SessionView_ChatUpdated" />
-
-		<VerticalStackLayout
-			x:Name="vslInput"
-			toolkit:DockLayout.DockPosition="Bottom"
-			HeightRequest="100"
+		<toolkit:DockLayout
+			ShouldExpandLastChild="true"
 			>
 
-			<HorizontalStackLayout>
-
-				<Label
-					Text="Chat Service"
-					VerticalTextAlignment="Center" />
-
-				<Picker
-					x:Name="picAiChatService"
-					SelectedIndexChanged="picAiChatService_SelectedIndexChanged">
-					<Picker.Items>
-						<x:String>OpenAi</x:String>
-						<x:String>Deepseek</x:String>
-						<x:String>Github</x:String>
-						<x:String>Ollama</x:String>
-						<x:String>None</x:String>
-					</Picker.Items>
-				</Picker>
-
-				<CheckBox 
-					x:Name="chbIncludeCast"
-					CheckedChanged="chbIncludeCast_CheckedChanged"
-					>
-				</CheckBox>
-
-				<Label
-					Text="Include Cast"
-					VerticalTextAlignment="Center" />
-
-				<Button
-					x:Name="btnAiOrNote"
-					Text="Save note"
-					Margin="10,0,0,0"
-					Clicked="btnAiOrNote_Clicked" />
-
-			</HorizontalStackLayout>
-
-			<Editor
-				x:Name="edtSessionLog"
-				HeightRequest="100"
-				Focused="edtSessionLog_Focused"
-				Unfocused="edtSessionLog_Unfocused"
+			<views:MenuView
+				x:Name="horMenu"
+				toolkit:DockLayout.DockPosition="Bottom"
+				CardTitle="Card 1"
 				/>
 
-		</VerticalStackLayout>
+			<views:MenuView
+				x:Name="verMenu"
+				toolkit:DockLayout.DockPosition="Left"
+				CardTitle="Card 1"
+				/>
 
-		<WebView
-			x:Name="webview"
-			Focused="webview_Focused"
-			/>
-	</toolkit:DockLayout>
+			<views:SessionView
+				x:Name="sessionView"
+				toolkit:DockLayout.DockPosition="Left"
+				WidthRequest="300"
+				ChatUpdated="SessionView_ChatUpdated" />
+		
+			<VerticalStackLayout
+				x:Name="vslInput"
+				toolkit:DockLayout.DockPosition="Bottom"
+				HeightRequest="100"
+				>
+
+				<HorizontalStackLayout>
+
+					<Label
+						Text="Chat Service"
+						VerticalTextAlignment="Center" />
+
+					<Picker
+						x:Name="picAiChatService"
+						SelectedIndexChanged="picAiChatService_SelectedIndexChanged">
+						<Picker.Items>
+							<x:String>OpenAi</x:String>
+							<x:String>Deepseek</x:String>
+							<x:String>Github</x:String>
+							<x:String>Ollama</x:String>
+							<x:String>None</x:String>
+						</Picker.Items>
+					</Picker>
+
+					<CheckBox 
+						x:Name="chbIncludeCast"
+						CheckedChanged="chbIncludeCast_CheckedChanged"
+						>
+					</CheckBox>
+
+					<Label
+						Text="Include Cast"
+						VerticalTextAlignment="Center" />
+
+					<Button
+						x:Name="btnAiOrNote"
+						Text="Save note"
+						Margin="10,0,0,0"
+						Clicked="btnAiOrNote_Clicked" />
+
+				</HorizontalStackLayout>
+
+				<Editor
+					x:Name="edtSessionLog"
+					HeightRequest="100"
+					Focused="edtSessionLog_Focused"
+					Unfocused="edtSessionLog_Unfocused"
+					/>
+
+			</VerticalStackLayout>
+
+			<WebView
+				x:Name="webview"
+				Focused="webview_Focused"
+				/>
+		
+		</toolkit:DockLayout>
+	</Border>
 </ContentPage>

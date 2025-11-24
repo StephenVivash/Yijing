@@ -13,76 +13,83 @@
 	x:Class="Yijing.Pages.MeditationPage"
 	Loaded="Page_Loaded">
 
-	<toolkit:DockLayout
-		x:Name="layDock"
-		ShouldExpandLastChild="true"
-		>
+	<Border>
+		<toolkit:DockLayout
+			x:Name="layDock"
+			ShouldExpandLastChild="true"
+			>
 
-		<views:MenuView
-			x:Name="horMenu"
-			toolkit:DockLayout.DockPosition="Bottom"
-			CardTitle="Card 1"
-			/>
+			<views:MenuView
+				x:Name="horMenu"
+				toolkit:DockLayout.DockPosition="Bottom"
+				CardTitle="Card 1"
+				/>
 
-		<views:MenuView
-			x:Name="verMenu"
-			toolkit:DockLayout.DockPosition="Left"
-			CardTitle="Card 1"
-			/>
-		<views:MeditationView
-			x:Name="meditationView"
-			toolkit:DockLayout.DockPosition="Left"
-			WidthRequest="300"
-			CardTitle="Meditation"
-			MeditationCompleted="MeditationView_MeditationCompleted" />
+			<views:MenuView
+				x:Name="verMenu"
+				toolkit:DockLayout.DockPosition="Left"
+				CardTitle="Card 1"
+				/>
+			<views:MeditationView
+				x:Name="meditationView"
+				toolkit:DockLayout.DockPosition="Left"
+				WidthRequest="300"
+				CardTitle="Meditation"
+				MeditationCompleted="MeditationView_MeditationCompleted" />
 
-		<HorizontalStackLayout
-			x:Name="hslSelection"
-			toolkit:DockLayout.DockPosition="Top"
-			Spacing="10"
-			VerticalOptions="Start"
-			HorizontalOptions="Start">
+			<HorizontalStackLayout
+				x:Name="hslSelection"
+				toolkit:DockLayout.DockPosition="Top"
+				Spacing="10"
+				VerticalOptions="Start"
+				HorizontalOptions="Start">
 
-			<Label
-				Text="Range"
-				VerticalOptions="Center" />
+				<Label
+					Text="Range"
+					VerticalOptions="Center" />
 
-			<Picker
-				x:Name="picRange"
-				SelectedIndexChanged="picRange_SelectedIndexChanged"
-				WidthRequest="140">
-				<Picker.Items>
-					<x:String>Week</x:String>
-					<x:String>Month</x:String>
-					<x:String>Year</x:String>
-				</Picker.Items>
-				</Picker>
+				<Picker
+					x:Name="picRange"
+					SelectedIndexChanged="picRange_SelectedIndexChanged"
+					WidthRequest="140">
+					<Picker.Items>
+						<x:String>Week</x:String>
+						<x:String>Month</x:String>
+						<x:String>Year</x:String>
+					</Picker.Items>
+					</Picker>
 
-			<Button
-				x:Name="btnPrev"
-				Text="◀"
-				Clicked="btnPrev_Clicked" />
+				<Button
+					x:Name="btnPrev"
+					Text="◀"
+					FontSize="Medium"
+					TextColor="White"
+					BackgroundColor="Black"
+					Clicked="btnPrev_Clicked" />
 
-			<Button
-				x:Name="btnNext"
-				Text="▶"
-				Clicked="btnNext_Clicked" />
+				<Button
+					x:Name="btnNext"
+					Text="▶"
+					FontSize="Medium"
+					TextColor="White"
+					BackgroundColor="Black"
+					Clicked="btnNext_Clicked" />
 
-			<Label
-				x:Name="lblRange"
-				VerticalOptions="Center" />
+				<Label
+					x:Name="lblRange"
+					VerticalOptions="Center" />
 
-		</HorizontalStackLayout>
+			</HorizontalStackLayout>
 
-		<lvc:CartesianChart
-			x:Name="chaMeditation"
-			Series="{Binding Series}"
-			TooltipPosition="Hidden"
-			ZoomMode="None"
-			LegendPosition="Hidden"
-			AnimationsSpeed="0"
-			AutoUpdateEnabled="True" />
+			<lvc:CartesianChart
+				x:Name="chaMeditation"
+				Series="{Binding Series}"
+				TooltipPosition="Hidden"
+				ZoomMode="None"
+				LegendPosition="Hidden"
+				AnimationsSpeed="0"
+				AutoUpdateEnabled="True" />
 
-	</toolkit:DockLayout>
-
+		</toolkit:DockLayout>
+	</Border>
 </ContentPage>

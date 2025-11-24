@@ -55,6 +55,8 @@ public partial class MenuView : ContentView
 
 		_ePage = ePage;
 
+		Border border = new();
+
 		_slMenu = new StackLayout()
 		{
 			Orientation = orientation,
@@ -88,6 +90,8 @@ public partial class MenuView : ContentView
 		else
 			_slMenu.HeightRequest = 43;
 
+		border.Content = _slMenu;
+
 		_slMenu.Children.Add(_btnSession);
 		_slMenu.Children.Add(_btnDiagram);
 		_slMenu.Children.Add(_btnEeg);
@@ -98,7 +102,7 @@ public partial class MenuView : ContentView
 		_btnEeg.Clicked += btnEeg_Clicked;
 		_btnMeditation.Clicked += btnMeditation_Clicked;
 
-		Content = _slMenu;
+		Content = border;
 	}
 
 	private async void btnSession_Clicked(object sender, EventArgs e)

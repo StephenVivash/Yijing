@@ -36,11 +36,19 @@
 			<Button
 				x:Name="btnAdd"
 				Text="Add"
+				TextColor="White"
+				BackgroundColor="Black"
+				BorderColor="White"
+				BorderWidth="1"
 				Clicked="OnAddSessionClicked"
 				StyleClass="PrimaryAction" />
 			<Button
 				x:Name="btnDelete"
 				Text="Delete"
+				TextColor="White"
+				BackgroundColor="Black"
+				BorderColor="White"
+				BorderWidth="1"
 				Clicked="OnDeleteSessionClicked" />
 			
 		</HorizontalStackLayout>
@@ -140,4 +148,5 @@
 			</CollectionView.ItemTemplate>
 		</CollectionView>
 	</Grid>
+
 </ContentView>

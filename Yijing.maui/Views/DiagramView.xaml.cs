@@ -193,7 +193,7 @@ public partial class DiagramView : ContentView
 		double w = width - 10;
 		ResizeDiagram(w, height);
 
-		w = width - 40;
+		//w = width - 40;
 		lblHexagram.WidthRequest = w;
 
 		w /= 2;

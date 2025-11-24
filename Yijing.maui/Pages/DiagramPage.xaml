@@ -11,32 +11,33 @@
 	x:Class="Yijing.Pages.DiagramPage"
 	Loaded="Page_Loaded">
 
-	<toolkit:DockLayout
-		ShouldExpandLastChild="true"
-		>
+	<Border>
+		<toolkit:DockLayout
+			ShouldExpandLastChild="true"
+			>
 
-		<views:MenuView
-			x:Name="horMenu"
-			toolkit:DockLayout.DockPosition="Bottom"
-			CardTitle="Card 1"
-			/>
+			<views:MenuView
+				x:Name="horMenu"
+				toolkit:DockLayout.DockPosition="Bottom"
+				CardTitle="Card 1"
+				/>
 
-		<views:MenuView
-			x:Name="verMenu"
-			toolkit:DockLayout.DockPosition="Left"
-			CardTitle="Card 1"
-			/>
+			<views:MenuView
+				x:Name="verMenu"
+				toolkit:DockLayout.DockPosition="Left"
+				CardTitle="Card 1"
+				/>
 
-		<views:DiagramView
-			x:Name="diagramView"
-			toolkit:DockLayout.DockPosition="Left"
-			WidthRequest="300"
-			CardTitle="Card 1"
-			/>
+			<views:DiagramView
+				x:Name="diagramView"
+				toolkit:DockLayout.DockPosition="Left"
+				WidthRequest="300"
+				CardTitle="Card 1"
+				/>
 		
-		<WebView x:Name="webview" 
-			Navigating="webview_Navigating"/>
+			<WebView x:Name="webview" 
+				Navigating="webview_Navigating"/>
 
-	</toolkit:DockLayout>
-
+		</toolkit:DockLayout>
+	</Border>
 </ContentPage>
