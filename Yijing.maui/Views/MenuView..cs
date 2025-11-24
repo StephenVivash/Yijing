@@ -17,8 +17,8 @@ public partial class MenuView : ContentView
 
 	public MenuView()
 	{
-		var b = new RegisterInViewDirectoryBehavior() { Key = "Menu" };
-		Behaviors.Add(b);
+		//var b = new RegisterInViewDirectoryBehavior() { Key = "Menu" };
+		//Behaviors.Add(b);
 		BindingContext = this;
 
 		_bgColor = App.Current.RequestedTheme == AppTheme.Dark ? Colors.Black : Colors.White;
@@ -48,11 +48,18 @@ public partial class MenuView : ContentView
 
 	public void Create(ePages ePage, StackOrientation orientation)
 	{
+		var o = orientation == StackOrientation.Vertical ? "V" : "H";
+		var b = new RegisterInViewDirectoryBehavior() { Key = $"{ePage}{o}Menu" };
+		Behaviors.Add(b);
+
 		_ePage = ePage;
 
 		_slMenu = new StackLayout()
 		{
 			Orientation = orientation,
+			BackgroundColor = _bgColor,
+			Margin = new Thickness(0,0,0,0),
+			Spacing = 0,
 		};
 		_btnSession = new Button()
 		{
@@ -78,7 +85,7 @@ public partial class MenuView : ContentView
 		if (orientation == StackOrientation.Vertical)
 			_slMenu.WidthRequest = 50;
 		else
-			_slMenu.HeightRequest = 50;
+			_slMenu.HeightRequest = 43;
 
 		_slMenu.Children.Add(_btnSession);
 		_slMenu.Children.Add(_btnDiagram);
@@ -118,10 +125,10 @@ public partial class MenuView : ContentView
 	}
 
 	public static readonly BindableProperty CardTitleProperty = BindableProperty.Create(nameof(CardTitle),
-		typeof(string), typeof(DiagramView), string.Empty);
+		typeof(string), typeof(MenuView), string.Empty);
 
 	public static readonly BindableProperty CardColorProperty = BindableProperty.Create(nameof(CardColor),
-		typeof(Color), typeof(DiagramView), App.Current.RequestedTheme == AppTheme.Dark ? Colors.Black : Colors.White);
+		typeof(Color), typeof(MenuView), App.Current.RequestedTheme == AppTheme.Dark ? Colors.Black : Colors.White);
 
 	public string CardTitle
 	{

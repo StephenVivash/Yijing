@@ -23,7 +23,7 @@
 
 		<views:MenuView
 			x:Name="verMenu"
-			toolkit:DockLayout.DockPosition="Right"
+			toolkit:DockLayout.DockPosition="Left"
 			CardTitle="Card 1"
 			/>
 

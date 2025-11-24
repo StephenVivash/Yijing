@@ -626,7 +626,7 @@ public partial class SessionView : ContentView
 
 	public async Task NavigateToDialogPage()
 	{
-		await Shell.Current.GoToAsync(nameof(DiagramPage),false);
+		await Shell.Current.GoToAsync("//Diagram/DiagramRoot", true);
 	}
 
 }
