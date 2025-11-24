@@ -12,8 +12,6 @@
 	x:Class="Yijing.Pages.SessionPage"
 	Loaded="Page_Loaded">
 
-	<Border>
-
 		<toolkit:DockLayout
 			ShouldExpandLastChild="true"
 			>
@@ -35,10 +33,13 @@
 				toolkit:DockLayout.DockPosition="Left"
 				WidthRequest="300"
 				ChatUpdated="SessionView_ChatUpdated" />
-		
+
+			<Border
+				toolkit:DockLayout.DockPosition="Bottom"
+				>
+
 			<VerticalStackLayout
 				x:Name="vslInput"
-				toolkit:DockLayout.DockPosition="Bottom"
 				HeightRequest="100"
 				>
 
@@ -86,12 +87,14 @@
 					/>
 
 			</VerticalStackLayout>
+			</Border>
 
+			<Border>
 			<WebView
 				x:Name="webview"
 				Focused="webview_Focused"
 				/>
-		
-		</toolkit:DockLayout>
-	</Border>
+			</Border>
+
+	</toolkit:DockLayout>
 </ContentPage>

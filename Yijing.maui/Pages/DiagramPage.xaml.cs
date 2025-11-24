@@ -37,7 +37,7 @@ public partial class DiagramPage : ContentPage
 		{
 			horMenu.IsVisible = true;
 			verMenu.IsVisible = false;
-			diagramView.WidthRequest = width;// - 10;
+			diagramView.WidthRequest = width;
 		}
 #else
 		horMenu.IsVisible = false;

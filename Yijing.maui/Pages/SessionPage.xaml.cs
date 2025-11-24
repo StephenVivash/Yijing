@@ -47,7 +47,7 @@ public partial class SessionPage : ContentPage
 		{
 			horMenu.IsVisible = true;
 			verMenu.IsVisible = false;
-			sessionView.WidthRequest = width - 10;
+			sessionView.WidthRequest = width;
 		}
 #else
 		horMenu.IsVisible = false;

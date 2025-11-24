@@ -22,6 +22,7 @@
 		</ResourceDictionary>
 	</ContentView.Resources>
 
+	<Border>
 	<Grid
 		RowDefinitions="Auto,Auto,*"
 		>
@@ -148,5 +149,5 @@
 			</CollectionView.ItemTemplate>
 		</CollectionView>
 	</Grid>
-
+	</Border>
 </ContentView>

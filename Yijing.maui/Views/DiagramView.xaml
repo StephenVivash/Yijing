@@ -13,6 +13,7 @@
 	x:Name="diaView"
 	Loaded="Page_Loaded">
 
+	<Border>
 	<ScrollView>
 
 		<StackLayout
@@ -671,4 +672,5 @@
 			</Grid>
 		</StackLayout>
 	</ScrollView>
+	</Border>
 </ContentView>

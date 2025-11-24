@@ -13,6 +13,7 @@
 	x:Name="meditationView"
 	Loaded="ContentView_Loaded">
 
+	<Border>
 	<ScrollView>
 
 		<StackLayout
@@ -129,4 +130,5 @@
 
 		</StackLayout>
 	</ScrollView>
+	</Border>
 </ContentView>

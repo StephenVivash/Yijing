@@ -67,7 +67,7 @@ public partial class EegPage : ContentPage
 		{
 			horMenu.IsVisible = true;
 			verMenu.IsVisible = false;
-			eegView.WidthRequest = width - 10;
+			eegView.WidthRequest = width;
 		}
 #else
 		horMenu.IsVisible = false;

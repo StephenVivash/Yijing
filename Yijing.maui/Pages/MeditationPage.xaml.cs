@@ -90,7 +90,7 @@ public partial class MeditationPage : ContentPage
 		{
 			horMenu.IsVisible = true;
 			verMenu.IsVisible = false;
-			meditationView.WidthRequest = width - 10;
+			meditationView.WidthRequest = width;
 		}
 #else
 		horMenu.IsVisible = false;

@@ -193,7 +193,7 @@ public partial class DiagramView : ContentView
 		double w = width - 10;
 		ResizeDiagram(w, height);
 
-		//w = width - 40;
+		w = width - 40;
 		lblHexagram.WidthRequest = w;
 
 		w /= 2;
@@ -235,7 +235,7 @@ public partial class DiagramView : ContentView
 		picLineSequence.WidthRequest = w;
 		picLineRatio.WidthRequest = w;
 
-		w -= 10;
+		//w -= 10;
 
 		w /= 2;
 		btnMove.WidthRequest = w;
@@ -1067,7 +1067,7 @@ public partial class DiagramView : ContentView
 				m_ellLine[l].IsVisible = bOld;
 			}
 
-			lblHexagram.Text = m_hvsCurrent.DescribeCast(true);
+			lblHexagram.Text = m_hvsCurrent.DescribeCast(false);
 		}
 		catch { }
 	}

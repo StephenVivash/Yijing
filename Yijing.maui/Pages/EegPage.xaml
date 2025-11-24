@@ -13,7 +13,6 @@
 	x:Class="Yijing.Pages.EegPage"
 	Loaded="Page_Loaded">
 
-	<Border>
 		<toolkit:DockLayout
 			x:Name="layDock"
 			ShouldExpandLastChild="true"
@@ -38,10 +37,14 @@
 				CardTitle="Card 1"
 				/>
 
-			<Editor x:Name="edtSessionLog" 
+			<Border
 				toolkit:DockLayout.DockPosition="Bottom" 
+				>
+			<Editor x:Name="edtSessionLog" 
 				HeightRequest="100" />
+			</Border>
 
+			<Border>
 			<lvc:CartesianChart
 				x:Name="chaEeg"
 				Series="{Binding Series}"
@@ -51,7 +54,7 @@
 				AnimationsSpeed="0"
 				AutoUpdateEnabled="True"
 				/>
+		</Border>
 
-		</toolkit:DockLayout>
-	</Border>
+	</toolkit:DockLayout>
 </ContentPage>

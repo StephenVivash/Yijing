@@ -13,7 +13,6 @@
 	x:Class="Yijing.Pages.MeditationPage"
 	Loaded="Page_Loaded">
 
-	<Border>
 		<toolkit:DockLayout
 			x:Name="layDock"
 			ShouldExpandLastChild="true"
@@ -37,9 +36,11 @@
 				CardTitle="Meditation"
 				MeditationCompleted="MeditationView_MeditationCompleted" />
 
+			<Border
+				toolkit:DockLayout.DockPosition="Top"
+				>
 			<HorizontalStackLayout
 				x:Name="hslSelection"
-				toolkit:DockLayout.DockPosition="Top"
 				Spacing="10"
 				VerticalOptions="Start"
 				HorizontalOptions="Start">
@@ -80,7 +81,9 @@
 					VerticalOptions="Center" />
 
 			</HorizontalStackLayout>
+			</Border>
 
+			<Border>
 			<lvc:CartesianChart
 				x:Name="chaMeditation"
 				Series="{Binding Series}"
@@ -89,7 +92,6 @@
 				LegendPosition="Hidden"
 				AnimationsSpeed="0"
 				AutoUpdateEnabled="True" />
-
-		</toolkit:DockLayout>
-	</Border>
+			</Border>
+	</toolkit:DockLayout>
 </ContentPage>

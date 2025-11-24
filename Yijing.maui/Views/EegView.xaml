@@ -13,6 +13,7 @@
 	x:Name="eegView"
 	Loaded="Page_Loaded">
 
+	<Border>
 	<ScrollView>
 		
 		<StackLayout
@@ -405,4 +406,5 @@
 
 		</StackLayout>
 	</ScrollView>
+	</Border>
 </ContentView>
