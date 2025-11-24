@@ -294,7 +294,7 @@ public partial class SessionView : ContentView
 									match.Meditation = true;
 								YijingDatabase.SaveChanges(yc);
 							}
-						}
+					}
 					yc.Meditations.AddRange(lm);
 					YijingDatabase.SaveChanges(yc);
 				}
@@ -525,7 +525,7 @@ public partial class SessionView : ContentView
 		{
 			SaveChat(name, "Question", _ai._userPrompts[1]);
 			SaveChat(name, "Answer", _ai._chatReponses[1]);
-			
+
 			var summary = CreateSession(Path.Combine(AppSettings.DocumentHome(), "Questions", name + ".txt"));
 			summary.Id = _selectedSession?.Id ?? 0;
 

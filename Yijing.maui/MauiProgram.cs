@@ -19,6 +19,7 @@ public static class MauiProgram
 	{
 		AppSettings.SetDocumentHome();
 		AppPreferences.Load();
+		AudioPlayer.Load();
 
 		_yd = new YijingDatabase(Path.Combine(AppSettings.DocumentHome(), "Yijing.db"));
 		_yd.Initialse();
@@ -40,21 +41,12 @@ public static class MauiProgram
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif
-		//builder.Services.AddSingleton<Views.DiagramView>();
-		//builder.Services.AddSingleton<Views.EegView>();
-		//builder.Services.AddSingleton<Pages.DiagramPage>();
-		//builder.Services.AddSingleton<Pages.EegPage>();
 
 #if ANDROID || IOS
 		//builder.Services.AddTransient<Services.SampleDataService>();
 		//builder.Services.AddSingleton<Pages.WebPage>();
-		//builder.Services.AddSingleton<Pages.ChartPage>();
-		//builder.Services.AddSingleton<Pages.ListDetailPage>();
-		//builder.Services.AddTransient<Pages.ListDetailDetailPage>();
 #endif
 
-		Services.AudioPlayer.Load();
 		return builder.Build();
 	}
-
 }

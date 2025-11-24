@@ -1,4 +1,5 @@
 
+using Yijing.Pages;
 using Yijing.Services;
 
 namespace Yijing.Views;
@@ -58,7 +59,7 @@ public partial class MenuView : ContentView
 		{
 			Orientation = orientation,
 			BackgroundColor = _bgColor,
-			Margin = new Thickness(0,0,0,0),
+			Margin = new Thickness(0, 0, 0, 0),
 			Spacing = 0,
 		};
 		_btnSession = new Button()
@@ -108,8 +109,9 @@ public partial class MenuView : ContentView
 
 	private async void btnDiagram_Clicked(object sender, EventArgs e)
 	{
+		//await Shell.Current.Navigation.PushAsync(DiagramPage);
 		if (_ePage != ePages.eDiagram)
-			await Shell.Current.GoToAsync("//Diagram/DiagramRoot", true);
+			await Shell.Current.GoToAsync("///Diagram/DiagramRoot", true);
 	}
 
 	private async void btnEeg_Clicked(object sender, EventArgs e)

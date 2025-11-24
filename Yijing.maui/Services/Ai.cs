@@ -1,12 +1,8 @@
-//using Microsoft.Extensions.AI;
-
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 
 using System.ComponentModel;
-using Yijing.Pages;
-
 
 //using OpenAI;
 //using OpenAI.Chat;
@@ -116,7 +112,98 @@ public class Ai
 				"\n\nEdit the Documents\\Yijing\\appsettings.json file to correct the configuration and restart the application.");
 		}
 	}
-	/*
+}
+
+public class YijingPlugin
+{
+	[KernelFunction("autocast_hexagram")]
+	[Description("Navigate to and autocast on a DiagramView, wait and return the cast description")]
+
+	public async Task<string> AutocastHexagram()
+	{
+		ViewDirectory.Invoke<SessionView>(async v => await v.NavigateToDialogPage());
+
+		var tcs = new TaskCompletionSource<string>();
+		ViewDirectory.Invoke<DiagramView>(async v =>
+		{
+			try
+			{
+				var result = await v.AutoCastHexagram();
+				tcs.TrySetResult(result);
+			}
+			catch (Exception ex)
+			{
+				tcs.TrySetException(ex);
+			}
+		});
+		return await tcs.Task.ConfigureAwait(false);
+
+	}
+
+	[KernelFunction("set_hexagram")]
+	public void SetHexagram(int sequence) =>
+		ViewDirectory.Invoke<DiagramView>(v => v.SetHexagram(sequence));
+
+	[KernelFunction("first_hexagram")]
+	public void FirstHexagram() =>
+		ViewDirectory.Invoke<DiagramView>(v => v.SetFirst());
+
+	[KernelFunction("previous_hexagram")]
+	public void PreviousHexagram() =>
+		ViewDirectory.Invoke<DiagramView>(v => v.SetPrevious());
+
+	[KernelFunction("next_hexagram")]
+	public void NextHexagram() =>
+		ViewDirectory.Invoke<DiagramView>(v => v.SetNext());
+
+	[KernelFunction("last_hexagram")]
+	public void LastHexagram() =>
+		ViewDirectory.Invoke<DiagramView>(v => v.SetLast());
+
+	[KernelFunction("move_hexagram")]
+	public void MoveHexagram() =>
+		ViewDirectory.Invoke<DiagramView>(v => v.SetMove());
+
+	[KernelFunction("last_cast_hexagram")]
+	public void LastCastHexagram() =>
+		ViewDirectory.Invoke<DiagramView>(v => v.SetHome());
+
+	[KernelFunction("inverse_hexagram")]
+	public void InverseHexagram() =>
+		ViewDirectory.Invoke<DiagramView>(v => v.SetInverse());
+
+	[KernelFunction("opposite_hexagram")]
+	public void OppositeHexagram() =>
+		ViewDirectory.Invoke<DiagramView>(v => v.SetOpposite());
+
+	[KernelFunction("transverse_hexagram")]
+	public void TransverseHexagram() =>
+		ViewDirectory.Invoke<DiagramView>(v => v.SetTransverse());
+
+	[KernelFunction("nuclear_hexagram")]
+	public void NuclearHexagram() =>
+		ViewDirectory.Invoke<DiagramView>(v => v.SetNuclear());
+
+	[KernelFunction("get_hexagram")]
+	public int GetHexagram()
+	{
+		// Grab the latest DiagramView if it exists right now
+		var v = ViewDirectory.Get<DiagramView>();
+		if (v is null) return -1; // or throw / choose a sentinel that suits you
+
+		// Read on the UI thread (safe even if GetHexagram touches UI-bound state)
+		int value = -1;
+		if (v.Dispatcher?.IsDispatchRequired == true)
+			v.Dispatcher.Dispatch(() => value = v.GetHexagram());
+		else
+			value = v.GetHexagram();
+
+		return value;
+	}
+}
+
+/*
+
 	public async Task ChatAsync1(int aiService, string prompt)
 	{
 		try
@@ -169,185 +256,9 @@ public class Ai
 				"\n\nEdit the Documents\\Yijing\\appsettings.json file to correct the configuration and restart the application.");
 		}
 	}
-	*/
-}
-
-public class YijingPlugin
-{
-	[KernelFunction("autocast_hexagram")]
-	[Description("Navigate to and autocast on a DiagramView, wait and return the cast description")]
-
-	public async Task<string> AutocastHexagram()
-	{
-		ViewDirectory.Invoke<SessionView>(async v => await v.NavigateToDialogPage());
-
-		//string result = "";
-		//ViewDirectory.Invoke<DiagramView>(async v => result = await v.AutoCastHexagram());
-		//return result;
-		
-		var tcs = new TaskCompletionSource<string>();
-		ViewDirectory.Invoke<DiagramView>(async v =>
-		{
-			try
-			{
-				var result = await v.AutoCastHexagram();
-				tcs.TrySetResult(result);
-			}
-			catch (Exception ex)
-			{
-				tcs.TrySetException(ex);
-			}
-		});
-		return await tcs.Task.ConfigureAwait(false);
-		
-	}
-
-	[KernelFunction("set_hexagram")]
-	public void SetHexagram(int sequence) =>
-		ViewDirectory.Invoke<DiagramView>(v => v.SetHexagram(sequence));
-
-	[KernelFunction("first_hexagram")]
-	public void FirstHexagram() =>
-		ViewDirectory.Invoke<DiagramView>(v => v.SetFirst());
-
-	[KernelFunction("previous_hexagram")]
-	public void PreviousHexagram() =>
-		ViewDirectory.Invoke<DiagramView>(v => v.SetPrevious());
-
-	[KernelFunction("next_hexagram")]
-	public void NextHexagram() =>
-		ViewDirectory.Invoke<DiagramView>(v => v.SetNext());
-
-	[KernelFunction("last_hexagram")]
-	public void LastHexagram() =>
-		ViewDirectory.Invoke<DiagramView>(v => v.SetLast());
-
-	[KernelFunction("move_hexagram")]
-	public void MoveHexagram() =>
-		ViewDirectory.Invoke<DiagramView>(v => v.SetMove());
-
-	[KernelFunction("last_cast_hexagram")]
-	public void LastCastHexagram() =>
-		ViewDirectory.Invoke<DiagramView>(v => v.SetHome());
-
-	[KernelFunction("inverse_hexagram")]
-	public void InverseHexagram() =>
-		ViewDirectory.Invoke<DiagramView>(v => v.SetInverse());
-
-	[KernelFunction("opposite_hexagram")]
-	public void OppositeHexagram() =>
-		ViewDirectory.Invoke<DiagramView>(v => v.SetOpposite());
-
-	[KernelFunction("transverse_hexagram")]
-	public void TransverseHexagram() =>
-		ViewDirectory.Invoke<DiagramView>(v => v.SetTransverse());
-
-	[KernelFunction("nuclear_hexagram")]
-	public void NuclearHexagram() =>
-		ViewDirectory.Invoke<DiagramView>(v => v.SetNuclear());
-
-	// ---------- read (sync) ----------
-	[KernelFunction("get_hexagram")]
 
 
-	public int GetHexagram()
-	{
-		// Grab the latest DiagramView if it exists right now
-		var v = ViewDirectory.Get<DiagramView>();
-		if (v is null) return -1; // or throw / choose a sentinel that suits you
 
-		// Read on the UI thread (safe even if GetHexagram touches UI-bound state)
-		int value = -1;
-		if (v.Dispatcher?.IsDispatchRequired == true)
-			v.Dispatcher.Dispatch(() => value = v.GetHexagram());
-		else
-			value = v.GetHexagram();
-
-		return value;
-	}
-
-	/*
-		[KernelFunction("autocast_hexagram")]
-		public void autocast_hexagram()
-		{
-			ViewDirectory.TryInvoke<DiagramView>(v => v.AutoCastHexagram());
-		}
-
-		[KernelFunction("set_hexagram")]
-		public static void set_hexagram(int sequence)
-		{
-			DiagramView.SetHexagram(sequence);
-		}
-
-		[KernelFunction("get_hexagram")]
-		public static int get_hexagram()
-		{
-			return DiagramView.GetHexagram();
-		}
-
-		[KernelFunction("first_hexagram")]
-		public static void first_hexagram()
-		{
-			DiagramView.SetFirst();
-		}
-
-		[KernelFunction("previous_hexagram")]
-		public static void previous_hexagram()
-		{
-			DiagramView.SetPrevious();
-		}
-
-		[KernelFunction("next_hexagram")]
-		public static void next_hexagram()
-		{
-			DiagramView.SetNext();
-		}
-
-		[KernelFunction("last_hexagram")]
-		public static void last_hexagram()
-		{
-			DiagramView.SetLast();
-		}
-
-		[KernelFunction("move_hexagram")]
-		public static void move_hexagram()
-		{
-			DiagramView.SetMove();
-		}
-
-		[KernelFunction("last_cast_hexagram")]
-		public static void last_cast_hexagram()
-		{
-			DiagramView.SetHome();
-		}
-
-		[KernelFunction("inverse_hexagram")]
-		public static void inverse_hexagram()
-		{
-			DiagramView.SetInverse();
-		}
-
-		[KernelFunction("opposite_hexagram")]
-		public static void opposite_hexagram()
-		{
-			DiagramView.SetOpposite();
-		}
-
-		[KernelFunction("transverse_hexagram")]
-		public static void transverse_hexagram()
-		{
-			DiagramView.SetTransverse();
-		}
-
-		[KernelFunction("nuclear_hexagram")]
-		public static void nuclear_hexagram()
-		{
-			DiagramView.SetNuclear();
-		}
-	*/
-}
-
-/*
 	public async Task TestSkOpenAiTools(int aiService)
 	{
 		var builder = Kernel.CreateBuilder();

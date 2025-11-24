@@ -6,24 +6,9 @@ namespace Yijing;
 public partial class App : Application
 {
 
-	public static App GetApp()
-	{
-		Window[] w1 = Application.Current.Windows.ToArray();
-		foreach (var item in w1)
-		{
-			var y = item.Parent;
-			if (y is App) return (App)y;
-		}
-		//Page p = Application.Current.MainPage;
-		//var x = Application.Current.Windows[0].Parent;
-		return null; // (App)x;
-	}
-
 	public App()
 	{
 		InitializeComponent();
-
-		//MainPage = new AppShell();
 
 		LiveCharts.Configure(config => config
 			.AddSkiaSharp()
@@ -39,8 +24,6 @@ public partial class App : Application
 			// .HasMap<Foo>( .... )
 			// .HasMap<Bar>( .... )
 			);
-
-		//MainPage.Navigation.PushAsync(MainPage);
 	}
 
 	protected override Window CreateWindow(IActivationState activationState)
