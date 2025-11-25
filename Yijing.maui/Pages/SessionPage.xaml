@@ -8,6 +8,7 @@
 	xmlns:local="clr-namespace:Yijing"
 	xmlns:models="clr-namespace:YijingData;assembly=Yijing.data"
 	xmlns:views="clr-namespace:Yijing.Views"
+	xmlns:controls="clr-namespace:Yijing.Controls"
 			 
 	x:Class="Yijing.Pages.SessionPage"
 	Loaded="Page_Loaded">
@@ -71,11 +72,11 @@
 						Text="Include Cast"
 						VerticalTextAlignment="Center" />
 
-					<Button
+					<controls:ButtonEx
 						x:Name="btnAiOrNote"
-						ImageSource = "iconlistdetail.png"
-						BackgroundColor="Black"
-						HeightRequest="43"
+						Text="Submit"
+						Border="True"
+						Margin="10,0,0,0"
 						Clicked="btnAiOrNote_Clicked" />
 
 				</HorizontalStackLayout>

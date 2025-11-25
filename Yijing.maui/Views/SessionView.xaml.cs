@@ -82,11 +82,11 @@ public partial class SessionView : ContentView
 
 		w /= 2;
 
-		w -= 5;
+		//w -= 5;
 
 		w /= 2;
-		//btnAdd.WidthRequest = w;
-		//btnDelete.WidthRequest = w;
+		btnAdd.WidthRequest = w;
+		btnDelete.WidthRequest = w;
 
 		base.OnSizeAllocated(width, height);
 	}

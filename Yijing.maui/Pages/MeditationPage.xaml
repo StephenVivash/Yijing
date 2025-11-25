@@ -5,11 +5,11 @@
 	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 	xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
 
-	xmlns:local="clr-namespace:Yijing"
 	xmlns:models="clr-namespace:Yijing.Models"
 	xmlns:views="clr-namespace:Yijing.Views"
-	x:DataType="models:MeditationSeries"
+	xmlns:controls="clr-namespace:Yijing.Controls"
 
+	x:DataType="models:MeditationSeries"
 	x:Class="Yijing.Pages.MeditationPage"
 	Loaded="Page_Loaded">
 
@@ -60,20 +60,14 @@
 					</Picker.Items>
 					</Picker>
 
-				<Button
+				<controls:ButtonEx
 					x:Name="btnPrev"
 					Text="◀"
-					FontSize="Medium"
-					TextColor="White"
-					BackgroundColor="Black"
 					Clicked="btnPrev_Clicked" />
 
-				<Button
+				<controls:ButtonEx
 					x:Name="btnNext"
 					Text="▶"
-					FontSize="Medium"
-					TextColor="White"
-					BackgroundColor="Black"
 					Clicked="btnNext_Clicked" />
 
 				<Label

@@ -5,8 +5,9 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 	
-	xmlns:views="clr-namespace:Yijing.Views"
 	xmlns:models="clr-namespace:YijingData;assembly=Yijing.data"
+	xmlns:views="clr-namespace:Yijing.Views"
+	xmlns:controls="clr-namespace:Yijing.Controls"
 	xmlns:conv="clr-namespace:Yijing.Services"
 	
 	x:Class="Yijing.Views.DiagramView"
@@ -289,81 +290,81 @@
 				FontSize="16"
 				FontAttributes="Bold"
 				LineBreakMode="TailTruncation"
-				Padding="0,10,0,0"
+				Padding="0,10,0,10"
 				/>
 
 			<Grid 
 				ColumnDefinitions="Auto,Auto,Auto,Auto"
-				RowDefinitions="43,43"
+				RowDefinitions="Auto,Auto"
 				>
 
-				<Button 
+				<controls:ButtonEx 
 					x:Name="btnFirst"
-					ImageSource = "iconlistdetail.png"
-					BackgroundColor="Black"
+					Text="First"
+					Border="True"
 					Clicked="btnFirst_Clicked"
 					Grid.Column="0"
 					Grid.Row="0"
 					/>
 
-				<Button 
+				<controls:ButtonEx 
 					x:Name="btnLast"
-					ImageSource = "iconlistdetail.png"
-					BackgroundColor="Black"
+					Text="Last"
+					Border="True"
 					Clicked="btnLast_Clicked"
 					Grid.Column="1"
 					Grid.Row="0"
 					/>
 
-				<Button 
+				<controls:ButtonEx 
 					x:Name="btnMove"
-					ImageSource = "iconlistdetail.png"
-					BackgroundColor="Black"
+					Text="Move"
+					Border="True"
 					Clicked="btnMove_Clicked"
 					Grid.Column="2"
 					Grid.Row="0"
 					/>
 
-				<Button 
+				<controls:ButtonEx 
 					x:Name="btnHome"
-					ImageSource = "iconlistdetail.png"
-					BackgroundColor="Black"
+					Text="Home"
+					Border="True"
 					Clicked="btnHome_Clicked"
 					Grid.Column="3"
 					Grid.Row="0"
 					/>
 
-				<Button 
+				<controls:ButtonEx 
 					x:Name="btnInverse"
-					ImageSource = "iconlistdetail.png"
-					BackgroundColor="Black"
+					Text="Inverse"
+					Border="True"
 					Clicked="btnInverse_Clicked"
 					Grid.Column="0"
 					Grid.Row="1"
 					/>
 
-				<Button 
+				<controls:ButtonEx 
 					x:Name="btnOpposite"
-					ImageSource = "iconlistdetail.png"
-					BackgroundColor="Black"
+					Text="Opposite"
+					Border="True"
 					Clicked="btnOpposite_Clicked"
 					Grid.Column="1"
 					Grid.Row="1"
 					/>
 
-				<Button 
+				<controls:ButtonEx 
 					x:Name="btnTransverse"
-					ImageSource = "iconlistdetail.png"
-					BackgroundColor="Black"
+					Text="Transverse"
+					Border="True"
 					Clicked="btnTransverse_Clicked"
 					Grid.Column="2"
 					Grid.Row="1"
 					/>
 
-				<Button 
+				<controls:ButtonEx 
 					x:Name="btnNuclear"
-					ImageSource = "iconlistdetail.png"
-					BackgroundColor="Black"
+					Text="Nuclear"
+					Border="True"
 					Clicked="btnNuclear_Clicked"
 					Grid.Column="3"
 					Grid.Row="1"

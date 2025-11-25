@@ -1,5 +1,5 @@
 
-using Yijing.Pages;
+using Yijing.Controls;
 using Yijing.Services;
 
 namespace Yijing.Views;
@@ -7,14 +7,14 @@ namespace Yijing.Views;
 public partial class MenuView : ContentView
 {
 
+	private static Color _bgColor = App.Current.RequestedTheme == AppTheme.Dark ? Colors.Black : Colors.White;
 	private ePages _ePage = ePages.eNone;
-	private Color _bgColor;
 	private StackLayout _slMenu;
 
-	private Button _btnSession;
-	private Button _btnDiagram;
-	private Button _btnEeg;
-	private Button _btnMeditation;
+	private ButtonEx _btnSession;
+	private ButtonEx _btnDiagram;
+	private ButtonEx _btnEeg;
+	private ButtonEx _btnMeditation;
 
 	public MenuView()
 	{
@@ -22,7 +22,6 @@ public partial class MenuView : ContentView
 		//Behaviors.Add(b);
 		BindingContext = this;
 
-		_bgColor = App.Current.RequestedTheme == AppTheme.Dark ? Colors.Black : Colors.White;
 		BackgroundColor = _bgColor;
 	}
 
@@ -64,25 +63,22 @@ public partial class MenuView : ContentView
 			Margin = new Thickness(0, 0, 0, 0),
 			Spacing = 0,
 		};
-		_btnSession = new Button()
+		_btnSession = new ButtonEx()
 		{
 			ImageSource = "iconlistdetail.png",
-			BackgroundColor = _bgColor,
 		};
-		_btnDiagram = new Button()
+		_btnDiagram = new ButtonEx()
 		{
 			ImageSource = "iconlistdetail.png",
-			BackgroundColor = _bgColor,
 		};
-		_btnEeg = new Button()
+		_btnEeg = new ButtonEx()
 		{
 			ImageSource = "iconlistdetail.png",
-			BackgroundColor = _bgColor,
 		};
-		_btnMeditation = new Button()
+		_btnMeditation = new ButtonEx()
 		{
 			ImageSource = "iconlistdetail.png",
-			BackgroundColor = _bgColor,
+			//VerticalOptions = LayoutOptions.End,
 		};
 
 		if (orientation == StackOrientation.Vertical)

@@ -5,8 +5,9 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 	
-	xmlns:views="clr-namespace:Yijing.Views"
 	xmlns:models="clr-namespace:YijingData;assembly=Yijing.data"
+	xmlns:views="clr-namespace:Yijing.Views"
+	xmlns:controls="clr-namespace:Yijing.Controls"
 	xmlns:conv="clr-namespace:Yijing.Services"	
 
 	x:Class="Yijing.Views.SessionView"
@@ -30,19 +31,18 @@
 		<HorizontalStackLayout
 			x:Name="hslButtons"
 			Grid.Row="0"
-			HeightRequest="43"
 			>
 
-			<Button
+			<controls:ButtonEx
 				x:Name="btnAdd"
-				ImageSource = "iconlistdetail.png"
-				BackgroundColor="Black"
+				Text="Add"
+				Border="True"
 				Clicked="OnAddSessionClicked"
 				/>
-			<Button
+			<controls:ButtonEx
 				x:Name="btnDelete"
-				ImageSource = "iconlistdetail.png"
-				BackgroundColor="Black"
+				Text="Delete"
+				Border="True"
 				Clicked="OnDeleteSessionClicked" />
 			
 		</HorizontalStackLayout>
