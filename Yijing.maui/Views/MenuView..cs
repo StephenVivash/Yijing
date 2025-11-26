@@ -65,20 +65,28 @@ public partial class MenuView : ContentView
 		};
 		_btnSession = new ButtonEx()
 		{
-			ImageSource = "iconlistdetail.png",
+			FontFamily = FluentIcons.FontFamilySegoe,
+			FontSize = FluentIcons.FontSize,
+			Text = FluentIcons.SessionPage,
+
 		};
 		_btnDiagram = new ButtonEx()
 		{
-			ImageSource = "iconlistdetail.png",
+			FontFamily = FluentIcons.FontFamilySegoe,
+			FontSize = FluentIcons.FontSize,
+			Text = FluentIcons.DiagramPage,
 		};
 		_btnEeg = new ButtonEx()
 		{
-			ImageSource = "iconlistdetail.png",
+			FontFamily = FluentIcons.FontFamilySegoeMDL2,
+			FontSize = FluentIcons.FontSize,
+			Text = FluentIcons.EegPage,
 		};
 		_btnMeditation = new ButtonEx()
 		{
-			ImageSource = "iconlistdetail.png",
-			//VerticalOptions = LayoutOptions.End,
+			FontFamily = FluentIcons.FontFamilySegoe,
+			FontSize = FluentIcons.FontSize,
+			Text = FluentIcons.MeditationPage,
 		};
 
 		if (orientation == StackOrientation.Vertical)

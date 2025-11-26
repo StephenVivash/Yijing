@@ -327,8 +327,9 @@
 
 				<controls:ButtonEx 
 					x:Name="btnHome"
-					Text="Home"
-					Border="True"
+					Text="{x:Static controls:FluentIcons.Home}"
+					FontFamily="Segoe Fluent Icons"
+					FontSize="24" 
 					Clicked="btnHome_Clicked"
 					Grid.Column="3"
 					Grid.Row="0"

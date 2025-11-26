@@ -11,37 +11,38 @@ class ButtonEx : Button
 		BackgroundColor = _bgColor;
 		TextColor = _fgColor;
 		BorderColor = _bgColor;
+#if WINDOWS
 		HeightRequest = 40;
+#else
+		HeightRequest = 43;
+#endif
 	}
 
-	public static readonly BindableProperty IsLoadingProperty =
-		BindableProperty.Create(nameof(IsLoading), typeof(bool), typeof(ButtonEx), false, propertyChanged: OnIsLoadingChanged);
+	//public static readonly BindableProperty IconProperty =
+	//	BindableProperty.Create(nameof(Icon), typeof(String), typeof(ButtonEx), false, propertyChanged: OnIconChanged);
 
 	public static readonly BindableProperty BorderProperty =
 		BindableProperty.Create(nameof(Border), typeof(bool), typeof(ButtonEx), false, propertyChanged: OnBorderChanged);
 
-	public bool IsLoading
+	public static readonly BindableProperty IsLoadingProperty =
+		BindableProperty.Create(nameof(IsLoading), typeof(bool), typeof(ButtonEx), false, propertyChanged: OnIsLoadingChanged);
+	/*
+	public String Icon
 	{
-		get => (bool)GetValue(IsLoadingProperty);
-		set => SetValue(IsLoadingProperty, value);
+		get => (String)GetValue(IconProperty);
+		set => SetValue(IconProperty, value);
 	}
 
-	private static void OnIsLoadingChanged(BindableObject bindable, object oldValue, object newValue)
+	private static void OnIconChanged(BindableObject bindable, object oldValue, object newValue)
 	{
 		var button = (ButtonEx)bindable;
-		bool isLoading = (bool)newValue;
-		if (isLoading)
+		String icon = (String)newValue;
+		if (!String.IsNullOrEmpty(icon))
 		{
-			//button.Text = "Loading...";
-			button.IsEnabled = false;
-		}
-		else
-		{
-			//button.Text = "Submit";
-			button.IsEnabled = true;
+			button.Text = icon;
 		}
 	}
-
+	*/
 	public bool Border
 	{
 		get => (bool)GetValue(BorderProperty);
@@ -61,5 +62,28 @@ class ButtonEx : Button
 			button.BorderColor = _bgColor;
 		}
 	}
+
+	public bool IsLoading
+	{
+		get => (bool)GetValue(IsLoadingProperty);
+		set => SetValue(IsLoadingProperty, value);
+	}
+	private static void OnIsLoadingChanged(BindableObject bindable, object oldValue, object newValue)
+	{
+		var button = (ButtonEx)bindable;
+		bool isLoading = (bool)newValue;
+		if (isLoading)
+		{
+			//button.Text = "Loading...";
+			button.IsEnabled = false;
+		}
+		else
+		{
+			//button.Text = "Submit";
+			button.IsEnabled = true;
+		}
+	}
+
+
 }
 
