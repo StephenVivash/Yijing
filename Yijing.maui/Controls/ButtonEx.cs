@@ -1,4 +1,6 @@
 
+using Yijing.Views;
+
 namespace Yijing.Controls;
 
 class ButtonEx : Button
@@ -13,26 +15,26 @@ class ButtonEx : Button
 		BorderColor = _bgColor;
 #if WINDOWS
 		HeightRequest = 40;
-#else
+#elif ANDROID
 		HeightRequest = 43;
 #endif
 	}
 
-	//public static readonly BindableProperty IconProperty =
-	//	BindableProperty.Create(nameof(Icon), typeof(String), typeof(ButtonEx), false, propertyChanged: OnIconChanged);
+	public static readonly BindableProperty IconProperty =
+		BindableProperty.Create(nameof(Icon), typeof(String), typeof(ButtonEx), string.Empty, propertyChanged: OnIconChanged);
 
 	public static readonly BindableProperty BorderProperty =
 		BindableProperty.Create(nameof(Border), typeof(bool), typeof(ButtonEx), false, propertyChanged: OnBorderChanged);
 
 	public static readonly BindableProperty IsLoadingProperty =
 		BindableProperty.Create(nameof(IsLoading), typeof(bool), typeof(ButtonEx), false, propertyChanged: OnIsLoadingChanged);
-	/*
+	
 	public String Icon
 	{
 		get => (String)GetValue(IconProperty);
 		set => SetValue(IconProperty, value);
 	}
-
+	
 	private static void OnIconChanged(BindableObject bindable, object oldValue, object newValue)
 	{
 		var button = (ButtonEx)bindable;
@@ -40,9 +42,11 @@ class ButtonEx : Button
 		if (!String.IsNullOrEmpty(icon))
 		{
 			button.Text = icon;
+			button.FontFamily = FluentIcons.IconFontFamily;
+			button.FontSize = 24;
 		}
 	}
-	*/
+	
 	public bool Border
 	{
 		get => (bool)GetValue(BorderProperty);

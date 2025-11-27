@@ -30,21 +30,19 @@
 
 		<HorizontalStackLayout
 			x:Name="hslButtons"
-			Margin="10,10"
 			Grid.Row="0"
 			>
 
 			<controls:ButtonEx
 				x:Name="btnAdd"
-				Text="Add"
-				Border="True"
+				Icon="{x:Static controls:FluentIcons.Add}"
 				Clicked="OnAddSessionClicked"
 				/>
 			<controls:ButtonEx
 				x:Name="btnDelete"
-				Text="Delete"
-				Border="True"
-				Clicked="OnDeleteSessionClicked" />
+				Icon="{x:Static controls:FluentIcons.Delete}"
+				Clicked="OnDeleteSessionClicked"
+				/>
 			
 		</HorizontalStackLayout>
 

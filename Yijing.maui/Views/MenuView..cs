@@ -18,16 +18,9 @@ public partial class MenuView : ContentView
 
 	public MenuView()
 	{
-		//var b = new RegisterInViewDirectoryBehavior() { Key = "Menu" };
-		//Behaviors.Add(b);
 		BindingContext = this;
-
 		BackgroundColor = _bgColor;
 	}
-
-	//protected void Page_Loaded(object sender, EventArgs e)
-	//{
-	//}
 
 	protected override void OnSizeAllocated(double width, double height)
 	{
@@ -65,34 +58,26 @@ public partial class MenuView : ContentView
 		};
 		_btnSession = new ButtonEx()
 		{
-			FontFamily = FluentIcons.FontFamilySegoe,
-			FontSize = FluentIcons.FontSize,
-			Text = FluentIcons.SessionPage,
+			Icon = FluentIcons.SessionPage,
 
 		};
 		_btnDiagram = new ButtonEx()
 		{
-			FontFamily = FluentIcons.FontFamilySegoe,
-			FontSize = FluentIcons.FontSize,
-			Text = FluentIcons.DiagramPage,
+			Icon = FluentIcons.DiagramPage,
 		};
 		_btnEeg = new ButtonEx()
 		{
-			FontFamily = FluentIcons.FontFamilySegoeMDL2,
-			FontSize = FluentIcons.FontSize,
-			Text = FluentIcons.EegPage,
+			Icon = FluentIcons.EegPage,
 		};
 		_btnMeditation = new ButtonEx()
 		{
-			FontFamily = FluentIcons.FontFamilySegoe,
-			FontSize = FluentIcons.FontSize,
-			Text = FluentIcons.MeditationPage,
+			Icon = FluentIcons.MeditationPage,
 		};
 
 		if (orientation == StackOrientation.Vertical)
 			_slMenu.WidthRequest = 50;
 		else
-			_slMenu.HeightRequest = 43;
+			_slMenu.HeightRequest = 45;
 
 		border.Content = _slMenu;
 

@@ -1,5 +1,5 @@
 using System.Diagnostics;
-
+using Yijing.Controls;
 using Yijing.Services;
 using YijingData;
 
@@ -75,7 +75,7 @@ public partial class MeditationView : ContentView
 		_dtElapsed = DateTime.Now;
 		_dtTimer = _dtElapsed;
 		_isMeditating = true;
-		btnMeditation.Text = "Stop";
+		btnMeditation.Icon = FluentIcons.Pause;
 		UpdateElapsed(TimeSpan.Zero);
 		_targetDuration = SelectedTimerDuration();
 		EnsureTimer();
@@ -117,7 +117,7 @@ public partial class MeditationView : ContentView
 
 		_dtElapsed = null;
 		_isMeditating = false;
-		btnMeditation.Text = "Start";
+		btnMeditation.Icon = FluentIcons.Play;
 		UpdateElapsed(TimeSpan.Zero);
 		AudioPlayer.Ambience(Dispatcher, false);
 	}

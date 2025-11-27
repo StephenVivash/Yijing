@@ -74,9 +74,7 @@
 
 					<controls:ButtonEx
 						x:Name="btnAiOrNote"
-						Text="Submit"
-						Border="True"
-						Margin="10,0,0,0"
+						Icon="{x:Static controls:FluentIcons.ReturnKey}"
 						Clicked="btnAiOrNote_Clicked" />
 
 				</HorizontalStackLayout>

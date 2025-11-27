@@ -21,19 +21,16 @@
 			<views:MenuView
 				x:Name="horMenu"
 				toolkit:DockLayout.DockPosition="Bottom"
-				CardTitle="Card 1"
 				/>
 
 			<views:MenuView
 				x:Name="verMenu"
 				toolkit:DockLayout.DockPosition="Left"
-				CardTitle="Card 1"
 				/>
 			<views:MeditationView
 				x:Name="meditationView"
 				toolkit:DockLayout.DockPosition="Left"
 				WidthRequest="300"
-				CardTitle="Meditation"
 				MeditationCompleted="MeditationView_MeditationCompleted" />
 
 			<Border
@@ -62,12 +59,12 @@
 
 				<controls:ButtonEx
 					x:Name="btnPrev"
-					Text="◀"
+					Icon="{x:Static controls:FluentIcons.Back}"
 					Clicked="btnPrev_Clicked" />
 
 				<controls:ButtonEx
 					x:Name="btnNext"
-					Text="▶"
+					Icon="{x:Static controls:FluentIcons.Forward}"
 					Clicked="btnNext_Clicked" />
 
 				<Label

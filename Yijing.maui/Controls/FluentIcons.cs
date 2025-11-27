@@ -3,28 +3,17 @@ namespace Yijing.Controls;
 public static class FluentIcons
 {
 
-	public const string FontFamilySegoe = "Segoe Fluent Icons";
-	public const string FontFamilySegoeMDL2 = "Segoe MDL2 Assets";
+	public const string IconFontFamily = "Segoe Fluent Icons";
 
 	public const int FontSize = 26;
 
-	// Segoe MDL2 Assets
-
-	public const string EegPage = "\uE9D2";
-
-	public const string BarChart1 = "\uE9D2";
-	public const string BarChart2 = "\uE9D4";
-	public const string LineChart1 = "\uE9DE";
-	public const string LineChart3 = "\uE9DF";
-
-	// Segoe Fluent Icons
-
-	public const string SessionPage = "\uE179";
+	public const string SessionPage = "\uF0E4"; // E179
 	public const string DiagramPage = "\uE700";
+	public const string EegPage = "\uE9D2";
 	public const string MeditationPage = "\uE121";
 
 	// General / Navigation
-	public const string GlobalNavigationButton = "\uE700";
+	public const string Navigation = "\uE700";
 	public const string Wifi = "\uE701";
 	public const string Bluetooth = "\uE702";
 	public const string Connect = "\uE703";
@@ -52,7 +41,7 @@ public static class FluentIcons
 	public const string Pin = "\uE718";
 	public const string Shop = "\uE719";
 
-	// Basic control s
+	// Basic controls
 	public const string Stop = "\uE71A";
 	public const string Link = "\uE71B";
 	public const string Filter = "\uE71C";
@@ -67,10 +56,10 @@ public static class FluentIcons
 	public const string Send = "\uE724";
 	public const string SendFill = "\uE725";
 
-	public const string Forward = "\uE72A"; // StandardUICommand Forward
-	public const string Back = "\uE72B"; // StandardUICommand Back
+	public const string Forward = "\uEDD6";
+	public const string Back = "\uEDD5";
 	public const string Refresh = "\uE72C";
-	public const string Share = "\uE72D"; // StandardUICommand Share
+	public const string Share = "\uE72D";
 	public const string Lock = "\uE72E";
 
 	// Favorites / selection
@@ -93,14 +82,14 @@ public static class FluentIcons
 	public const string Up = "\uE74A";
 	public const string Down = "\uE74B";
 
-	public const string Delete = "\uE74D"; // StandardUICommand Delete
-	public const string Save = "\uE74E"; // StandardUICommand Save
+	public const string Delete = "\uE74D";
+	public const string Save = "\uE74E";
 	public const string Mute = "\uE74F";
 
-	// Text / keyboard-ish
-	public const string BackspaceQwerty = "\uE750";
+	// Text / keyboard
+	public const string BackspaceKey = "\uE750";
 	public const string ReturnKey = "\uE751";
-	public const string UpArrowShiftKey = "\uE752";
+	public const string ShiftKey = "\uE752";
 
 	// Cloud / misc
 	public const string Cloud = "\uE753";
@@ -113,12 +102,29 @@ public static class FluentIcons
 
 	// Volume / media
 	public const string Volume = "\uE767";
-	public const string Play = "\uE768"; // StandardUICommand Play
-	public const string Pause = "\uE769"; // StandardUICommand Pause
+	public const string Play = "\uE768";
+	public const string Pause = "\uE769";
 	public const string ChevronLeft = "\uE76B";
 	public const string ChevronRight = "\uE76C";
 	public const string Emoji2 = "\uE76E";
-
+	public const string Begining = "\uE622";
+	public const string End = "\uE623";
+	public const string Rewind = "\uE627"; // EB9E
+	public const string FastForward = "\uE628"; // EB9D
+	
+	public const string Repeat = "\uE8EE";
+	public const string Restore = "\uE777";
+	public const string RotateRight = "\uE80C";
+	public const string RotateLeft = "\uE80D";
+	public const string Sort = "\uE8CB";
+	public const string Switch = "\uF1CB";
+	public const string Diagnostic = "\uE9D9";
+	public const string Chart = "\uE9D2";
+	public const string Lightning = "\uE945";
+	public const string Sync = "\uE895";
+	public const string Clipboard = "\uF0E4"; // F0E3
+	public const string HeightMap = "\uF120";
+	
 	// System pages
 	public const string System = "\uE770";
 	public const string Personalize = "\uE771";
@@ -135,12 +141,12 @@ public static class FluentIcons
 	public const string IncomingCall = "\uE77E";
 
 	// Clipboard / edit
-	public const string Paste = "\uE77F"; // StandardUICommand Paste
-	public const string Cut = "\uE8C6"; // StandardUICommand Cut
-	public const string Copy = "\uE8C8"; // StandardUICommand Copy
-	public const string SelectAll = "\uE8B3"; // StandardUICommand Select All
-	public const string Undo = "\uE7A7"; // StandardUICommand Undo
-	public const string Redo = "\uE7A6"; // StandardUICommand Redo
+	public const string Paste = "\uE77F";
+	public const string Cut = "\uE8C6";
+	public const string Copy = "\uE8C8";
+	public const string SelectAll = "\uE8B3";
+	public const string Undo = "\uE7A7";
+	public const string Redo = "\uE7A6";
 
 	// Calendar / time / warning
 	public const string Calendar = "\uE787";
@@ -155,7 +161,7 @@ public static class FluentIcons
 	// Users
 	public const string OtherUser = "\uE7EE";
 	public const string Admin = "\uE7EF";
-	public const string SettingsDisplaySound = "\uE7F3";
+	public const string DisplaySound = "\uE7F3";
 
 	// Audio devices
 	public const string Speakers = "\uE7F5";
@@ -166,7 +172,7 @@ public static class FluentIcons
 
 	// Places
 	public const string Home = "\uE80F";
-	public const string ParkingLocation = "\uE811";
+	public const string Parking = "\uE811";
 	public const string StartPoint = "\uE819";
 	public const string EndPoint = "\uE81B";
 	public const string History = "\uE81C";
@@ -190,12 +196,12 @@ public static class FluentIcons
 	public const string PinnedFill = "\uE842";
 
 	// File commands (extra)
-	public const string Open = "\uE8A0"; // StandardUICommand Open
-	public const string Close = "\uE89F"; // StandardUICommand Close
+	public const string Open = "\uE8A0";
+	public const string Close = "\uE89F";
 
 	// “User” aliases that read nicer in your code
-	public const string User = "\uE77B"; // alias for Contact
-	public const string UserCircle = "\uE77B"; // same, but semantic name
-	public const string Settings = "\uE713"; // alias for Setting
-	public const string Email = "\uE715"; // modern Mail (MDL2/Fluent)
+	public const string User = "\uE77B";
+	public const string UserCircle = "\uE77B";
+	public const string Settings = "\uE713";
+	public const string Email = "\uE715";
 }

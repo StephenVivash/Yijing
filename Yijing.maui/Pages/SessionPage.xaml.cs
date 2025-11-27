@@ -60,7 +60,7 @@ public partial class SessionPage : ContentPage
 	private void picAiChatService_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		AppPreferences.AiChatService = picAiChatService.SelectedIndex;
-		btnAiOrNote.Text = AppPreferences.AiChatService == (int)eAiService.eNone ? "Add Note" : "Ask AI";
+		//btnAiOrNote.Text = AppPreferences.AiChatService == (int)eAiService.eNone ? "Add Note" : "Ask AI";
 		//btnAiOrNote.IsEnabled = AppPreferences.AiChatService != (int)eAiService.eNone;
 	}
 

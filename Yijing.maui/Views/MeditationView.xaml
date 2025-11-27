@@ -16,7 +16,6 @@
 
 	<Border>
 	<ScrollView>
-
 		<StackLayout
 			Orientation="Vertical"
 			BindingContext="{x:Reference meditationView}"
@@ -48,7 +47,7 @@
 						<x:String>Meditation</x:String>
 						<x:String>Yijing Cast</x:String>
 					</Picker.Items>
-					</Picker>
+				</Picker>
 
 				<Label
 					x:Name="lblAmbience"
@@ -69,7 +68,7 @@
 						<x:String>Quiet forest</x:String>
 						<x:String>Meadow birds</x:String>
 					</Picker.Items>
-					</Picker>
+				</Picker>
 
 				<Label
 					x:Name="lblTimer"
@@ -107,6 +106,7 @@
 					x:Name="lblElapsed2"
 					Text="00:00:00"
 					VerticalTextAlignment="Center"
+					LineBreakMode="TailTruncation"
 					Padding="10,0"
 					Grid.Column="1"
 					Grid.Row="3"/>
@@ -121,15 +121,12 @@
 
 				<controls:ButtonEx
 					x:Name="btnMeditation"
-					Text="Start"
-					Border="True"
-					HorizontalOptions="Start"
+					Icon="{x:Static controls:FluentIcons.Play}"
 					Clicked="btnMeditation_Clicked"
 					Grid.Column="1"
 					Grid.Row="4"/>
 
 			</Grid>
-
 		</StackLayout>
 	</ScrollView>
 	</Border>

@@ -300,8 +300,7 @@
 
 				<controls:ButtonEx 
 					x:Name="btnFirst"
-					Text="First"
-					Border="True"
+					Icon="{x:Static controls:FluentIcons.Begining}"
 					Clicked="btnFirst_Clicked"
 					Grid.Column="0"
 					Grid.Row="0"
@@ -309,8 +308,7 @@
 
 				<controls:ButtonEx 
 					x:Name="btnLast"
-					Text="Last"
-					Border="True"
+					Icon="{x:Static controls:FluentIcons.End}"
 					Clicked="btnLast_Clicked"
 					Grid.Column="1"
 					Grid.Row="0"
@@ -318,8 +316,7 @@
 
 				<controls:ButtonEx 
 					x:Name="btnMove"
-					Text="Move"
-					Border="True"
+					Icon="{x:Static controls:FluentIcons.Play}"
 					Clicked="btnMove_Clicked"
 					Grid.Column="2"
 					Grid.Row="0"
@@ -327,9 +324,7 @@
 
 				<controls:ButtonEx 
 					x:Name="btnHome"
-					Text="{x:Static controls:FluentIcons.Home}"
-					FontFamily="Segoe Fluent Icons"
-					FontSize="24" 
+					Icon="{x:Static controls:FluentIcons.Home}"
 					Clicked="btnHome_Clicked"
 					Grid.Column="3"
 					Grid.Row="0"
@@ -337,8 +332,7 @@
 
 				<controls:ButtonEx 
 					x:Name="btnInverse"
-					Text="Inverse"
-					Border="True"
+					Icon="{x:Static controls:FluentIcons.Refresh}"
 					Clicked="btnInverse_Clicked"
 					Grid.Column="0"
 					Grid.Row="1"
@@ -346,8 +340,7 @@
 
 				<controls:ButtonEx 
 					x:Name="btnOpposite"
-					Text="Opposite"
-					Border="True"
+					Icon="{x:Static controls:FluentIcons.Sync}"
 					Clicked="btnOpposite_Clicked"
 					Grid.Column="1"
 					Grid.Row="1"
@@ -355,8 +348,7 @@
 
 				<controls:ButtonEx 
 					x:Name="btnTransverse"
-					Text="Transverse"
-					Border="True"
+					Icon="{x:Static controls:FluentIcons.Sort}"
 					Clicked="btnTransverse_Clicked"
 					Grid.Column="2"
 					Grid.Row="1"
@@ -364,8 +356,7 @@
 
 				<controls:ButtonEx 
 					x:Name="btnNuclear"
-					Text="Nuclear"
-					Border="True"
+					Icon="{x:Static controls:FluentIcons.Switch}"
 					Clicked="btnNuclear_Clicked"
 					Grid.Column="3"
 					Grid.Row="1"
