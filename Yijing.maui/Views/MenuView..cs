@@ -1,4 +1,5 @@
 
+using CommunityToolkit.Maui.Core;
 using Yijing.Controls;
 using Yijing.Services;
 
@@ -6,7 +7,6 @@ namespace Yijing.Views;
 
 public partial class MenuView : ContentView
 {
-
 	private static Color _bgColor = App.Current.RequestedTheme == AppTheme.Dark ? Colors.Black : Colors.White;
 	private ePages _ePage = ePages.eNone;
 	private StackLayout _slMenu;
@@ -15,6 +15,13 @@ public partial class MenuView : ContentView
 	private ButtonEx _btnDiagram;
 	private ButtonEx _btnEeg;
 	private ButtonEx _btnMeditation;
+
+
+#if WINDOWS || MACCATALYST
+	public const DockPosition VerticalDockPosition = DockPosition.Left;
+#elif ANDROID || IOS
+	public const DockPosition VerticalDockPosition = DockPosition.Right;
+#endif
 
 	public MenuView()
 	{
@@ -75,7 +82,11 @@ public partial class MenuView : ContentView
 		};
 
 		if (orientation == StackOrientation.Vertical)
+#if WINDOWS || MACCATALYST
 			_slMenu.WidthRequest = 50;
+#elif ANDROID || IOS
+			_slMenu.WidthRequest = 55;
+#endif
 		else
 			_slMenu.HeightRequest = 45;
 
@@ -119,17 +130,8 @@ public partial class MenuView : ContentView
 			await Shell.Current.GoToAsync("//Meditation/MeditationRoot", true);
 	}
 
-	public static readonly BindableProperty CardTitleProperty = BindableProperty.Create(nameof(CardTitle),
-		typeof(string), typeof(MenuView), string.Empty);
-
 	public static readonly BindableProperty CardColorProperty = BindableProperty.Create(nameof(CardColor),
 		typeof(Color), typeof(MenuView), App.Current.RequestedTheme == AppTheme.Dark ? Colors.Black : Colors.White);
-
-	public string CardTitle
-	{
-		get => (string)GetValue(CardTitleProperty);
-		set => SetValue(CardTitleProperty, value);
-	}
 
 	public Color CardColor
 	{

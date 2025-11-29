@@ -249,6 +249,7 @@ public partial class DiagramView : ContentView
 
 		base.OnSizeAllocated(width, height);
 	}
+
 	/*
 	protected void lin_PointerEntered(object sender, PointerEventArgs e)
 	{
@@ -590,6 +591,18 @@ public partial class DiagramView : ContentView
 			byte[] val = System.Text.Encoding.UTF8.GetBytes(s1);
 			fs.Write(val, 0, val.Length);
 		}
+	}
+
+	public void ButtonPadding(Thickness thickness)
+	{
+		btnMove.Padding = thickness;
+		btnHome.Padding = thickness;
+		btnFirst.Padding = thickness;
+		btnLast.Padding = thickness;
+		btnInverse.Padding = thickness;
+		btnOpposite.Padding = thickness;
+		btnTransverse.Padding = thickness;
+		btnNuclear.Padding = thickness;
 	}
 
 	public void LoadDiagramSettings()

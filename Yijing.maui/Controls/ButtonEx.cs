@@ -1,5 +1,4 @@
 
-using Yijing.Views;
 
 namespace Yijing.Controls;
 
@@ -13,10 +12,11 @@ class ButtonEx : Button
 		BackgroundColor = _bgColor;
 		TextColor = _fgColor;
 		BorderColor = _bgColor;
-#if WINDOWS
-		HeightRequest = 40;
-#elif ANDROID
-		HeightRequest = 43;
+		FontFamily = FluentIcons.IconFontFamily;
+#if WINDOWS || MACCATALYST
+		FontSize = 24;
+#elif ANDROID || IOS
+		FontSize = 18;
 #endif
 	}
 
@@ -40,11 +40,7 @@ class ButtonEx : Button
 		var button = (ButtonEx)bindable;
 		String icon = (String)newValue;
 		if (!String.IsNullOrEmpty(icon))
-		{
 			button.Text = icon;
-			button.FontFamily = FluentIcons.IconFontFamily;
-			button.FontSize = 24;
-		}
 	}
 	
 	public bool Border
@@ -58,13 +54,9 @@ class ButtonEx : Button
 		var button = (ButtonEx)bindable;
 		bool border = (bool)newValue;
 		if (border)
-		{
 			button.BorderColor = _fgColor;
-		}
 		else
-		{
 			button.BorderColor = _bgColor;
-		}
 	}
 
 	public bool IsLoading

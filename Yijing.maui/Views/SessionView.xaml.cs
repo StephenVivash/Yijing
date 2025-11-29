@@ -144,6 +144,12 @@ public partial class SessionView : ContentView
 			UI.Call<EegView>(v => v.SelectSession(file));
 	}
 
+	public void ButtonPadding(Thickness thickness)
+	{
+		btnAdd.Padding = thickness;
+		btnDelete.Padding = thickness;
+	}
+
 	public void UpdateChat()
 	{
 		String strText = Sequences.strDiagramSettings[16, Sequences.HexagramText + 1];

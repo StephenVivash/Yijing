@@ -20,13 +20,11 @@
 			<views:MenuView
 				x:Name="horMenu"
 				toolkit:DockLayout.DockPosition="Bottom"
-				CardTitle="Card 1"
 				/>
 
 			<views:MenuView
 				x:Name="verMenu"
-				toolkit:DockLayout.DockPosition="Left"
-				CardTitle="Card 1"
+				toolkit:DockLayout.DockPosition="{x:Static views:MenuView.VerticalDockPosition}"
 				/>
 
 			<views:SessionView

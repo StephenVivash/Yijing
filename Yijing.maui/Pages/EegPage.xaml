@@ -8,6 +8,7 @@
 	xmlns:local="clr-namespace:Yijing"
 	xmlns:models="clr-namespace:Yijing.Models"
 	xmlns:views="clr-namespace:Yijing.Views"
+	xmlns:controls="clr-namespace:Yijing.Controls"
 	x:DataType="models:EegSeries"
 
 	x:Class="Yijing.Pages.EegPage"
@@ -21,13 +22,11 @@
 			<views:MenuView
 				x:Name="horMenu"
 				toolkit:DockLayout.DockPosition="Bottom"
-				CardTitle="Card 1"
 				/>
 
 			<views:MenuView
 				x:Name="verMenu"
-				toolkit:DockLayout.DockPosition="Left"
-				CardTitle="Card 1"
+				toolkit:DockLayout.DockPosition="{x:Static views:MenuView.VerticalDockPosition}"
 				/>
 
 			<views:EegView
@@ -38,9 +37,11 @@
 				/>
 
 			<Border
+				x:Name="borSessionLog" 
 				toolkit:DockLayout.DockPosition="Bottom" 
 				>
-			<Editor x:Name="edtSessionLog" 
+			<Editor
+				x:Name="edtSessionLog" 
 				HeightRequest="100" />
 			</Border>
 

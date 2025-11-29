@@ -32,12 +32,14 @@ public partial class DiagramPage : ContentPage
 			horMenu.IsVisible = false;
 			verMenu.IsVisible = true;
 			diagramView.WidthRequest = 200;
+			diagramView.ButtonPadding(new Thickness(0, 5));
 		}
 		else
 		{
 			horMenu.IsVisible = true;
 			verMenu.IsVisible = false;
 			diagramView.WidthRequest = width;
+			diagramView.ButtonPadding(new Thickness(5));
 		}
 #else
 		horMenu.IsVisible = false;

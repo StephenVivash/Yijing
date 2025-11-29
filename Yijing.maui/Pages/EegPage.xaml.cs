@@ -79,6 +79,7 @@ public partial class EegPage : ContentPage
 
 	public void ShowSessionLog(bool show)
 	{
-		edtSessionLog.IsVisible = show;
+		//edtSessionLog
+		borSessionLog.IsVisible = show;
 	}
 }

@@ -25,7 +25,7 @@
 
 			<views:MenuView
 				x:Name="verMenu"
-				toolkit:DockLayout.DockPosition="Left"
+				toolkit:DockLayout.DockPosition="{x:Static views:MenuView.VerticalDockPosition}"
 				/>
 			<views:MeditationView
 				x:Name="meditationView"

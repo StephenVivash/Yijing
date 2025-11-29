@@ -1,3 +1,5 @@
+using CommunityToolkit.Maui.Core;
+
 namespace Yijing.Controls;
 
 public static class FluentIcons

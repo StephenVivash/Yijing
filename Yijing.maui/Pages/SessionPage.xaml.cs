@@ -42,12 +42,14 @@ public partial class SessionPage : ContentPage
 			horMenu.IsVisible = false;
 			verMenu.IsVisible = true;
 			sessionView.WidthRequest = 200;
+			sessionView.ButtonPadding(new Thickness(0, 5));
 		}
 		else
 		{
 			horMenu.IsVisible = true;
 			verMenu.IsVisible = false;
 			sessionView.WidthRequest = width;
+			sessionView.ButtonPadding(new Thickness(5));
 		}
 #else
 		horMenu.IsVisible = false;
