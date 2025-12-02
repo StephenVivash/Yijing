@@ -52,7 +52,7 @@ public class Ai
 		_chatHistory.AddAssistantMessage(message);
 	}
 
-	public async Task ChatAsync(int aiService, string prompt)
+	public async Task ChatAsync(int aiService, string prompt, bool functions)
 	{
 		try
 		{
@@ -69,7 +69,8 @@ public class Ai
 
 			//builder.AddOpenAITextToAudio(AppPreferences.AiModelId[aiService], AppPreferences.AiKey[aiService]);
 
-			builder.Plugins.AddFromType<YijingPlugin>("Yijing");
+			if (functions)
+				builder.Plugins.AddFromType<YijingPlugin>("Yijing");
 			Kernel kernel = builder.Build();
 
 			var chatService = kernel.GetRequiredService<IChatCompletionService>();
@@ -91,9 +92,10 @@ public class Ai
 				Temperature = AppPreferences.AiTemperature,
 				TopP = AppPreferences.AiTopP,
 				MaxTokens = AppPreferences.AiMaxTokens,
-				ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions
-				//AudioOptions =
 			};
+
+			if (functions)
+				settings.ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions;
 
 			var reply = await chatService.GetChatMessageContentAsync(_chatHistory, settings, kernel);
 			string response = reply.Content;

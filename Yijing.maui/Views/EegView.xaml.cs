@@ -429,7 +429,7 @@ public partial class EegView : ContentView
 
 	public async void AiData(string data, bool dummy)
 	{
-		await _ai.ChatAsync(AppPreferences.AiEegService, data);
+		await _ai.ChatAsync(AppPreferences.AiEegService, data, false);
 		int i = _ai._userPrompts[1].Count() - 1;
 		//UpdateSessionLog(_ai._userPrompts[1][i] + "\n\n");
 		UI.Call<EegPage>(p => p.SessionLog().Text += _ai._chatReponses[1][i] + "\n\n");

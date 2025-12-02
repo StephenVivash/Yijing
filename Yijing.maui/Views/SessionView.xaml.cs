@@ -490,17 +490,17 @@ public partial class SessionView : ContentView
 		if (AppPreferences.AiChatService == (int)eAiService.eNone)
 			_sessionNotes.Add(prompt);
 		else
-			await _ai.ChatAsync(AppPreferences.AiChatService, prompt);
+			await _ai.ChatAsync(AppPreferences.AiChatService, prompt, false);
 
 		SaveChat(_selectedSession!.FileName!);
 		UpdateChat();
 		UpdateSessionLog("", false, false);
 	}
 
-	public async Task AiChatAsync(string prompt)
-	{
-		await _ai.ChatAsync(AppPreferences.AiChatService, prompt);
-	}
+	//public async Task AiChatAsync(string prompt)
+	//{
+	//	await _ai.ChatAsync(AppPreferences.AiChatService, prompt, false);
+	//}
 
 	private void ResetChat()
 	{

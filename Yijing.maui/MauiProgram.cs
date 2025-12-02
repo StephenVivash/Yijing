@@ -25,9 +25,9 @@ public static class MauiProgram
 		_yd.Initialse();
 
 		MauiAppBuilder builder = MauiApp.CreateBuilder();
-#if WINDOWS || ANDROID
-		builder
-			.UseMauiApp<App>()
+		MauiAppBuilder mauiBuilder = builder.UseMauiApp<App>();
+#pragma warning disable CA1416 // Validate platform compatibility
+		mauiBuilder
 			.UseLiveCharts()
 			.UseSkiaSharp()
 			.UseMauiCommunityToolkit()
@@ -35,11 +35,9 @@ public static class MauiProgram
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-
 				fonts.AddFont("SegoeIcons.ttf", "Segoe Fluent Icons");
-
 			});
-#endif
+#pragma warning restore CA1416 // Validate platform compatibility
 
 #if DEBUG
 		builder.Logging.AddDebug();
