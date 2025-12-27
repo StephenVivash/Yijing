@@ -289,11 +289,8 @@ public class Eeg
 			if (TimeDiff.TotalSeconds >= 10)
 			{
 				_dtSoundingUpdate = Timestamp;
-				// single shot - hit target
-				UI.Call<DiagramView>(async v => await v.SoundTrigger(m_eegChannel[AppPreferences.TriggerIndex].m_fCurrentValue * AppPreferences.AudioScale,
-					m_eegChannel[AppPreferences.TriggerIndex].m_fHigh * AppPreferences.AudioScale));
-				//DiagramView.SoundTrigger(m_eegChannel[AppPreferences.TriggerIndex].m_fCurrentValue * AppPreferences.AudioScale, 
-				//	m_eegChannel[AppPreferences.TriggerIndex].m_fHigh * AppPreferences.AudioScale);
+				DiagramView.SoundTrigger(m_eegChannel[AppPreferences.TriggerIndex].m_fCurrentValue * AppPreferences.AudioScale,
+					m_eegChannel[AppPreferences.TriggerIndex].m_fHigh * AppPreferences.AudioScale);
 			}
 		}
 

@@ -123,7 +123,7 @@ public static class AppPreferences
 		SaveNewDefaults();
 
 		MuseScale = 1;
-		AudioScale = 10;
+		AudioScale = 1;
 	}
 
 	private static void SaveNewDefaults()

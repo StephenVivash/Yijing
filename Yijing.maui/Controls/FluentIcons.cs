@@ -113,7 +113,7 @@ public static class FluentIcons
 	public const string End = "\uE623";
 	public const string Rewind = "\uE627"; // EB9E
 	public const string FastForward = "\uE628"; // EB9D
-	
+
 	public const string Repeat = "\uE8EE";
 	public const string Restore = "\uE777";
 	public const string RotateRight = "\uE80C";
@@ -126,7 +126,7 @@ public static class FluentIcons
 	public const string Sync = "\uE895";
 	public const string Clipboard = "\uF0E4"; // F0E3
 	public const string HeightMap = "\uF120";
-	
+
 	// System pages
 	public const string System = "\uE770";
 	public const string Personalize = "\uE771";

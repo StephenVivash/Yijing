@@ -42,6 +42,10 @@ using Windows.Win32;
 using Windows.Win32.Foundation;
 #endif
 
+#if ANDROID
+using Android.Media;
+#endif
+
 using ValueSequencer;
 //using YijingDb;
 
@@ -1121,7 +1125,6 @@ public partial class DiagramView : ContentView
 		return m_hvsCurrent.DescribeCast();
 	}
 
-
 	private async Task AutoCast()
 	{
 		//Random r = true ? Sequences.m_ranSession : new Random(DateTime.Now.Millisecond);
@@ -1136,26 +1139,123 @@ public partial class DiagramView : ContentView
 		Dispatcher.Dispatch(action);
 	}
 
-	public async Task SoundTrigger(float fBand, float fTrigger)
+	public static void SoundTrigger1(float fBand, float fTrigger)
 	{
 #if WINDOWS
-
-		TimeSpan ts = DateTime.Now - AppSettings._lastEegDataTime;
-
-		if (ts.TotalSeconds > 30)
-		{
-			fBand = 0.01f;
-			fTrigger = 0.01f;
-		}
-
 		//PInvoke.Beep(261, 2000); // Middle C
 		uint freq = (uint)((fBand + 11.0) * 23.7);
 		PInvoke.Beep(freq, 200);
 		freq = (uint)((fTrigger + 11.0) * 23.7);
 		if (fTrigger != 0.0f)
 			PInvoke.Beep(freq, 200);
+#elif ANDROID
 #endif
 	}
+
+	public static void SoundTrigger2(float fBand, float fTrigger)
+	{
+#if WINDOWS
+		const double middleC = 261.625565;
+		//Task.Run(() => PInvoke.Beep((uint)middleC, 200));
+		// Make 0 dB = Middle C exactly; choose a scale factor for how fast it moves.
+		// Map -0.5..1.5  ->  -1..+1 octaves (so 2-octave span), centered at 0.5
+
+		double octaves = fBand - 0.5; // dB offset
+		uint freq = (uint)Math.Round(middleC * Math.Pow(2.0, octaves));
+		PInvoke.Beep(freq, 200);
+
+		octaves = fTrigger - 0.5; // dB offset
+		freq = (uint)Math.Round(middleC * Math.Pow(2.0, octaves));
+		if (fTrigger != 0.0f)
+			PInvoke.Beep(freq, 200);
+#elif ANDROID
+#endif
+	}
+
+	public static void SoundTrigger(float fBand, float fTrigger)
+	{
+		// fBand -0.5..1.5 => -1..+1 octaves, centered at 0.5
+		const double middleC = 261.625565; // C4
+		double octaves = fBand - 0.5;
+		double bandHz = middleC * Math.Pow(2.0, octaves);
+
+		octaves = fTrigger - 0.5;
+		double triggerHz = middleC * Math.Pow(2.0, octaves);
+
+		// Clamp to a sensible audible range (also avoids odd edge cases)
+		bandHz = Math.Clamp(bandHz, 100.0, 800.0);
+		triggerHz = Math.Clamp(triggerHz, 100.0, 800.0);
+
+#if WINDOWS
+		PInvoke.Beep((uint)Math.Round(bandHz), 200);
+		PInvoke.Beep((uint)Math.Round(triggerHz), 200);
+#elif ANDROID
+		PlayAndroidTone(bandHz, 200, 1.0);
+		PlayAndroidTone(triggerHz, 200, 1.0);
+#else
+#endif
+	}
+
+#if ANDROID
+	static void PlayAndroidTone(double frequencyHz, int durationMs, double volume)
+	{
+		const int sampleRate = 44100;
+		int sampleCount = Math.Max(1, (int)(sampleRate * (durationMs / 1000.0)));
+
+		// 16-bit PCM mono
+		var pcm = new short[sampleCount];
+
+		// small fade to avoid clicks
+		int fadeSamples = Math.Min(sampleCount / 20, 200);
+
+		double twoPiF = 2.0 * Math.PI * frequencyHz;
+
+		for (int i = 0; i < sampleCount; i++)
+		{
+			double t = i / (double)sampleRate;
+			double s = Math.Sin(twoPiF * t);
+
+			double env = 1.0;
+			if (fadeSamples > 0)
+			{
+				if (i < fadeSamples) env = i / (double)fadeSamples;
+				else if (i > sampleCount - fadeSamples) env = (sampleCount - i) / (double)fadeSamples;
+			}
+
+			double v = s * env * volume;
+			pcm[i] = (short)Math.Clamp(v * short.MaxValue, short.MinValue, short.MaxValue);
+		}
+
+		var attrs = new AudioAttributes.Builder()
+			.SetUsage(AudioUsageKind.AssistanceSonification)
+			.SetContentType(AudioContentType.Sonification)
+			.Build();
+
+		var format = new AudioFormat.Builder()
+			.SetEncoding(Encoding.Pcm16bit)
+			.SetSampleRate(sampleRate)
+			.SetChannelMask(ChannelOut.Mono)
+			.Build();
+
+		int bufferSizeBytes = pcm.Length * sizeof(short);
+
+#pragma warning disable CA1416 // Validate platform compatibility
+		using var track = new AudioTrack.Builder()
+			.SetAudioAttributes(attrs)
+			.SetAudioFormat(format)
+			.SetBufferSizeInBytes(bufferSizeBytes)
+			.SetTransferMode(AudioTrackMode.Static)
+			.Build();
+#pragma warning restore CA1416 // Validate platform compatibility
+
+		track.Write(pcm, 0, pcm.Length);
+		track.Play();
+		// Ensure the AudioTrack isn't disposed before it finishes playing
+		Thread.Sleep(durationMs + 20);
+		track.Stop();
+		track.Flush();
+	}
+#endif
 
 	private async Task MindCast()
 	{
@@ -1183,7 +1283,7 @@ public partial class DiagramView : ContentView
 			{
 				await Task.Delay(200);
 				if (AppPreferences.TriggerSounding && (ev.EegReplaySpeed() == 1) && (++count % 50 == 0))
-					await SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale,
+					SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale,
 						ev.EegChannel(AppPreferences.TriggerIndex).m_fHigh * AppPreferences.AudioScale);
 				ts = DateTime.Now - start;
 				int speed = m_nTriggerSpeed * ev.EegReplaySpeed();
@@ -1198,7 +1298,7 @@ public partial class DiagramView : ContentView
 			if (!ev.EegIsConnected())
 				break;
 			if (AppPreferences.TriggerSounding)
-				await SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale, 0.0f);
+				SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale, 0.0f);
 
 			m_timDiagram.Change(0, m_nSpeeds[(int)eDiagramSpeed.eFast]);
 
@@ -1212,7 +1312,7 @@ public partial class DiagramView : ContentView
 			{
 				await Task.Delay(200);
 				if (AppPreferences.TriggerSounding && (ev.EegReplaySpeed() == 1) && (++count % 50 == 0))
-					await SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale,
+					SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale,
 						ev.EegChannel(AppPreferences.TriggerIndex).m_fLow * AppPreferences.AudioScale);
 				ts = DateTime.Now - start;
 				int speed = m_nTriggerSpeed * ev.EegReplaySpeed();
@@ -1230,7 +1330,7 @@ public partial class DiagramView : ContentView
 			if (!ev.EegIsConnected())
 				break;
 			if (AppPreferences.TriggerSounding)
-				await SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale, 0.0f);
+				SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale, 0.0f);
 		}
 		await Task.Delay(100);
 		if (AppPreferences.TriggerSounding)

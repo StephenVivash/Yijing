@@ -28,13 +28,13 @@ class ButtonEx : Button
 
 	public static readonly BindableProperty IsLoadingProperty =
 		BindableProperty.Create(nameof(IsLoading), typeof(bool), typeof(ButtonEx), false, propertyChanged: OnIsLoadingChanged);
-	
+
 	public String Icon
 	{
 		get => (String)GetValue(IconProperty);
 		set => SetValue(IconProperty, value);
 	}
-	
+
 	private static void OnIconChanged(BindableObject bindable, object oldValue, object newValue)
 	{
 		var button = (ButtonEx)bindable;
@@ -42,7 +42,7 @@ class ButtonEx : Button
 		if (!String.IsNullOrEmpty(icon))
 			button.Text = icon;
 	}
-	
+
 	public bool Border
 	{
 		get => (bool)GetValue(BorderProperty);
