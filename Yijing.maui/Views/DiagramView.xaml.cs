@@ -1275,7 +1275,7 @@ public partial class DiagramView : ContentView
 
 				DateTime start = DateTime.Now;
 				TimeSpan ts = DateTime.Now - start;
-				const float triggerChangeTarget = 1.08f;
+				const float triggerChangeTarget = 0.1f;
 				float lastChange = 0.0f;
 
 				int count = 0;
@@ -1292,7 +1292,7 @@ public partial class DiagramView : ContentView
 					if (!AppPreferences.TriggerFixed)
 					{
 						float progress = (float)(ts.TotalSeconds * speed / 60.0f);
-						float change = (1.0f - (float)Math.Exp(-progress)) * triggerChangeTarget;
+						float change = triggerChangeTarget * (float)Math.Min(1.0f, (float)Math.Exp(progress) / (float)Math.Exp(1.0f));
 						float delta = change - lastChange;
 						if (delta > 0.0f)
 							ev.EegDecreaseTriggers(delta);
@@ -1324,7 +1324,7 @@ public partial class DiagramView : ContentView
 					if (!AppPreferences.TriggerFixed)
 					{
 						float progress = (float)(ts.TotalSeconds * speed / 60.0f);
-						float change = (1.0f - (float)Math.Exp(-progress)) * triggerChangeTarget;
+						float change = triggerChangeTarget * (float)Math.Min(1.0f, (float)Math.Exp(progress) / (float)Math.Exp(1.0f));
 						float delta = change - lastChange;
 						if (delta > 0.0f)
 							ev.EegIncreaseTriggers(delta);
