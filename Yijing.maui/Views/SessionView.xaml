@@ -4,11 +4,11 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-	
+
 	xmlns:models="clr-namespace:YijingData;assembly=Yijing.data"
 	xmlns:views="clr-namespace:Yijing.Views"
 	xmlns:controls="clr-namespace:Yijing.Controls"
-	xmlns:conv="clr-namespace:Yijing.Services"	
+	xmlns:conv="clr-namespace:Yijing.Services"
 
 	x:Class="Yijing.Views.SessionView"
 	x:Name="sessionView"
@@ -24,122 +24,62 @@
 	</ContentView.Resources>
 
 	<Border>
-	<Grid
-		RowDefinitions="Auto,Auto,*"
-		>
+		<Grid RowDefinitions="Auto,*">
+			<HorizontalStackLayout
+				x:Name="hslButtons"
+				Grid.Row="0">
+				<controls:ButtonEx
+					x:Name="btnAdd"
+					Icon="{x:Static controls:FluentIcons.Add}"
+					Clicked="OnAddSessionClicked" />
+				<controls:ButtonEx
+					x:Name="btnDelete"
+					Icon="{x:Static controls:FluentIcons.Delete}"
+					Clicked="OnDeleteSessionClicked" />
+			</HorizontalStackLayout>
 
-		<HorizontalStackLayout
-			x:Name="hslButtons"
-			Grid.Row="0"
-			>
+			<CollectionView
+				x:Name="sessionCollection"
+				Grid.Row="1"
+				ItemsSource="{Binding Sessions}"
+				SelectionMode="Single"
+				SelectionChanged="OnSessionsSelectionChanged">
+				<CollectionView.ItemsLayout>
+					<LinearItemsLayout Orientation="Vertical" />
+				</CollectionView.ItemsLayout>
 
-			<controls:ButtonEx
-				x:Name="btnAdd"
-				Icon="{x:Static controls:FluentIcons.Add}"
-				Clicked="OnAddSessionClicked"
-				/>
-			<controls:ButtonEx
-				x:Name="btnDelete"
-				Icon="{x:Static controls:FluentIcons.Delete}"
-				Clicked="OnDeleteSessionClicked"
-				/>
-			
-		</HorizontalStackLayout>
-
-		<Grid
-			x:Name="grdLabels"
-			Grid.Row="1"
-			Padding="10,4"
-			ColumnDefinitions="90,12,12,12,12,*"
-			ColumnSpacing="12"
-			>
-			
-			<Label
-				Text="Session"
-				FontAttributes="Bold"
-				VerticalTextAlignment="Center" />
-
-			<Label
-				Grid.Column="1"
-				Text="Y"
-				FontAttributes="Bold"
-				VerticalTextAlignment="Center" />
-
-			<Label
-				Grid.Column="2"
-				Text="M"
-				FontAttributes="Bold"
-				VerticalTextAlignment="Center" />
-
-			<Label
-				Grid.Column="3"
-				Text="E"
-				FontAttributes="Bold"
-				VerticalTextAlignment="Center" />
-
-			<Label
-				Grid.Column="4"
-				Text="A"
-				FontAttributes="Bold"
-				VerticalTextAlignment="Center" />
-
-			<Label
-				Grid.Column="5"
-				Text="Description"
-				LineBreakMode="TailTruncation"
-				FontAttributes="Bold"
-				VerticalTextAlignment="Center" />
-
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="models:Session">
+						<Border BackgroundColor="{AppThemeBinding Light=White, Dark=Black}" Padding="5,5">
+							<VerticalStackLayout Spacing="4">
+								<Grid ColumnDefinitions="*,Auto">
+									<Label
+										Text="{Binding Name}"
+										VerticalTextAlignment="Center"
+										LineBreakMode="TailTruncation" />
+									<HorizontalStackLayout Grid.Column="1" HorizontalOptions="End" Spacing="8">
+										<Label
+											Text="{Binding YijingCast, Converter={StaticResource YijingCastConverter}}"
+											VerticalTextAlignment="Center" />
+										<Label
+											Text="{Binding Meditation, Converter={StaticResource MeditationConverter}}"
+											VerticalTextAlignment="Center" />
+										<Label
+											Text="{Binding EegDevice, Converter={StaticResource EegDeviceConverter}}"
+											VerticalTextAlignment="Center" />
+										<Label
+											Text="{Binding EegAnalysis, Converter={StaticResource AnalysisConverter}}"
+											VerticalTextAlignment="Center" />
+									</HorizontalStackLayout>
+								</Grid>
+								<Label
+									Text="{Binding Description}"
+									LineBreakMode="WordWrap" />
+							</VerticalStackLayout>
+						</Border>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
 		</Grid>
-
-		<CollectionView
-			x:Name="sessionCollection"
-			Grid.Row="2"
-			ItemsSource="{Binding Sessions}"
-			SelectionMode="Single"
-			SelectionChanged="OnSessionsSelectionChanged">
-
-			<CollectionView.ItemsLayout>
-				<LinearItemsLayout Orientation="Vertical" />
-			</CollectionView.ItemsLayout>
-
-			<CollectionView.ItemTemplate>
-
-				<DataTemplate x:DataType="models:Session">
-					<Grid
-						Padding="10,4"
-						ColumnDefinitions="90,12,12,12,12,*"
-						ColumnSpacing="12">
-
-						<Label
-							Text="{Binding Name}"
-							VerticalTextAlignment="Center"
-							LineBreakMode="TailTruncation" />
-						<Label
-							Grid.Column="1"
-							Text="{Binding YijingCast, Converter={StaticResource YijingCastConverter}}"
-							VerticalTextAlignment="Center"/>
-						<Label
-							Grid.Column="2"
-							Text="{Binding Meditation, Converter={StaticResource MeditationConverter}}"
-							VerticalTextAlignment="Center"/>
-						<Label
-							Grid.Column="3"
-							Text="{Binding EegDevice, Converter={StaticResource EegDeviceConverter}}"
-							VerticalTextAlignment="Center"/>
-						<Label
-							Grid.Column="4"
-							Text="{Binding EegAnalysis, Converter={StaticResource AnalysisConverter}}"
-							VerticalTextAlignment="Center"/>
-						<Label
-							Grid.Column="5"
-							Text="{Binding Description}"
-							VerticalTextAlignment="Center"
-							LineBreakMode="TailTruncation" />
-					</Grid>
-				</DataTemplate>
-			</CollectionView.ItemTemplate>
-		</CollectionView>
-	</Grid>
 	</Border>
 </ContentView>
