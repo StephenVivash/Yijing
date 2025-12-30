@@ -1138,7 +1138,7 @@ public partial class DiagramView : ContentView
 		void action() => EndCast();
 		Dispatcher.Dispatch(action);
 	}
-
+	/*
 	public static void SoundTrigger1(float fBand, float fTrigger)
 	{
 #if WINDOWS
@@ -1148,7 +1148,6 @@ public partial class DiagramView : ContentView
 		freq = (uint)((fTrigger + 11.0) * 23.7);
 		if (fTrigger != 0.0f)
 			PInvoke.Beep(freq, 200);
-#elif ANDROID
 #endif
 	}
 
@@ -1168,10 +1167,9 @@ public partial class DiagramView : ContentView
 		freq = (uint)Math.Round(middleC * Math.Pow(2.0, octaves));
 		if (fTrigger != 0.0f)
 			PInvoke.Beep(freq, 200);
-#elif ANDROID
 #endif
 	}
-
+	*/
 	public static void SoundTrigger(float fBand, float fTrigger)
 	{
 		// fBand -0.5..1.5 => -1..+1 octaves, centered at 0.5
@@ -1188,10 +1186,12 @@ public partial class DiagramView : ContentView
 
 #if WINDOWS
 		PInvoke.Beep((uint)Math.Round(bandHz), 200);
-		PInvoke.Beep((uint)Math.Round(triggerHz), 200);
+		if (fTrigger != 0.0f)
+			PInvoke.Beep((uint)Math.Round(triggerHz), 200);
 #elif ANDROID
 		PlayAndroidTone(bandHz, 200, 1.0);
-		PlayAndroidTone(triggerHz, 200, 1.0);
+		if (fTrigger != 0.0f)
+			PlayAndroidTone(triggerHz, 200, 1.0);
 #else
 #endif
 	}
