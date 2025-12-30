@@ -1273,65 +1273,69 @@ public partial class DiagramView : ContentView
 				//App.EegChannel(23).m_fMinValue = 1000.0f;
 				//App.EegChannel(23).m_fMaxValue = -1000.0f;
 
-				DateTime start = DateTime.Now;
-				TimeSpan ts = DateTime.Now - start;
+				DateTime lastUpdate = DateTime.Now;
 				const float triggerChangeTarget = 0.1f;
+				float rampProgress = 0.0f;
 				float lastChange = 0.0f;
-
+				
 				int count = 0;
 				//App.EegSetTriggers(true, true);
 				while (ev.EegIsConnected() && !ev.EegIsTriggerOn())
 				{
-					await Task.Delay(200);
-					if (AppPreferences.TriggerSounding && (ev.EegReplaySpeed() == 1) && (++count % 50 == 0))
-						SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale,
-							ev.EegChannel(AppPreferences.TriggerIndex).m_fHigh * AppPreferences.AudioScale);
-					ts = DateTime.Now - start;
-					int speed = m_nTriggerSpeed * ev.EegReplaySpeed();
-					speed = speed > 50 ? 50 : speed;
-					if (!AppPreferences.TriggerFixed)
-					{
-						float progress = (float)(ts.TotalSeconds * speed / 60.0f);
-						float change = triggerChangeTarget * (float)Math.Min(1.0f, (float)Math.Exp(progress) / (float)Math.Exp(1.0f));
-						float delta = change - lastChange;
-						if (delta > 0.0f)
-							ev.EegDecreaseTriggers(delta);
-						lastChange = change;
-					}
+				await Task.Delay(200);
+				if (AppPreferences.TriggerSounding && (ev.EegReplaySpeed() == 1) && (++count % 50 == 0))
+				SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale,
+				ev.EegChannel(AppPreferences.TriggerIndex).m_fHigh * AppPreferences.AudioScale);
+				DateTime now = DateTime.Now;
+				rampProgress += (float)(now - lastUpdate).TotalSeconds;
+				lastUpdate = now;
+				int speed = m_nTriggerSpeed * ev.EegReplaySpeed();
+				speed = speed > 50 ? 50 : speed;
+				if (!AppPreferences.TriggerFixed)
+				{
+				float progress = (float)(rampProgress * speed / 60.0f);
+				float change = triggerChangeTarget * ((float)Math.Exp(progress) - 1.0f);
+				float delta = change - lastChange;
+				if (delta > 0.0f)
+				ev.EegDecreaseTriggers(delta);
+				lastChange = change;
+				}
 				}
 				if (!ev.EegIsConnected())
 					break;
 				if (AppPreferences.TriggerSounding)
 					SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale, 0.0f);
-
+				
 				m_timDiagram.Change(0, m_nSpeeds[(int)eDiagramSpeed.eFast]);
-
-				start = DateTime.Now;
-				ts = DateTime.Now - start;
+				
+				lastUpdate = DateTime.Now;
+				rampProgress = 0.0f;
 				lastChange = 0.0f;
-
+				
 				count = 0;
 				//App.EegSetTriggers(true, false);
 				while (ev.EegIsConnected() && !ev.EegIsTriggerOff())
 				{
-					await Task.Delay(200);
-					if (AppPreferences.TriggerSounding && (ev.EegReplaySpeed() == 1) && (++count % 50 == 0))
-						SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale,
-							ev.EegChannel(AppPreferences.TriggerIndex).m_fLow * AppPreferences.AudioScale);
-					ts = DateTime.Now - start;
-					int speed = m_nTriggerSpeed * ev.EegReplaySpeed();
-					speed = speed > 50 ? 50 : speed;
-					if (!AppPreferences.TriggerFixed)
-					{
-						float progress = (float)(ts.TotalSeconds * speed / 60.0f);
-						float change = triggerChangeTarget * (float)Math.Min(1.0f, (float)Math.Exp(progress) / (float)Math.Exp(1.0f));
-						float delta = change - lastChange;
-						if (delta > 0.0f)
-							ev.EegIncreaseTriggers(delta);
-						lastChange = change;
-					}
+				await Task.Delay(200);
+				if (AppPreferences.TriggerSounding && (ev.EegReplaySpeed() == 1) && (++count % 50 == 0))
+				SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale,
+				ev.EegChannel(AppPreferences.TriggerIndex).m_fLow * AppPreferences.AudioScale);
+				DateTime now = DateTime.Now;
+				rampProgress += (float)(now - lastUpdate).TotalSeconds;
+				lastUpdate = now;
+				int speed = m_nTriggerSpeed * ev.EegReplaySpeed();
+				speed = speed > 50 ? 50 : speed;
+				if (!AppPreferences.TriggerFixed)
+				{
+				float progress = (float)(rampProgress * speed / 60.0f);
+				float change = triggerChangeTarget * ((float)Math.Exp(progress) - 1.0f);
+				float delta = change - lastChange;
+				if (delta > 0.0f)
+				ev.EegIncreaseTriggers(delta);
+				lastChange = change;
 				}
-
+				}
+				
 				//App.EegCalculateTriggers();
 				m_timDiagram.Change(Timeout.Infinite, 0);
 				if (!ev.EegIsConnected())
