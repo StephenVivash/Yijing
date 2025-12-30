@@ -50,7 +50,7 @@
 
 				<CollectionView.ItemTemplate>
 					<DataTemplate x:DataType="models:Session">
-						<Border BackgroundColor="{AppThemeBinding Light=LightGray, Dark=#404040}" Padding="10,8">
+						<Border BackgroundColor="{AppThemeBinding Light=White, Dark=Black}" Padding="5,5">
 							<VerticalStackLayout Spacing="4">
 								<Grid ColumnDefinitions="*,Auto">
 									<Label

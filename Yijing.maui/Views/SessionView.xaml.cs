@@ -35,7 +35,6 @@ public partial class SessionView : ContentView
 		if (App.Current!.RequestedTheme == AppTheme.Dark)
 		{
 			hslButtons.BackgroundColor = Colors.Black;
-			grdLabels.BackgroundColor = Colors.Black;
 			sessionCollection.BackgroundColor = Colors.Black;
 		}
 
