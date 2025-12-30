@@ -1257,89 +1257,95 @@ public partial class DiagramView : ContentView
 	}
 #endif
 
-	private async Task MindCast()
-	{
-		//Random r = true ? Sequences.m_ranSession : new Random(DateTime.Now.Millisecond);
-		EegView ev = UI.Get<EegView>();
-		ev.EegSetTriggers(true, true);
-		for (int i = 0; i < 6; ++i)
+		private async Task MindCast()
 		{
-			SetCurrentLine(i, true);
-			UpdateDiagram(false);
-
-			//App.EegChannel(AppPreferences.TriggerIndex).m_fMinValue = 1000.0f;
-			//App.EegChannel(AppPreferences.TriggerIndex).m_fMaxValue = -1000.0f;
-
-			//App.EegChannel(23).m_fMinValue = 1000.0f;
-			//App.EegChannel(23).m_fMaxValue = -1000.0f;
-
-			DateTime start = DateTime.Now;
-			TimeSpan ts = DateTime.Now - start;
-			float[] amount = new float[] { 0.0f, 0.01f, 0.01f, 0.01f, 0.02f, 0.02f, 0.02f, 0.03f, 0.03f, 0.03f, 0.04f, 0.04f, 0.04f, 0.05f, 0.05f, 0.05f, 0.06f, 0.06f, 0.06f, 0.07f, 0.07f, 0.07f, 0.08f, 0.08f, 0.08f };
-
-			int count = 0;
-			//App.EegSetTriggers(true, true);
-			while (ev.EegIsConnected() && !ev.EegIsTriggerOn())
+			//Random r = true ? Sequences.m_ranSession : new Random(DateTime.Now.Millisecond);
+			EegView ev = UI.Get<EegView>();
+			ev.EegSetTriggers(true, true);
+			for (int i = 0; i < 6; ++i)
 			{
-				await Task.Delay(200);
-				if (AppPreferences.TriggerSounding && (ev.EegReplaySpeed() == 1) && (++count % 50 == 0))
-					SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale,
-						ev.EegChannel(AppPreferences.TriggerIndex).m_fHigh * AppPreferences.AudioScale);
-				ts = DateTime.Now - start;
-				int speed = m_nTriggerSpeed * ev.EegReplaySpeed();
-				speed = speed > 50 ? 50 : speed;
-				int index = (int)ts.TotalSeconds * speed / 60;
-				if (!AppPreferences.TriggerFixed && (index < 25))
+				SetCurrentLine(i, true);
+				UpdateDiagram(false);
+
+				//App.EegChannel(AppPreferences.TriggerIndex).m_fMinValue = 1000.0f;
+				//App.EegChannel(AppPreferences.TriggerIndex).m_fMaxValue = -1000.0f;
+
+				//App.EegChannel(23).m_fMinValue = 1000.0f;
+				//App.EegChannel(23).m_fMaxValue = -1000.0f;
+
+				DateTime start = DateTime.Now;
+				TimeSpan ts = DateTime.Now - start;
+				const float triggerChangeTarget = 1.08f;
+				float lastChange = 0.0f;
+
+				int count = 0;
+				//App.EegSetTriggers(true, true);
+				while (ev.EegIsConnected() && !ev.EegIsTriggerOn())
 				{
-					ev.EegDecreaseTriggers(amount[index]);
-					amount[index] = 0.0f;
+					await Task.Delay(200);
+					if (AppPreferences.TriggerSounding && (ev.EegReplaySpeed() == 1) && (++count % 50 == 0))
+						SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale,
+							ev.EegChannel(AppPreferences.TriggerIndex).m_fHigh * AppPreferences.AudioScale);
+					ts = DateTime.Now - start;
+					int speed = m_nTriggerSpeed * ev.EegReplaySpeed();
+					speed = speed > 50 ? 50 : speed;
+					if (!AppPreferences.TriggerFixed)
+					{
+						float progress = (float)(ts.TotalSeconds * speed / 60.0f);
+						float change = (1.0f - (float)Math.Exp(-progress)) * triggerChangeTarget;
+						float delta = change - lastChange;
+						if (delta > 0.0f)
+							ev.EegDecreaseTriggers(delta);
+						lastChange = change;
+					}
 				}
-			}
-			if (!ev.EegIsConnected())
-				break;
-			if (AppPreferences.TriggerSounding)
-				SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale, 0.0f);
+				if (!ev.EegIsConnected())
+					break;
+				if (AppPreferences.TriggerSounding)
+					SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale, 0.0f);
 
-			m_timDiagram.Change(0, m_nSpeeds[(int)eDiagramSpeed.eFast]);
+				m_timDiagram.Change(0, m_nSpeeds[(int)eDiagramSpeed.eFast]);
 
-			start = DateTime.Now;
-			ts = DateTime.Now - start;
-			amount = new float[] { 0.0f, 0.01f, 0.01f, 0.01f, 0.02f, 0.02f, 0.02f, 0.03f, 0.03f, 0.03f, 0.04f, 0.04f, 0.04f, 0.05f, 0.05f, 0.05f, 0.06f, 0.06f, 0.06f, 0.07f, 0.07f, 0.07f, 0.08f, 0.08f, 0.08f };
-
-			count = 0;
-			//App.EegSetTriggers(true, false);
-			while (ev.EegIsConnected() && !ev.EegIsTriggerOff())
-			{
-				await Task.Delay(200);
-				if (AppPreferences.TriggerSounding && (ev.EegReplaySpeed() == 1) && (++count % 50 == 0))
-					SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale,
-						ev.EegChannel(AppPreferences.TriggerIndex).m_fLow * AppPreferences.AudioScale);
+				start = DateTime.Now;
 				ts = DateTime.Now - start;
-				int speed = m_nTriggerSpeed * ev.EegReplaySpeed();
-				speed = speed > 50 ? 50 : speed;
-				int index = (int)ts.TotalSeconds * speed / 60;
-				if (!AppPreferences.TriggerFixed && (index < 25))
-				{
-					ev.EegIncreaseTriggers(amount[index]);
-					amount[index] = 0.0f;
-				}
-			}
+				lastChange = 0.0f;
 
-			//App.EegCalculateTriggers();
-			m_timDiagram.Change(Timeout.Infinite, 0);
-			if (!ev.EegIsConnected())
-				break;
+				count = 0;
+				//App.EegSetTriggers(true, false);
+				while (ev.EegIsConnected() && !ev.EegIsTriggerOff())
+				{
+					await Task.Delay(200);
+					if (AppPreferences.TriggerSounding && (ev.EegReplaySpeed() == 1) && (++count % 50 == 0))
+						SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale,
+							ev.EegChannel(AppPreferences.TriggerIndex).m_fLow * AppPreferences.AudioScale);
+					ts = DateTime.Now - start;
+					int speed = m_nTriggerSpeed * ev.EegReplaySpeed();
+					speed = speed > 50 ? 50 : speed;
+					if (!AppPreferences.TriggerFixed)
+					{
+						float progress = (float)(ts.TotalSeconds * speed / 60.0f);
+						float change = (1.0f - (float)Math.Exp(-progress)) * triggerChangeTarget;
+						float delta = change - lastChange;
+						if (delta > 0.0f)
+							ev.EegIncreaseTriggers(delta);
+						lastChange = change;
+					}
+				}
+
+				//App.EegCalculateTriggers();
+				m_timDiagram.Change(Timeout.Infinite, 0);
+				if (!ev.EegIsConnected())
+					break;
+				if (AppPreferences.TriggerSounding)
+					SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale, 0.0f);
+			}
+			await Task.Delay(100);
 			if (AppPreferences.TriggerSounding)
-				SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale, 0.0f);
+				AudioPlayer.PlayHexagramEnd(Dispatcher);
+			void action() => EndCast();
+			Dispatcher.Dispatch(action);
 		}
-		await Task.Delay(100);
-		if (AppPreferences.TriggerSounding)
-			AudioPlayer.PlayHexagramEnd(Dispatcher);
-		void action() => EndCast();
-		Dispatcher.Dispatch(action);
-	}
-
-	private void EndCast()
+		private void EndCast()
 	{
 		UpdateText();
 		EnableDiagramControls(true, true);
