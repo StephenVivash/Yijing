@@ -65,7 +65,7 @@ public static class AppPreferences
 		LineRatio = Preferences.Get("LineRatio", Sequences.LineRatio);
 
 		EegDevice = Preferences.Get("EegDevice", (int)eEegDevice.eMuse);
-		EegGoal = Preferences.Get("EegGoal", (int)eGoal.eMeditation);
+		EegGoal = Preferences.Get("EegGoal", (int)eGoal.eYijingCast);
 		Ambience = Preferences.Get("Ambience", (int)eAmbience.eLightRain);
 		Timer = Preferences.Get("Timer", (int)eTimer.eTen);
 
@@ -75,7 +75,7 @@ public static class AppPreferences
 
 		TriggerBand = Preferences.Get("TriggerBand", (int)eTriggerBand.eGamma);
 		TriggerChannel = Preferences.Get("TriggerChannel", (int)eTriggerChannel.eFrontLeft);
-		TriggerRange = Preferences.Get("TriggerRange", (int)eTriggerRange.eFourSix);
+		TriggerRange = Preferences.Get("TriggerRange", (int)eTriggerRange.eTwoFour);
 
 		TriggerFixed = Preferences.Get("TriggerFixed", false);
 		TriggerSounding = Preferences.Get("TriggerSounding", true);
