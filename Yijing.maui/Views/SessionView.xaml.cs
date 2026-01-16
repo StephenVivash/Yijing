@@ -513,7 +513,7 @@ public partial class SessionView : ContentView
 
 		_ai._userPrompts = [[], []];
 		_ai._chatReponses = [[], []];
-		_ai._contextSessions = ["2025-10-11-12-15-52", "2025-12-16-17-33-59", "2025-12-17-18-11-38", "2026-01-03-17-47-11", "2026-01-11-17-54-36"];
+		_ai._contextSessions = ["2025-10-11-12-15-52", "2025-12-16-17-33-59", "2025-12-17-18-11-38", "2026-01-03-17-47-11", "2026-01-11-17-54-36", "2026-01-14-17-44-25"];
 	}
 
 	public void UpdateSessionLog(string str, bool append, bool newline)
