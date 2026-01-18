@@ -102,7 +102,7 @@ public partial class SessionView : ContentView
 		if (_selectedSession is null)
 			return;
 
-		bool confirm = await Window.Page!.DisplayAlert("Delete Session", $"Delete {_selectedSession.Name}?", "Yes", "No");
+		bool confirm = await Window.Page!.DisplayAlertAsync("Delete Session", $"Delete {_selectedSession.Name}?", "Yes", "No");
 		if (!confirm)
 			return;
 
@@ -129,7 +129,7 @@ public partial class SessionView : ContentView
 		}
 		catch (Exception ex)
 		{
-			await Window.Page!.DisplayAlert("Delete Session", $"Unable to delete the session. {ex.Message}", "OK");
+			await Window.Page!.DisplayAlertAsync("Delete Session", $"Unable to delete the session. {ex.Message}", "OK");
 		}
 	}
 
@@ -501,17 +501,15 @@ public partial class SessionView : ContentView
 			UI.Try<DiagramView>(v => s = v.DescribrCastHexagram());
 			if (string.IsNullOrWhiteSpace(s))
 			{
-				await Window.Page!.DisplayAlert("No Cast", "Please cast a hexagram first.", "OK");
+				await Window.Page!.DisplayAlertAsync("No Cast", "Please cast a hexagram first.", "OK");
 				return;
 			}
-
 			prompt += (prompt.Length > 0 ? "\n" : "") + "The Yijing cast yielded hexagram " + s;
-			//prompt += (prompt.Length > 0 ? "\n" : "") + "I consulted the oracle and the Yijing responded with hexagram " + s;
 		}
 
 		if (string.IsNullOrWhiteSpace(prompt))
 		{
-			await Window.Page!.DisplayAlert("No Prompt", "Please enter a prompt.", "OK");
+			await Window.Page!.DisplayAlertAsync("No Prompt", "Please enter a prompt.", "OK");
 			return;
 		}
 
@@ -528,11 +526,6 @@ public partial class SessionView : ContentView
 		UpdateSessionLog("", false, false);
 	}
 
-	//public async Task AiChatAsync(string prompt)
-	//{
-	//	await _ai.ChatAsync(AppPreferences.AiChatService, prompt, false);
-	//}
-
 	private void ResetChat()
 	{
 		ClearChatState();
@@ -545,7 +538,7 @@ public partial class SessionView : ContentView
 
 		_ai._userPrompts = [[], []];
 		_ai._chatReponses = [[], []];
-		_ai._contextSessions = []; // ["2025-10-11-12-15-52", "2025-12-16-17-33-59", "2025-12-17-18-11-38", "2026-01-03-17-47-11", "2026-01-11-17-54-36", "2026-01-14-17-44-25"];
+		_ai._contextSessions = [];
 	}
 
 	private void EnsureContextSessionsLoadedForChat()
@@ -701,7 +694,6 @@ public partial class SessionView : ContentView
 		}
 		if (!string.IsNullOrEmpty(session))
 		{
-			//EegView._strSession = session;
 			LoadChat(session, "Question", _ai._userPrompts[1], true);
 			LoadChat(session, "Answer", _ai._chatReponses[1], true);
 			if ((_ai._userPrompts[1].Count() > 0) || (_ai._chatReponses[1].Count() > 0))
@@ -751,7 +743,6 @@ public partial class SessionView : ContentView
 								list.Add(entry);
 							else if (allowNotes)
 								_sessionNotes.Add(entry);
-							//list.Add(entry);
 							entry = "";
 						}
 						entryType = type;
@@ -764,7 +755,6 @@ public partial class SessionView : ContentView
 								list.Add(entry);
 							else if (allowNotes)
 								_sessionNotes.Add(entry);
-							//_sessionNotes.Add(entry);
 							entry = "";
 						}
 						entryType = "Note";
@@ -779,8 +769,8 @@ public partial class SessionView : ContentView
 					else if (allowNotes)
 						_sessionNotes.Add(entry);
 			}
-		//else
-			//UpdateSessionLog("Failed to load " + str, true, true);
+		else
+			UpdateSessionLog("Failed to load " + str, true, true);
 	}
 
 	public async Task NavigateToDialogPage()
