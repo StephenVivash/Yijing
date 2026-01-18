@@ -1,11 +1,14 @@
 namespace YijingData;
 
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 public enum eEegDevice { eMuse, eEmotiv, eNone };
 
-public partial class Session
+public partial class Session : INotifyPropertyChanged
 {
+	private bool _isContextSelected;
 
 	public Session(int id, string name, string? description = null, string? fileName = null,
 		string? yijingCast = null, bool meditation = false, eEegDevice eegDevice = eEegDevice.eNone, bool eegAnalysis = false)
@@ -36,4 +39,24 @@ public partial class Session
 	public eEegDevice EegDevice { get; set; }
 
 	public bool EegAnalysis { get; set; }
+
+	[NotMapped]
+	public bool IsContextSelected
+	{
+		get => _isContextSelected;
+		set
+		{
+			if (_isContextSelected == value)
+				return;
+			_isContextSelected = value;
+			OnPropertyChanged(nameof(IsContextSelected));
+		}
+	}
+
+	public event PropertyChangedEventHandler? PropertyChanged;
+
+	protected virtual void OnPropertyChanged(string propertyName)
+	{
+		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+	}
 }

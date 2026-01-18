@@ -52,12 +52,19 @@
 					<DataTemplate x:DataType="models:Session">
 						<Border BackgroundColor="{AppThemeBinding Light=White, Dark=Black}" Padding="5,5">
 							<VerticalStackLayout Spacing="4">
-								<Grid ColumnDefinitions="*,Auto">
+								<Grid ColumnDefinitions="Auto,*,Auto">
+									<CheckBox
+										Grid.Column="0"
+										IsChecked="{Binding IsContextSelected}"
+										CheckedChanged="OnContextSelectionChanged"
+										VerticalOptions="Center"
+										Margin="0,0,6,0" />
 									<Label
+										Grid.Column="1"
 										Text="{Binding Name}"
 										VerticalTextAlignment="Center"
 										LineBreakMode="TailTruncation" />
-									<HorizontalStackLayout Grid.Column="1" HorizontalOptions="End" Spacing="8">
+									<HorizontalStackLayout Grid.Column="2" HorizontalOptions="End" Spacing="8">
 										<Label
 											Text="{Binding YijingCast, Converter={StaticResource YijingCastConverter}}"
 											VerticalTextAlignment="Center" />
