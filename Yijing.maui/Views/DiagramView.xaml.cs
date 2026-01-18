@@ -352,48 +352,6 @@ public partial class DiagramView : ContentView
 		SetNuclear();
 	}
 
-	protected void picSession_SelectedIndexChanged(object sender, EventArgs e)
-	{
-		/*
-		if (picSession.SelectedIndex == -1)
-			return;
-
-		if (picSession.SelectedIndex == 0)
-		{
-			DateTime start = DateTime.Now;
-			StartChat();
-			EegView._strSession = AppSettings.ReverseDateString();
-			LoadChat("", _ai._contextSessions);
-			UpdateText(false);
-		}
-		else
-			LoadChat((string)picSession.SelectedItem, _ai._contextSessions);
-		*/
-	}
-
-	protected void btnDeleteSession_Clicked(object sender, EventArgs e)
-	{
-
-		//var x1 = Window.Parent as Yijing.App;
-		//x1.Test1();
-		//var x2 = Window.Page.GetParentWindow();
-		/*
-		if (picSession.SelectedIndex > 0)
-		{
-			bool delete = await Window.Page.DisplayAlert("Delete Session",
-				"Are you sure you want to delete session " +
-				(string)picSession.SelectedItem + " ?", "Yes", "No");
-			if (delete)
-			{
-				string s = (string)picSession.SelectedItem;
-				File.Delete(System.IO.Path.Combine(AppSettings.DocumentHome(), "Questions", s + ".txt"));
-				File.Delete(System.IO.Path.Combine(AppSettings.DocumentHome(), "Answers", s + ".txt"));
-				LoadSessions(0);
-			}
-		}
-		*/
-	}
-
 	protected void picDiagramMode_ValueChanged(object sender, EventArgs e)
 	{
 		m_nDiagramMode = (int)picDiagramMode.SelectedIndex;
@@ -1098,8 +1056,6 @@ public partial class DiagramView : ContentView
 
 	private void UpdateText(bool resetSession = true)
 	{
-		//if (resetSession)
-		//	picSession.SelectedIndex = 0;
 		UpdateText(m_hvsCurrent);
 	}
 
@@ -1138,38 +1094,7 @@ public partial class DiagramView : ContentView
 		void action() => EndCast();
 		Dispatcher.Dispatch(action);
 	}
-	/*
-	public static void SoundTrigger1(float fBand, float fTrigger)
-	{
-#if WINDOWS
-		//PInvoke.Beep(261, 2000); // Middle C
-		uint freq = (uint)((fBand + 11.0) * 23.7);
-		PInvoke.Beep(freq, 200);
-		freq = (uint)((fTrigger + 11.0) * 23.7);
-		if (fTrigger != 0.0f)
-			PInvoke.Beep(freq, 200);
-#endif
-	}
 
-	public static void SoundTrigger2(float fBand, float fTrigger)
-	{
-#if WINDOWS
-		const double middleC = 261.625565;
-		//Task.Run(() => PInvoke.Beep((uint)middleC, 200));
-		// Make 0 dB = Middle C exactly; choose a scale factor for how fast it moves.
-		// Map -0.5..1.5  ->  -1..+1 octaves (so 2-octave span), centered at 0.5
-
-		double octaves = fBand - 0.5; // dB offset
-		uint freq = (uint)Math.Round(middleC * Math.Pow(2.0, octaves));
-		PInvoke.Beep(freq, 200);
-
-		octaves = fTrigger - 0.5; // dB offset
-		freq = (uint)Math.Round(middleC * Math.Pow(2.0, octaves));
-		if (fTrigger != 0.0f)
-			PInvoke.Beep(freq, 200);
-#endif
-	}
-	*/
 	public static void SoundTrigger(float fBand, float fTrigger)
 	{
 		// fBand -0.5..1.5 => -1..+1 octaves, centered at 0.5
@@ -1547,261 +1472,6 @@ public partial class DiagramView : ContentView
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public void UpdateSessionLog(string str, bool append, bool newline)
-	{
-		//if (append)
-		//	UI.Call<DiagramPage>(p => p.SessionLog().Text += str + (newline ? "\n" : ""));
-		//else
-		//	UI.Call<DiagramPage>(p => p.SessionLog().Text = str + (newline ? "\n" : ""));
-	}
-	/*
-	public void AiChat(bool includeCast)
-	{
-		string s = "";
-		UI.Call<DiagramPage>(p => s = p.SessionLog().Text);
-
-		if (includeCast)
-			s += " I consulted the oracle and the Yijing responded with hexagram " + m_hvsCurrent.DescribeCast();
-
-		bool reload = false;
-		if (_ai._userPrompts[1].Count() == 0)
-			if (picSession.FindByName(EegView._strSession) == null)
-				reload = true;
-		_saveChat = true;
-		AiChat(s, reload);
-		UpdateSessionLog("", false, false);
-	}
-
-	public async void AiChat(string msg, bool reload)
-	{
-		await _ai.ChatAsync(AppPreferences.AiChatService, msg);
-		if (reload)
-			LoadSessions(-1);
-		else
-		{
-			SaveChat(picSession.SelectedItem as string);
-			UpdateChat();
-		}
-	}
-
-	public void LoadSessions(int index)
-	{
-		String strTemp = System.IO.Path.Combine(AppSettings.DocumentHome(), "Questions");
-		if (!Directory.Exists(strTemp))
-			Directory.CreateDirectory(strTemp);
-
-		// wait Task.Delay(1000);
-
-		IEnumerable<string> ief = Directory.EnumerateFiles(strTemp, "*.txt", SearchOption.TopDirectoryOnly);
-		List<string> lf = new();
-		foreach (string f in ief)
-			lf.Add(System.IO.Path.GetFileNameWithoutExtension(f));
-
-		if (index == -1)
-			lf.Add(EegView._strSession);
-
-		lf.Sort(new DescendingOrder());
-
-		lf.Insert(0, "New Session");
-
-		picSession.SelectedIndex = -1;
-		picSession.ItemsSource = lf;
-
-		if (index == -1)
-			if ((index = picSession.Items.IndexOf(EegView._strSession)) == -1)
-				index = 0;
-
-		picSession.SelectedIndex = index;
-		picSession.Focus();
-	}
-
-	public void StartNewChat()
-	{
-		UI.Call<DiagramView>(v => v.StartChat());
-	}
-
-	public void SelectChat(string name)
-	{
-		int i = -1;
-		UI.Call<DiagramView>(v => i = v.picSession.Items.IndexOf(name));
-		if (i != -1)
-			UI.Call<DiagramView>(v => v.picSession.SelectedItem = name);
-		else
-		{
-			UI.Call<DiagramView>(v => v.picSession.SelectedIndex = 0);
-			EegView._strSession = name;
-		}
-	}
-
-	public void StartChat()
-	{
-		SaveChat(EegView._strSession);
-		_saveChat = false;
-
-		//_ai.NewChat();
-
-		_ai._userPrompts = [[], []];
-		_ai._chatReponses = [[], []];
-		UI.Call<DiagramView>(v => v.UpdateChat());
-	}
-
-	public void SaveChat(string name)
-	{
-		if (_saveChat)
-			if ((_ai._userPrompts[1].Count() > 0) || (_ai._chatReponses[1].Count() > 0))
-			{
-				SaveChat(name, "Question", _ai._userPrompts[1]);
-				SaveChat(name, "Answer", _ai._chatReponses[1]);
-				_saveChat = false;
-			}
-	}
-
-	public void SaveChat(string name, string type, List<string> list)
-	{
-		string str = System.IO.Path.Combine(AppSettings.DocumentHome(), $"{type}s", name + ".txt");
-		using (FileStream fs = new(str, FileMode.Create, FileAccess.Write))
-		{
-			if (type == "Question")
-			{
-				string contexts = string.Join(",", _ai._contextSessions);
-				byte[] contextVal = System.Text.Encoding.UTF8.GetBytes("$(Context)\n" + contexts + "\n");
-				fs.Write(contextVal, 0, contextVal.Length);
-			}
-			foreach (string s in list)
-			{
-				byte[] val = System.Text.Encoding.UTF8.GetBytes($"$({type})\n" + s + "\n");
-				fs.Write(val, 0, val.Length);
-			}
-		}
-	}
-
-	public void LoadChat(string session, List<string> contexts)
-	{
-		StartChat();
-		for (int i = 0; i < contexts.Count(); ++i)
-		{
-			LoadChat(contexts[i], "Question", _ai._userPrompts[0]);
-			LoadChat(contexts[i], "Answer", _ai._chatReponses[0]);
-		}
-		if (!string.IsNullOrEmpty(session))
-		{
-			EegView._strSession = session;
-			LoadChat(session, "Question", _ai._userPrompts[1]);
-			LoadChat(session, "Answer", _ai._chatReponses[1]);
-			if ((_ai._userPrompts[1].Count() > 0) || (_ai._chatReponses[1].Count() > 0))
-				UpdateChat();
-		}
-	}
-
-	public void LoadChat(string name, string type, List<string> list)
-	{
-		string str = System.IO.Path.Combine(AppSettings.DocumentHome(), $"{type}s", name + ".txt");
-		string entry = "";
-		bool skipContext = false;
-		if (File.Exists(str))
-			using (StreamReader sr = File.OpenText(str))
-			{
-				while ((str = sr.ReadLine()) != null)
-				{
-					if (skipContext)
-					{
-						skipContext = false;
-						if (string.IsNullOrEmpty(str))
-							continue;
-						if (!str.StartsWith("$("))
-							continue;
-					}
-					if (string.IsNullOrEmpty(str))
-						continue;
-					if (str == "$(Context)")
-					{
-						skipContext = true;
-						continue;
-					}
-					if (str == $"$({type})")
-					{
-						if (!string.IsNullOrEmpty(entry))
-						{
-							list.Add(entry);
-							entry = "";
-						}
-					}
-					else
-						entry += str + "\n";
-				}
-				if (!string.IsNullOrEmpty(entry))
-					list.Add(entry);
-			}
-		else
-			UpdateSessionLog("Failed to load " + str, true, true);
-	}
-
-	public bool UpdateChat()
-	{
-		String strText = Sequences.strDiagramSettings[16, Sequences.HexagramText + 1];
-		string strBC = App.Current.RequestedTheme == AppTheme.Dark ? "black" : "white";
-		string strFC = App.Current.RequestedTheme == AppTheme.Dark ? "white" : "black";
-		string strAC = App.Current.RequestedTheme == AppTheme.Dark ? "gray" : "gray";
-		String strHtml = "<html xmlns=\"http://www.w3.org/1999/xhtml\">" +
-			"<head><title>Yijing</title>" +
-			"<link href=\"https://fonts.googleapis.com/css?family=Open+Sans\" rel=\"stylesheet\"/>" +
-			"<style>" +
-			"body {" +
-			$" background-color: {strBC};" +
-			$" color: {strFC};" +
-			"} " +
-			"html {" +
-			" font-size: 16px;" +
-			" font-family: \"Open Sans\", sans-serif;" +
-			"} " +
-			"a {" +
-			$" color: {strAC};" +
-			"} " +
-			"h2 {" +
-			$" color: {strAC};" +
-			"} " +
-			"h2 {" +
-			$" color: {strAC};" +
-			"} " +
-			"h4 {" +
-			$" color: {strAC};" +
-			"} " +
-			"</style></head><body><h2>" + " Chat Session: " + (picSession.SelectedItem as string);
-
-		if (_ai._contextSessions.Count() > 0)
-			strHtml += "</p>Context Sessions: ";
-		foreach (var s in _ai._contextSessions)
-			strHtml += s + " ";
-
-		strHtml += "</h2>";
-
-		int count = int.Max(_ai._chatReponses[1].Count(), _ai._userPrompts[1].Count());
-		for (int i = 0; i < count; ++i)
-		{
-			if (i < _ai._userPrompts[1].Count())
-				strHtml += "<p><h4>" + _ai._userPrompts[1][i].Replace("\n", "</p>") + "</h4></p>";
-			if (i < _ai._chatReponses[1].Count())
-				strHtml += "<p>" + _ai._chatReponses[1][i].Replace("\n", "</p>") + "</p>";
-		}
-		for (int i = 0; i < 64; ++i)
-			if (strHtml.Contains(Sequences.strHexagramLabels[9, i], StringComparison.CurrentCultureIgnoreCase))
-			{
-				String strHref = "<a href=\"Hexagram" + i + "\">" + Sequences.strHexagramLabels[9, i] + "</a>";
-				Regex rgx = new Regex("\\b(?i)" + Sequences.strHexagramLabels[9, i] +
-					"(s)?(t)?(y)?(ty)?(ing)?(ed)?(ous)?(ment)?(ate)?(in)?\\b",
-					RegexOptions.Compiled | RegexOptions.NonBacktracking | RegexOptions.IgnoreCase); // RegexOptions.ExplicitCapture
-				strHtml = rgx.Replace(strHtml, strHref + "$1$2$3$4$5$6$7$8$9$10");
-			}
-
-		strHtml += "</body></html>";
-		UI.Try<DiagramPage>(p => p.WebView().Source = new HtmlWebViewSource { Html = strHtml });
-		return true;
-	}
-	*/
-	// //////////////////////////////////////////////////////////////////////////////////////////////////
-	// //////////////////////////////////////////////////////////////////////////////////////////////////
-	// //////////////////////////////////////////////////////////////////////////////////////////////////
-
 	public void SetAppTitle(string title)
 	{
 		void action()
@@ -1811,7 +1481,31 @@ public partial class DiagramView : ContentView
 		}
 		Dispatcher.Dispatch(action);
 	}
-	/*
+
+	public static readonly BindableProperty CardTitleProperty = BindableProperty.Create(nameof(CardTitle),
+		typeof(string), typeof(DiagramView), string.Empty);
+
+	public static readonly BindableProperty CardColorProperty = BindableProperty.Create(nameof(CardColor),
+		typeof(Color), typeof(DiagramView), App.Current.RequestedTheme == AppTheme.Dark ? Colors.Black : Colors.White);
+
+	public string CardTitle
+	{
+		get => (string)GetValue(CardTitleProperty);
+		set => SetValue(CardTitleProperty, value);
+	}
+
+	public Color CardColor
+	{
+		get => (Color)GetValue(CardColorProperty);
+		set => SetValue(CardColorProperty, value);
+	}
+}
+
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+
 	void YijingDB()
 	{
 		String path = System.IO.Path.Combine(AppSettings.DocumentHome(), "Yijing.db");
@@ -1843,52 +1537,30 @@ public partial class DiagramView : ContentView
 		//	if (h.Count > 0)
 		//		lblValues.Text += $"{h.Count,4:D} {h.DescribeCast}\n";
 	}
-	*/
-	public static readonly BindableProperty CardTitleProperty = BindableProperty.Create(nameof(CardTitle),
-		typeof(string), typeof(DiagramView), string.Empty);
 
-	public static readonly BindableProperty CardColorProperty = BindableProperty.Create(nameof(CardColor),
-		typeof(Color), typeof(DiagramView), App.Current.RequestedTheme == AppTheme.Dark ? Colors.Black : Colors.White);
 
-	public string CardTitle
-	{
-		get => (string)GetValue(CardTitleProperty);
-		set => SetValue(CardTitleProperty, value);
-	}
 
-	public Color CardColor
-	{
-		get => (Color)GetValue(CardColorProperty);
-		set => SetValue(CardColorProperty, value);
-	}
-}
+// https://github.com/ollama/ollama/blob/main/docs/api.md
+//string request = "http://localhost:11434/api/generate";
+//string content = $"{{" +
+//	"\"model\": \"llama3.1\"," +
+//	"\"prompt\": \"Why is the sky blue?\"" +
+//	"}";
 
-// //////////////////////////////////////////////////////////////////////////////////////////////////
-// //////////////////////////////////////////////////////////////////////////////////////////////////
-// //////////////////////////////////////////////////////////////////////////////////////////////////
-/*
-
-	// https://github.com/ollama/ollama/blob/main/docs/api.md
-	//string request = "http://localhost:11434/api/generate";
-	//string content = $"{{" +
-	//	"\"model\": \"llama3.1\"," +
-	//	"\"prompt\": \"Why is the sky blue?\"" +
-	//	"}";
-
-	//{
-	//	"model": "llama3.1",
-	//	"created_at": "2024-09-16T06:07:39.2728134Z",
-	//	"response": "Hello! How are you today? Is there something I can help you with, or would you like to just chat?",
-	//	"done": true,
-	//	"done_reason": "stop",
-	//	"context": [128006, 882, 128007],
-	//	"total_duration": 3520390800,
-	//	"load_duration": 16736600,
-	//	"prompt_eval_count": 11,
-	//	"prompt_eval_duration": 329277000,
-	//	"eval_count": 25,
-	//	"eval_duration": 3173195000
-	//}
+//{
+//	"model": "llama3.1",
+//	"created_at": "2024-09-16T06:07:39.2728134Z",
+//	"response": "Hello! How are you today? Is there something I can help you with, or would you like to just chat?",
+//	"done": true,
+//	"done_reason": "stop",
+//	"context": [128006, 882, 128007],
+//	"total_duration": 3520390800,
+//	"load_duration": 16736600,
+//	"prompt_eval_count": 11,
+//	"prompt_eval_duration": 329277000,
+//	"eval_count": 25,
+//	"eval_duration": 3173195000
+//}
 
 public class OllamaRequest
 {
