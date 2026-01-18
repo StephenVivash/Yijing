@@ -696,20 +696,20 @@ public partial class SessionView : ContentView
 	{
 		for (int i = 0; i < _ai._contextSessions.Count; ++i)
 		{
-			LoadChat(_ai._contextSessions[i], "Question", _ai._userPrompts[0]);
-			LoadChat(_ai._contextSessions[i], "Answer", _ai._chatReponses[0]);
+			LoadChat(_ai._contextSessions[i], "Question", _ai._userPrompts[0], false);
+			LoadChat(_ai._contextSessions[i], "Answer", _ai._chatReponses[0], false);
 		}
 		if (!string.IsNullOrEmpty(session))
 		{
 			//EegView._strSession = session;
-			LoadChat(session, "Question", _ai._userPrompts[1]);
-			LoadChat(session, "Answer", _ai._chatReponses[1]);
+			LoadChat(session, "Question", _ai._userPrompts[1], true);
+			LoadChat(session, "Answer", _ai._chatReponses[1], true);
 			if ((_ai._userPrompts[1].Count() > 0) || (_ai._chatReponses[1].Count() > 0))
 				UpdateChat();
 		}
 	}
 
-	public void LoadChat(string name, string type, List<string> list)
+	public void LoadChat(string name, string type, List<string> list, bool allowNotes)
 	{
 		string? str = Path.Combine(AppSettings.DocumentHome(), $"{type}s", name + ".txt");
 		string entryType = "";
@@ -736,7 +736,7 @@ public partial class SessionView : ContentView
 						{
 							if (!string.IsNullOrEmpty(entryType) && (entryType == type))
 								list.Add(entry);
-							else
+							else if (allowNotes)
 								_sessionNotes.Add(entry);
 							entry = "";
 						}
@@ -749,7 +749,7 @@ public partial class SessionView : ContentView
 						{
 							if (!string.IsNullOrEmpty(entryType) && (entryType == type))
 								list.Add(entry);
-							else
+							else if (allowNotes)
 								_sessionNotes.Add(entry);
 							//list.Add(entry);
 							entry = "";
@@ -762,7 +762,7 @@ public partial class SessionView : ContentView
 						{
 							if (!string.IsNullOrEmpty(entryType) && (entryType == type))
 								list.Add(entry);
-							else
+							else if (allowNotes)
 								_sessionNotes.Add(entry);
 							//_sessionNotes.Add(entry);
 							entry = "";
@@ -776,7 +776,7 @@ public partial class SessionView : ContentView
 				if (!string.IsNullOrEmpty(entry))
 					if (!string.IsNullOrEmpty(entryType) && (entryType == type))
 						list.Add(entry);
-					else
+					else if (allowNotes)
 						_sessionNotes.Add(entry);
 			}
 		//else
