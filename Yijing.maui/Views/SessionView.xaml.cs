@@ -24,6 +24,7 @@ public partial class SessionView : ContentView
 	private readonly Ai _ai = new();
 	private List<string> _sessionNotes = [];
 	private bool _isSyncingContexts;
+	private bool _contextSelectionDirty;
 
 	public event EventHandler<string>? ChatUpdated;
 
@@ -161,6 +162,8 @@ public partial class SessionView : ContentView
 		else
 			_ai._contextSessions.RemoveAll(s => s.Equals(session.FileName, StringComparison.OrdinalIgnoreCase));
 
+		SortContextSessions();
+		_contextSelectionDirty = true;
 		UpdateChat();
 	}
 
@@ -515,7 +518,10 @@ public partial class SessionView : ContentView
 		if (AppPreferences.AiChatService == (int)eAiService.eNone)
 			_sessionNotes.Add(prompt);
 		else
+		{
+			EnsureContextSessionsLoadedForChat();
 			await _ai.ChatAsync(AppPreferences.AiChatService, prompt, false);
+		}
 
 		SaveChat(_selectedSession!.FileName!);
 		UpdateChat();
@@ -540,6 +546,21 @@ public partial class SessionView : ContentView
 		_ai._userPrompts = [[], []];
 		_ai._chatReponses = [[], []];
 		_ai._contextSessions = []; // ["2025-10-11-12-15-52", "2025-12-16-17-33-59", "2025-12-17-18-11-38", "2026-01-03-17-47-11", "2026-01-11-17-54-36", "2026-01-14-17-44-25"];
+	}
+
+	private void EnsureContextSessionsLoadedForChat()
+	{
+		if (!_contextSelectionDirty)
+			return;
+		if (_selectedSession?.FileName is null)
+			return;
+
+		SortContextSessions();
+		SaveChat(_selectedSession.FileName);
+		ClearChatState();
+		LoadContextSessions(_selectedSession.FileName);
+		LoadChat(_selectedSession.FileName);
+		_contextSelectionDirty = false;
 	}
 
 	private void LoadContextSessions(string session)
@@ -570,7 +591,9 @@ public partial class SessionView : ContentView
 						break;
 				}
 			}
+		SortContextSessions();
 		UpdateContextSelectionFlags();
+		_contextSelectionDirty = false;
 	}
 
 	private void SetContextSessions(string? value)
@@ -580,6 +603,21 @@ public partial class SessionView : ContentView
 		foreach (string context in value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
 			if (!_ai._contextSessions.Any(s => s.Equals(context, StringComparison.OrdinalIgnoreCase)))
 				_ai._contextSessions.Add(context);
+	}
+
+	private void SortContextSessions()
+	{
+		_ai._contextSessions = _ai._contextSessions
+			.Distinct(StringComparer.OrdinalIgnoreCase)
+			.OrderBy(session => TryParseSessionDate(session, out DateTime date) ? date : DateTime.MaxValue)
+			.ThenBy(session => session, StringComparer.OrdinalIgnoreCase)
+			.ToList();
+	}
+
+	private static bool TryParseSessionDate(string session, out DateTime date)
+	{
+		return DateTime.TryParseExact(session, "yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture,
+			DateTimeStyles.AssumeLocal, out date);
 	}
 
 	private void UpdateContextSelectionFlags()
@@ -636,6 +674,7 @@ public partial class SessionView : ContentView
 		{
 			if (type == "Question")
 			{
+				SortContextSessions();
 				string contexts = string.Join(",", _ai._contextSessions);
 				byte[] contextVal = Encoding.UTF8.GetBytes("$(Context)\n" + contexts + "\n");
 				fs.Write(contextVal, 0, contextVal.Length);
