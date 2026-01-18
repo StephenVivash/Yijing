@@ -1660,11 +1660,19 @@ public partial class DiagramView : ContentView
 	{
 		string str = System.IO.Path.Combine(AppSettings.DocumentHome(), $"{type}s", name + ".txt");
 		using (FileStream fs = new(str, FileMode.Create, FileAccess.Write))
+		{
+			if (type == "Question")
+			{
+				string contexts = string.Join(",", _ai._contextSessions);
+				byte[] contextVal = System.Text.Encoding.UTF8.GetBytes("$(Context)\n" + contexts + "\n");
+				fs.Write(contextVal, 0, contextVal.Length);
+			}
 			foreach (string s in list)
 			{
 				byte[] val = System.Text.Encoding.UTF8.GetBytes($"$({type})\n" + s + "\n");
 				fs.Write(val, 0, val.Length);
 			}
+		}
 	}
 
 	public void LoadChat(string session, List<string> contexts)
@@ -1689,21 +1697,38 @@ public partial class DiagramView : ContentView
 	{
 		string str = System.IO.Path.Combine(AppSettings.DocumentHome(), $"{type}s", name + ".txt");
 		string entry = "";
+		bool skipContext = false;
 		if (File.Exists(str))
 			using (StreamReader sr = File.OpenText(str))
 			{
 				while ((str = sr.ReadLine()) != null)
-					if (!string.IsNullOrEmpty(str))
-						if (str == $"$({type})")
+				{
+					if (skipContext)
+					{
+						skipContext = false;
+						if (string.IsNullOrEmpty(str))
+							continue;
+						if (!str.StartsWith("$("))
+							continue;
+					}
+					if (string.IsNullOrEmpty(str))
+						continue;
+					if (str == "$(Context)")
+					{
+						skipContext = true;
+						continue;
+					}
+					if (str == $"$({type})")
+					{
+						if (!string.IsNullOrEmpty(entry))
 						{
-							if (!string.IsNullOrEmpty(entry))
-							{
-								list.Add(entry);
-								entry = "";
-							}
+							list.Add(entry);
+							entry = "";
 						}
-						else
-							entry += str + "\n";
+					}
+					else
+						entry += str + "\n";
+				}
 				if (!string.IsNullOrEmpty(entry))
 					list.Add(entry);
 			}

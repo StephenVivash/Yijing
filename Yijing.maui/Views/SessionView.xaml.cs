@@ -23,6 +23,8 @@ public partial class SessionView : ContentView
 
 	private readonly Ai _ai = new();
 	private List<string> _sessionNotes = [];
+	private bool _isSyncingContexts;
+	private bool _contextSelectionDirty;
 
 	public event EventHandler<string>? ChatUpdated;
 
@@ -141,6 +143,28 @@ public partial class SessionView : ContentView
 		string? file = Path.GetFileNameWithoutExtension(_selectedSession?.FileName);
 		if (_selectedSession?.EegDevice != eEegDevice.eNone)
 			UI.Call<EegView>(v => v.SelectSession(file));
+	}
+
+	private void OnContextSelectionChanged(object? sender, CheckedChangedEventArgs e)
+	{
+		if (_isSyncingContexts)
+			return;
+		if (sender is not CheckBox checkbox || checkbox.BindingContext is not Session session)
+			return;
+		if (string.IsNullOrEmpty(session.FileName))
+			return;
+
+		if (e.Value)
+		{
+			if (!_ai._contextSessions.Any(s => s.Equals(session.FileName, StringComparison.OrdinalIgnoreCase)))
+				_ai._contextSessions.Add(session.FileName);
+		}
+		else
+			_ai._contextSessions.RemoveAll(s => s.Equals(session.FileName, StringComparison.OrdinalIgnoreCase));
+
+		SortContextSessions();
+		_contextSelectionDirty = true;
+		UpdateChat();
 	}
 
 	public void ButtonPadding(Thickness thickness)
@@ -374,6 +398,8 @@ public partial class SessionView : ContentView
 			if (string.IsNullOrWhiteSpace(text))
 				return;
 
+			text = Regex.Replace(text, @"\$\((Context)\)\s*[^\r\n]*\r?\n?", "", RegexOptions.IgnoreCase);
+
 			string? castLine = text.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)
 					.Select(line => line.Trim())
 					.FirstOrDefault(line => line.Contains(s1, StringComparison.OrdinalIgnoreCase) ||
@@ -460,7 +486,10 @@ public partial class SessionView : ContentView
 	{
 		ClearChatState();
 		if (session is not null)
+		{
+			LoadContextSessions(session.FileName!);
 			LoadChat(session.FileName!);
+		}
 		UpdateChat();
 	}
 
@@ -489,7 +518,10 @@ public partial class SessionView : ContentView
 		if (AppPreferences.AiChatService == (int)eAiService.eNone)
 			_sessionNotes.Add(prompt);
 		else
+		{
+			EnsureContextSessionsLoadedForChat();
 			await _ai.ChatAsync(AppPreferences.AiChatService, prompt, false);
+		}
 
 		SaveChat(_selectedSession!.FileName!);
 		UpdateChat();
@@ -514,6 +546,97 @@ public partial class SessionView : ContentView
 		_ai._userPrompts = [[], []];
 		_ai._chatReponses = [[], []];
 		_ai._contextSessions = []; // ["2025-10-11-12-15-52", "2025-12-16-17-33-59", "2025-12-17-18-11-38", "2026-01-03-17-47-11", "2026-01-11-17-54-36", "2026-01-14-17-44-25"];
+	}
+
+	private void EnsureContextSessionsLoadedForChat()
+	{
+		if (!_contextSelectionDirty)
+			return;
+		if (_selectedSession?.FileName is null)
+			return;
+
+		SortContextSessions();
+		SaveChat(_selectedSession.FileName);
+		ClearChatState();
+		LoadContextSessions(_selectedSession.FileName);
+		LoadChat(_selectedSession.FileName);
+		_contextSelectionDirty = false;
+	}
+
+	private void LoadContextSessions(string session)
+	{
+		_ai._contextSessions = [];
+		string path = Path.Combine(AppSettings.DocumentHome(), "Questions", session + ".txt");
+		if (File.Exists(path))
+			using (StreamReader sr = File.OpenText(path))
+			{
+				string? line;
+				bool readContext = false;
+				while ((line = sr.ReadLine()) != null)
+				{
+					if (string.IsNullOrWhiteSpace(line))
+						continue;
+					if (line == "$(Context)")
+					{
+						readContext = true;
+						continue;
+					}
+					if (readContext)
+					{
+						if (!line.StartsWith("$("))
+							SetContextSessions(line);
+						break;
+					}
+					if (line.StartsWith("$("))
+						break;
+				}
+			}
+		SortContextSessions();
+		UpdateContextSelectionFlags();
+		_contextSelectionDirty = false;
+	}
+
+	private void SetContextSessions(string? value)
+	{
+		if (string.IsNullOrWhiteSpace(value))
+			return;
+		foreach (string context in value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+			if (!_ai._contextSessions.Any(s => s.Equals(context, StringComparison.OrdinalIgnoreCase)))
+				_ai._contextSessions.Add(context);
+	}
+
+	private void SortContextSessions()
+	{
+		_ai._contextSessions = _ai._contextSessions
+			.Distinct(StringComparer.OrdinalIgnoreCase)
+			.OrderBy(session => TryParseSessionDate(session, out DateTime date) ? date : DateTime.MaxValue)
+			.ThenBy(session => session, StringComparer.OrdinalIgnoreCase)
+			.ToList();
+	}
+
+	private static bool TryParseSessionDate(string session, out DateTime date)
+	{
+		return DateTime.TryParseExact(session, "yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture,
+			DateTimeStyles.AssumeLocal, out date);
+	}
+
+	private void UpdateContextSelectionFlags()
+	{
+		_isSyncingContexts = true;
+		try
+		{
+			HashSet<string> contextLookup = new(_ai._contextSessions, StringComparer.OrdinalIgnoreCase);
+			foreach (Session session in _sessions)
+			{
+				if (string.IsNullOrEmpty(session.FileName))
+					continue;
+				session.IsContextSelected = contextLookup.Contains(session.FileName);
+			}
+		}
+		finally
+		{
+			_isSyncingContexts = false;
+		}
 	}
 
 	public void UpdateSessionLog(string str, bool append, bool newline)
@@ -550,11 +673,17 @@ public partial class SessionView : ContentView
 		using (FileStream fs = new(str, FileMode.Create, FileAccess.Write))
 		{
 			if (type == "Question")
+			{
+				SortContextSessions();
+				string contexts = string.Join(",", _ai._contextSessions);
+				byte[] contextVal = Encoding.UTF8.GetBytes("$(Context)\n" + contexts + "\n");
+				fs.Write(contextVal, 0, contextVal.Length);
 				foreach (string s in _sessionNotes)
 				{
 					byte[] val = Encoding.UTF8.GetBytes($"$(Note)\n" + s + "\n");
 					fs.Write(val, 0, val.Length);
 				}
+			}
 			foreach (string s in list)
 			{
 				byte[] val = Encoding.UTF8.GetBytes($"$({type})\n" + s + "\n");
@@ -567,20 +696,20 @@ public partial class SessionView : ContentView
 	{
 		for (int i = 0; i < _ai._contextSessions.Count; ++i)
 		{
-			LoadChat(_ai._contextSessions[i], "Question", _ai._userPrompts[0]);
-			LoadChat(_ai._contextSessions[i], "Answer", _ai._chatReponses[0]);
+			LoadChat(_ai._contextSessions[i], "Question", _ai._userPrompts[0], false);
+			LoadChat(_ai._contextSessions[i], "Answer", _ai._chatReponses[0], false);
 		}
 		if (!string.IsNullOrEmpty(session))
 		{
 			//EegView._strSession = session;
-			LoadChat(session, "Question", _ai._userPrompts[1]);
-			LoadChat(session, "Answer", _ai._chatReponses[1]);
+			LoadChat(session, "Question", _ai._userPrompts[1], true);
+			LoadChat(session, "Answer", _ai._chatReponses[1], true);
 			if ((_ai._userPrompts[1].Count() > 0) || (_ai._chatReponses[1].Count() > 0))
 				UpdateChat();
 		}
 	}
 
-	public void LoadChat(string name, string type, List<string> list)
+	public void LoadChat(string name, string type, List<string> list, bool allowNotes)
 	{
 		string? str = Path.Combine(AppSettings.DocumentHome(), $"{type}s", name + ".txt");
 		string entryType = "";
@@ -589,40 +718,65 @@ public partial class SessionView : ContentView
 			using (StreamReader sr = File.OpenText(str))
 			{
 				while ((str = sr.ReadLine()) != null)
-					if (!string.IsNullOrEmpty(str))
-						if (str == $"$({type})")
+				{
+					if (string.IsNullOrEmpty(str))
+						continue;
+
+					if (entryType == "Context")
+					{
+						entryType = "";
+						entry = "";
+						if (!str.StartsWith("$("))
+							continue;
+					}
+
+					if (str == "$(Context)")
+					{
+						if (!string.IsNullOrEmpty(entry))
 						{
-							if (!string.IsNullOrEmpty(entry))
-							{
-								if (!string.IsNullOrEmpty(entryType) && (entryType == type))
-									list.Add(entry);
-								else
-									_sessionNotes.Add(entry);
-								//list.Add(entry);
-								entry = "";
-							}
-							entryType = type;
+							if (!string.IsNullOrEmpty(entryType) && (entryType == type))
+								list.Add(entry);
+							else if (allowNotes)
+								_sessionNotes.Add(entry);
+							entry = "";
 						}
-						else
-						if (str == $"$(Note)")
+						entryType = "Context";
+						continue;
+					}
+					if (str == $"$({type})")
+					{
+						if (!string.IsNullOrEmpty(entry))
 						{
-							if (!string.IsNullOrEmpty(entry))
-							{
-								if (!string.IsNullOrEmpty(entryType) && (entryType == type))
-									list.Add(entry);
-								else
-									_sessionNotes.Add(entry);
-								//_sessionNotes.Add(entry);
-								entry = "";
-							}
-							entryType = "Note";
+							if (!string.IsNullOrEmpty(entryType) && (entryType == type))
+								list.Add(entry);
+							else if (allowNotes)
+								_sessionNotes.Add(entry);
+							//list.Add(entry);
+							entry = "";
 						}
-						else entry += str + "\n";
+						entryType = type;
+					}
+					else if (str == $"$(Note)")
+					{
+						if (!string.IsNullOrEmpty(entry))
+						{
+							if (!string.IsNullOrEmpty(entryType) && (entryType == type))
+								list.Add(entry);
+							else if (allowNotes)
+								_sessionNotes.Add(entry);
+							//_sessionNotes.Add(entry);
+							entry = "";
+						}
+						entryType = "Note";
+					}
+					else
+						entry += str + "\n";
+				}
 
 				if (!string.IsNullOrEmpty(entry))
 					if (!string.IsNullOrEmpty(entryType) && (entryType == type))
 						list.Add(entry);
-					else
+					else if (allowNotes)
 						_sessionNotes.Add(entry);
 			}
 		//else
