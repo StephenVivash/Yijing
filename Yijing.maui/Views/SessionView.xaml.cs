@@ -549,7 +549,7 @@ public partial class SessionView : ContentView
 		SaveChat(_selectedSession.FileName);
 		ClearChatState();
 		LoadChatSessionData(_selectedSession.FileName);
-		_contextSelectionDirty = false;
+		//_contextSelectionDirty = false;
 	}
 
 	private void SetContextSessions(string? value)
@@ -687,7 +687,7 @@ public partial class SessionView : ContentView
 			if (string.IsNullOrEmpty(currentSection))
 				return;
 
-			string entry = buffer.ToString().TrimEnd('\n');
+			string entry = buffer.ToString().TrimEnd(); // '\n'
 			buffer.Clear();
 
 			if (string.IsNullOrEmpty(entry))
