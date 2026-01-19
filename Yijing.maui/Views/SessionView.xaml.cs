@@ -486,10 +486,7 @@ public partial class SessionView : ContentView
 	{
 		ClearChatState();
 		if (session is not null)
-		{
-			LoadContextSessions(session.FileName!);
-			LoadChat(session.FileName!);
-		}
+			LoadChatSessionData(session.FileName!);
 		UpdateChat();
 	}
 
@@ -551,42 +548,8 @@ public partial class SessionView : ContentView
 		SortContextSessions();
 		SaveChat(_selectedSession.FileName);
 		ClearChatState();
-		LoadContextSessions(_selectedSession.FileName);
-		LoadChat(_selectedSession.FileName);
-		_contextSelectionDirty = false;
-	}
-
-	private void LoadContextSessions(string session)
-	{
-		_ai._contextSessions = [];
-		string path = Path.Combine(AppSettings.DocumentHome(), "Questions", session + ".txt");
-		if (File.Exists(path))
-			using (StreamReader sr = File.OpenText(path))
-			{
-				string? line;
-				bool readContext = false;
-				while ((line = sr.ReadLine()) != null)
-				{
-					if (string.IsNullOrWhiteSpace(line))
-						continue;
-					if (line == "$(Context)")
-					{
-						readContext = true;
-						continue;
-					}
-					if (readContext)
-					{
-						if (!line.StartsWith("$("))
-							SetContextSessions(line);
-						break;
-					}
-					if (line.StartsWith("$("))
-						break;
-				}
-			}
-		SortContextSessions();
-		UpdateContextSelectionFlags();
-		_contextSelectionDirty = false;
+		LoadChatSessionData(_selectedSession.FileName);
+		//_contextSelectionDirty = false;
 	}
 
 	private void SetContextSessions(string? value)
@@ -685,92 +648,77 @@ public partial class SessionView : ContentView
 		}
 	}
 
-	public void LoadChat(string session)
+	public void LoadChatSessionData(string session)
 	{
+		if (string.IsNullOrEmpty(session))
+			return;
+
+		_ai._contextSessions = [];
+		LoadChatFile(session, "Question", _ai._userPrompts[1], true, true);
+		LoadChatFile(session, "Answer", _ai._chatReponses[1], false, false);
+		SortContextSessions();
+		UpdateContextSelectionFlags();
+		_contextSelectionDirty = false;
+
 		for (int i = 0; i < _ai._contextSessions.Count; ++i)
 		{
-			LoadChat(_ai._contextSessions[i], "Question", _ai._userPrompts[0], false);
-			LoadChat(_ai._contextSessions[i], "Answer", _ai._chatReponses[0], false);
+			LoadChatFile(_ai._contextSessions[i], "Question", _ai._userPrompts[0], false, false);
+			LoadChatFile(_ai._contextSessions[i], "Answer", _ai._chatReponses[0], false, false);
 		}
-		if (!string.IsNullOrEmpty(session))
-		{
-			LoadChat(session, "Question", _ai._userPrompts[1], true);
-			LoadChat(session, "Answer", _ai._chatReponses[1], true);
-			if ((_ai._userPrompts[1].Count() > 0) || (_ai._chatReponses[1].Count() > 0))
-				UpdateChat();
-		}
+
+		if ((_ai._userPrompts[1].Count > 0) || (_ai._chatReponses[1].Count > 0))
+			UpdateChat();
 	}
 
-	public void LoadChat(string name, string type, List<string> list, bool allowNotes)
+	private void LoadChatFile(string name, string type, List<string> list, bool allowNotes, bool allowContext)
 	{
-		string? str = Path.Combine(AppSettings.DocumentHome(), $"{type}s", name + ".txt");
-		string entryType = "";
-		string entry = "";
-		if (File.Exists(str))
-			using (StreamReader sr = File.OpenText(str))
+		string path = Path.Combine(AppSettings.DocumentHome(), $"{type}s", name + ".txt");
+		if (!File.Exists(path))
+		{
+			UpdateSessionLog("Failed to load " + path, true, true);
+			return;
+		}
+
+		string? currentSection = null;
+		StringBuilder buffer = new();
+
+		void FlushEntry()
+		{
+			if (string.IsNullOrEmpty(currentSection))
+				return;
+
+			string entry = buffer.ToString().TrimEnd(); // '\n'
+			buffer.Clear();
+
+			if (string.IsNullOrEmpty(entry))
+				return;
+
+			if (currentSection == type)
+				list.Add(entry);
+			else if (currentSection == "Note" && allowNotes)
+				_sessionNotes.Add(entry);
+			else if (currentSection == "Context" && allowContext)
+				SetContextSessions(entry);
+		}
+
+		using StreamReader sr = File.OpenText(path);
+		string? line;
+		while ((line = sr.ReadLine()) != null)
+		{
+			if (string.IsNullOrWhiteSpace(line))
+				continue;
+
+			if (line.StartsWith("$(") && line.EndsWith(")"))
 			{
-				while ((str = sr.ReadLine()) != null)
-				{
-					if (string.IsNullOrEmpty(str))
-						continue;
-
-					if (entryType == "Context")
-					{
-						entryType = "";
-						entry = "";
-						if (!str.StartsWith("$("))
-							continue;
-					}
-
-					if (str == "$(Context)")
-					{
-						if (!string.IsNullOrEmpty(entry))
-						{
-							if (!string.IsNullOrEmpty(entryType) && (entryType == type))
-								list.Add(entry);
-							else if (allowNotes)
-								_sessionNotes.Add(entry);
-							entry = "";
-						}
-						entryType = "Context";
-						continue;
-					}
-					if (str == $"$({type})")
-					{
-						if (!string.IsNullOrEmpty(entry))
-						{
-							if (!string.IsNullOrEmpty(entryType) && (entryType == type))
-								list.Add(entry);
-							else if (allowNotes)
-								_sessionNotes.Add(entry);
-							entry = "";
-						}
-						entryType = type;
-					}
-					else if (str == $"$(Note)")
-					{
-						if (!string.IsNullOrEmpty(entry))
-						{
-							if (!string.IsNullOrEmpty(entryType) && (entryType == type))
-								list.Add(entry);
-							else if (allowNotes)
-								_sessionNotes.Add(entry);
-							entry = "";
-						}
-						entryType = "Note";
-					}
-					else
-						entry += str + "\n";
-				}
-
-				if (!string.IsNullOrEmpty(entry))
-					if (!string.IsNullOrEmpty(entryType) && (entryType == type))
-						list.Add(entry);
-					else if (allowNotes)
-						_sessionNotes.Add(entry);
+				FlushEntry();
+				currentSection = line[2..^1];
+				continue;
 			}
-		else
-			UpdateSessionLog("Failed to load " + str, true, true);
+
+			buffer.AppendLine(line);
+		}
+
+		FlushEntry();
 	}
 
 	public async Task NavigateToDialogPage()
