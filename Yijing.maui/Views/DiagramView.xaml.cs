@@ -1199,7 +1199,7 @@ public partial class DiagramView : ContentView
 			//App.EegChannel(23).m_fMaxValue = -1000.0f;
 
 			DateTime lastUpdate = DateTime.Now;
-			const float triggerChangeTarget = 0.0001f;
+			const float triggerChangeTarget = 0.1f;
 			float rampProgress = 0.0f;
 			float lastChange = 0.0f;
 
