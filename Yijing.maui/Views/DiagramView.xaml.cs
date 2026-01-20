@@ -1222,6 +1222,9 @@ public partial class DiagramView : ContentView
 			SetCurrentLine(i, true);
 			UpdateDiagram(false);
 
+			hunterStart = DateTime.Now;
+			hunterActive = false;
+
 			//App.EegChannel(AppPreferences.TriggerIndex).m_fMinValue = 1000.0f;
 			//App.EegChannel(AppPreferences.TriggerIndex).m_fMaxValue = -1000.0f;
 
