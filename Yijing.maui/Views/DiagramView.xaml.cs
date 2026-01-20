@@ -1207,7 +1207,8 @@ public partial class DiagramView : ContentView
 			}
 			if (hunterDelayMinutes <= 0)
 				return false;
-			if (!hunterActive && (now - hunterStart).TotalMinutes >= hunterDelayMinutes)
+			double elapsedMinutes = (now - hunterStart).TotalMinutes * ev.EegReplaySpeed();
+			if (!hunterActive && elapsedMinutes >= hunterDelayMinutes)
 			{
 				hunterActive = true;
 				rampProgress = 0.0f;
