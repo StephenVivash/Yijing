@@ -302,8 +302,8 @@
 				</Picker>
 
 				<Label 
-					x:Name="lblAiAnalysis"
-					Text="AI Analysis"
+					x:Name="lblTriggerHunter"
+					Text="Trigger Hunter"
 					LineBreakMode="TailTruncation"
 					VerticalTextAlignment="Center"
 					Grid.Column="0"
@@ -311,10 +311,40 @@
 					/>
 
 				<Picker
+					x:Name="picTriggerHunter"
+					SelectedIndexChanged="picTriggerHunter_SelectedIndexChanged"
+					Grid.Column="1"
+					Grid.Row="12"
+					>
+					<Picker.Items>
+						<x:String>None</x:String>
+						<x:String>1 Minute</x:String>
+						<x:String>2 Minutes</x:String>
+						<x:String>3 Minutes</x:String>
+						<x:String>4 Minutes</x:String>
+						<x:String>5 Minutes</x:String>
+						<x:String>6 Minutes</x:String>
+						<x:String>7 Minutes</x:String>
+						<x:String>8 Minutes</x:String>
+						<x:String>9 Minutes</x:String>
+						<x:String>10 Minutes</x:String>
+					</Picker.Items>
+				</Picker>
+
+				<Label 
+					x:Name="lblAiAnalysis"
+					Text="AI Analysis"
+					LineBreakMode="TailTruncation"
+					VerticalTextAlignment="Center"
+					Grid.Column="0"
+					Grid.Row="13"
+					/>
+
+				<Picker
 					x:Name="picAiAnalysis"
 					SelectedIndexChanged="picAiAnalysis_SelectedIndexChanged"
 					Grid.Column="1"
-					Grid.Row="12"
+					Grid.Row="13"
 					>
 					<Picker.Items>
 						<x:String>OpenAi</x:String>
@@ -331,36 +361,20 @@
 					LineBreakMode="TailTruncation"
 					VerticalTextAlignment="Center"
 					Grid.Column="0"
-					Grid.Row="13"
+					Grid.Row="14"
 					/>
 
 				<Picker
 					x:Name="picAiModel"
 					SelectedIndexChanged="picAiModel_SelectedIndexChanged"
 					Grid.Column="1"
-					Grid.Row="13"
+					Grid.Row="14"
 					>
 					<Picker.Items>
 						<x:String>Stephen V</x:String>
 						<x:String>None</x:String>
 					</Picker.Items>
 				</Picker>
-
-				<Label 
-					x:Name="lblTriggerFixed"
-					Text="Fixed Range"
-					LineBreakMode="TailTruncation"
-					VerticalTextAlignment="Center"
-					Grid.Column="0"
-					Grid.Row="14"
-					/>
-
-				<CheckBox 
-					x:Name="chbTriggerFixed"
-					CheckedChanged="chbTriggerFixed_CheckedChanged"
-					Grid.Column="1"
-					Grid.Row="14"
-					/>
 
 				<Label 
 					x:Name="lblTriggerSounding"

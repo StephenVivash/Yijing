@@ -26,6 +26,7 @@ public enum eChartTime { eTwoAndHalf, eFive };
 public enum eTriggerBand { eDelta, eTheta, eAlpha, eBeta, eGamma };
 public enum eTriggerChannel { eBackLeft, eFrontLeft, eBackCenter, eFrontRight, eBackRight };
 public enum eTriggerRange { eZeroOne, eOneTwo, eTwoThree, eTwoFour, eThreeFour, eThreeFive, eFourFive, eFourSix };
+public enum eTriggerHunter { eNone, eOne, eTwo, eThree, eFour, eFive, eSix, eSeven, eEight, eNine, eTen };
 
 public enum eAiService { eOpenAi, eDeepseek, eGithub, eOllama, eNone };
 public enum eAiEegMlModel { eStephenV, eNone }; // eJohnD
@@ -76,8 +77,7 @@ public static class AppPreferences
 		TriggerBand = Preferences.Get("TriggerBand", (int)eTriggerBand.eGamma);
 		TriggerChannel = Preferences.Get("TriggerChannel", (int)eTriggerChannel.eFrontLeft);
 		TriggerRange = Preferences.Get("TriggerRange", (int)eTriggerRange.eTwoFour);
-
-		TriggerFixed = Preferences.Get("TriggerFixed", false);
+		TriggerHunter = Preferences.Get("TriggerHunter", (int)eTriggerHunter.eFive);
 		TriggerSounding = Preferences.Get("TriggerSounding", true);
 		RawData = Preferences.Get("RawData", false);
 
@@ -225,7 +225,7 @@ public static class AppPreferences
 	public static int TriggerChannel;
 	public static int TriggerRange;
 
-	public static bool TriggerFixed;
+	public static int TriggerHunter;
 	public static bool TriggerSounding;
 	public static bool RawData;
 

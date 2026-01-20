@@ -1202,6 +1202,9 @@ public partial class DiagramView : ContentView
 			const float triggerChangeTarget = 0.1f;
 			float rampProgress = 0.0f;
 			float lastChange = 0.0f;
+			int hunterDelayMinutes = AppPreferences.TriggerHunter;
+			DateTime hunterStart = DateTime.Now;
+			bool hunterActive = false;
 
 			int count = 0;
 			//App.EegSetTriggers(true, true);
@@ -1212,12 +1215,30 @@ public partial class DiagramView : ContentView
 					SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale,
 					ev.EegChannel(AppPreferences.TriggerIndex).m_fHigh * AppPreferences.AudioScale);
 				DateTime now = DateTime.Now;
-				rampProgress += (float)(now - lastUpdate).TotalSeconds;
-				lastUpdate = now;
-				int speed = m_nTriggerSpeed * ev.EegReplaySpeed();
-				speed = speed > 50 ? 50 : speed;
-				if (!AppPreferences.TriggerFixed)
+				int currentHunterDelay = AppPreferences.TriggerHunter;
+				if (currentHunterDelay != hunterDelayMinutes)
 				{
+					hunterDelayMinutes = currentHunterDelay;
+					hunterStart = now;
+					hunterActive = false;
+					rampProgress = 0.0f;
+					lastChange = 0.0f;
+					lastUpdate = now;
+				}
+				bool hunterEnabled = hunterDelayMinutes > 0;
+				if (hunterEnabled && !hunterActive && (now - hunterStart).TotalMinutes >= hunterDelayMinutes)
+				{
+					hunterActive = true;
+					rampProgress = 0.0f;
+					lastChange = 0.0f;
+					lastUpdate = now;
+				}
+				if (hunterEnabled && hunterActive)
+				{
+					rampProgress += (float)(now - lastUpdate).TotalSeconds;
+					lastUpdate = now;
+					int speed = m_nTriggerSpeed * ev.EegReplaySpeed();
+					speed = speed > 50 ? 50 : speed;
 					float progress = (float)(rampProgress * speed / 60.0f);
 					float change = triggerChangeTarget * ((float)Math.Exp(progress) - 1.0f);
 					float delta = change - lastChange;
@@ -1225,6 +1246,8 @@ public partial class DiagramView : ContentView
 						ev.EegDecreaseTriggers(delta);
 					lastChange = change;
 				}
+				else
+					lastUpdate = now;
 			}
 			if (!ev.EegIsConnected())
 				break;
@@ -1236,6 +1259,9 @@ public partial class DiagramView : ContentView
 			lastUpdate = DateTime.Now;
 			rampProgress = 0.0f;
 			lastChange = 0.0f;
+			hunterDelayMinutes = AppPreferences.TriggerHunter;
+			hunterStart = DateTime.Now;
+			hunterActive = false;
 
 			count = 0;
 			//App.EegSetTriggers(true, false);
@@ -1246,12 +1272,30 @@ public partial class DiagramView : ContentView
 					SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale,
 					ev.EegChannel(AppPreferences.TriggerIndex).m_fLow * AppPreferences.AudioScale);
 				DateTime now = DateTime.Now;
-				rampProgress += (float)(now - lastUpdate).TotalSeconds;
-				lastUpdate = now;
-				int speed = m_nTriggerSpeed * ev.EegReplaySpeed();
-				speed = speed > 50 ? 50 : speed;
-				if (!AppPreferences.TriggerFixed)
+				int currentHunterDelay = AppPreferences.TriggerHunter;
+				if (currentHunterDelay != hunterDelayMinutes)
 				{
+					hunterDelayMinutes = currentHunterDelay;
+					hunterStart = now;
+					hunterActive = false;
+					rampProgress = 0.0f;
+					lastChange = 0.0f;
+					lastUpdate = now;
+				}
+				bool hunterEnabled = hunterDelayMinutes > 0;
+				if (hunterEnabled && !hunterActive && (now - hunterStart).TotalMinutes >= hunterDelayMinutes)
+				{
+					hunterActive = true;
+					rampProgress = 0.0f;
+					lastChange = 0.0f;
+					lastUpdate = now;
+				}
+				if (hunterEnabled && hunterActive)
+				{
+					rampProgress += (float)(now - lastUpdate).TotalSeconds;
+					lastUpdate = now;
+					int speed = m_nTriggerSpeed * ev.EegReplaySpeed();
+					speed = speed > 50 ? 50 : speed;
 					float progress = (float)(rampProgress * speed / 60.0f);
 					float change = triggerChangeTarget * ((float)Math.Exp(progress) - 1.0f);
 					float delta = change - lastChange;
@@ -1259,6 +1303,8 @@ public partial class DiagramView : ContentView
 						ev.EegIncreaseTriggers(delta);
 					lastChange = change;
 				}
+				else
+					lastUpdate = now;
 			}
 
 			//App.EegCalculateTriggers();
