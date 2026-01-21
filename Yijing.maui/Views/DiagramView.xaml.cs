@@ -1207,7 +1207,7 @@ public partial class DiagramView : ContentView
 			}
 			if (hunterDelayMinutes <= 0)
 				return false;
-			double elapsedMinutes = (now - hunterStart).TotalMinutes * ev.EegReplaySpeed();
+			double elapsedMinutes = (now - hunterStart).TotalMinutes;
 			if (!hunterActive && elapsedMinutes >= hunterDelayMinutes)
 			{
 				hunterActive = true;
