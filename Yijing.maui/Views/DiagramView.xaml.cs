@@ -1184,7 +1184,6 @@ public partial class DiagramView : ContentView
 
 	private async Task MindCast()
 	{
-		//Random r = true ? Sequences.m_ranSession : new Random(DateTime.Now.Millisecond);
 		EegView ev = UI.Get<EegView>();
 		ev.EegSetTriggers(true, true);
 		int hunterDelayMinutes = AppPreferences.TriggerHunter;
@@ -1226,24 +1225,16 @@ public partial class DiagramView : ContentView
 
 			hunterStart = DateTime.Now;
 			hunterActive = false;
-
-			//App.EegChannel(AppPreferences.TriggerIndex).m_fMinValue = 1000.0f;
-			//App.EegChannel(AppPreferences.TriggerIndex).m_fMaxValue = -1000.0f;
-
-			//App.EegChannel(23).m_fMinValue = 1000.0f;
-			//App.EegChannel(23).m_fMaxValue = -1000.0f;
-
 			const float triggerChangeTarget = 0.1f;
 			lastUpdate = DateTime.Now;
 			rampProgress = 0.0f;
 			lastChange = 0.0f;
 
 			int count = 0;
-			//App.EegSetTriggers(true, true);
 			while (ev.EegIsConnected() && !ev.EegIsTriggerOn())
 			{
 				await Task.Delay(200);
-				if (AppPreferences.TriggerSounding && (ev.EegReplaySpeed() == 1) && (++count % 50 == 0))
+				if (AppPreferences.TriggerSounding && (++count % 50 == 0))
 					SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale,
 					ev.EegChannel(AppPreferences.TriggerIndex).m_fHigh * AppPreferences.AudioScale);
 				DateTime now = DateTime.Now;
@@ -1272,17 +1263,15 @@ public partial class DiagramView : ContentView
 
 			hunterStart = DateTime.Now;
 			hunterActive = false;
-
 			lastUpdate = DateTime.Now;
 			rampProgress = 0.0f;
 			lastChange = 0.0f;
 
 			count = 0;
-			//App.EegSetTriggers(true, false);
 			while (ev.EegIsConnected() && !ev.EegIsTriggerOff())
 			{
 				await Task.Delay(200);
-				if (AppPreferences.TriggerSounding && (ev.EegReplaySpeed() == 1) && (++count % 50 == 0))
+				if (AppPreferences.TriggerSounding && (++count % 50 == 0))
 					SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale,
 					ev.EegChannel(AppPreferences.TriggerIndex).m_fLow * AppPreferences.AudioScale);
 				DateTime now = DateTime.Now;
@@ -1303,7 +1292,6 @@ public partial class DiagramView : ContentView
 					lastUpdate = now;
 			}
 
-			//App.EegCalculateTriggers();
 			m_timDiagram.Change(Timeout.Infinite, 0);
 			if (!ev.EegIsConnected())
 				break;
@@ -1311,11 +1299,11 @@ public partial class DiagramView : ContentView
 				SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale, 0.0f);
 		}
 		await Task.Delay(100);
-		if (AppPreferences.TriggerSounding)
-			AudioPlayer.PlayHexagramEnd(Dispatcher);
+		AudioPlayer.PlayHexagramEnd(Dispatcher);
 		void action() => EndCast();
 		Dispatcher.Dispatch(action);
 	}
+
 	private void EndCast()
 	{
 		UpdateText();

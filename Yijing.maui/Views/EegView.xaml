@@ -153,11 +153,11 @@
 					>
 					<Picker.Items>
 						<x:String>None</x:String>
-						<x:String>Ten minutes</x:String>
-						<x:String>Fifteen minutes</x:String>
-						<x:String>Twenty minutes</x:String>
-						<x:String>Thirty minutes</x:String>
-						<x:String>Sixty minutes</x:String>
+						<x:String>10 Minutes</x:String>
+						<x:String>15 Minutes</x:String>
+						<x:String>20 Minutes</x:String>
+						<x:String>30 Minutes</x:String>
+						<x:String>60 Minutes</x:String>
 					</Picker.Items>
 				</Picker>
 
