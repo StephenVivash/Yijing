@@ -72,9 +72,9 @@ public partial class EegView : ContentView
 		picTriggerBand.SelectedIndex = AppPreferences.TriggerBand;
 		picTriggerChannel.SelectedIndex = AppPreferences.TriggerChannel;
 		picTriggerRange.SelectedIndex = AppPreferences.TriggerRange;
+		picTriggerHunter.SelectedIndex = AppPreferences.TriggerHunter;
 		picAiAnalysis.SelectedIndex = AppPreferences.AiEegService;
 		picAiModel.SelectedIndex = AppPreferences.AiEegMlModel;
-		chbTriggerFixed.IsChecked = AppPreferences.TriggerFixed;
 		chbTriggerSounding.IsChecked = AppPreferences.TriggerSounding;
 
 		//_ai.AddSystemMessage(
@@ -130,7 +130,7 @@ public partial class EegView : ContentView
 		lblAiAnalysis.WidthRequest = w;
 		lblAiModel.WidthRequest = w;
 		lblTriggerRange.WidthRequest = w;
-		lblTriggerFixed.WidthRequest = w;
+		lblTriggerHunter.WidthRequest = w;
 		lblTriggerSounding.WidthRequest = w;
 		lblRawData.WidthRequest = w;
 
@@ -148,7 +148,7 @@ public partial class EegView : ContentView
 		picAiAnalysis.WidthRequest = w;
 		picAiModel.WidthRequest = w;
 		picTriggerRange.WidthRequest = w;
-		chbTriggerFixed.WidthRequest = w;
+		picTriggerHunter.WidthRequest = w;
 		chbTriggerSounding.WidthRequest = w;
 		chbRawData.WidthRequest = w;
 
@@ -326,6 +326,11 @@ public partial class EegView : ContentView
 		_eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fDifference = _eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fInitialHigh - _eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fInitialLow;
 	}
 
+	private void picTriggerHunter_SelectedIndexChanged(object sender, EventArgs e)
+	{
+		AppPreferences.TriggerHunter = picTriggerHunter.SelectedIndex;
+	}
+
 	private void picAiAnalysis_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		AppPreferences.AiEegService = picAiAnalysis.SelectedIndex;
@@ -338,12 +343,6 @@ public partial class EegView : ContentView
 	private void picAiModel_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		AppPreferences.AiEegMlModel = picAiModel.SelectedIndex;
-	}
-
-	private void chbTriggerFixed_CheckedChanged(object sender, EventArgs e)
-	{
-		if (chbTriggerFixed is not null)
-			AppPreferences.TriggerFixed = chbTriggerFixed.IsChecked;
 	}
 
 	private void chbTriggerSounding_CheckedChanged(object sender, EventArgs e)
@@ -497,7 +496,7 @@ public partial class EegView : ContentView
 		void action1() => picReplaySpeed.IsEnabled = bEnable;
 		void action2() => picTriggerChannel.IsEnabled = bEnable;
 		void action3() => picTriggerRange.IsEnabled = bEnable;
-		void action4() => chbTriggerFixed.IsEnabled = bEnable;
+		void action4() => picTriggerHunter.IsEnabled = bEnable;
 
 		if (bEnable)
 		{
