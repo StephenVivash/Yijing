@@ -1270,6 +1270,9 @@ public partial class DiagramView : ContentView
 
 			m_timDiagram.Change(0, m_nSpeeds[(int)eDiagramSpeed.eFast]);
 
+			hunterStart = DateTime.Now;
+			hunterActive = false;
+
 			lastUpdate = DateTime.Now;
 			rampProgress = 0.0f;
 			lastChange = 0.0f;
