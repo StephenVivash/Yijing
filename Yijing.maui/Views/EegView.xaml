@@ -332,8 +332,8 @@
 				</Picker>
 
 				<Label 
-					x:Name="lblAiAnalysis"
-					Text="AI Analysis"
+					x:Name="lblTriggerSchedule"
+					Text="Trigger Schedule"
 					LineBreakMode="TailTruncation"
 					VerticalTextAlignment="Center"
 					Grid.Column="0"
@@ -341,10 +341,35 @@
 					/>
 
 				<Picker
+					x:Name="picTriggerSchedule"
+					SelectedIndexChanged="picTriggerSchedule_SelectedIndexChanged"
+					Grid.Column="1"
+					Grid.Row="13"
+					>
+					<Picker.Items>
+						<x:String>20 Minutes</x:String>
+						<x:String>30 Minutes</x:String>
+						<x:String>40 Minutes</x:String>
+						<x:String>60 Minutes</x:String>
+						<x:String>90 Minutes</x:String>
+						<x:String>120 Minutes</x:String>
+					</Picker.Items>
+				</Picker>
+
+				<Label 
+					x:Name="lblAiAnalysis"
+					Text="AI Analysis"
+					LineBreakMode="TailTruncation"
+					VerticalTextAlignment="Center"
+					Grid.Column="0"
+					Grid.Row="14"
+					/>
+
+				<Picker
 					x:Name="picAiAnalysis"
 					SelectedIndexChanged="picAiAnalysis_SelectedIndexChanged"
 					Grid.Column="1"
-					Grid.Row="13"
+					Grid.Row="14"
 					>
 					<Picker.Items>
 						<x:String>OpenAi</x:String>
@@ -361,14 +386,14 @@
 					LineBreakMode="TailTruncation"
 					VerticalTextAlignment="Center"
 					Grid.Column="0"
-					Grid.Row="14"
+					Grid.Row="15"
 					/>
 
 				<Picker
 					x:Name="picAiModel"
 					SelectedIndexChanged="picAiModel_SelectedIndexChanged"
 					Grid.Column="1"
-					Grid.Row="14"
+					Grid.Row="15"
 					>
 					<Picker.Items>
 						<x:String>Stephen V</x:String>
@@ -382,14 +407,14 @@
 					LineBreakMode="TailTruncation"
 					VerticalTextAlignment="Center"
 					Grid.Column="0"
-					Grid.Row="15"
+					Grid.Row="16"
 					/>
 
 				<CheckBox 
 					x:Name="chbTriggerSounding"
 					CheckedChanged="chbTriggerSounding_CheckedChanged"
 					Grid.Column="1"
-					Grid.Row="15"
+					Grid.Row="16"
 					/>
 
 				<Label 
@@ -398,14 +423,14 @@
 					LineBreakMode="TailTruncation"
 					VerticalTextAlignment="Center"
 					Grid.Column="0"
-					Grid.Row="16"
+					Grid.Row="17"
 					/>
 
 				<CheckBox 
 					x:Name="chbRawData"
 					CheckedChanged="chbRawData_CheckedChanged"
 					Grid.Column="1"
-					Grid.Row="16"
+					Grid.Row="17"
 					/>
 
 			</Grid>
