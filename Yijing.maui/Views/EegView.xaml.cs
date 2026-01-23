@@ -720,8 +720,9 @@ public partial class EegView : ContentView
 	{
 		void action()
 		{
-			AppPreferences.TriggerHunter = hunterDelay;
-			picTriggerHunter.SelectedIndex = hunterDelay;
+			int clampedDelay = Math.Clamp(hunterDelay, (int)eTriggerHunter.eOne, (int)eTriggerHunter.eTen);
+			AppPreferences.TriggerHunter = clampedDelay;
+			picTriggerHunter.SelectedIndex = clampedDelay;
 		}
 		Dispatcher.Dispatch(action);
 	}

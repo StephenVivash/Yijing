@@ -1222,7 +1222,7 @@ public partial class DiagramView : ContentView
 			double maxTarget = targetMinutes * (1.0 + scheduleTolerance);
 			int newHunterDelay = AppPreferences.TriggerHunter;
 			if (elapsedMinutes > maxTarget)
-				newHunterDelay = Math.Max(0, newHunterDelay - 1);
+				newHunterDelay = Math.Max((int)eTriggerHunter.eOne, newHunterDelay - 1);
 			else
 			if (elapsedMinutes < minTarget)
 				newHunterDelay = Math.Min((int)eTriggerHunter.eTen, newHunterDelay + 1);
