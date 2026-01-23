@@ -1200,7 +1200,7 @@ public partial class DiagramView : ContentView
 			{
 				(int)eTriggerSchedule.eTwenty => 20,
 				(int)eTriggerSchedule.eThirty => 30,
-				(int)eTriggerSchedule.eFourty => 40,
+				(int)eTriggerSchedule.eForty => 40,
 				(int)eTriggerSchedule.eSixty => 60,
 				(int)eTriggerSchedule.eNinety => 90,
 				(int)eTriggerSchedule.eOneTwenty => 120,

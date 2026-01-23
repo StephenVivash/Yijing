@@ -27,7 +27,7 @@ public enum eTriggerBand { eDelta, eTheta, eAlpha, eBeta, eGamma };
 public enum eTriggerChannel { eBackLeft, eFrontLeft, eBackCenter, eFrontRight, eBackRight };
 public enum eTriggerRange { eZeroOne, eOneTwo, eTwoThree, eTwoFour, eThreeFour, eThreeFive, eFourFive, eFourSix };
 public enum eTriggerHunter { eNone, eOne, eTwo, eThree, eFour, eFive, eSix, eSeven, eEight, eNine, eTen };
-public enum eTriggerSchedule { eTwenty, eThirty, eFourty, eSixty, eNinety, eOneTwenty };
+public enum eTriggerSchedule { eTwenty, eThirty, eForty, eSixty, eNinety, eOneTwenty };
 
 public enum eAiService { eOpenAi, eDeepseek, eGithub, eOllama, eNone };
 public enum eAiEegMlModel { eStephenV, eNone }; // eJohnD
@@ -69,7 +69,7 @@ public static class AppPreferences
 		EegDevice = Preferences.Get("EegDevice", (int)eEegDevice.eMuse);
 		EegGoal = Preferences.Get("EegGoal", (int)eGoal.eYijingCast);
 		Ambience = Preferences.Get("Ambience", (int)eAmbience.eLightRain);
-		Timer = Preferences.Get("Timer", (int)eTimer.eTen);
+		Timer = Preferences.Get("Timer", (int)eTimer.eTwenty);
 
 		ReplaySpeed = Preferences.Get("ReplaySpeed", (int)eReplaySpeed.eNormal);
 		ChartBands = Preferences.Get("ChartBands", (int)eChartBands.eFront);
