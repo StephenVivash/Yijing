@@ -63,9 +63,9 @@ public class Ai
 				aiService == (int)eAiService.eOllama ? 10 : 2)
 			};
 
-			builder.AddOpenAIChatCompletion(AppPreferences.AiModelId[aiService],
-				new Uri(AppPreferences.AiEndPoint[aiService]),
-				AppPreferences.AiKey[aiService], httpClient: http);
+			builder.AddOpenAIChatCompletion(AppPreferences.AiModelId[aiService - 1],
+				new Uri(AppPreferences.AiEndPoint[aiService - 1]),
+				AppPreferences.AiKey[aiService - 1], httpClient: http);
 
 			//builder.AddOpenAITextToAudio(AppPreferences.AiModelId[aiService], AppPreferences.AiKey[aiService]);
 

@@ -29,8 +29,8 @@ public enum eTriggerRange { eZeroOne, eOneTwo, eTwoThree, eTwoFour, eThreeFour, 
 public enum eTriggerHunter { eNone, eOne, eTwo, eThree, eFour, eFive, eSix, eSeven, eEight, eNine, eTen };
 public enum eTriggerSchedule { eTwenty, eThirty, eForty, eSixty, eNinety, eOneTwenty };
 
-public enum eAiService { eOpenAi, eDeepseek, eGithub, eOllama, eNone };
-public enum eAiEegMlModel { eStephenV, eNone }; // eJohnD
+public enum eAiService { eNone, eOpenAi, eDeepseek, eGithub, eOllama };
+public enum eAiEegMlModel { eNone, eStephenV }; // eJohnD
 
 public enum ePages { eNone, eSession, eDiagram, eEeg, eMeditation, eSettings, eAbout };
 
@@ -106,21 +106,21 @@ public static class AppPreferences
 		// gpt-4.1 grok-3 DeepSeek-V3-0324 Llama-4-Maverick-17B-128E-Instruct-FP8 Mistral-large-2407 Meta-Llama-3.1-405B-Instruct o1 o1-mini gpt-4o-mini
 		// gpt-oss:20b qwen3:8b deepseek-r1:8b llama3.2:latest gemma3:latest
 
-		AiModelId[(int)eAiService.eOpenAi] = configuration["AI:Providers:OpenAI:Model"] ?? "";
-		AiEndPoint[(int)eAiService.eOpenAi] = configuration["AI:Providers:OpenAI:EndPoint"] ?? "";
-		AiKey[(int)eAiService.eOpenAi] = configuration["AI:Providers:OpenAI:Key"] ?? "";
+		AiModelId[(int)eAiService.eOpenAi - 1] = configuration["AI:Providers:OpenAI:Model"] ?? "";
+		AiEndPoint[(int)eAiService.eOpenAi - 1] = configuration["AI:Providers:OpenAI:EndPoint"] ?? "";
+		AiKey[(int)eAiService.eOpenAi - 1] = configuration["AI:Providers:OpenAI:Key"] ?? "";
 
-		AiModelId[(int)eAiService.eDeepseek] = configuration["AI:Providers:Deepseek:Model"] ?? "";
-		AiEndPoint[(int)eAiService.eDeepseek] = configuration["AI:Providers:Deepseek:EndPoint"] ?? "";
-		AiKey[(int)eAiService.eDeepseek] = configuration["AI:Providers:Deepseek:Key"] ?? "";
+		AiModelId[(int)eAiService.eDeepseek - 1] = configuration["AI:Providers:Deepseek:Model"] ?? "";
+		AiEndPoint[(int)eAiService.eDeepseek - 1] = configuration["AI:Providers:Deepseek:EndPoint"] ?? "";
+		AiKey[(int)eAiService.eDeepseek - 1] = configuration["AI:Providers:Deepseek:Key"] ?? "";
 
-		AiModelId[(int)eAiService.eGithub] = configuration["AI:Providers:Github:Model"] ?? "";
-		AiEndPoint[(int)eAiService.eGithub] = configuration["AI:Providers:Github:EndPoint"] ?? "";
-		AiKey[(int)eAiService.eGithub] = configuration["AI:Providers:Github:Key"] ?? "";
+		AiModelId[(int)eAiService.eGithub - 1] = configuration["AI:Providers:Github:Model"] ?? "";
+		AiEndPoint[(int)eAiService.eGithub - 1] = configuration["AI:Providers:Github:EndPoint"] ?? "";
+		AiKey[(int)eAiService.eGithub - 1] = configuration["AI:Providers:Github:Key"] ?? "";
 
-		AiModelId[(int)eAiService.eOllama] = configuration["AI:Providers:Ollama:Model"] ?? "";
-		AiEndPoint[(int)eAiService.eOllama] = configuration["AI:Providers:Ollama:EndPoint"] ?? "";
-		AiKey[(int)eAiService.eOllama] = configuration["AI:Providers:Ollama:Key"] ?? "";
+		AiModelId[(int)eAiService.eOllama - 1] = configuration["AI:Providers:Ollama:Model"] ?? "";
+		AiEndPoint[(int)eAiService.eOllama - 1] = configuration["AI:Providers:Ollama:EndPoint"] ?? "";
+		AiKey[(int)eAiService.eOllama - 1] = configuration["AI:Providers:Ollama:Key"] ?? "";
 
 		SaveNewDefaults();
 
