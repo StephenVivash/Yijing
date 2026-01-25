@@ -219,24 +219,24 @@ public class Eeg
 
 			if (AppPreferences.EegDevice == (int)eEegDevice.eMuse)
 			{
-				f *= AppPreferences.MuseScale;
+				f *= AppSettings.MuseScale;
 
 				// Clean bad Muse data
 
-				if (((i >= 0) && (i <= 4)) && (f > 0.3f * AppPreferences.MuseScale)) // Delta
-					f = 0.3f * AppPreferences.MuseScale;
+				if (((i >= 0) && (i <= 4)) && (f > 0.3f * AppSettings.MuseScale)) // Delta
+					f = 0.3f * AppSettings.MuseScale;
 
-				if ((i >= 5) && (i <= 9) && (f > 0.3f * AppPreferences.MuseScale)) // Theta
-					f = 0.3f * AppPreferences.MuseScale;
+				if ((i >= 5) && (i <= 9) && (f > 0.3f * AppSettings.MuseScale)) // Theta
+					f = 0.3f * AppSettings.MuseScale;
 
-				if (((i >= 10) && (i <= 14)) && (f > 0.8f * AppPreferences.MuseScale)) // Alpha 
-					f = 0.8f * AppPreferences.MuseScale;
+				if (((i >= 10) && (i <= 14)) && (f > 0.8f * AppSettings.MuseScale)) // Alpha 
+					f = 0.8f * AppSettings.MuseScale;
 
-				if (f < -0.6f * AppPreferences.MuseScale)
-					f = -0.6f * AppPreferences.MuseScale;
+				if (f < -0.6f * AppSettings.MuseScale)
+					f = -0.6f * AppSettings.MuseScale;
 				else
-				if (f > 3.0f * AppPreferences.MuseScale)
-					f = 3.0f * AppPreferences.MuseScale;
+				if (f > 3.0f * AppSettings.MuseScale)
+					f = 3.0f * AppSettings.MuseScale;
 			}
 			else
 			{
@@ -289,8 +289,8 @@ public class Eeg
 			if (TimeDiff.TotalSeconds >= 10)
 			{
 				_dtSoundingUpdate = Timestamp;
-				DiagramView.SoundTrigger(m_eegChannel[AppPreferences.TriggerIndex].m_fCurrentValue * AppPreferences.AudioScale,
-					m_eegChannel[AppPreferences.TriggerIndex].m_fHigh * AppPreferences.AudioScale);
+				DiagramView.SoundTrigger(m_eegChannel[AppSettings.TriggerIndex].m_fCurrentValue * AppSettings.AudioScale,
+					m_eegChannel[AppSettings.TriggerIndex].m_fHigh * AppSettings.AudioScale);
 			}
 		}
 

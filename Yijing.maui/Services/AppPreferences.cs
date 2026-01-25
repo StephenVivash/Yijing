@@ -39,11 +39,6 @@ public static class AppPreferences
 	public static void Load()
 	{
 
-		var configuration = new ConfigurationBuilder()
-			.SetBasePath(AppSettings.DocumentHome())
-			.AddJsonFile("appsettings.json", optional: true)
-			.Build();
-
 		DiagramLsb = Preferences.Get("DiagramLsb", Sequences.DiagramLsb);
 
 		DiagramMode = Preferences.Get("DiagramMode", (int)eDiagramMode.eExplore);
@@ -87,6 +82,68 @@ public static class AppPreferences
 
 		AiEegService = Preferences.Get("AiEegService", (int)eAiService.eNone);
 		AiEegMlModel = Preferences.Get("AiEegMlModel", (int)eAiEegMlModel.eNone);
+	}
+
+	public static void Save()
+	{
+		Preferences.Set("DiagramLsb", DiagramLsb);
+	}
+
+	public static int DiagramLsb;
+
+	public static int DiagramMode;
+	public static int DiagramType;
+	public static int DiagramColor;
+	public static int DiagramSpeed;
+
+	public static int HexagramText;
+	public static int HexagramLabel;
+	public static int HexagramSequence;
+	public static int HexagramRatio;
+
+	public static int TrigramText;
+	public static int TrigramLabel;
+	public static int TrigramSequence;
+	public static int TrigramRatio;
+
+	public static int LineText;
+	public static int LineLabel;
+	public static int LineSequence;
+	public static int LineRatio;
+
+	public static int EegDevice;
+	public static int EegGoal;
+
+	public static int Ambience;
+	public static int Timer;
+
+	public static int ReplaySpeed;
+	public static int ChartBands;
+	public static int ChartTime;
+	public static int TriggerBand;
+	public static int TriggerChannel;
+	public static int TriggerRange;
+
+	public static int TriggerHunter;
+	public static int TriggerSchedule;
+	public static bool TriggerSounding;
+	public static bool RawData;
+
+	public static int AiChatService;
+
+	public static int AiEegService;
+	public static int AiEegMlModel;
+}
+
+public static class AiPreferences
+{
+	public static void Load()
+	{
+
+		var configuration = new ConfigurationBuilder()
+			.SetBasePath(AppSettings.DocumentHome())
+			.AddJsonFile("appsettings.json", optional: true)
+			.Build();
 
 		if (float.TryParse(configuration["AI:Temperature"], out float temp1))
 			AiTemperature = temp1;
@@ -100,11 +157,6 @@ public static class AppPreferences
 			AiMaxTokens = temp3;
 		else
 			AiMaxTokens = 10240;
-
-		// gpt-4.5-preview o1-preview gpt-4o gpt-4o-mini
-		// deepseek-reasoner deepseek-chat
-		// gpt-4.1 grok-3 DeepSeek-V3-0324 Llama-4-Maverick-17B-128E-Instruct-FP8 Mistral-large-2407 Meta-Llama-3.1-405B-Instruct o1 o1-mini gpt-4o-mini
-		// gpt-oss:20b qwen3:8b deepseek-r1:8b llama3.2:latest gemma3:latest
 
 		AiModelId[(int)eAiService.eOpenAi - 1] = configuration["AI:Providers:OpenAI:Model"] ?? "";
 		AiEndPoint[(int)eAiService.eOpenAi - 1] = configuration["AI:Providers:OpenAI:EndPoint"] ?? "";
@@ -123,9 +175,6 @@ public static class AppPreferences
 		AiKey[(int)eAiService.eOllama - 1] = configuration["AI:Providers:Ollama:Key"] ?? "";
 
 		SaveNewDefaults();
-
-		MuseScale = 1;
-		AudioScale = 1;
 	}
 
 	private static void SaveNewDefaults()
@@ -187,56 +236,6 @@ public static class AppPreferences
 		return new JsonObject();
 	}
 
-	public static void Save()
-	{
-		Preferences.Set("DiagramLsb", DiagramLsb);
-	}
-
-	public static int DiagramLsb;
-
-	public static int DiagramMode;
-	public static int DiagramType;
-	public static int DiagramColor;
-	public static int DiagramSpeed;
-
-	public static int HexagramText;
-	public static int HexagramLabel;
-	public static int HexagramSequence;
-	public static int HexagramRatio;
-
-	public static int TrigramText;
-	public static int TrigramLabel;
-	public static int TrigramSequence;
-	public static int TrigramRatio;
-
-	public static int LineText;
-	public static int LineLabel;
-	public static int LineSequence;
-	public static int LineRatio;
-
-	public static int EegDevice;
-	public static int EegGoal;
-
-	public static int Ambience;
-	public static int Timer;
-
-	public static int ReplaySpeed;
-	public static int ChartBands;
-	public static int ChartTime;
-	public static int TriggerBand;
-	public static int TriggerChannel;
-	public static int TriggerRange;
-
-	public static int TriggerHunter;
-	public static int TriggerSchedule;
-	public static bool TriggerSounding;
-	public static bool RawData;
-
-	public static int AiChatService;
-
-	public static int AiEegService;
-	public static int AiEegMlModel;
-
 	public static float AiTemperature;
 	public static float AiTopP;
 	public static int AiMaxTokens;
@@ -244,11 +243,6 @@ public static class AppPreferences
 	public static string[] AiModelId = ["", "", "", ""];
 	public static string[] AiEndPoint = ["", "", "", ""];
 	public static string[] AiKey = ["", "", "", ""];
-
-	public static int TriggerIndex;
-
-	public static int MuseScale;
-	public static int AudioScale;
 
 	private const string DefaultOllamaKey = "Ollama";
 	private const string DefaultOpenAiEndpoint = "https://api.openai.com/v1";
