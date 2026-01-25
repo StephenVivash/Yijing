@@ -1187,11 +1187,48 @@ public partial class DiagramView : ContentView
 		EegView ev = UI.Get<EegView>();
 		ev.EegSetTriggers(true, true);
 		int hunterDelayMinutes = AppPreferences.TriggerHunter;
+		DateTime castStart = DateTime.Now;
 		DateTime hunterStart = DateTime.Now;
 		bool hunterActive = false;
 		DateTime lastUpdate = DateTime.Now;
 		float rampProgress = 0.0f;
 		float lastChange = 0.0f;
+		const double scheduleTolerance = 0.10;
+		int ScheduleMinutes()
+		{
+			return AppPreferences.TriggerSchedule switch
+			{
+				(int)eTriggerSchedule.eTwenty => 20,
+				(int)eTriggerSchedule.eThirty => 30,
+				(int)eTriggerSchedule.eForty => 40,
+				(int)eTriggerSchedule.eSixty => 60,
+				(int)eTriggerSchedule.eNinety => 90,
+				(int)eTriggerSchedule.eOneTwenty => 120,
+				_ => 60
+			};
+		}
+		void AdjustTriggerHunterForSchedule(int lineIndex)
+		{
+			int scheduleMinutes = ScheduleMinutes();
+			if (scheduleMinutes <= 0)
+				return;
+			int replaySpeed = ev.EegReplaySpeed();
+			replaySpeed = replaySpeed <= 0 ? 1 : replaySpeed;
+			double elapsedMinutes = (DateTime.Now - castStart).TotalMinutes * replaySpeed;
+			double targetMinutes = scheduleMinutes * (lineIndex + 1) / 6.0;
+			if (targetMinutes <= 0.0)
+				return;
+			double minTarget = targetMinutes * (1.0 - scheduleTolerance);
+			double maxTarget = targetMinutes * (1.0 + scheduleTolerance);
+			int newHunterDelay = AppPreferences.TriggerHunter;
+			if (elapsedMinutes > maxTarget)
+				newHunterDelay = Math.Max((int)eTriggerHunter.eOne, newHunterDelay - 1);
+			else
+			if (elapsedMinutes < minTarget)
+				newHunterDelay = Math.Min((int)eTriggerHunter.eTen, newHunterDelay + 1);
+			if (newHunterDelay != AppPreferences.TriggerHunter)
+				ev.UpdateTriggerHunter(newHunterDelay);
+		}
 		bool ShouldRamp(DateTime now)
 		{
 			int currentHunterDelay = AppPreferences.TriggerHunter;
@@ -1297,6 +1334,7 @@ public partial class DiagramView : ContentView
 				break;
 			if (AppPreferences.TriggerSounding)
 				SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale, 0.0f);
+			AdjustTriggerHunterForSchedule(i);
 		}
 		await Task.Delay(100);
 		AudioPlayer.PlayHexagramEnd(Dispatcher);

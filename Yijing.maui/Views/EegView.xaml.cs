@@ -73,6 +73,7 @@ public partial class EegView : ContentView
 		picTriggerChannel.SelectedIndex = AppPreferences.TriggerChannel;
 		picTriggerRange.SelectedIndex = AppPreferences.TriggerRange;
 		picTriggerHunter.SelectedIndex = AppPreferences.TriggerHunter;
+		picTriggerSchedule.SelectedIndex = AppPreferences.TriggerSchedule;
 		picAiAnalysis.SelectedIndex = AppPreferences.AiEegService;
 		picAiModel.SelectedIndex = AppPreferences.AiEegMlModel;
 		chbTriggerSounding.IsChecked = AppPreferences.TriggerSounding;
@@ -131,6 +132,7 @@ public partial class EegView : ContentView
 		lblAiModel.WidthRequest = w;
 		lblTriggerRange.WidthRequest = w;
 		lblTriggerHunter.WidthRequest = w;
+		lblTriggerSchedule.WidthRequest = w;
 		lblTriggerSounding.WidthRequest = w;
 		lblRawData.WidthRequest = w;
 
@@ -149,6 +151,7 @@ public partial class EegView : ContentView
 		picAiModel.WidthRequest = w;
 		picTriggerRange.WidthRequest = w;
 		picTriggerHunter.WidthRequest = w;
+		picTriggerSchedule.WidthRequest = w;
 		chbTriggerSounding.WidthRequest = w;
 		chbRawData.WidthRequest = w;
 
@@ -331,6 +334,11 @@ public partial class EegView : ContentView
 		AppPreferences.TriggerHunter = picTriggerHunter.SelectedIndex;
 	}
 
+	private void picTriggerSchedule_SelectedIndexChanged(object sender, EventArgs e)
+	{
+		AppPreferences.TriggerSchedule = picTriggerSchedule.SelectedIndex;
+	}
+
 	private void picAiAnalysis_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		AppPreferences.AiEegService = picAiAnalysis.SelectedIndex;
@@ -497,6 +505,7 @@ public partial class EegView : ContentView
 		void action2() => picTriggerChannel.IsEnabled = bEnable;
 		void action3() => picTriggerRange.IsEnabled = bEnable;
 		void action4() => picTriggerHunter.IsEnabled = bEnable;
+		void action5() => picTriggerSchedule.IsEnabled = bEnable;
 
 		if (bEnable)
 		{
@@ -504,6 +513,7 @@ public partial class EegView : ContentView
 			Dispatcher.Dispatch(action2);
 			Dispatcher.Dispatch(action3);
 			Dispatcher.Dispatch(action4);
+			Dispatcher.Dispatch(action5);
 		}
 		//else
 		//if (bLive)
@@ -704,5 +714,16 @@ public partial class EegView : ContentView
 	public EegChannel EegChannel(int index)
 	{
 		return _eeg.m_eegChannel[index];
+	}
+
+	public void UpdateTriggerHunter(int hunterDelay)
+	{
+		void action()
+		{
+			int clampedDelay = Math.Clamp(hunterDelay, (int)eTriggerHunter.eOne, (int)eTriggerHunter.eTen);
+			AppPreferences.TriggerHunter = clampedDelay;
+			picTriggerHunter.SelectedIndex = clampedDelay;
+		}
+		Dispatcher.Dispatch(action);
 	}
 }
