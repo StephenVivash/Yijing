@@ -88,6 +88,67 @@ public static class AppPreferences
 		AiEegService = Preferences.Get("AiEegService", (int)eAiService.eNone);
 		AiEegMlModel = Preferences.Get("AiEegMlModel", (int)eAiEegMlModel.eNone);
 
+		AiPreferences.Load(configuration);
+
+		AppSettings.MuseScale = 1;
+		AppSettings.AudioScale = 1;
+	}
+
+	public static void Save()
+	{
+		Preferences.Set("DiagramLsb", DiagramLsb);
+	}
+
+	public static int DiagramLsb;
+
+	public static int DiagramMode;
+	public static int DiagramType;
+	public static int DiagramColor;
+	public static int DiagramSpeed;
+
+	public static int HexagramText;
+	public static int HexagramLabel;
+	public static int HexagramSequence;
+	public static int HexagramRatio;
+
+	public static int TrigramText;
+	public static int TrigramLabel;
+	public static int TrigramSequence;
+	public static int TrigramRatio;
+
+	public static int LineText;
+	public static int LineLabel;
+	public static int LineSequence;
+	public static int LineRatio;
+
+	public static int EegDevice;
+	public static int EegGoal;
+
+	public static int Ambience;
+	public static int Timer;
+
+	public static int ReplaySpeed;
+	public static int ChartBands;
+	public static int ChartTime;
+	public static int TriggerBand;
+	public static int TriggerChannel;
+	public static int TriggerRange;
+
+	public static int TriggerHunter;
+	public static int TriggerSchedule;
+	public static bool TriggerSounding;
+	public static bool RawData;
+
+	public static int AiChatService;
+
+	public static int AiEegService;
+	public static int AiEegMlModel;
+}
+
+public static class AiPreferences
+{
+	public static void Load(IConfiguration configuration)
+	{
 		if (float.TryParse(configuration["AI:Temperature"], out float temp1))
 			AiTemperature = temp1;
 		else
@@ -123,9 +184,6 @@ public static class AppPreferences
 		AiKey[(int)eAiService.eOllama - 1] = configuration["AI:Providers:Ollama:Key"] ?? "";
 
 		SaveNewDefaults();
-
-		AppSettings.MuseScale = 1;
-		AppSettings.AudioScale = 1;
 	}
 
 	private static void SaveNewDefaults()
@@ -186,56 +244,6 @@ public static class AppPreferences
 		}
 		return new JsonObject();
 	}
-
-	public static void Save()
-	{
-		Preferences.Set("DiagramLsb", DiagramLsb);
-	}
-
-	public static int DiagramLsb;
-
-	public static int DiagramMode;
-	public static int DiagramType;
-	public static int DiagramColor;
-	public static int DiagramSpeed;
-
-	public static int HexagramText;
-	public static int HexagramLabel;
-	public static int HexagramSequence;
-	public static int HexagramRatio;
-
-	public static int TrigramText;
-	public static int TrigramLabel;
-	public static int TrigramSequence;
-	public static int TrigramRatio;
-
-	public static int LineText;
-	public static int LineLabel;
-	public static int LineSequence;
-	public static int LineRatio;
-
-	public static int EegDevice;
-	public static int EegGoal;
-
-	public static int Ambience;
-	public static int Timer;
-
-	public static int ReplaySpeed;
-	public static int ChartBands;
-	public static int ChartTime;
-	public static int TriggerBand;
-	public static int TriggerChannel;
-	public static int TriggerRange;
-
-	public static int TriggerHunter;
-	public static int TriggerSchedule;
-	public static bool TriggerSounding;
-	public static bool RawData;
-
-	public static int AiChatService;
-
-	public static int AiEegService;
-	public static int AiEegMlModel;
 
 	public static float AiTemperature;
 	public static float AiTopP;
