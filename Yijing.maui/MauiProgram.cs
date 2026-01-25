@@ -19,6 +19,7 @@ public static class MauiProgram
 	{
 		AppSettings.SetDocumentHome();
 		AppPreferences.Load();
+		AiPreferences.Load();
 		AudioPlayer.Load();
 
 		_yd = new YijingDatabase(Path.Combine(AppSettings.DocumentHome(), "Yijing.db"));

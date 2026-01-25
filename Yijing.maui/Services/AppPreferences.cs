@@ -39,11 +39,6 @@ public static class AppPreferences
 	public static void Load()
 	{
 
-		var configuration = new ConfigurationBuilder()
-			.SetBasePath(AppSettings.DocumentHome())
-			.AddJsonFile("appsettings.json", optional: true)
-			.Build();
-
 		DiagramLsb = Preferences.Get("DiagramLsb", Sequences.DiagramLsb);
 
 		DiagramMode = Preferences.Get("DiagramMode", (int)eDiagramMode.eExplore);
@@ -87,11 +82,6 @@ public static class AppPreferences
 
 		AiEegService = Preferences.Get("AiEegService", (int)eAiService.eNone);
 		AiEegMlModel = Preferences.Get("AiEegMlModel", (int)eAiEegMlModel.eNone);
-
-		AiPreferences.Load(configuration);
-
-		AppSettings.MuseScale = 1;
-		AppSettings.AudioScale = 1;
 	}
 
 	public static void Save()
@@ -147,8 +137,14 @@ public static class AppPreferences
 
 public static class AiPreferences
 {
-	public static void Load(IConfiguration configuration)
+	public static void Load()
 	{
+
+		var configuration = new ConfigurationBuilder()
+			.SetBasePath(AppSettings.DocumentHome())
+			.AddJsonFile("appsettings.json", optional: true)
+			.Build();
+
 		if (float.TryParse(configuration["AI:Temperature"], out float temp1))
 			AiTemperature = temp1;
 		else
@@ -161,11 +157,6 @@ public static class AiPreferences
 			AiMaxTokens = temp3;
 		else
 			AiMaxTokens = 10240;
-
-		// gpt-4.5-preview o1-preview gpt-4o gpt-4o-mini
-		// deepseek-reasoner deepseek-chat
-		// gpt-4.1 grok-3 DeepSeek-V3-0324 Llama-4-Maverick-17B-128E-Instruct-FP8 Mistral-large-2407 Meta-Llama-3.1-405B-Instruct o1 o1-mini gpt-4o-mini
-		// gpt-oss:20b qwen3:8b deepseek-r1:8b llama3.2:latest gemma3:latest
 
 		AiModelId[(int)eAiService.eOpenAi - 1] = configuration["AI:Providers:OpenAI:Model"] ?? "";
 		AiEndPoint[(int)eAiService.eOpenAi - 1] = configuration["AI:Providers:OpenAI:EndPoint"] ?? "";
