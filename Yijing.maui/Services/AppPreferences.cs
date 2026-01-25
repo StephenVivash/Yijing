@@ -155,6 +155,7 @@ public static class AppPreferences
 
 	public static void Save()
 	{
+		return;
 		Preferences.Set(DiagramLsbKey, DiagramLsb);
 		Preferences.Set(DiagramModeKey, DiagramMode);
 		Preferences.Set(DiagramTypeKey, DiagramType);
