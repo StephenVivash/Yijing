@@ -1272,8 +1272,8 @@ public partial class DiagramView : ContentView
 			{
 				await Task.Delay(200);
 				if (AppPreferences.TriggerSounding && (++count % 50 == 0))
-					SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale,
-					ev.EegChannel(AppPreferences.TriggerIndex).m_fHigh * AppPreferences.AudioScale);
+					SoundTrigger(ev.EegChannel(AppSettings.TriggerIndex).m_fCurrentValue * AppSettings.AudioScale,
+					ev.EegChannel(AppSettings.TriggerIndex).m_fHigh * AppSettings.AudioScale);
 				DateTime now = DateTime.Now;
 				if (ShouldRamp(now))
 				{
@@ -1294,7 +1294,7 @@ public partial class DiagramView : ContentView
 			if (!ev.EegIsConnected())
 				break;
 			if (AppPreferences.TriggerSounding)
-				SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale, 0.0f);
+				SoundTrigger(ev.EegChannel(AppSettings.TriggerIndex).m_fCurrentValue * AppSettings.AudioScale, 0.0f);
 
 			m_timDiagram.Change(0, m_nSpeeds[(int)eDiagramSpeed.eFast]);
 
@@ -1309,8 +1309,8 @@ public partial class DiagramView : ContentView
 			{
 				await Task.Delay(200);
 				if (AppPreferences.TriggerSounding && (++count % 50 == 0))
-					SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale,
-					ev.EegChannel(AppPreferences.TriggerIndex).m_fLow * AppPreferences.AudioScale);
+					SoundTrigger(ev.EegChannel(AppSettings.TriggerIndex).m_fCurrentValue * AppSettings.AudioScale,
+					ev.EegChannel(AppSettings.TriggerIndex).m_fLow * AppSettings.AudioScale);
 				DateTime now = DateTime.Now;
 				if (ShouldRamp(now))
 				{
@@ -1333,7 +1333,7 @@ public partial class DiagramView : ContentView
 			if (!ev.EegIsConnected())
 				break;
 			if (AppPreferences.TriggerSounding)
-				SoundTrigger(ev.EegChannel(AppPreferences.TriggerIndex).m_fCurrentValue * AppPreferences.AudioScale, 0.0f);
+				SoundTrigger(ev.EegChannel(AppSettings.TriggerIndex).m_fCurrentValue * AppSettings.AudioScale, 0.0f);
 			AdjustTriggerHunterForSchedule(i);
 		}
 		await Task.Delay(100);

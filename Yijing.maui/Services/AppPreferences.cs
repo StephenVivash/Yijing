@@ -124,8 +124,8 @@ public static class AppPreferences
 
 		SaveNewDefaults();
 
-		MuseScale = 1;
-		AudioScale = 1;
+		AppSettings.MuseScale = 1;
+		AppSettings.AudioScale = 1;
 	}
 
 	private static void SaveNewDefaults()
@@ -244,11 +244,6 @@ public static class AppPreferences
 	public static string[] AiModelId = ["", "", "", ""];
 	public static string[] AiEndPoint = ["", "", "", ""];
 	public static string[] AiKey = ["", "", "", ""];
-
-	public static int TriggerIndex;
-
-	public static int MuseScale;
-	public static int AudioScale;
 
 	private const string DefaultOllamaKey = "Ollama";
 	private const string DefaultOpenAiEndpoint = "https://api.openai.com/v1";
