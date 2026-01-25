@@ -36,57 +36,125 @@ public enum ePages { eNone, eSession, eDiagram, eEeg, eMeditation, eSettings, eA
 
 public static class AppPreferences
 {
+	public const string DiagramLsbKey = "DiagramLsb";
+	public const string DiagramModeKey = "DiagramMode";
+	public const string DiagramTypeKey = "DiagramType";
+	public const string DiagramColorKey = "DiagramColor";
+	public const string DiagramSpeedKey = "DiagramSpeed";
+	public const string HexagramTextKey = "HexagramText";
+	public const string HexagramLabelKey = "HexagramLabel";
+	public const string HexagramSequenceKey = "HexagramSequence";
+	public const string HexagramRatioKey = "HexagramRatio";
+	public const string TrigramTextKey = "TrigramText";
+	public const string TrigramLabelKey = "TrigramLabel";
+	public const string TrigramSequenceKey = "TrigramSequence";
+	public const string TrigramRatioKey = "TrigramRatio";
+	public const string LineTextKey = "LineText";
+	public const string LineLabelKey = "LineLabel";
+	public const string LineSequenceKey = "LineSequence";
+	public const string LineRatioKey = "LineRatio";
+	public const string EegDeviceKey = "EegDevice";
+	public const string EegGoalKey = "EegGoal";
+	public const string AmbienceKey = "Ambience";
+	public const string TimerKey = "Timer";
+	public const string ReplaySpeedKey = "ReplaySpeed";
+	public const string ChartBandsKey = "ChartBands";
+	public const string ChartTimeKey = "ChartTime";
+	public const string TriggerBandKey = "TriggerBand";
+	public const string TriggerChannelKey = "TriggerChannel";
+	public const string TriggerRangeKey = "TriggerRange";
+	public const string TriggerHunterKey = "TriggerHunter";
+	public const string TriggerScheduleKey = "TriggerSchedule";
+	public const string TriggerSoundingKey = "TriggerSounding";
+	public const string RawDataKey = "RawData";
+	public const string AiChatServiceKey = "AiChatService";
+	public const string AiEegServiceKey = "AiEegService";
+	public const string AiEegMlModelKey = "AiEegMlModel";
+
 	public static void Load()
 	{
 
-		DiagramLsb = Preferences.Get("DiagramLsb", Sequences.DiagramLsb);
+		DiagramLsb = Preferences.Get(DiagramLsbKey, Sequences.DiagramLsb);
 
-		DiagramMode = Preferences.Get("DiagramMode", (int)eDiagramMode.eExplore);
-		DiagramType = Preferences.Get("DiagramType", (int)eDiagramType.eHexagram);
-		DiagramColor = Preferences.Get("DiagramColor", (int)eDiagramColor.eTrigram);
-		DiagramSpeed = Preferences.Get("DiagramSpeed", (int)eDiagramSpeed.eMedium);
+		DiagramMode = Preferences.Get(DiagramModeKey, (int)eDiagramMode.eExplore);
+		DiagramType = Preferences.Get(DiagramTypeKey, (int)eDiagramType.eHexagram);
+		DiagramColor = Preferences.Get(DiagramColorKey, (int)eDiagramColor.eTrigram);
+		DiagramSpeed = Preferences.Get(DiagramSpeedKey, (int)eDiagramSpeed.eMedium);
 
-		HexagramText = Preferences.Get("HexagramText", Sequences.HexagramText);
-		HexagramLabel = Preferences.Get("HexagramLabel", Sequences.HexagramLabel);
-		HexagramSequence = Preferences.Get("HexagramSequence", Sequences.HexagramSequence);
-		HexagramRatio = Preferences.Get("HexagramRatio", Sequences.HexagramRatio);
+		HexagramText = Preferences.Get(HexagramTextKey, Sequences.HexagramText);
+		HexagramLabel = Preferences.Get(HexagramLabelKey, Sequences.HexagramLabel);
+		HexagramSequence = Preferences.Get(HexagramSequenceKey, Sequences.HexagramSequence);
+		HexagramRatio = Preferences.Get(HexagramRatioKey, Sequences.HexagramRatio);
 
-		TrigramText = Preferences.Get("TrigramText", Sequences.TrigramText);
-		TrigramLabel = Preferences.Get("TrigramLabel", Sequences.TrigramLabel);
-		TrigramSequence = Preferences.Get("TrigramSequence", Sequences.TrigramSequence);
-		TrigramRatio = Preferences.Get("TrigramRatio", Sequences.TrigramRatio);
+		TrigramText = Preferences.Get(TrigramTextKey, Sequences.TrigramText);
+		TrigramLabel = Preferences.Get(TrigramLabelKey, Sequences.TrigramLabel);
+		TrigramSequence = Preferences.Get(TrigramSequenceKey, Sequences.TrigramSequence);
+		TrigramRatio = Preferences.Get(TrigramRatioKey, Sequences.TrigramRatio);
 
-		LineText = Preferences.Get("LineText", Sequences.LineText);
-		LineLabel = Preferences.Get("LineLabel", Sequences.LineLabel);
-		LineSequence = Preferences.Get("LineSequence", Sequences.LineSequence);
-		LineRatio = Preferences.Get("LineRatio", Sequences.LineRatio);
+		LineText = Preferences.Get(LineTextKey, Sequences.LineText);
+		LineLabel = Preferences.Get(LineLabelKey, Sequences.LineLabel);
+		LineSequence = Preferences.Get(LineSequenceKey, Sequences.LineSequence);
+		LineRatio = Preferences.Get(LineRatioKey, Sequences.LineRatio);
 
-		EegDevice = Preferences.Get("EegDevice", (int)eEegDevice.eMuse);
-		EegGoal = Preferences.Get("EegGoal", (int)eGoal.eYijingCast);
-		Ambience = Preferences.Get("Ambience", (int)eAmbience.eLightRain);
-		Timer = Preferences.Get("Timer", (int)eTimer.eTwenty);
+		EegDevice = Preferences.Get(EegDeviceKey, (int)eEegDevice.eMuse);
+		EegGoal = Preferences.Get(EegGoalKey, (int)eGoal.eYijingCast);
+		Ambience = Preferences.Get(AmbienceKey, (int)eAmbience.eLightRain);
+		Timer = Preferences.Get(TimerKey, (int)eTimer.eTwenty);
 
-		ReplaySpeed = Preferences.Get("ReplaySpeed", (int)eReplaySpeed.eNormal);
-		ChartBands = Preferences.Get("ChartBands", (int)eChartBands.eFront);
-		ChartTime = Preferences.Get("ChartTime", (int)eChartTime.eTwoAndHalf);
+		ReplaySpeed = Preferences.Get(ReplaySpeedKey, (int)eReplaySpeed.eNormal);
+		ChartBands = Preferences.Get(ChartBandsKey, (int)eChartBands.eFront);
+		ChartTime = Preferences.Get(ChartTimeKey, (int)eChartTime.eTwoAndHalf);
 
-		TriggerBand = Preferences.Get("TriggerBand", (int)eTriggerBand.eGamma);
-		TriggerChannel = Preferences.Get("TriggerChannel", (int)eTriggerChannel.eFrontLeft);
-		TriggerRange = Preferences.Get("TriggerRange", (int)eTriggerRange.eTwoFour);
-		TriggerHunter = Preferences.Get("TriggerHunter", (int)eTriggerHunter.eFive);
-		TriggerSchedule = Preferences.Get("TriggerSchedule", (int)eTriggerSchedule.eSixty);
-		TriggerSounding = Preferences.Get("TriggerSounding", true);
-		RawData = Preferences.Get("RawData", false);
+		TriggerBand = Preferences.Get(TriggerBandKey, (int)eTriggerBand.eGamma);
+		TriggerChannel = Preferences.Get(TriggerChannelKey, (int)eTriggerChannel.eFrontLeft);
+		TriggerRange = Preferences.Get(TriggerRangeKey, (int)eTriggerRange.eTwoFour);
+		TriggerHunter = Preferences.Get(TriggerHunterKey, (int)eTriggerHunter.eFive);
+		TriggerSchedule = Preferences.Get(TriggerScheduleKey, (int)eTriggerSchedule.eSixty);
+		TriggerSounding = Preferences.Get(TriggerSoundingKey, true);
+		RawData = Preferences.Get(RawDataKey, false);
 
-		AiChatService = Preferences.Get("AiChatService", (int)eAiService.eNone);
+		AiChatService = Preferences.Get(AiChatServiceKey, (int)eAiService.eNone);
 
-		AiEegService = Preferences.Get("AiEegService", (int)eAiService.eNone);
-		AiEegMlModel = Preferences.Get("AiEegMlModel", (int)eAiEegMlModel.eNone);
+		AiEegService = Preferences.Get(AiEegServiceKey, (int)eAiService.eNone);
+		AiEegMlModel = Preferences.Get(AiEegMlModelKey, (int)eAiEegMlModel.eNone);
 	}
 
 	public static void Save()
 	{
-		Preferences.Set("DiagramLsb", DiagramLsb);
+		Preferences.Set(DiagramLsbKey, DiagramLsb);
+		Preferences.Set(DiagramModeKey, DiagramMode);
+		Preferences.Set(DiagramTypeKey, DiagramType);
+		Preferences.Set(DiagramColorKey, DiagramColor);
+		Preferences.Set(DiagramSpeedKey, DiagramSpeed);
+		Preferences.Set(HexagramTextKey, HexagramText);
+		Preferences.Set(HexagramLabelKey, HexagramLabel);
+		Preferences.Set(HexagramSequenceKey, HexagramSequence);
+		Preferences.Set(HexagramRatioKey, HexagramRatio);
+		Preferences.Set(TrigramTextKey, TrigramText);
+		Preferences.Set(TrigramLabelKey, TrigramLabel);
+		Preferences.Set(TrigramSequenceKey, TrigramSequence);
+		Preferences.Set(TrigramRatioKey, TrigramRatio);
+		Preferences.Set(LineTextKey, LineText);
+		Preferences.Set(LineLabelKey, LineLabel);
+		Preferences.Set(LineSequenceKey, LineSequence);
+		Preferences.Set(LineRatioKey, LineRatio);
+		Preferences.Set(EegDeviceKey, EegDevice);
+		Preferences.Set(EegGoalKey, EegGoal);
+		Preferences.Set(AmbienceKey, Ambience);
+		Preferences.Set(TimerKey, Timer);
+		Preferences.Set(ReplaySpeedKey, ReplaySpeed);
+		Preferences.Set(ChartBandsKey, ChartBands);
+		Preferences.Set(ChartTimeKey, ChartTime);
+		Preferences.Set(TriggerBandKey, TriggerBand);
+		Preferences.Set(TriggerChannelKey, TriggerChannel);
+		Preferences.Set(TriggerRangeKey, TriggerRange);
+		Preferences.Set(TriggerHunterKey, TriggerHunter);
+		Preferences.Set(TriggerScheduleKey, TriggerSchedule);
+		Preferences.Set(TriggerSoundingKey, TriggerSounding);
+		Preferences.Set(RawDataKey, RawData);
+		Preferences.Set(AiChatServiceKey, AiChatService);
+		Preferences.Set(AiEegServiceKey, AiEegService);
+		Preferences.Set(AiEegMlModelKey, AiEegMlModel);
 	}
 
 	public static int DiagramLsb;
