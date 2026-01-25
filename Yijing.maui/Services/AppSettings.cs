@@ -15,6 +15,11 @@ public static class AppSettings
 	public static string DocumentHome() { return _documentHome; }
 	public static string EegDataHome() { return _eegDataHome; }
 
+	public static void Load()
+	{
+		SetDocumentHome();
+	}
+
 	public static async void SetDocumentHome()
 	{
 #if WINDOWS

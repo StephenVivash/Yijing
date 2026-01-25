@@ -17,7 +17,7 @@ public static class MauiProgram
 
 	public static MauiApp CreateMauiApp()
 	{
-		AppSettings.SetDocumentHome();
+		AppSettings.Load();
 		AppPreferences.Load();
 		AiPreferences.Load();
 		AudioPlayer.Load();
