@@ -301,17 +301,17 @@ public partial class EegView : ContentView
 			return;
 
 		IEnumerable<ISeries> ies = cc.Series;
-		((LineSeries<float>)ies.ElementAt(AppPreferences.TriggerIndex)).Stroke.StrokeThickness = EegSeries.m_fThinStoke;
-		_eeg.m_eegChannel[AppPreferences.TriggerIndex].m_isTrigger = false;
-		AppPreferences.TriggerIndex = (picTriggerBand.SelectedIndex * 5) + picTriggerChannel.SelectedIndex;
-		_eeg.m_eegChannel[AppPreferences.TriggerIndex].m_isTrigger = true;
-		((LineSeries<float>)ies.ElementAt(AppPreferences.TriggerIndex)).Stroke.StrokeThickness = EegSeries.m_fThickStoke;
+		((LineSeries<float>)ies.ElementAt(AppSettings.TriggerIndex)).Stroke.StrokeThickness = EegSeries.m_fThinStoke;
+		_eeg.m_eegChannel[AppSettings.TriggerIndex].m_isTrigger = false;
+		AppSettings.TriggerIndex = (picTriggerBand.SelectedIndex * 5) + picTriggerChannel.SelectedIndex;
+		_eeg.m_eegChannel[AppSettings.TriggerIndex].m_isTrigger = true;
+		((LineSeries<float>)ies.ElementAt(AppSettings.TriggerIndex)).Stroke.StrokeThickness = EegSeries.m_fThickStoke;
 
 		picTriggerRange_SelectedIndexChanged(null, null);
 
 		if (m_nEegMode == (int)eEegMode.eSummary)
 		{
-			ObservableCollection<float> v = (ObservableCollection<float>)((LineSeries<float>)ies.ElementAt(AppPreferences.TriggerIndex)).Values;
+			ObservableCollection<float> v = (ObservableCollection<float>)((LineSeries<float>)ies.ElementAt(AppSettings.TriggerIndex)).Values;
 			if (v.Count > 0)
 			{
 				float f = v.ElementAt(0);
@@ -324,9 +324,9 @@ public partial class EegView : ContentView
 	private void picTriggerRange_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		String[] str = ((String)picTriggerRange.SelectedItem).Split(" - ");
-		_eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fLow = _eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fInitialLow = float.Parse(str[0]); // picTriggerRange.SelectedIndex;
-		_eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fHigh = _eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fInitialHigh = float.Parse(str[1]); // picTriggerRange.SelectedIndex + 1;
-		_eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fDifference = _eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fInitialHigh - _eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fInitialLow;
+		_eeg.m_eegChannel[AppSettings.TriggerIndex].m_fLow = _eeg.m_eegChannel[AppSettings.TriggerIndex].m_fInitialLow = float.Parse(str[0]); // picTriggerRange.SelectedIndex;
+		_eeg.m_eegChannel[AppSettings.TriggerIndex].m_fHigh = _eeg.m_eegChannel[AppSettings.TriggerIndex].m_fInitialHigh = float.Parse(str[1]); // picTriggerRange.SelectedIndex + 1;
+		_eeg.m_eegChannel[AppSettings.TriggerIndex].m_fDifference = _eeg.m_eegChannel[AppSettings.TriggerIndex].m_fInitialHigh - _eeg.m_eegChannel[AppSettings.TriggerIndex].m_fInitialLow;
 	}
 
 	private void picTriggerHunter_SelectedIndexChanged(object sender, EventArgs e)
@@ -624,13 +624,13 @@ public partial class EegView : ContentView
 			if (index == 26)
 			{
 				if (m_nEegMode != (int)eEegMode.eSummary)
-					v.Add(_eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fHigh);
+					v.Add(_eeg.m_eegChannel[AppSettings.TriggerIndex].m_fHigh);
 			}
 			else
 			if (index == 27)
 			{
 				if (m_nEegMode != (int)eEegMode.eSummary)
-					v.Add(_eeg.m_eegChannel[AppPreferences.TriggerIndex].m_fLow);
+					v.Add(_eeg.m_eegChannel[AppSettings.TriggerIndex].m_fLow);
 			}
 
 			if (m_nEegMode != (int)eEegMode.eSummary)

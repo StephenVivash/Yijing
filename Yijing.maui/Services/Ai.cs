@@ -63,11 +63,11 @@ public class Ai
 				aiService == (int)eAiService.eOllama ? 10 : 2)
 			};
 
-			builder.AddOpenAIChatCompletion(AppPreferences.AiModelId[aiService - 1],
-				new Uri(AppPreferences.AiEndPoint[aiService - 1]),
-				AppPreferences.AiKey[aiService - 1], httpClient: http);
+			builder.AddOpenAIChatCompletion(AiPreferences.AiModelId[aiService - 1],
+				new Uri(AiPreferences.AiEndPoint[aiService - 1]),
+				AiPreferences.AiKey[aiService - 1], httpClient: http);
 
-			//builder.AddOpenAITextToAudio(AppPreferences.AiModelId[aiService], AppPreferences.AiKey[aiService]);
+			//builder.AddOpenAITextToAudio(AiPreferences.AiModelId[aiService], AiPreferences.AiKey[aiService]);
 
 			if (functions)
 				builder.Plugins.AddFromType<YijingPlugin>("Yijing");
@@ -89,9 +89,9 @@ public class Ai
 			_chatHistory.AddUserMessage(prompt);
 			var settings = new OpenAIPromptExecutionSettings
 			{
-				Temperature = AppPreferences.AiTemperature,
-				TopP = AppPreferences.AiTopP,
-				MaxTokens = AppPreferences.AiMaxTokens,
+				Temperature = AiPreferences.AiTemperature,
+				TopP = AiPreferences.AiTopP,
+				MaxTokens = AiPreferences.AiMaxTokens,
 			};
 
 			if (functions)
@@ -213,19 +213,19 @@ public class YijingPlugin
 			OpenAIClientOptions openAIClientOptions = new()
 			{
 				NetworkTimeout = TimeSpan.FromSeconds(aiService == (int)eAiService.eOllama ? 600 : 120),
-				Endpoint = new Uri(AppPreferences.AiEndPoint[aiService])
+				Endpoint = new Uri(AiPreferences.AiEndPoint[aiService])
 			};
 
 			var requestOptions = new ChatCompletionOptions()
 			{
-				Temperature = AppPreferences.AiTemperature,
-				TopP = AppPreferences.AiTopP,
-				MaxOutputTokenCount = AppPreferences.AiMaxTokens,
+				Temperature = AiPreferences.AiTemperature,
+				TopP = AiPreferences.AiTopP,
+				MaxOutputTokenCount = AiPreferences.AiMaxTokens,
 				//AudioOptions = 
 			};
 
-			ApiKeyCredential credential = new(AppPreferences.AiKey[aiService]);
-			var chatClient = new ChatClient(AppPreferences.AiModelId[aiService], credential, openAIClientOptions);
+			ApiKeyCredential credential = new(AiPreferences.AiKey[aiService]);
+			var chatClient = new ChatClient(AiPreferences.AiModelId[aiService], credential, openAIClientOptions);
 
 			_chatHistory1 = [];
 			foreach (var s1 in _systemPrompts)
@@ -265,8 +265,8 @@ public class YijingPlugin
 	{
 		var builder = Kernel.CreateBuilder();
 		builder.AddOpenAIChatCompletion(
-			modelId: AppPreferences.AiModelId[aiService],
-			apiKey: AppPreferences.AiKey[aiService]);
+			modelId: AiPreferences.AiModelId[aiService],
+			apiKey: AiPreferences.AiKey[aiService]);
 
 		builder.Plugins.AddFromType<ClockPlugin>("Utils");
 		Kernel kernel = builder.Build();
@@ -281,8 +281,8 @@ public class YijingPlugin
 			ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions
 		};
 
-		ApiKeyCredential credential = new(AppPreferences.AiKey[aiService]);
-		var chatClient = new ChatClient(AppPreferences.AiModelId[aiService], credential, openAIClientOptions);
+		ApiKeyCredential credential = new(AiPreferences.AiKey[aiService]);
+		var chatClient = new ChatClient(AiPreferences.AiModelId[aiService], credential, openAIClientOptions);
 
 		var tools = new List<ChatTool> {
 			ChatTool.CreateFunctionTool(
@@ -344,11 +344,11 @@ public class YijingPlugin
 		OpenAIClientOptions openAIClientOptions = new()
 		{
 			NetworkTimeout = TimeSpan.FromSeconds(aiService == (int)eAiService.eOllama ? 600 : 120),
-			Endpoint = new Uri(AppPreferences.AiEndPoint[aiService])
+			Endpoint = new Uri(AiPreferences.AiEndPoint[aiService])
 		};
 
-		System.ClientModel.ApiKeyCredential credential = new(AppPreferences.AiKey[aiService]);
-		var openAiChatClient = new ChatClient(AppPreferences.AiModelId[aiService], credential, openAIClientOptions);
+		System.ClientModel.ApiKeyCredential credential = new(AiPreferences.AiKey[aiService]);
+		var openAiChatClient = new ChatClient(AiPreferences.AiModelId[aiService], credential, openAIClientOptions);
 
 		// Advertise a function tool
 		var tools = new List<ChatTool> {
@@ -395,11 +395,11 @@ public class YijingPlugin
 		OpenAIClientOptions openAIClientOptions = new()
 		{
 			NetworkTimeout = TimeSpan.FromSeconds(aiService == (int)eAiService.eOllama ? 600 : 120),
-			Endpoint = new Uri(AppPreferences.AiEndPoint[aiService])
+			Endpoint = new Uri(AiPreferences.AiEndPoint[aiService])
 		};
 
-		System.ClientModel.ApiKeyCredential credential = new(AppPreferences.AiKey[aiService]);
-		var openAiChatClient = new ChatClient(AppPreferences.AiModelId[aiService], credential, openAIClientOptions);
+		System.ClientModel.ApiKeyCredential credential = new(AiPreferences.AiKey[aiService]);
+		var openAiChatClient = new ChatClient(AiPreferences.AiModelId[aiService], credential, openAIClientOptions);
 
 		IChatClient chat = openAiChatClient.AsIChatClient();
 		
@@ -422,9 +422,9 @@ public class YijingPlugin
 		string response = "";
 		try
 		{
-			OllamaApiClient client = new OllamaApiClient(new Uri(AppPreferences.AiEndPoint[aiService]));
+			OllamaApiClient client = new OllamaApiClient(new Uri(AiPreferences.AiEndPoint[aiService]));
 			Chat chat = new(client);
-			chat.Model = AppPreferences.AiModelId[aiService];
+			chat.Model = AiPreferences.AiModelId[aiService];
 			//chat.Options = options;
 			chat.Messages.Add(new Message { Role = "user", Content = msg });
 
@@ -458,11 +458,11 @@ public class YijingPlugin
 
 			if (aiService == (int)eAiService.eOllama)
 			{
-				var ollamaClient = new OllamaApiClient(new Uri(AppPreferences.AiEndPoint[aiService]));
+				var ollamaClient = new OllamaApiClient(new Uri(AiPreferences.AiEndPoint[aiService]));
 
 				ChatRequest request = new()
 				{
-					Model = AppPreferences.AiModelId[aiService],
+					Model = AiPreferences.AiModelId[aiService],
 					Messages = []
 				};
 
@@ -491,17 +491,17 @@ public class YijingPlugin
 			{
 				ChatOptions options = new()
 				{
-					Temperature = AppPreferences.AiTemperature,
-					TopP = AppPreferences.AiTopP,
-					MaxOutputTokens = AppPreferences.AiMaxTokens,
+					Temperature = AiPreferences.AiTemperature,
+					TopP = AiPreferences.AiTopP,
+					MaxOutputTokens = AiPreferences.AiMaxTokens,
 
 					//AllowParallelToolCalls = true,
 					//EndUserId = "Stephen",
 					//Functions = new List<ChatCompletionFunction> { ChatCompletionFunction.Chat },	
 				};
 
-				var ollamaChatClient = new OllamaChatClient(new Uri(AppPreferences.AiEndPoint[aiService]),
-					AppPreferences.AiModelId[aiService]);
+				var ollamaChatClient = new OllamaChatClient(new Uri(AiPreferences.AiEndPoint[aiService]),
+					AiPreferences.AiModelId[aiService]);
 
 				List<Microsoft.Extensions.AI.ChatMessage> chatHistory = [];
 				foreach (var s1 in _systemPrompts)
@@ -521,21 +521,21 @@ public class YijingPlugin
 				OpenAIClientOptions openAIClientOptions = new()
 				{
 					NetworkTimeout = TimeSpan.FromSeconds(aiService == (int)eAiService.eOllama ? 360 : 120),
-					Endpoint = new Uri(AppPreferences.AiEndPoint[aiService])
+					Endpoint = new Uri(AiPreferences.AiEndPoint[aiService])
 				};
 				//if (aiService != (int)eAiService.eOpenAi)
-				//openAIClientOptions.Endpoint = new Uri(AppPreferences.AiEndPoint[aiService]);
+				//openAIClientOptions.Endpoint = new Uri(AiPreferences.AiEndPoint[aiService]);
 
 				var requestOptions = new ChatCompletionOptions()
 				{
-					Temperature = AppPreferences.AiTemperature,
-					TopP = AppPreferences.AiTopP,
-					MaxOutputTokenCount = AppPreferences.AiMaxTokens,
+					Temperature = AiPreferences.AiTemperature,
+					TopP = AiPreferences.AiTopP,
+					MaxOutputTokenCount = AiPreferences.AiMaxTokens,
 					//AudioOptions = 
 				};
 
-				System.ClientModel.ApiKeyCredential credential = new(AppPreferences.AiKey[aiService]);
-				var openAiChatClient = new ChatClient(AppPreferences.AiModelId[aiService], credential, openAIClientOptions); // AppPreferences.OpenAiKey
+				System.ClientModel.ApiKeyCredential credential = new(AiPreferences.AiKey[aiService]);
+				var openAiChatClient = new ChatClient(AiPreferences.AiModelId[aiService], credential, openAIClientOptions); // AppPreferences.OpenAiKey
 
 				List<OpenAI.Chat.ChatMessage> chatHistory = [];
 				foreach (var s1 in _systemPrompts)

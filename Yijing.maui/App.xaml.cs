@@ -1,5 +1,6 @@
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
+using Yijing.Services;
 
 namespace Yijing;
 
@@ -37,6 +38,7 @@ public partial class App : Application
 			//window.Width = 1400;
 			//window.Height = 800;
 		};
+		window.Destroying += (s, e) => AppPreferences.Save();
 		return window;
 	}
 }
