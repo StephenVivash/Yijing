@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-public enum eEegDevice { eMuse, eEmotiv, eNone };
+public enum eEegDevice { eNone, eMuse, eEmotiv };
 
 public partial class Session : INotifyPropertyChanged
 {
