@@ -322,9 +322,9 @@ public class Eeg
 		if (!bSummary || (++m_nSummaryCount % 100 == 0))
 		{
 #if DEBUG
-			if (!bSummary && (m_nReplaySpeed == 1) && (AppPreferences.AiEegService != (int)eAiService.eNone))
+			if (!bSummary && (m_nReplaySpeed == 1) && !AiPreferences.IsNoneService(AppPreferences.AiEegService))
 #else
-			if (!bSummary && (m_bLive || (m_nReplaySpeed == 1)) && (AppPreferences.AiEegService != (int)eAiService.eNone))
+			if (!bSummary && (m_bLive || (m_nReplaySpeed == 1)) && !AiPreferences.IsNoneService(AppPreferences.AiEegService))
 #endif
 			{
 				DateTime Timestamp = DateTime.Now;
@@ -1097,4 +1097,3 @@ public class EmotivEeg : Eeg
 		"Gamma_TP9", "Gamma_AF7", "Gamma_AF8", "Gamma_TP10"
 	};
 */
-

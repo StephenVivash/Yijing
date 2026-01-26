@@ -69,7 +69,9 @@ public partial class EegView : ContentView
 		picTriggerRange.SelectedIndex = AppPreferences.TriggerRange;
 		picTriggerHunter.SelectedIndex = AppPreferences.TriggerHunter;
 		picTriggerSchedule.SelectedIndex = AppPreferences.TriggerSchedule;
-		picAiAnalysis.SelectedIndex = AppPreferences.AiEegService;
+		picAiAnalysis.ItemsSource = AiPreferences.ServicePickerNames();
+		AppPreferences.AiEegService = AiPreferences.NormalizeServiceName(AppPreferences.AiEegService);
+		picAiAnalysis.SelectedItem = AppPreferences.AiEegService;
 		picAiModel.SelectedIndex = AppPreferences.AiEegMlModel;
 		chbTriggerSounding.IsChecked = AppPreferences.TriggerSounding;
 
@@ -208,7 +210,7 @@ public partial class EegView : ContentView
 			string s = (string)picSession.SelectedItem;
 			if (!string.IsNullOrEmpty(s))
 			{
-				if (picAiAnalysis.SelectedIndex != (int)eAiService.eNone)
+				if (!AiPreferences.IsNoneService(picAiAnalysis.SelectedItem as string))
 					UI.Call<EegPage>(p => p.SessionLog().Text = "");
 				_eeg.m_bCancelReplay = false;
 				void action() => _eeg.Replay(Path.Combine(AppSettings.EegDataHome(), s + (AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? "-Emotiv.csv" : "-Muse.csv")));
@@ -336,8 +338,8 @@ public partial class EegView : ContentView
 
 	private void picAiAnalysis_SelectedIndexChanged(object sender, EventArgs e)
 	{
-		AppPreferences.AiEegService = picAiAnalysis.SelectedIndex;
-		if (AppPreferences.AiEegService == (int)eAiService.eNone)
+		AppPreferences.AiEegService = AiPreferences.NormalizeServiceName(picAiAnalysis.SelectedItem as string);
+		if (AiPreferences.IsNoneService(AppPreferences.AiEegService))
 			UI.Call<EegPage>(p => p.ShowSessionLog(false));
 		else
 			UI.Call<EegPage>(p => p.ShowSessionLog(true));

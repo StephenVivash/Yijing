@@ -19,7 +19,9 @@ public partial class SessionPage : ContentPage
 			vslInput.BackgroundColor = Colors.Black;
 		}
 
-		picAiChatService.SelectedIndex = AppPreferences.AiChatService;
+		picAiChatService.ItemsSource = AiPreferences.ServicePickerNames();
+		AppPreferences.AiChatService = AiPreferences.NormalizeServiceName(AppPreferences.AiChatService);
+		picAiChatService.SelectedItem = AppPreferences.AiChatService;
 		chbIncludeCast.IsChecked = true;
 
 		horMenu.Create(ePages.eSession, StackOrientation.Horizontal);
@@ -61,9 +63,7 @@ public partial class SessionPage : ContentPage
 
 	private void picAiChatService_SelectedIndexChanged(object sender, EventArgs e)
 	{
-		AppPreferences.AiChatService = picAiChatService.SelectedIndex;
-		//btnAiOrNote.Text = AppPreferences.AiChatService == (int)eAiService.eNone ? "Add Note" : "Ask AI";
-		//btnAiOrNote.IsEnabled = AppPreferences.AiChatService != (int)eAiService.eNone;
+		AppPreferences.AiChatService = AiPreferences.NormalizeServiceName(picAiChatService.SelectedItem as string);
 	}
 
 	private void SessionView_ChatUpdated(object sender, string html)
