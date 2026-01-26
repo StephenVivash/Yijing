@@ -31,7 +31,7 @@ public partial class App : Application
 	{
 		//Window window = base.CreateWindow(activationState);
 		Window window = new Window(new AppShell());
-		window.Destroying += (s, e) => AppPreferences.Save();
+		window.Destroying += (s, e) => { AppPreferences.Save(); AiPreferences.Save(); };
 		window.Created += (s, e) =>
 		{
 			//window.X = 100;
