@@ -300,104 +300,63 @@ public static class AiPreferences
 		else
 			AiMaxTokens = 10240;
 
-		AiModelId[(int)eAiService.eOpenAi - 1] = configuration["AI:Providers:OpenAI:Model"] ?? "";
-		AiEndPoint[(int)eAiService.eOpenAi - 1] = configuration["AI:Providers:OpenAI:EndPoint"] ?? "";
-		AiKey[(int)eAiService.eOpenAi - 1] = configuration["AI:Providers:OpenAI:Key"] ?? "";
-
-		AiModelId[(int)eAiService.eDeepseek - 1] = configuration["AI:Providers:Deepseek:Model"] ?? "";
-		AiEndPoint[(int)eAiService.eDeepseek - 1] = configuration["AI:Providers:Deepseek:EndPoint"] ?? "";
-		AiKey[(int)eAiService.eDeepseek - 1] = configuration["AI:Providers:Deepseek:Key"] ?? "";
-
-		AiModelId[(int)eAiService.eGithub - 1] = configuration["AI:Providers:Github:Model"] ?? "";
-		AiEndPoint[(int)eAiService.eGithub - 1] = configuration["AI:Providers:Github:EndPoint"] ?? "";
-		AiKey[(int)eAiService.eGithub - 1] = configuration["AI:Providers:Github:Key"] ?? "";
-
-		AiModelId[(int)eAiService.eOllama - 1] = configuration["AI:Providers:Ollama:Model"] ?? "";
-		AiEndPoint[(int)eAiService.eOllama - 1] = configuration["AI:Providers:Ollama:EndPoint"] ?? "";
-		AiKey[(int)eAiService.eOllama - 1] = configuration["AI:Providers:Ollama:Key\tAiServices.Add(\"OpenAI\", new AiServiceInfo(\r\n\t\tModelId: AiModelId[(int)eAiService.eOpenAi - 1],\r\n\t\tEndPoint: AiEndPoint[(int)eAiService.eOpenAi - 1],\r\n\t\tKey: AiKey[(int)eAiService.eOpenAi - 1]));\t\r\n"] ?? "";
-
-		SaveNewDefaults();
+		AiServices = new Dictionary<string, AiServiceInfo>(StringComparer.OrdinalIgnoreCase)
+		{
+			[AiServiceNames[(int)eAiService.eOpenAi - 1]] = new AiServiceInfo(
+				ModelId: configuration["AI:Providers:OpenAI:Model"] ?? "",
+				EndPoint: configuration["AI:Providers:OpenAI:EndPoint"] ?? "",
+				Key: configuration["AI:Providers:OpenAI:Key"] ?? ""),
+			[AiServiceNames[(int)eAiService.eDeepseek - 1]] = new AiServiceInfo(
+				ModelId: configuration["AI:Providers:Deepseek:Model"] ?? "",
+				EndPoint: configuration["AI:Providers:Deepseek:EndPoint"] ?? "",
+				Key: configuration["AI:Providers:Deepseek:Key"] ?? ""),
+			[AiServiceNames[(int)eAiService.eGithub - 1]] = new AiServiceInfo(
+				ModelId: configuration["AI:Providers:Github:Model"] ?? "",
+				EndPoint: configuration["AI:Providers:Github:EndPoint"] ?? "",
+				Key: configuration["AI:Providers:Github:Key"] ?? ""),
+			[AiServiceNames[(int)eAiService.eOllama - 1]] = new AiServiceInfo(
+				ModelId: configuration["AI:Providers:Ollama:Model"] ?? "",
+				EndPoint: configuration["AI:Providers:Ollama:EndPoint"] ?? "",
+				Key: configuration["AI:Providers:Ollama:Key"] ?? "")
+		};
 	}
 
-
+	
 	public static AiServiceInfo AiService(eAiService aiService)
 	{
-		return null;
+		if (aiService == eAiService.eNone)
+			return new AiServiceInfo("", "", "");
+
+		if (AiServices is null)
+			return new AiServiceInfo("", "", "");
+
+		string serviceName = AiServiceNames[(int)aiService - 1];
+		if (AiServices.TryGetValue(serviceName, out var serviceInfo))
+			return serviceInfo;
+
+		return new AiServiceInfo("", "", "");
 	}
-
-	private static void SaveNewDefaults()
+	private static void UpdateServiceInfo(string serviceName, string? modelId = null, string? endPoint = null, string? key = null)
 	{
-		try
-		{
-			string settingsPath = Path.Combine(AppSettings.DocumentHome(), "appsettings.json");
-			JsonObject rootObject = LoadConfigurationObject(settingsPath);
-			JsonObject aiObject = rootObject["AI"] as JsonObject ?? new JsonObject();
-			rootObject["AI"] = aiObject;
-			JsonObject providersObject = aiObject["Providers"] as JsonObject ?? new JsonObject();
-			aiObject["Providers"] = providersObject;
+		if (AiServices is null)
+			AiServices = new Dictionary<string, AiServiceInfo>(StringComparer.OrdinalIgnoreCase);
 
-			bool save = false;
+		if (!AiServices.TryGetValue(serviceName, out var serviceInfo))
+			serviceInfo = new AiServiceInfo("", "", "");
 
-			JsonObject openAIObject = providersObject["OpenAI"] as JsonObject ?? new JsonObject();
-			providersObject["OpenAI"] = openAIObject;
-			if (string.IsNullOrWhiteSpace((string?)openAIObject["EndPoint"]))
-			{
-				openAIObject["EndPoint"] = DefaultOpenAiEndpoint;
-				AiEndPoint[(int)eAiService.eOpenAi] = DefaultOpenAiEndpoint;
-				save = true;
-			}
-
-			JsonObject ollamaObject = providersObject["Ollama"] as JsonObject ?? new JsonObject();
-			providersObject["Ollama"] = ollamaObject;
-			if (string.IsNullOrWhiteSpace((string?)ollamaObject["Key"]))
-			{
-				ollamaObject["Key"] = DefaultOllamaKey;
-				AiKey[(int)eAiService.eOllama] = DefaultOllamaKey;
-				save = true;
-			}
-
-			var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
-			if (save)
-				File.WriteAllText(settingsPath, rootObject.ToJsonString(jsonOptions));
-		}
-		catch (Exception) { }
-	}
-
-	private static JsonObject LoadConfigurationObject(string settingsPath)
-	{
-		if (File.Exists(settingsPath))
-		{
-			string json = File.ReadAllText(settingsPath);
-			if (!string.IsNullOrWhiteSpace(json))
-			{
-				try
-				{
-					JsonNode? parsed = JsonNode.Parse(json);
-					if (parsed is JsonObject jsonObject)
-						return jsonObject;
-				}
-				catch (JsonException)
-				{
-				}
-			}
-		}
-		return new JsonObject();
+		AiServices[serviceName] = new AiServiceInfo(
+			modelId ?? serviceInfo.ModelId,
+			endPoint ?? serviceInfo.EndPoint,
+			key ?? serviceInfo.Key);
 	}
 
 	public static float AiTemperature;
 	public static float AiTopP;
 	public static int AiMaxTokens;
 
-	private const string DefaultOllamaKey = "Ollama";
-	private const string DefaultOpenAiEndpoint = "https://api.openai.com/v1";
-
-	public static string[] AiModelId = ["", "", "", ""];
-	public static string[] AiEndPoint = ["", "", "", ""];
-	public static string[] AiKey = ["", "", "", ""];
-
-	public static string[] AiServiceName = ["OpenAI", "DeepSeek", "Github", "Ollama"];
+	public static string[] AiServiceNames = ["OpenAI", "DeepSeek", "Github", "Ollama"];
 	public record AiServiceInfo(string ModelId, string EndPoint, string Key);
 
-	public static Dictionary<string, AiServiceInfo> AiServices;
+	public static Dictionary<string, AiServiceInfo> AiServices = new(StringComparer.OrdinalIgnoreCase);
 
 }
