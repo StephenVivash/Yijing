@@ -300,21 +300,25 @@ public static class AiPreferences
 		else
 			AiMaxTokens = 10240;
 
-		AiModelId[(int)eAiService.eOpenAi - 1] = configuration["AI:Providers:OpenAI:Model"] ?? "";
-		AiEndPoint[(int)eAiService.eOpenAi - 1] = configuration["AI:Providers:OpenAI:EndPoint"] ?? "";
-		AiKey[(int)eAiService.eOpenAi - 1] = configuration["AI:Providers:OpenAI:Key"] ?? "";
-
-		AiModelId[(int)eAiService.eDeepseek - 1] = configuration["AI:Providers:Deepseek:Model"] ?? "";
-		AiEndPoint[(int)eAiService.eDeepseek - 1] = configuration["AI:Providers:Deepseek:EndPoint"] ?? "";
-		AiKey[(int)eAiService.eDeepseek - 1] = configuration["AI:Providers:Deepseek:Key"] ?? "";
-
-		AiModelId[(int)eAiService.eGithub - 1] = configuration["AI:Providers:Github:Model"] ?? "";
-		AiEndPoint[(int)eAiService.eGithub - 1] = configuration["AI:Providers:Github:EndPoint"] ?? "";
-		AiKey[(int)eAiService.eGithub - 1] = configuration["AI:Providers:Github:Key"] ?? "";
-
-		AiModelId[(int)eAiService.eOllama - 1] = configuration["AI:Providers:Ollama:Model"] ?? "";
-		AiEndPoint[(int)eAiService.eOllama - 1] = configuration["AI:Providers:Ollama:EndPoint"] ?? "";
-		AiKey[(int)eAiService.eOllama - 1] = configuration["AI:Providers:Ollama:Key\tAiServices.Add(\"OpenAI\", new AiServiceInfo(\r\n\t\tModelId: AiModelId[(int)eAiService.eOpenAi - 1],\r\n\t\tEndPoint: AiEndPoint[(int)eAiService.eOpenAi - 1],\r\n\t\tKey: AiKey[(int)eAiService.eOpenAi - 1]));\t\r\n"] ?? "";
+		AiServices = new Dictionary<string, AiServiceInfo>(StringComparer.OrdinalIgnoreCase)
+		{
+			[AiServiceName[(int)eAiService.eOpenAi - 1]] = new AiServiceInfo(
+				ModelId: configuration["AI:Providers:OpenAI:Model"] ?? "",
+				EndPoint: configuration["AI:Providers:OpenAI:EndPoint"] ?? "",
+				Key: configuration["AI:Providers:OpenAI:Key"] ?? ""),
+			[AiServiceName[(int)eAiService.eDeepseek - 1]] = new AiServiceInfo(
+				ModelId: configuration["AI:Providers:Deepseek:Model"] ?? "",
+				EndPoint: configuration["AI:Providers:Deepseek:EndPoint"] ?? "",
+				Key: configuration["AI:Providers:Deepseek:Key"] ?? ""),
+			[AiServiceName[(int)eAiService.eGithub - 1]] = new AiServiceInfo(
+				ModelId: configuration["AI:Providers:Github:Model"] ?? "",
+				EndPoint: configuration["AI:Providers:Github:EndPoint"] ?? "",
+				Key: configuration["AI:Providers:Github:Key"] ?? ""),
+			[AiServiceName[(int)eAiService.eOllama - 1]] = new AiServiceInfo(
+				ModelId: configuration["AI:Providers:Ollama:Model"] ?? "",
+				EndPoint: configuration["AI:Providers:Ollama:EndPoint"] ?? "",
+				Key: configuration["AI:Providers:Ollama:Key"] ?? "")
+		};
 
 		SaveNewDefaults();
 	}
@@ -322,7 +326,17 @@ public static class AiPreferences
 
 	public static AiServiceInfo AiService(eAiService aiService)
 	{
-		return null;
+		if (aiService == eAiService.eNone)
+			return new AiServiceInfo("", "", "");
+
+		if (AiServices is null)
+			return new AiServiceInfo("", "", "");
+
+		string serviceName = AiServiceName[(int)aiService - 1];
+		if (AiServices.TryGetValue(serviceName, out var serviceInfo))
+			return serviceInfo;
+
+		return new AiServiceInfo("", "", "");
 	}
 
 	private static void SaveNewDefaults()
@@ -340,21 +354,25 @@ public static class AiPreferences
 
 			JsonObject openAIObject = providersObject["OpenAI"] as JsonObject ?? new JsonObject();
 			providersObject["OpenAI"] = openAIObject;
-			if (string.IsNullOrWhiteSpace((string?)openAIObject["EndPoint"]))
+			string? openAiEndpoint = (string?)openAIObject["EndPoint"];
+			if (string.IsNullOrWhiteSpace(openAiEndpoint))
 			{
-				openAIObject["EndPoint"] = DefaultOpenAiEndpoint;
-				AiEndPoint[(int)eAiService.eOpenAi] = DefaultOpenAiEndpoint;
+				openAiEndpoint = DefaultOpenAiEndpoint;
+				openAIObject["EndPoint"] = openAiEndpoint;
 				save = true;
 			}
+			UpdateServiceInfo(AiServiceName[(int)eAiService.eOpenAi - 1], endPoint: openAiEndpoint ?? "");
 
 			JsonObject ollamaObject = providersObject["Ollama"] as JsonObject ?? new JsonObject();
 			providersObject["Ollama"] = ollamaObject;
-			if (string.IsNullOrWhiteSpace((string?)ollamaObject["Key"]))
+			string? ollamaKey = (string?)ollamaObject["Key"];
+			if (string.IsNullOrWhiteSpace(ollamaKey))
 			{
-				ollamaObject["Key"] = DefaultOllamaKey;
-				AiKey[(int)eAiService.eOllama] = DefaultOllamaKey;
+				ollamaKey = DefaultOllamaKey;
+				ollamaObject["Key"] = ollamaKey;
 				save = true;
 			}
+			UpdateServiceInfo(AiServiceName[(int)eAiService.eOllama - 1], key: ollamaKey ?? "");
 
 			var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
 			if (save)
@@ -384,6 +402,20 @@ public static class AiPreferences
 		return new JsonObject();
 	}
 
+	private static void UpdateServiceInfo(string serviceName, string? modelId = null, string? endPoint = null, string? key = null)
+	{
+		if (AiServices is null)
+			AiServices = new Dictionary<string, AiServiceInfo>(StringComparer.OrdinalIgnoreCase);
+
+		if (!AiServices.TryGetValue(serviceName, out var serviceInfo))
+			serviceInfo = new AiServiceInfo("", "", "");
+
+		AiServices[serviceName] = new AiServiceInfo(
+			modelId ?? serviceInfo.ModelId,
+			endPoint ?? serviceInfo.EndPoint,
+			key ?? serviceInfo.Key);
+	}
+
 	public static float AiTemperature;
 	public static float AiTopP;
 	public static int AiMaxTokens;
@@ -391,13 +423,9 @@ public static class AiPreferences
 	private const string DefaultOllamaKey = "Ollama";
 	private const string DefaultOpenAiEndpoint = "https://api.openai.com/v1";
 
-	public static string[] AiModelId = ["", "", "", ""];
-	public static string[] AiEndPoint = ["", "", "", ""];
-	public static string[] AiKey = ["", "", "", ""];
-
 	public static string[] AiServiceName = ["OpenAI", "DeepSeek", "Github", "Ollama"];
 	public record AiServiceInfo(string ModelId, string EndPoint, string Key);
 
-	public static Dictionary<string, AiServiceInfo> AiServices;
+	public static Dictionary<string, AiServiceInfo> AiServices = new(StringComparer.OrdinalIgnoreCase);
 
 }

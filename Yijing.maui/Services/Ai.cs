@@ -57,15 +57,16 @@ public class Ai
 		try
 		{
 			var builder = Kernel.CreateBuilder();
+			var serviceInfo = AiPreferences.AiService((eAiService)aiService);
 			var http = new HttpClient
 			{
 				Timeout = TimeSpan.FromMinutes(
 				aiService == (int)eAiService.eOllama ? 10 : 2)
 			};
 
-			builder.AddOpenAIChatCompletion(AiPreferences.AiModelId[aiService - 1],
-				new Uri(AiPreferences.AiEndPoint[aiService - 1]),
-				AiPreferences.AiKey[aiService - 1], httpClient: http);
+			builder.AddOpenAIChatCompletion(serviceInfo.ModelId,
+				new Uri(serviceInfo.EndPoint),
+				serviceInfo.Key, httpClient: http);
 
 			//builder.AddOpenAITextToAudio(AiPreferences.AiModelId[aiService], AiPreferences.AiKey[aiService]);
 
@@ -571,4 +572,3 @@ public class YijingPlugin
 	}
 }
 */
-
