@@ -275,10 +275,12 @@ public static class AppPreferences
 
 public static class AiPreferences
 {
+	public const string AiServiceNamesKey = "AI-ServiceNames";
 	public const string AiTemperatureKey = "AI-Temperature";
 	public const string AiTopPKey = "AI-TopP";
 	public const string AiMaxTokensKey = "AI-MaxTokens";
 
+	public const string AiServiceNamesDefault = "OpenAI,DeepSeek,Github,Ollama";
 	public const float AiTemperatureDefault = 1.0f;
 	public const float AiTopPDefault = 1.0f;
 	public const int AiMaxTokensDefault = 10240;
@@ -298,6 +300,10 @@ public static class AiPreferences
 
 	public static void Load()
 	{
+		AiServiceNames = ParseServiceNames(Preferences.Get(AiServiceNamesKey, AiServiceNamesDefault));
+		if (AiServiceNames.Length == 0)
+			AiServiceNames = ParseServiceNames(AiServiceNamesDefault);
+
 		AiTemperature = Preferences.Get(AiTemperatureKey, AiTemperatureDefault);
 		AiTopP = Preferences.Get(AiTopPKey, AiTopPDefault);
 		AiMaxTokens = Preferences.Get(AiMaxTokensKey, AiMaxTokensDefault);
@@ -315,6 +321,7 @@ public static class AiPreferences
 
 	public static void Save()
 	{
+		Preferences.Set(AiServiceNamesKey, string.Join(",", AiServiceNames));
 		Preferences.Set(AiTemperatureKey, AiTemperature);
 		Preferences.Set(AiTopPKey, AiTopP);
 		Preferences.Set(AiMaxTokensKey, AiMaxTokens);
@@ -332,6 +339,7 @@ public static class AiPreferences
 
 	public static void Reset()
 	{
+		AiServiceNames = ParseServiceNames(AiServiceNamesDefault);
 		AiTemperature = AiTemperatureDefault;
 		AiTopP = AiTopPDefault;
 		AiMaxTokens = AiMaxTokensDefault;
@@ -360,6 +368,17 @@ public static class AiPreferences
 	private static string ServicePreferenceKey(string serviceName, string fieldName)
 	{
 		return $"{serviceName}-{fieldName}";
+	}
+
+	private static string[] ParseServiceNames(string? value)
+	{
+		if (string.IsNullOrWhiteSpace(value))
+			return [];
+
+		return value
+			.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+			.Distinct(StringComparer.OrdinalIgnoreCase)
+			.ToArray();
 	}
 
 	private static AiServiceInfo GetServiceDefaults(string serviceName)
@@ -406,7 +425,7 @@ public static class AiPreferences
 	public static float AiTopP;
 	public static int AiMaxTokens;
 
-	public static string[] AiServiceNames = ["OpenAI", "DeepSeek", "Github", "Ollama"];
+	public static string[] AiServiceNames = [];
 	public record AiServiceInfo(string ModelId, string EndPoint, string Key);
 
 	public static Dictionary<string, AiServiceInfo> AiServices = new(StringComparer.OrdinalIgnoreCase);
