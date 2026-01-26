@@ -510,7 +510,7 @@ public partial class SessionView : ContentView
 			return;
 		}
 
-		if (AppPreferences.AiChatService == (int)eAiService.eNone)
+		if (AiPreferences.IsNoneService(AppPreferences.AiChatService))
 			_sessionNotes.Add(prompt);
 		else
 		{

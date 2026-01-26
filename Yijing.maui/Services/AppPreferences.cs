@@ -24,7 +24,6 @@ public enum eTriggerRange { eZeroOne, eOneTwo, eTwoThree, eTwoFour, eThreeFour, 
 public enum eTriggerHunter { eNone, eOne, eTwo, eThree, eFour, eFive, eSix, eSeven, eEight, eNine, eTen };
 public enum eTriggerSchedule { eTwenty, eThirty, eForty, eSixty, eNinety, eOneTwenty };
 
-public enum eAiService { eNone, eOpenAi, eDeepseek, eGithub, eOllama };
 public enum eAiEegMlModel { eNone, eStephenV }; // eJohnD
 
 public enum ePages { eNone, eSession, eDiagram, eEeg, eMeditation, eSettings, eAbout };
@@ -97,8 +96,8 @@ public static class AppPreferences
 	public const int TriggerScheduleDefault = (int)eTriggerSchedule.eSixty;
 	public const bool TriggerSoundingDefault = true;
 	public const bool RawDataDefault = false;
-	public const int AiChatServiceDefault = (int)eAiService.eNone;
-	public const int AiEegServiceDefault = (int)eAiService.eNone;
+	public const string AiChatServiceDefault = AiPreferences.AiServiceNone;
+	public const string AiEegServiceDefault = AiPreferences.AiServiceNone;
 	public const int AiEegMlModelDefault = (int)eAiEegMlModel.eNone;
 
 	public static void Load()
@@ -267,18 +266,21 @@ public static class AppPreferences
 	public static bool TriggerSounding;
 	public static bool RawData;
 
-	public static int AiChatService;
+	public static string AiChatService = AiChatServiceDefault;
 
-	public static int AiEegService;
+	public static string AiEegService = AiEegServiceDefault;
 	public static int AiEegMlModel;
 }
 
 public static class AiPreferences
 {
+	public const string AiServiceNamesKey = "AI-ServiceNames";
+	public const string AiServiceNone = "None";
 	public const string AiTemperatureKey = "AI-Temperature";
 	public const string AiTopPKey = "AI-TopP";
 	public const string AiMaxTokensKey = "AI-MaxTokens";
 
+	public const string AiServiceNamesDefault = "OpenAI,DeepSeek,Github,Ollama";
 	public const float AiTemperatureDefault = 1.0f;
 	public const float AiTopPDefault = 1.0f;
 	public const int AiMaxTokensDefault = 10240;
@@ -298,6 +300,13 @@ public static class AiPreferences
 
 	public static void Load()
 	{
+		AiServiceNames = ParseServiceNames(Preferences.Get(AiServiceNamesKey, AiServiceNamesDefault));
+		if (AiServiceNames.Length == 0)
+			AiServiceNames = ParseServiceNames(AiServiceNamesDefault);
+
+		AppPreferences.AiChatService = NormalizeServiceName(AppPreferences.AiChatService);
+		AppPreferences.AiEegService = NormalizeServiceName(AppPreferences.AiEegService);
+
 		AiTemperature = Preferences.Get(AiTemperatureKey, AiTemperatureDefault);
 		AiTopP = Preferences.Get(AiTopPKey, AiTopPDefault);
 		AiMaxTokens = Preferences.Get(AiMaxTokensKey, AiMaxTokensDefault);
@@ -315,6 +324,7 @@ public static class AiPreferences
 
 	public static void Save()
 	{
+		Preferences.Set(AiServiceNamesKey, string.Join(",", AiServiceNames));
 		Preferences.Set(AiTemperatureKey, AiTemperature);
 		Preferences.Set(AiTopPKey, AiTopP);
 		Preferences.Set(AiMaxTokensKey, AiMaxTokens);
@@ -332,34 +342,33 @@ public static class AiPreferences
 
 	public static void Reset()
 	{
+		AiServiceNames = ParseServiceNames(AiServiceNamesDefault);
 		AiTemperature = AiTemperatureDefault;
 		AiTopP = AiTopPDefault;
 		AiMaxTokens = AiMaxTokensDefault;
-		AiServices = new Dictionary<string, AiServiceInfo>(StringComparer.OrdinalIgnoreCase)
+		AiServices = new Dictionary<string, AiServiceInfo>(StringComparer.OrdinalIgnoreCase);
+		foreach (var serviceName in AiServiceNames)
 		{
-			[AiServiceNames[(int)eAiService.eOpenAi - 1]] = new AiServiceInfo(
-				ModelId: OpenAiModelDefault,
-				EndPoint: OpenAiEndPointDefault,
-				Key: OpenAiKeyDefault),
-			[AiServiceNames[(int)eAiService.eDeepseek - 1]] = new AiServiceInfo(
-				ModelId: DeepSeekModelDefault,
-				EndPoint: DeepSeekEndPointDefault,
-				Key: DeepSeekKeyDefault),
-			[AiServiceNames[(int)eAiService.eGithub - 1]] = new AiServiceInfo(
-				ModelId: GithubModelDefault,
-				EndPoint: GithubEndPointDefault,
-				Key: GithubKeyDefault),
-			[AiServiceNames[(int)eAiService.eOllama - 1]] = new AiServiceInfo(
-				ModelId: OllamaModelDefault,
-				EndPoint: OllamaEndPointDefault,
-				Key: OllamaKeyDefault)
-		};
+			AiServices[serviceName] = GetServiceDefaults(serviceName);
+		}
 		Save();
 	}
 
 	private static string ServicePreferenceKey(string serviceName, string fieldName)
 	{
 		return $"{serviceName}-{fieldName}";
+	}
+
+	private static string[] ParseServiceNames(string? value)
+	{
+		if (string.IsNullOrWhiteSpace(value))
+			return [];
+
+		return value
+			.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+			.Where(name => !name.Equals(AiServiceNone, StringComparison.OrdinalIgnoreCase))
+			.Distinct(StringComparer.OrdinalIgnoreCase)
+			.ToArray();
 	}
 
 	private static AiServiceInfo GetServiceDefaults(string serviceName)
@@ -374,19 +383,57 @@ public static class AiPreferences
 		};
 	}
 
-	public static AiServiceInfo AiService(eAiService aiService)
+	public static AiServiceInfo AiService(string? aiService)
 	{
-		if (aiService == eAiService.eNone)
+		if (IsNoneService(aiService))
 			return new AiServiceInfo("", "", "");
 
 		if (AiServices is null)
 			return new AiServiceInfo("", "", "");
 
-		string serviceName = AiServiceNames[(int)aiService - 1];
-		if (AiServices.TryGetValue(serviceName, out var serviceInfo))
+		if (AiServices.TryGetValue(aiService!, out var serviceInfo))
 			return serviceInfo;
 
 		return new AiServiceInfo("", "", "");
+	}
+
+	public static string NormalizeServiceName(string? serviceName)
+	{
+		if (string.IsNullOrWhiteSpace(serviceName))
+			return AiServiceNone;
+
+		if (serviceName.Equals(AiServiceNone, StringComparison.OrdinalIgnoreCase))
+			return AiServiceNone;
+
+		foreach (var name in AiServiceNames)
+		{
+			if (name.Equals(serviceName, StringComparison.OrdinalIgnoreCase))
+				return name;
+		}
+
+		return AiServiceNone;
+	}
+
+	public static string[] ServicePickerNames()
+	{
+		if (AiServiceNames.Length == 0)
+			return [AiServiceNone];
+
+		string[] names = new string[AiServiceNames.Length + 1];
+		names[0] = AiServiceNone;
+		Array.Copy(AiServiceNames, 0, names, 1, AiServiceNames.Length);
+		return names;
+	}
+
+	public static bool IsNoneService(string? serviceName)
+	{
+		return string.IsNullOrWhiteSpace(serviceName)
+			|| serviceName.Equals(AiServiceNone, StringComparison.OrdinalIgnoreCase);
+	}
+
+	public static bool IsOllamaService(string? serviceName)
+	{
+		return serviceName?.Equals("Ollama", StringComparison.OrdinalIgnoreCase) == true;
 	}
 	private static void UpdateServiceInfo(string serviceName, string? modelId = null, string? endPoint = null, string? key = null)
 	{
@@ -406,7 +453,7 @@ public static class AiPreferences
 	public static float AiTopP;
 	public static int AiMaxTokens;
 
-	public static string[] AiServiceNames = ["OpenAI", "DeepSeek", "Github", "Ollama"];
+	public static string[] AiServiceNames = [];
 	public record AiServiceInfo(string ModelId, string EndPoint, string Key);
 
 	public static Dictionary<string, AiServiceInfo> AiServices = new(StringComparer.OrdinalIgnoreCase);

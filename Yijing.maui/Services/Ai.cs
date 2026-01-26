@@ -52,16 +52,19 @@ public class Ai
 		_chatHistory.AddAssistantMessage(message);
 	}
 
-	public async Task ChatAsync(int aiService, string prompt, bool functions)
+	public async Task ChatAsync(string aiService, string prompt, bool functions)
 	{
 		try
 		{
+			if (AiPreferences.IsNoneService(aiService))
+				return;
+
 			var builder = Kernel.CreateBuilder();
-			var serviceInfo = AiPreferences.AiService((eAiService)aiService);
+			var serviceInfo = AiPreferences.AiService(aiService);
 			var http = new HttpClient
 			{
 				Timeout = TimeSpan.FromMinutes(
-				aiService == (int)eAiService.eOllama ? 10 : 2)
+				AiPreferences.IsOllamaService(aiService) ? 10 : 2)
 			};
 
 			builder.AddOpenAIChatCompletion(serviceInfo.ModelId,
