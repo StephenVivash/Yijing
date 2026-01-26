@@ -1,8 +1,4 @@
 
-using Microsoft.Extensions.Configuration;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-
 using YijingData;
 
 namespace Yijing.Services;
@@ -279,49 +275,105 @@ public static class AppPreferences
 
 public static class AiPreferences
 {
+	public const string AiTemperatureKey = "AI-Temperature";
+	public const string AiTopPKey = "AI-TopP";
+	public const string AiMaxTokensKey = "AI-MaxTokens";
+
+	public const float AiTemperatureDefault = 1.0f;
+	public const float AiTopPDefault = 1.0f;
+	public const int AiMaxTokensDefault = 10240;
+
+	public const string OpenAiModelDefault = "gpt-5.2";
+	public const string OpenAiEndPointDefault = "https://api.openai.com/v1";
+	public const string OpenAiKeyDefault = "";
+	public const string DeepSeekModelDefault = "deepseek-reasoner";
+	public const string DeepSeekEndPointDefault = "https://api.deepseek.com";
+	public const string DeepSeekKeyDefault = "";
+	public const string GithubModelDefault = "grok-3";
+	public const string GithubEndPointDefault = "https://models.inference.ai.azure.com";
+	public const string GithubKeyDefault = "";
+	public const string OllamaModelDefault = "gpt-oss:20b";
+	public const string OllamaEndPointDefault = "http://localhost:11434/v1";
+	public const string OllamaKeyDefault = "";
+
 	public static void Load()
 	{
+		AiTemperature = Preferences.Get(AiTemperatureKey, AiTemperatureDefault);
+		AiTopP = Preferences.Get(AiTopPKey, AiTopPDefault);
+		AiMaxTokens = Preferences.Get(AiMaxTokensKey, AiMaxTokensDefault);
 
-		var configuration = new ConfigurationBuilder()
-			.SetBasePath(AppSettings.DocumentHome())
-			.AddJsonFile("appsettings.json", optional: true)
-			.Build();
+		AiServices = new Dictionary<string, AiServiceInfo>(StringComparer.OrdinalIgnoreCase);
+		foreach (var serviceName in AiServiceNames)
+		{
+			var defaults = GetServiceDefaults(serviceName);
+			var modelId = Preferences.Get(ServicePreferenceKey(serviceName, nameof(AiServiceInfo.ModelId)), defaults.ModelId);
+			var endPoint = Preferences.Get(ServicePreferenceKey(serviceName, nameof(AiServiceInfo.EndPoint)), defaults.EndPoint);
+			var key = Preferences.Get(ServicePreferenceKey(serviceName, nameof(AiServiceInfo.Key)), defaults.Key);
+			AiServices[serviceName] = new AiServiceInfo(modelId, endPoint, key);
+		}
+	}
 
-		if (float.TryParse(configuration["AI:Temperature"], out float temp1))
-			AiTemperature = temp1;
-		else
-			AiTemperature = 1.0f;
-		if (float.TryParse(configuration["AI:TopP"], out float temp2))
-			AiTopP = temp2;
-		else
-			AiTopP = 1.0f;
-		if (int.TryParse(configuration["AI:MaxTokens"], out int temp3))
-			AiMaxTokens = temp3;
-		else
-			AiMaxTokens = 10240;
+	public static void Save()
+	{
+		Preferences.Set(AiTemperatureKey, AiTemperature);
+		Preferences.Set(AiTopPKey, AiTopP);
+		Preferences.Set(AiMaxTokensKey, AiMaxTokens);
 
+		if (AiServices is null)
+			return;
+
+		foreach (var (serviceName, serviceInfo) in AiServices)
+		{
+			Preferences.Set(ServicePreferenceKey(serviceName, nameof(AiServiceInfo.ModelId)), serviceInfo.ModelId);
+			Preferences.Set(ServicePreferenceKey(serviceName, nameof(AiServiceInfo.EndPoint)), serviceInfo.EndPoint);
+			Preferences.Set(ServicePreferenceKey(serviceName, nameof(AiServiceInfo.Key)), serviceInfo.Key);
+		}
+	}
+
+	public static void Reset()
+	{
+		AiTemperature = AiTemperatureDefault;
+		AiTopP = AiTopPDefault;
+		AiMaxTokens = AiMaxTokensDefault;
 		AiServices = new Dictionary<string, AiServiceInfo>(StringComparer.OrdinalIgnoreCase)
 		{
 			[AiServiceNames[(int)eAiService.eOpenAi - 1]] = new AiServiceInfo(
-				ModelId: configuration["AI:Providers:OpenAI:Model"] ?? "",
-				EndPoint: configuration["AI:Providers:OpenAI:EndPoint"] ?? "",
-				Key: configuration["AI:Providers:OpenAI:Key"] ?? ""),
+				ModelId: OpenAiModelDefault,
+				EndPoint: OpenAiEndPointDefault,
+				Key: OpenAiKeyDefault),
 			[AiServiceNames[(int)eAiService.eDeepseek - 1]] = new AiServiceInfo(
-				ModelId: configuration["AI:Providers:Deepseek:Model"] ?? "",
-				EndPoint: configuration["AI:Providers:Deepseek:EndPoint"] ?? "",
-				Key: configuration["AI:Providers:Deepseek:Key"] ?? ""),
+				ModelId: DeepSeekModelDefault,
+				EndPoint: DeepSeekEndPointDefault,
+				Key: DeepSeekKeyDefault),
 			[AiServiceNames[(int)eAiService.eGithub - 1]] = new AiServiceInfo(
-				ModelId: configuration["AI:Providers:Github:Model"] ?? "",
-				EndPoint: configuration["AI:Providers:Github:EndPoint"] ?? "",
-				Key: configuration["AI:Providers:Github:Key"] ?? ""),
+				ModelId: GithubModelDefault,
+				EndPoint: GithubEndPointDefault,
+				Key: GithubKeyDefault),
 			[AiServiceNames[(int)eAiService.eOllama - 1]] = new AiServiceInfo(
-				ModelId: configuration["AI:Providers:Ollama:Model"] ?? "",
-				EndPoint: configuration["AI:Providers:Ollama:EndPoint"] ?? "",
-				Key: configuration["AI:Providers:Ollama:Key"] ?? "")
+				ModelId: OllamaModelDefault,
+				EndPoint: OllamaEndPointDefault,
+				Key: OllamaKeyDefault)
+		};
+		Save();
+	}
+
+	private static string ServicePreferenceKey(string serviceName, string fieldName)
+	{
+		return $"{serviceName}-{fieldName}";
+	}
+
+	private static AiServiceInfo GetServiceDefaults(string serviceName)
+	{
+		return serviceName switch
+		{
+			"OpenAI" => new AiServiceInfo(OpenAiModelDefault, OpenAiEndPointDefault, OpenAiKeyDefault),
+			"DeepSeek" => new AiServiceInfo(DeepSeekModelDefault, DeepSeekEndPointDefault, DeepSeekKeyDefault),
+			"Github" => new AiServiceInfo(GithubModelDefault, GithubEndPointDefault, GithubKeyDefault),
+			"Ollama" => new AiServiceInfo(OllamaModelDefault, OllamaEndPointDefault, OllamaKeyDefault),
+			_ => new AiServiceInfo("", "", "")
 		};
 	}
 
-	
 	public static AiServiceInfo AiService(eAiService aiService)
 	{
 		if (aiService == eAiService.eNone)
@@ -360,3 +412,4 @@ public static class AiPreferences
 	public static Dictionary<string, AiServiceInfo> AiServices = new(StringComparer.OrdinalIgnoreCase);
 
 }
+
