@@ -302,28 +302,26 @@ public static class AiPreferences
 
 		AiServices = new Dictionary<string, AiServiceInfo>(StringComparer.OrdinalIgnoreCase)
 		{
-			[AiServiceName[(int)eAiService.eOpenAi - 1]] = new AiServiceInfo(
+			[AiServiceNames[(int)eAiService.eOpenAi - 1]] = new AiServiceInfo(
 				ModelId: configuration["AI:Providers:OpenAI:Model"] ?? "",
 				EndPoint: configuration["AI:Providers:OpenAI:EndPoint"] ?? "",
 				Key: configuration["AI:Providers:OpenAI:Key"] ?? ""),
-			[AiServiceName[(int)eAiService.eDeepseek - 1]] = new AiServiceInfo(
+			[AiServiceNames[(int)eAiService.eDeepseek - 1]] = new AiServiceInfo(
 				ModelId: configuration["AI:Providers:Deepseek:Model"] ?? "",
 				EndPoint: configuration["AI:Providers:Deepseek:EndPoint"] ?? "",
 				Key: configuration["AI:Providers:Deepseek:Key"] ?? ""),
-			[AiServiceName[(int)eAiService.eGithub - 1]] = new AiServiceInfo(
+			[AiServiceNames[(int)eAiService.eGithub - 1]] = new AiServiceInfo(
 				ModelId: configuration["AI:Providers:Github:Model"] ?? "",
 				EndPoint: configuration["AI:Providers:Github:EndPoint"] ?? "",
 				Key: configuration["AI:Providers:Github:Key"] ?? ""),
-			[AiServiceName[(int)eAiService.eOllama - 1]] = new AiServiceInfo(
+			[AiServiceNames[(int)eAiService.eOllama - 1]] = new AiServiceInfo(
 				ModelId: configuration["AI:Providers:Ollama:Model"] ?? "",
 				EndPoint: configuration["AI:Providers:Ollama:EndPoint"] ?? "",
 				Key: configuration["AI:Providers:Ollama:Key"] ?? "")
 		};
-
-		SaveNewDefaults();
 	}
 
-
+	
 	public static AiServiceInfo AiService(eAiService aiService)
 	{
 		if (aiService == eAiService.eNone)
@@ -332,76 +330,12 @@ public static class AiPreferences
 		if (AiServices is null)
 			return new AiServiceInfo("", "", "");
 
-		string serviceName = AiServiceName[(int)aiService - 1];
+		string serviceName = AiServiceNames[(int)aiService - 1];
 		if (AiServices.TryGetValue(serviceName, out var serviceInfo))
 			return serviceInfo;
 
 		return new AiServiceInfo("", "", "");
 	}
-
-	private static void SaveNewDefaults()
-	{
-		try
-		{
-			string settingsPath = Path.Combine(AppSettings.DocumentHome(), "appsettings.json");
-			JsonObject rootObject = LoadConfigurationObject(settingsPath);
-			JsonObject aiObject = rootObject["AI"] as JsonObject ?? new JsonObject();
-			rootObject["AI"] = aiObject;
-			JsonObject providersObject = aiObject["Providers"] as JsonObject ?? new JsonObject();
-			aiObject["Providers"] = providersObject;
-
-			bool save = false;
-
-			JsonObject openAIObject = providersObject["OpenAI"] as JsonObject ?? new JsonObject();
-			providersObject["OpenAI"] = openAIObject;
-			string? openAiEndpoint = (string?)openAIObject["EndPoint"];
-			if (string.IsNullOrWhiteSpace(openAiEndpoint))
-			{
-				openAiEndpoint = DefaultOpenAiEndpoint;
-				openAIObject["EndPoint"] = openAiEndpoint;
-				save = true;
-			}
-			UpdateServiceInfo(AiServiceName[(int)eAiService.eOpenAi - 1], endPoint: openAiEndpoint ?? "");
-
-			JsonObject ollamaObject = providersObject["Ollama"] as JsonObject ?? new JsonObject();
-			providersObject["Ollama"] = ollamaObject;
-			string? ollamaKey = (string?)ollamaObject["Key"];
-			if (string.IsNullOrWhiteSpace(ollamaKey))
-			{
-				ollamaKey = DefaultOllamaKey;
-				ollamaObject["Key"] = ollamaKey;
-				save = true;
-			}
-			UpdateServiceInfo(AiServiceName[(int)eAiService.eOllama - 1], key: ollamaKey ?? "");
-
-			var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
-			if (save)
-				File.WriteAllText(settingsPath, rootObject.ToJsonString(jsonOptions));
-		}
-		catch (Exception) { }
-	}
-
-	private static JsonObject LoadConfigurationObject(string settingsPath)
-	{
-		if (File.Exists(settingsPath))
-		{
-			string json = File.ReadAllText(settingsPath);
-			if (!string.IsNullOrWhiteSpace(json))
-			{
-				try
-				{
-					JsonNode? parsed = JsonNode.Parse(json);
-					if (parsed is JsonObject jsonObject)
-						return jsonObject;
-				}
-				catch (JsonException)
-				{
-				}
-			}
-		}
-		return new JsonObject();
-	}
-
 	private static void UpdateServiceInfo(string serviceName, string? modelId = null, string? endPoint = null, string? key = null)
 	{
 		if (AiServices is null)
@@ -420,10 +354,7 @@ public static class AiPreferences
 	public static float AiTopP;
 	public static int AiMaxTokens;
 
-	private const string DefaultOllamaKey = "Ollama";
-	private const string DefaultOpenAiEndpoint = "https://api.openai.com/v1";
-
-	public static string[] AiServiceName = ["OpenAI", "DeepSeek", "Github", "Ollama"];
+	public static string[] AiServiceNames = ["OpenAI", "DeepSeek", "Github", "Ollama"];
 	public record AiServiceInfo(string ModelId, string EndPoint, string Key);
 
 	public static Dictionary<string, AiServiceInfo> AiServices = new(StringComparer.OrdinalIgnoreCase);
