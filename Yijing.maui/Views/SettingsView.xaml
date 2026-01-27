@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentView
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:views="clr-namespace:Yijing.Views"
+	xmlns:controls="clr-namespace:Yijing.Controls"
+	x:Class="Yijing.Views.SettingsView"
+	x:Name="settingsView">
+
+	<Border>
+		<Grid RowDefinitions="Auto,*" ColumnDefinitions="260,*">
+			<HorizontalStackLayout
+				x:Name="hslButtons"
+				Grid.Row="0"
+				Grid.ColumnSpan="2"
+				Spacing="6">
+				<controls:ButtonEx
+					x:Name="btnSave"
+					Icon="{x:Static controls:FluentIcons.Save}"
+					Clicked="OnSaveClicked" />
+				<controls:ButtonEx
+					x:Name="btnReset"
+					Icon="{x:Static controls:FluentIcons.Restore}"
+					Clicked="OnResetClicked" />
+			</HorizontalStackLayout>
+
+			<Border
+				Grid.Row="1"
+				Grid.Column="0"
+				Margin="0,6,6,0">
+				<CollectionView
+					x:Name="propertyTree"
+					ItemsSource="{Binding PropertyNodes}"
+					SelectionMode="Single"
+					SelectionChanged="OnPropertySelectionChanged">
+					<CollectionView.ItemsLayout>
+						<LinearItemsLayout Orientation="Vertical" />
+					</CollectionView.ItemsLayout>
+					<CollectionView.ItemTemplate>
+						<DataTemplate x:DataType="views:SettingsNode">
+							<Grid Padding="{Binding Indent}">
+								<Label
+									Text="{Binding Title}"
+									FontAttributes="Bold" />
+							</Grid>
+						</DataTemplate>
+					</CollectionView.ItemTemplate>
+				</CollectionView>
+			</Border>
+
+			<ScrollView Grid.Row="1" Grid.Column="1">
+				<VerticalStackLayout Spacing="12">
+					<Label
+						Text="{Binding SelectedNodeTitle}"
+						FontSize="28" />
+					<BoxView HeightRequest="1" BackgroundColor="{AppThemeBinding Light=Black, Dark=White}" />
+					<Label Text="{Binding SelectedNodeDescription}" />
+
+					<VerticalStackLayout
+						IsVisible="{Binding IsAiPreferencesSelected}"
+						Spacing="12">
+						<Label
+							Text="AI Generation Settings"
+							FontSize="20"
+							FontAttributes="Bold" />
+						<Grid ColumnDefinitions="180,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="8">
+							<Label
+								Text="Temperature"
+								Grid.Row="0"
+								Grid.Column="0"
+								VerticalTextAlignment="Center" />
+							<Entry
+								Grid.Row="0"
+								Grid.Column="1"
+								Text="{Binding AiTemperatureText}"
+								Placeholder="1.0" />
+
+							<Label
+								Text="Top P"
+								Grid.Row="1"
+								Grid.Column="0"
+								VerticalTextAlignment="Center" />
+							<Entry
+								Grid.Row="1"
+								Grid.Column="1"
+								Text="{Binding AiTopPText}"
+								Placeholder="1.0" />
+
+							<Label
+								Text="Max Tokens"
+								Grid.Row="2"
+								Grid.Column="0"
+								VerticalTextAlignment="Center" />
+							<Entry
+								Grid.Row="2"
+								Grid.Column="1"
+								Text="{Binding AiMaxTokensText}"
+								Placeholder="10240" />
+						</Grid>
+
+						<Label
+							Text="AI Services"
+							FontSize="20"
+							FontAttributes="Bold" />
+						<Label Text="Manage the available AI providers and their connection settings." />
+
+						<HorizontalStackLayout Spacing="8">
+							<Entry
+								Text="{Binding NewServiceName}"
+								Placeholder="New service name"
+								HorizontalOptions="FillAndExpand" />
+							<controls:ButtonEx
+								Icon="{x:Static controls:FluentIcons.Add}"
+								Clicked="OnAddServiceClicked" />
+						</HorizontalStackLayout>
+
+						<CollectionView ItemsSource="{Binding AiServices}">
+							<CollectionView.ItemsLayout>
+								<LinearItemsLayout Orientation="Vertical" />
+							</CollectionView.ItemsLayout>
+							<CollectionView.ItemTemplate>
+								<DataTemplate x:DataType="views:AiServiceEditor">
+									<Border Padding="8" Margin="0,6,0,0" BackgroundColor="{AppThemeBinding Light=White, Dark=Black}">
+										<VerticalStackLayout Spacing="6">
+											<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+												<Entry
+													Text="{Binding Name}"
+													Placeholder="Service name" />
+												<controls:ButtonEx
+													Grid.Column="1"
+													Icon="{x:Static controls:FluentIcons.Delete}"
+													Clicked="OnDeleteServiceClicked"
+													CommandParameter="{Binding .}" />
+											</Grid>
+
+											<Label Text="Model Id" FontAttributes="Bold" />
+											<Entry
+												Text="{Binding ModelId}"
+												Placeholder="gpt-5.2" />
+
+											<Label Text="End Point" FontAttributes="Bold" />
+											<Entry
+												Text="{Binding EndPoint}"
+												Placeholder="https://api.openai.com/v1" />
+
+											<Label Text="Key" FontAttributes="Bold" />
+											<Entry
+												Text="{Binding Key}"
+												Placeholder="API key"
+												IsPassword="True" />
+										</VerticalStackLayout>
+									</Border>
+								</DataTemplate>
+							</CollectionView.ItemTemplate>
+						</CollectionView>
+					</VerticalStackLayout>
+				</VerticalStackLayout>
+			</ScrollView>
+		</Grid>
+	</Border>
+</ContentView>
