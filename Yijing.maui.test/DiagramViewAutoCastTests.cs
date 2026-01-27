@@ -189,4 +189,14 @@ public sealed class DiagramViewAutoCastTests : IAsyncLifetime
 
 		return null;
 	}
+
+	ValueTask IAsyncLifetime.InitializeAsync()
+	{
+		throw new NotImplementedException();
+	}
+
+	ValueTask IAsyncDisposable.DisposeAsync()
+	{
+		throw new NotImplementedException();
+	}
 }
