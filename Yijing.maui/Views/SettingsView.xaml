@@ -9,15 +9,16 @@
 	x:Name="settingsView">
 
 	<Border BackgroundColor="{AppThemeBinding Light=White, Dark=Black}">
-		<Grid RowDefinitions="Auto,*">
+		<Grid RowDefinitions="Auto,*" RowSpacing="6">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition x:Name="colTree" Width="260" />
-				<ColumnDefinition Width="*" />
+				<ColumnDefinition x:Name="colDetails" Width="*" />
 			</Grid.ColumnDefinitions>
 			<HorizontalStackLayout
 				x:Name="hslButtons"
 				Grid.Row="0"
 				Grid.ColumnSpan="2"
+				Padding="6,6,6,4"
 				Spacing="6">
 				<controls:ButtonEx
 					x:Name="btnSave"
@@ -33,7 +34,7 @@
 				x:Name="borTree"
 				Grid.Row="1"
 				Grid.Column="0"
-				Margin="0,6,6,0"
+				Margin="0,0,6,0"
 				BackgroundColor="{AppThemeBinding Light=White, Dark=Black}">
 				<CollectionView
 					x:Name="propertyTree"
@@ -72,7 +73,7 @@
 				x:Name="borDetails"
 				Grid.Row="1"
 				Grid.Column="1"
-				Margin="0,6,0,0"
+				Margin="0"
 				BackgroundColor="{AppThemeBinding Light=White, Dark=Black}">
 				<ScrollView>
 					<VerticalStackLayout Spacing="12">
