@@ -28,16 +28,20 @@ public partial class SettingsPage : ContentPage
 		{
 			horMenu.IsVisible = false;
 			verMenu.IsVisible = true;
+			settingsView.ButtonPadding(new Thickness(0, 5));
 		}
 		else
 		{
 			horMenu.IsVisible = true;
 			verMenu.IsVisible = false;
+			settingsView.ButtonPadding(new Thickness(5));
 		}
 #else
 		horMenu.IsVisible = false;
 		verMenu.IsVisible = true;
+		settingsView.ButtonPadding(new Thickness(0, 5));
 #endif
+		settingsView.UpdateLayout(width, height);
 
 		base.OnSizeAllocated(width, height);
 	}

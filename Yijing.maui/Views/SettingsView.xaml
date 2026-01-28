@@ -8,8 +8,12 @@
 	x:Class="Yijing.Views.SettingsView"
 	x:Name="settingsView">
 
-	<Border>
-		<Grid RowDefinitions="Auto,*" ColumnDefinitions="260,*">
+	<Border BackgroundColor="{AppThemeBinding Light=White, Dark=Black}">
+		<Grid RowDefinitions="Auto,*">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition x:Name="colTree" Width="260" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
 			<HorizontalStackLayout
 				x:Name="hslButtons"
 				Grid.Row="0"
@@ -26,9 +30,11 @@
 			</HorizontalStackLayout>
 
 			<Border
+				x:Name="borTree"
 				Grid.Row="1"
 				Grid.Column="0"
-				Margin="0,6,6,0">
+				Margin="0,6,6,0"
+				BackgroundColor="{AppThemeBinding Light=White, Dark=Black}">
 				<CollectionView
 					x:Name="propertyTree"
 					ItemsSource="{Binding PropertyNodes}"
@@ -37,20 +43,39 @@
 					<CollectionView.ItemsLayout>
 						<LinearItemsLayout Orientation="Vertical" />
 					</CollectionView.ItemsLayout>
-					<CollectionView.ItemTemplate>
-						<DataTemplate x:DataType="views:SettingsNode">
-							<Grid Padding="{Binding Indent}">
-								<Label
-									Text="{Binding Title}"
-									FontAttributes="Bold" />
-							</Grid>
-						</DataTemplate>
-					</CollectionView.ItemTemplate>
-				</CollectionView>
+						<CollectionView.ItemTemplate>
+							<DataTemplate x:DataType="views:SettingsNode">
+								<Grid Padding="{Binding Indent}">
+									<VisualStateManager.VisualStateGroups>
+										<VisualStateGroup Name="CommonStates">
+											<VisualState Name="Normal" />
+											<VisualState Name="Selected">
+												<VisualState.Setters>
+													<Setter Property="BackgroundColor" Value="#D97706" />
+													<Setter TargetName="lblNodeTitle" Property="Label.TextColor" Value="White" />
+												</VisualState.Setters>
+											</VisualState>
+										</VisualStateGroup>
+									</VisualStateManager.VisualStateGroups>
+									<Label
+										x:Name="lblNodeTitle"
+										Text="{Binding Title}"
+										FontAttributes="Bold"
+										TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+								</Grid>
+							</DataTemplate>
+						</CollectionView.ItemTemplate>
+					</CollectionView>
 			</Border>
 
-			<ScrollView Grid.Row="1" Grid.Column="1">
-				<VerticalStackLayout Spacing="12">
+			<Border
+				x:Name="borDetails"
+				Grid.Row="1"
+				Grid.Column="1"
+				Margin="0,6,0,0"
+				BackgroundColor="{AppThemeBinding Light=White, Dark=Black}">
+				<ScrollView>
+					<VerticalStackLayout Spacing="12">
 					<Label
 						Text="{Binding SelectedNodeTitle}"
 						FontSize="28" />
@@ -156,7 +181,8 @@
 						</CollectionView>
 					</VerticalStackLayout>
 				</VerticalStackLayout>
-			</ScrollView>
+				</ScrollView>
+			</Border>
 		</Grid>
 	</Border>
 </ContentView>

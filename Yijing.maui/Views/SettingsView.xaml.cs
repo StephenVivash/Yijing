@@ -30,6 +30,24 @@ public partial class SettingsView : ContentView
 		LoadAiPreferences();
 	}
 
+	public void UpdateLayout(double width, double height)
+	{
+		if ((width <= 0) || (height <= 0))
+			return;
+
+		bool isLandscape = width > height;
+		double treeWidth = isLandscape ? 260 : 200;
+		colTree.Width = new GridLength(treeWidth);
+		borTree.Margin = isLandscape ? new Thickness(0, 6, 6, 0) : new Thickness(0, 6, 4, 0);
+		borDetails.Margin = isLandscape ? new Thickness(0, 6, 0, 0) : new Thickness(0, 6, 0, 0);
+	}
+
+	public void ButtonPadding(Thickness thickness)
+	{
+		btnSave.Padding = thickness;
+		btnReset.Padding = thickness;
+	}
+
 	public SettingsNode? SelectedNode
 	{
 		get => _selectedNode;
