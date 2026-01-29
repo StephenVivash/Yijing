@@ -125,7 +125,7 @@
 												<VerticalStackLayout
 													Grid.Column="0"
 													Spacing="8">
-													<Grid ColumnDefinitions="120,*" ColumnSpacing="12">
+													<Grid ColumnDefinitions="80,*" ColumnSpacing="12">
 													<Label
 														Text="Name"
 														VerticalTextAlignment="Center" />
@@ -135,7 +135,7 @@
 														HorizontalOptions="Fill" />
 												</Grid>
 
-													<Grid ColumnDefinitions="120,*" ColumnSpacing="12">
+													<Grid ColumnDefinitions="80,*" ColumnSpacing="12">
 													<Label
 														Text="Model"
 														VerticalTextAlignment="Center" />
@@ -145,7 +145,7 @@
 														HorizontalOptions="Fill" />
 												</Grid>
 
-													<Grid ColumnDefinitions="120,*" ColumnSpacing="12">
+													<Grid ColumnDefinitions="80,*" ColumnSpacing="12">
 													<Label
 														Text="Endpoint"
 														VerticalTextAlignment="Center" />
@@ -155,7 +155,7 @@
 														HorizontalOptions="Fill" />
 												</Grid>
 
-													<Grid ColumnDefinitions="120,*" ColumnSpacing="12">
+													<Grid ColumnDefinitions="80,*" ColumnSpacing="12">
 													<Label
 														Text="Key"
 														VerticalTextAlignment="Center" />
