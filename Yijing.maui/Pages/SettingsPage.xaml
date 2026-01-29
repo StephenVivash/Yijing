@@ -120,9 +120,11 @@
 							BindableLayout.ItemsSource="{Binding ServiceItems}">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate>
-									<Border Padding="12">
-										<Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-											<VerticalStackLayout Spacing="8">
+										<Border Padding="12">
+											<Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+												<VerticalStackLayout
+													Grid.Column="0"
+													Spacing="8">
 												<Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
 													<Label
 														Text="Name"
@@ -160,11 +162,12 @@
 												</Grid>
 											</VerticalStackLayout>
 
-											<controls:ButtonEx
-												Icon="{x:Static controls:FluentIcons.Delete}"
-												Clicked="OnDeleteServiceClicked" />
-										</Grid>
-									</Border>
+												<controls:ButtonEx
+													Grid.Column="1"
+													Icon="{x:Static controls:FluentIcons.Delete}"
+													Clicked="OnDeleteServiceClicked" />
+											</Grid>
+										</Border>
 								</DataTemplate>
 							</BindableLayout.ItemTemplate>
 						</VerticalStackLayout>
