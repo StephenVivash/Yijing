@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+
+	xmlns:views="clr-namespace:Yijing.Views"
+	xmlns:controls="clr-namespace:Yijing.Controls"
+
+	x:Class="Yijing.Pages.SettingsPage"
+	Loaded="Page_Loaded">
+
+	<toolkit:DockLayout
+		x:Name="layDock"
+		ShouldExpandLastChild="true">
+
+		<views:MenuView
+			x:Name="horMenu"
+			toolkit:DockLayout.DockPosition="Bottom" />
+
+		<views:MenuView
+			x:Name="verMenu"
+			toolkit:DockLayout.DockPosition="{x:Static views:MenuView.VerticalDockPosition}" />
+
+		<views:SettingsView
+			x:Name="settingsView"
+			toolkit:DockLayout.DockPosition="Left"
+			WidthRequest="300"
+			SectionSelected="SettingsView_SectionSelected"
+			SaveClicked="SettingsView_SaveClicked"
+			ResetClicked="SettingsView_ResetClicked" />
+
+		<Border x:Name="borDetails">
+			<ScrollView>
+				<VerticalStackLayout
+					x:Name="vslDetails"
+					Padding="20"
+					Spacing="16">
+					<VerticalStackLayout Spacing="6">
+						<Label
+							x:Name="lblSectionTitle"
+							FontSize="28"
+							Text="AI Preferences" />
+						<BoxView
+							x:Name="bxSectionSeparator"
+							HeightRequest="1"
+							Color="Gray" />
+						<Label
+							x:Name="lblSectionDescription"
+							Text="Configure AI provider defaults and services for chat and EEG analysis."
+							FontSize="13"
+							TextColor="Gray" />
+					</VerticalStackLayout>
+
+					<VerticalStackLayout Spacing="10">
+						<Label
+							Text="Defaults"
+							FontAttributes="Bold" />
+						<Grid
+							ColumnDefinitions="Auto,*"
+							RowDefinitions="Auto,Auto,Auto"
+							ColumnSpacing="12"
+							RowSpacing="10">
+							<Label
+								Grid.Row="0"
+								Grid.Column="0"
+								Text="Temperature"
+								VerticalTextAlignment="Center" />
+							<Entry
+								x:Name="edtAiTemperature"
+								Grid.Row="0"
+								Grid.Column="1"
+								Keyboard="Numeric" />
+
+							<Label
+								Grid.Row="1"
+								Grid.Column="0"
+								Text="Top P"
+								VerticalTextAlignment="Center" />
+							<Entry
+								x:Name="edtAiTopP"
+								Grid.Row="1"
+								Grid.Column="1"
+								Keyboard="Numeric" />
+
+							<Label
+								Grid.Row="2"
+								Grid.Column="0"
+								Text="Max Tokens"
+								VerticalTextAlignment="Center" />
+							<Entry
+								x:Name="edtAiMaxTokens"
+								Grid.Row="2"
+								Grid.Column="1"
+								Keyboard="Numeric" />
+						</Grid>
+					</VerticalStackLayout>
+
+					<VerticalStackLayout Spacing="10">
+						<Label
+							Text="AI Services"
+							FontAttributes="Bold" />
+						<Label
+							Text="Add or remove providers and edit their model, endpoint, and key."
+							FontSize="13"
+							TextColor="Gray" />
+
+						<HorizontalStackLayout Spacing="8">
+							<Entry
+								x:Name="edtNewServiceName"
+								Placeholder="New service name" />
+							<controls:ButtonEx
+								Icon="{x:Static controls:FluentIcons.Add}"
+								Clicked="OnAddServiceClicked" />
+						</HorizontalStackLayout>
+
+						<CollectionView
+							x:Name="colServices"
+							ItemsSource="{Binding ServiceItems}">
+							<CollectionView.ItemsLayout>
+								<LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+							</CollectionView.ItemsLayout>
+							<CollectionView.ItemTemplate>
+								<DataTemplate>
+									<Border Padding="12">
+										<Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+											<VerticalStackLayout Spacing="8">
+												<Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+													<Label
+														Text="Name"
+														VerticalTextAlignment="Center" />
+													<Entry
+														Text="{Binding Name}"
+														HorizontalOptions="Fill" />
+												</Grid>
+
+												<Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+													<Label
+														Text="Model"
+														VerticalTextAlignment="Center" />
+													<Entry
+														Text="{Binding ModelId}"
+														HorizontalOptions="Fill" />
+												</Grid>
+
+												<Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+													<Label
+														Text="Endpoint"
+														VerticalTextAlignment="Center" />
+													<Entry
+														Text="{Binding EndPoint}"
+														HorizontalOptions="Fill" />
+												</Grid>
+
+												<Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+													<Label
+														Text="Key"
+														VerticalTextAlignment="Center" />
+													<Entry
+														Text="{Binding Key}"
+														HorizontalOptions="Fill" />
+												</Grid>
+											</VerticalStackLayout>
+
+											<controls:ButtonEx
+												Icon="{x:Static controls:FluentIcons.Delete}"
+												Clicked="OnDeleteServiceClicked" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</CollectionView.ItemTemplate>
+						</CollectionView>
+					</VerticalStackLayout>
+				</VerticalStackLayout>
+			</ScrollView>
+		</Border>
+	</toolkit:DockLayout>
+</ContentPage>

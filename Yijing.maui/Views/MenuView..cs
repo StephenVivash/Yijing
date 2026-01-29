@@ -15,6 +15,7 @@ public partial class MenuView : ContentView
 	private ButtonEx _btnDiagram;
 	private ButtonEx _btnEeg;
 	private ButtonEx _btnMeditation;
+	private ButtonEx _btnSettings;
 
 
 #if WINDOWS || MACCATALYST
@@ -80,6 +81,10 @@ public partial class MenuView : ContentView
 		{
 			Icon = FluentIcons.MeditationPage,
 		};
+		_btnSettings = new ButtonEx()
+		{
+			Icon = FluentIcons.Setting,
+		};
 
 		if (orientation == StackOrientation.Vertical)
 #if WINDOWS || MACCATALYST
@@ -96,11 +101,13 @@ public partial class MenuView : ContentView
 		_slMenu.Children.Add(_btnDiagram);
 		_slMenu.Children.Add(_btnEeg);
 		_slMenu.Children.Add(_btnMeditation);
+		_slMenu.Children.Add(_btnSettings);
 
 		_btnSession.Clicked += btnSession_Clicked;
 		_btnDiagram.Clicked += btnDiagram_Clicked;
 		_btnEeg.Clicked += btnEeg_Clicked;
 		_btnMeditation.Clicked += btnMeditation_Clicked;
+		_btnSettings.Clicked += btnSettings_Clicked;
 
 		Content = border;
 	}
@@ -128,6 +135,12 @@ public partial class MenuView : ContentView
 	{
 		if (_ePage != ePages.eMeditation)
 			await Shell.Current.GoToAsync("//Meditation/MeditationRoot", true);
+	}
+
+	private async void btnSettings_Clicked(object sender, EventArgs e)
+	{
+		if (_ePage != ePages.eSettings)
+			await Shell.Current.GoToAsync("//Settings/SettingsRoot", true);
 	}
 
 	public static readonly BindableProperty CardColorProperty = BindableProperty.Create(nameof(CardColor),
