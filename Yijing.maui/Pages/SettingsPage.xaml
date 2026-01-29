@@ -130,6 +130,7 @@
 														Text="Name"
 														VerticalTextAlignment="Center" />
 													<Entry
+														Grid.Column="1"
 														Text="{Binding Name}"
 														HorizontalOptions="Fill" />
 												</Grid>
@@ -139,6 +140,7 @@
 														Text="Model"
 														VerticalTextAlignment="Center" />
 													<Entry
+														Grid.Column="1"
 														Text="{Binding ModelId}"
 														HorizontalOptions="Fill" />
 												</Grid>
@@ -148,6 +150,7 @@
 														Text="Endpoint"
 														VerticalTextAlignment="Center" />
 													<Entry
+														Grid.Column="1"
 														Text="{Binding EndPoint}"
 														HorizontalOptions="Fill" />
 												</Grid>
@@ -157,6 +160,7 @@
 														Text="Key"
 														VerticalTextAlignment="Center" />
 													<Entry
+														Grid.Column="1"
 														Text="{Binding Key}"
 														HorizontalOptions="Fill" />
 												</Grid>
