@@ -48,4 +48,14 @@
 			Route="MeditationRoot" />
 	</FlyoutItem>
 
+	<FlyoutItem Route="Settings">
+		<ShellContent
+			x:Name="pagSettings"
+			Shell.NavBarIsVisible="false"
+			Title="Settings"
+			Icon="iconlistdetail.png"
+			ContentTemplate="{DataTemplate pages:SettingsPage}"
+			Route="SettingsRoot" />
+	</FlyoutItem>
+
 </Shell>

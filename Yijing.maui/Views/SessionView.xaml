@@ -24,19 +24,21 @@
 	</ContentView.Resources>
 
 	<Border>
-		<Grid RowDefinitions="Auto,*">
-			<HorizontalStackLayout
-				x:Name="hslButtons"
-				Grid.Row="0">
-				<controls:ButtonEx
-					x:Name="btnAdd"
-					Icon="{x:Static controls:FluentIcons.Add}"
-					Clicked="OnAddSessionClicked" />
-				<controls:ButtonEx
-					x:Name="btnDelete"
-					Icon="{x:Static controls:FluentIcons.Delete}"
-					Clicked="OnDeleteSessionClicked" />
-			</HorizontalStackLayout>
+		<Grid RowDefinitions="Auto,*" >
+			<Border>
+				<HorizontalStackLayout
+					x:Name="hslButtons"
+					Grid.Row="0">
+					<controls:ButtonEx
+						x:Name="btnAdd"
+						Icon="{x:Static controls:FluentIcons.Add}"
+						Clicked="OnAddSessionClicked" />
+					<controls:ButtonEx
+						x:Name="btnDelete"
+						Icon="{x:Static controls:FluentIcons.Delete}"
+						Clicked="OnDeleteSessionClicked" />
+				</HorizontalStackLayout>
+			</Border>
 
 			<CollectionView
 				x:Name="sessionCollection"
