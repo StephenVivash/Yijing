@@ -36,9 +36,8 @@ public partial class SettingsView : ContentView
 			return;
 
 		bool isLandscape = width > height;
-		double treeWidth = isLandscape ? 260 : 0;
-		colTree.Width = isLandscape ? new GridLength(treeWidth) : new GridLength(1, GridUnitType.Star);
-		colDetails.Width = isLandscape ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
+		double treeWidth = isLandscape ? 260 : width;
+		borTree.WidthRequest = treeWidth;
 		borDetails.IsVisible = isLandscape;
 		borTree.Margin = isLandscape ? new Thickness(0, 0, 6, 0) : new Thickness(0);
 	}
