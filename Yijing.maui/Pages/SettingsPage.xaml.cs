@@ -78,7 +78,6 @@ public partial class SettingsPage : ContentPage
 		{
 			borDetails.BackgroundColor = Colors.Black;
 			vslDetails.BackgroundColor = Colors.Black;
-			colServices.BackgroundColor = Colors.Black;
 		}
 
 		LoadAiPreferences();

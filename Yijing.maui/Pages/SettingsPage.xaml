@@ -115,13 +115,10 @@
 								Clicked="OnAddServiceClicked" />
 						</HorizontalStackLayout>
 
-						<CollectionView
-							x:Name="colServices"
-							ItemsSource="{Binding ServiceItems}">
-							<CollectionView.ItemsLayout>
-								<LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
-							</CollectionView.ItemsLayout>
-							<CollectionView.ItemTemplate>
+						<VerticalStackLayout
+							Spacing="10"
+							BindableLayout.ItemsSource="{Binding ServiceItems}">
+							<BindableLayout.ItemTemplate>
 								<DataTemplate>
 									<Border Padding="12">
 										<Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
@@ -169,8 +166,8 @@
 										</Grid>
 									</Border>
 								</DataTemplate>
-							</CollectionView.ItemTemplate>
-						</CollectionView>
+							</BindableLayout.ItemTemplate>
+						</VerticalStackLayout>
 					</VerticalStackLayout>
 				</VerticalStackLayout>
 			</ScrollView>
