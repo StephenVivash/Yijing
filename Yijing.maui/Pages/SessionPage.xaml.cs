@@ -77,6 +77,11 @@ public partial class SessionPage : ContentPage
 		chbIncludeCast.IsChecked = false;
 	}
 
+	private async void btnSummary_Clicked(object sender, EventArgs e)
+	{
+		await sessionView.GenerateSummaryAsync();
+	}
+
 	private void chbIncludeCast_CheckedChanged(object sender, EventArgs e)
 	{
 	}

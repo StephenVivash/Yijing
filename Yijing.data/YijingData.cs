@@ -15,6 +15,7 @@ public class YijingDbContext : DbContext
 	public virtual DbSet<Session> Sessions { get; set; }
 	public virtual DbSet<Text> Texts { get; set; }
 	public virtual DbSet<Meditation> Meditations { get; set; }
+	public virtual DbSet<SessionSummary> SessionSummaries { get; set; }
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{

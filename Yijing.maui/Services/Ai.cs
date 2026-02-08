@@ -52,6 +52,54 @@ public class Ai
 		_chatHistory.AddAssistantMessage(message);
 	}
 
+	public async Task<string> ChatOnceAsync(string aiService, string systemPrompt, string userPrompt, bool functions)
+	{
+		if (AiPreferences.IsNoneService(aiService))
+			return string.Empty;
+
+		var builder = Kernel.CreateBuilder();
+		var serviceInfo = AiPreferences.AiService(aiService);
+		var http = new HttpClient
+		{
+			Timeout = TimeSpan.FromMinutes(
+			AiPreferences.IsOllamaService(aiService) ? 10 : 2)
+		};
+
+		builder.AddOpenAIChatCompletion(serviceInfo.ModelId,
+			new Uri(serviceInfo.EndPoint),
+			serviceInfo.Key, httpClient: http);
+
+		if (functions)
+			builder.Plugins.AddFromType<YijingPlugin>("Yijing");
+
+		Kernel kernel = builder.Build();
+		var chatService = kernel.GetRequiredService<IChatCompletionService>();
+
+		var history = new ChatHistory();
+		if (!string.IsNullOrWhiteSpace(systemPrompt))
+			history.AddSystemMessage(systemPrompt);
+		history.AddUserMessage(userPrompt);
+
+		var settings = new OpenAIPromptExecutionSettings
+		{
+			Temperature = AiPreferences.AiTemperature,
+			TopP = AiPreferences.AiTopP,
+			MaxTokens = AiPreferences.AiMaxTokens,
+		};
+
+		if (functions)
+			settings.ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions;
+
+		var reply = await chatService.GetChatMessageContentAsync(history, settings, kernel);
+		string response = reply.Content ?? string.Empty;
+
+		response = response.Replace("**", ""); // Remove .md
+		response = response.Replace("###", "");
+		response = response.Replace("---", "");
+
+		return response;
+	}
+
 	public async Task ChatAsync(string aiService, string prompt, bool functions)
 	{
 		try

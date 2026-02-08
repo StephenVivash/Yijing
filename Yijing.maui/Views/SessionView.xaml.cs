@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Net;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 using ValueSequencer;
@@ -25,6 +26,41 @@ public partial class SessionView : ContentView
 	private List<string> _sessionNotes = [];
 	private bool _isSyncingContexts;
 	private bool _contextSelectionDirty;
+
+	private const string SummarySystemPrompt = @"
+You are an indexing engine for a personal archive of AI chat sessions that mix technical engineering
+ discussion and spiritual/reflection (including possible Yijing casts).
+
+Your job is to extract a compact, highly searchable record from the provided transcript.
+
+Output ONLY valid JSON. No markdown, no commentary, no extra keys, no trailing text.
+
+You will be given the full transcript containing User/Assistant turns.
+
+Write a retrieval record that helps the user later find the session by searching with a few remembered concepts.
+
+Hard requirements:
+- Follow the schema exactly.
+- Respect word/item limits exactly.
+- Prefer concrete, distinctive nouns and phrases over generic terms.
+- Do not invent facts; if something is unclear, omit it.
+- Keep summary plain prose (no bullets, no numbering).
+
+Schema (exact keys, exact types):
+{
+""Keywords"": string[],
+""Summary"": string,
+}
+
+Field rules:
+- Keywords: exactly 10 items. Each item 1-3 words, lowercase, no punctuation. Avoid near-duplicates. Mix technical + reflective terms if present.
+- Summary: 90-110 words exactly. Must include: the user's goal, notable constraints, the key turn/insight, and the outcome or next step.
+
+Keyword selection guidance:
+- Include at least 3 technical keywords if technical content exists, and at least 3 reflective/spiritual keywords if that content exists.
+- Good keywords name: features, design patterns, data structures, retrieval/search methods, prompt strategies, emotional themes, decisions, and next actions.
+
+Return only the JSON object.";
 
 	public event EventHandler<string>? ChatUpdated;
 
@@ -488,6 +524,227 @@ public partial class SessionView : ContentView
 		if (session is not null)
 			LoadChatSessionData(session.FileName!);
 		UpdateChat();
+	}
+
+	public async Task GenerateSummaryAsync()
+	{
+		if (_selectedSession is null)
+		{
+			await Window.Page!.DisplayAlertAsync("AI Summary", "Please select a session first.", "OK");
+			return;
+		}
+
+		if (_selectedSession.Id == 0)
+		{
+			await Window.Page!.DisplayAlertAsync("AI Summary", "Please save the session before summarising.", "OK");
+			return;
+		}
+
+		if (AiPreferences.IsNoneService(AppPreferences.AiChatService))
+		{
+			await Window.Page!.DisplayAlertAsync("AI Summary", "Select an AI chat service in settings.", "OK");
+			return;
+		}
+
+		string transcript = BuildTranscriptForSummary(_selectedSession);
+		if (string.IsNullOrWhiteSpace(transcript))
+		{
+			await Window.Page!.DisplayAlertAsync("AI Summary", "No transcript available for this session.", "OK");
+			return;
+		}
+
+		try
+		{
+			string userPrompt = $"Transcript for session '{_selectedSession.Name}' ({_selectedSession.FileName}):\n\n{transcript}";
+			string response = await _ai.ChatOnceAsync(AppPreferences.AiChatService, SummarySystemPrompt, userPrompt, false);
+			string json = ExtractJsonObject(response);
+
+			if (!TryParseSummaryJson(json, out string summary, out string keywordsCsv, out string error))
+			{
+				await Window.Page!.DisplayAlertAsync("AI Summary", $"Unable to store summary. {error}", "OK");
+				return;
+			}
+
+			SaveSessionSummary(_selectedSession.Id, summary, keywordsCsv);
+			await Window.Page!.DisplayAlertAsync("AI Summary", "Summary saved for this session.", "OK");
+		}
+		catch (Exception ex)
+		{
+			await Window.Page!.DisplayAlertAsync("AI Summary", $"Failed to generate summary. {ex.Message}", "OK");
+		}
+	}
+
+	private string BuildTranscriptForSummary(Session session)
+	{
+		var sb = new StringBuilder();
+
+		sb.AppendLine($"Session: {session.Name}");
+		/*
+		if (!string.IsNullOrWhiteSpace(session.FileName))
+			sb.AppendLine($"File: {session.FileName}");
+		if (!string.IsNullOrWhiteSpace(session.YijingCast))
+			sb.AppendLine($"YijingCast: {session.YijingCast}");
+		if (!string.IsNullOrWhiteSpace(session.Description))
+		{
+			sb.AppendLine("Description:");
+			sb.AppendLine(session.Description);
+		}
+		*/
+		if (_sessionNotes.Count > 0)
+		{
+			sb.AppendLine();
+			sb.AppendLine("Notes:");
+			foreach (string note in _sessionNotes)
+				sb.AppendLine(note.Trim());
+		}
+
+		int count = int.Max(_ai._chatReponses[1].Count, _ai._userPrompts[1].Count);
+		if (count > 0)
+		{
+			sb.AppendLine();
+			sb.AppendLine("Transcript:");
+			for (int i = 0; i < count; ++i)
+			{
+				if (i < _ai._userPrompts[1].Count)
+					sb.AppendLine("User: " + _ai._userPrompts[1][i]);
+				if (i < _ai._chatReponses[1].Count)
+					sb.AppendLine("Assistant: " + _ai._chatReponses[1][i]);
+			}
+		}
+
+		return sb.ToString().Trim();
+	}
+
+	private static string ExtractJsonObject(string response)
+	{
+		if (string.IsNullOrWhiteSpace(response))
+			return string.Empty;
+
+		string trimmed = response.Trim();
+		int start = trimmed.IndexOf('{');
+		int end = trimmed.LastIndexOf('}');
+		if ((start >= 0) && (end >= start))
+			return trimmed.Substring(start, end - start + 1).Trim();
+
+		return trimmed;
+	}
+
+	private static bool TryParseSummaryJson(string json, out string summary, out string keywordsCsv, out string error)
+	{
+		summary = string.Empty;
+		keywordsCsv = string.Empty;
+		error = string.Empty;
+
+		if (string.IsNullOrWhiteSpace(json))
+		{
+			error = "AI returned an empty response.";
+			return false;
+		}
+
+		try
+		{
+			using JsonDocument doc = JsonDocument.Parse(json);
+			var root = doc.RootElement;
+			if (root.ValueKind != JsonValueKind.Object)
+			{
+				error = "Response must be a JSON object.";
+				return false;
+			}
+
+			if (!root.TryGetProperty("Keywords", out JsonElement keywords) || (keywords.ValueKind != JsonValueKind.Array))
+			{
+				error = "Missing Keywords array.";
+				return false;
+			}
+			if (keywords.GetArrayLength() != 10)
+			{
+				error = "Keywords must contain exactly 10 items.";
+				return false;
+			}
+			List<string> keywordsList = new();
+			foreach (JsonElement item in keywords.EnumerateArray())
+			{
+				if (item.ValueKind != JsonValueKind.String)
+				{
+					error = "Each keyword must be a string.";
+					return false;
+				}
+				string? kw = item.GetString();
+				if (string.IsNullOrWhiteSpace(kw))
+				{
+					error = "Keywords must not be empty.";
+					return false;
+				}
+				keywordsList.Add(kw.Trim());
+			}
+
+			if (!root.TryGetProperty("Summary", out JsonElement summaryElement) || (summaryElement.ValueKind != JsonValueKind.String))
+			{
+				error = "Missing Summary string.";
+				return false;
+			}
+
+			summary = summaryElement.GetString() ?? string.Empty;
+
+			int wordCount = CountWords(summary);
+			if ((wordCount < 90) || (wordCount > 110))
+			{
+				error = $"Summary must be 90-110 words, found {wordCount}.";
+				return false;
+			}
+
+			/*	Prompt text
+				""YijingCasts"": string[],
+				- YijingCasts: 0-5 items. Each must be verbatim cast description in this format if present: ""41.3 Decrease > 26 Discipline"". If none, empty array.
+
+			if (!root.TryGetProperty("YijingCasts", out JsonElement casts) || (casts.ValueKind != JsonValueKind.Array))
+			{
+				error = "Missing YijingCasts array.";
+				return false;
+			}
+			
+			foreach (JsonElement item in casts.EnumerateArray())
+			{
+				if (item.ValueKind != JsonValueKind.String)
+				{
+					error = "Each YijingCast must be a string.";
+					return false;
+				}
+			}
+			*/
+
+			keywordsCsv = string.Join(",", keywordsList);
+			return true;
+		}
+		catch (JsonException ex)
+		{
+			error = ex.Message;
+			return false;
+		}
+	}
+
+	private static int CountWords(string? value)
+	{
+		if (string.IsNullOrWhiteSpace(value))
+			return 0;
+
+		return value.Split([' ', '\r', '\n', '\t'], StringSplitOptions.RemoveEmptyEntries).Length;
+	}
+
+	private void SaveSessionSummary(int sessionId, string summary, string keywordsCsv)
+	{
+		using var yc = new YijingDbContext();
+		var existing = yc.SessionSummaries.SingleOrDefault(ss => ss.SessionId == sessionId);
+		if (existing is null)
+			yc.SessionSummaries.Add(new SessionSummary { SessionId = sessionId, Summary = summary, Keywords = keywordsCsv });
+		else
+		{
+			existing.Summary = summary;
+			existing.Keywords = keywordsCsv;
+			yc.SessionSummaries.Update(existing);
+		}
+
+		YijingDatabase.SaveChanges(yc);
 	}
 
 	public async void AiOrNote(string prompt, bool includeCast)

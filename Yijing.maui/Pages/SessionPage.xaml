@@ -68,6 +68,11 @@
 						Icon="{x:Static controls:FluentIcons.ReturnKey}"
 						Clicked="btnAiOrNote_Clicked" />
 
+					<controls:ButtonEx
+						x:Name="btnSummary"
+						Icon="{x:Static controls:FluentIcons.Dictionary}"
+						Clicked="btnSummary_Clicked" />
+
 				</HorizontalStackLayout>
 
 				<Editor
