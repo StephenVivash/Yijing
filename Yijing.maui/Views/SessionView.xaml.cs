@@ -39,6 +39,12 @@ You will be given the full transcript containing User/Assistant turns.
 
 Write a retrieval record that helps the user later find the session by searching with a few remembered concepts.
 
+Don't ifentify what the user or assistant said, just record the dialog.
+
+Don't try to capture everything, just the most distinctive and memorable elements that would help someone find this session later.
+
+Don't include Yijing cast descriptions or hexagram numbers just use hexagram names as relevant natural language.
+
 Hard requirements:
 - Follow the schema exactly.
 - Respect word/item limits exactly.
@@ -566,7 +572,7 @@ Return only the JSON object.";
 			}
 
 			SaveSessionSummary(_selectedSession.Id, summary, keywordsCsv);
-			await Window.Page!.DisplayAlertAsync("AI Summary", "Summary saved for this session.", "OK");
+			await Window.Page!.DisplayAlertAsync("AI Summary", summary /*"Summary saved for this session."*/, "OK");
 		}
 		catch (Exception ex)
 		{
@@ -656,9 +662,9 @@ Return only the JSON object.";
 				error = "Missing Keywords array.";
 				return false;
 			}
-			if (keywords.GetArrayLength() != 10)
+			if (keywords.GetArrayLength() > 15)
 			{
-				error = "Keywords must contain exactly 10 items.";
+				error = "Keywords must contain 15 items.";
 				return false;
 			}
 			List<string> keywordsList = new();
@@ -687,9 +693,9 @@ Return only the JSON object.";
 			summary = summaryElement.GetString() ?? string.Empty;
 
 			int wordCount = CountWords(summary);
-			if ((wordCount < 90) || (wordCount > 110))
+			if ((wordCount < 80) || (wordCount > 150))
 			{
-				error = $"Summary must be 90-110 words, found {wordCount}.";
+				error = $"Summary must be 80-150 words, found {wordCount}.";
 				return false;
 			}
 
