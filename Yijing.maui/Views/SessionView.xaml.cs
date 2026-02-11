@@ -39,7 +39,7 @@ You will be given the full transcript containing User/Assistant turns.
 
 Write a retrieval record that helps the user later find the session by searching with a few remembered concepts.
 
-Don't ifentify what the user or assistant said, just record the dialog.
+Don't ifentify the user or assistant, just record the dialog.
 
 Don't try to capture everything, just the most distinctive and memorable elements that would help someone find this session later.
 
@@ -59,12 +59,13 @@ Schema (exact keys, exact types):
 }
 
 Field rules:
-- Keywords: exactly 10 items. Each item 1-3 words, lowercase, no punctuation. Avoid near-duplicates. Mix technical + reflective terms if present.
+- Keywords: exactly 10 items. Each item is 1 word, lowercase, no punctuation. Avoid near-duplicates. Mix technical + reflective terms if present.
 - Summary: 90-110 words exactly. Must include: the user's goal, notable constraints, the key turn/insight, and the outcome or next step.
 
 Keyword selection guidance:
 - Include at least 3 technical keywords if technical content exists, and at least 3 reflective/spiritual keywords if that content exists.
-- Good keywords name: features, design patterns, data structures, retrieval/search methods, prompt strategies, emotional themes, decisions, and next actions.
+- Good keywords name: features, design, structure, retrieval, strategy, emotion, decision
+- DO NOT use the foloowing keywords: yijing, hexagram, meditation, contemplation, cast, ai, assistant, user, session, summary
 
 Return only the JSON object.";
 
@@ -572,7 +573,7 @@ Return only the JSON object.";
 			}
 
 			SaveSessionSummary(_selectedSession.Id, summary, keywordsCsv);
-			await Window.Page!.DisplayAlertAsync("AI Summary", summary /*"Summary saved for this session."*/, "OK");
+			await Window.Page!.DisplayAlertAsync("AI Summary", summary + "\n\n" + keywordsCsv /*"Summary saved for this session."*/, "OK");
 		}
 		catch (Exception ex)
 		{
