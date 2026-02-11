@@ -26,6 +26,21 @@ public partial class SessionView : ContentView
 	private List<string> _sessionNotes = [];
 	private bool _isSyncingContexts;
 	private bool _contextSelectionDirty;
+	private List<SessionSearchEntry> _searchResults = [];
+	private List<string> _searchTerms = [];
+	private bool _searchResultsActive;
+
+	private const string SearchUriScheme = "yijing-search";
+
+	private sealed class SessionSearchEntry
+	{
+		public int SessionId { get; init; }
+		public string Name { get; init; } = string.Empty;
+		public string FileName { get; init; } = string.Empty;
+		public string YijingCast { get; init; } = string.Empty;
+		public string Keywords { get; init; } = string.Empty;
+		public string Summary { get; init; } = string.Empty;
+	}
 
 	private const string SummarySystemPrompt = @"
 You are an indexing engine for a personal archive of AI chat sessions that mix technical engineering
@@ -120,17 +135,10 @@ Return only the JSON object.";
 		if ((width == -1) || (height == -1))
 			return;
 
-		double w = width - 10;
-
-		w = width - 40;
-
-		w /= 2;
-
-		//w -= 5;
-
-		w /= 2;
+		double w = Math.Max(0, (width - 40) / 3);
 		btnAdd.WidthRequest = w;
 		btnDelete.WidthRequest = w;
+		btnSearch.WidthRequest = w;
 
 		base.OnSizeAllocated(width, height);
 	}
@@ -138,6 +146,11 @@ Return only the JSON object.";
 	private void OnAddSessionClicked(object? sender, EventArgs e)
 	{
 		AddSession();
+	}
+
+	private async void OnSearchSessionClicked(object? sender, EventArgs e)
+	{
+		await SearchAsync();
 	}
 
 	private async void OnDeleteSessionClicked(object? sender, EventArgs e)
@@ -178,6 +191,9 @@ Return only the JSON object.";
 
 	private void OnSessionsSelectionChanged(object? sender, SelectionChangedEventArgs e)
 	{
+		if (_searchResultsActive)
+			AbandonSearchResults();
+
 		_selectedSession = e.CurrentSelection.FirstOrDefault() as Session;
 		LoadSelectedSession(_selectedSession);
 		if (!string.IsNullOrEmpty(_selectedSession?.YijingCast))
@@ -214,10 +230,17 @@ Return only the JSON object.";
 	{
 		btnAdd.Padding = thickness;
 		btnDelete.Padding = thickness;
+		btnSearch.Padding = thickness;
 	}
 
 	public void UpdateChat()
 	{
+		if (_searchResultsActive)
+		{
+			RenderSearchResults();
+			return;
+		}
+
 		String strText = Sequences.strDiagramSettings[16, Sequences.HexagramText + 1];
 		string strBC = App.Current?.RequestedTheme == AppTheme.Dark ? "black" : "white";
 		string strFC = App.Current?.RequestedTheme == AppTheme.Dark ? "white" : "black";
@@ -265,6 +288,216 @@ Return only the JSON object.";
 		sb.Append("</body></html>");
 		UI.Try<SessionPage>(p => p.WebView().Source = new HtmlWebViewSource { Html = sb.ToString() });
 		//ChatUpdated?.Invoke(this, sb.ToString());
+	}
+
+	public bool HandleWebViewNavigation(string? url)
+	{
+		if (string.IsNullOrWhiteSpace(url))
+			return false;
+
+		if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri))
+			return false;
+
+		if (!uri.Scheme.Equals(SearchUriScheme, StringComparison.OrdinalIgnoreCase))
+			return false;
+
+		if (!_searchResultsActive)
+			return true;
+
+		if (uri.Host.Equals("delete", StringComparison.OrdinalIgnoreCase))
+		{
+			string indexText = uri.AbsolutePath.Trim('/');
+			if (int.TryParse(indexText, NumberStyles.Integer, CultureInfo.InvariantCulture, out int index))
+				RemoveSearchResult(index);
+		}
+
+		return true;
+	}
+
+	private async Task SearchAsync()
+	{
+		string? input = await Window.Page!.DisplayPromptAsync("Search Sessions",
+			"Enter one or more words to search in YijingCast and Keywords.", "Search", "Cancel");
+		if (input is null)
+			return;
+
+		List<string> terms = TokenizeSearchTerms(input)
+			.Distinct(StringComparer.OrdinalIgnoreCase)
+			.ToList();
+		if (terms.Count == 0)
+		{
+			await Window.Page!.DisplayAlertAsync("Search Sessions", "Please enter at least one word.", "OK");
+			return;
+		}
+
+		_searchTerms = terms;
+		_searchResults = FindSearchResults(terms);
+		_searchResultsActive = _searchResults.Count > 0;
+
+		if (_searchResultsActive)
+		{
+			RenderSearchResults();
+			return;
+		}
+
+		AbandonSearchResults();
+		UpdateChat();
+		await Window.Page!.DisplayAlertAsync("Search Sessions", "No matching sessions were found.", "OK");
+	}
+
+	private List<SessionSearchEntry> FindSearchResults(IEnumerable<string> terms)
+	{
+		HashSet<string> searchWords = new(terms, StringComparer.OrdinalIgnoreCase);
+
+		using var yc = new YijingDbContext();
+		List<SessionSearchEntry> entries = (
+			from session in yc.Sessions.AsNoTracking()
+			join sessionSummary in yc.SessionSummaries.AsNoTracking()
+				on session.Id equals sessionSummary.SessionId into summaryJoin
+			from summary in summaryJoin.DefaultIfEmpty()
+			select new SessionSearchEntry
+			{
+				SessionId = session.Id,
+				Name = session.Name,
+				FileName = session.FileName ?? string.Empty,
+				YijingCast = session.YijingCast ?? string.Empty,
+				Keywords = summary != null ? summary.Keywords : string.Empty,
+				Summary = summary != null ? summary.Summary : string.Empty
+			}).ToList();
+
+		return entries
+			.Where(entry => MatchesSearchTerms(entry, searchWords))
+			.OrderByDescending(entry => entry.FileName, StringComparer.OrdinalIgnoreCase)
+			.ThenBy(entry => entry.Name, StringComparer.OrdinalIgnoreCase)
+			.ToList();
+	}
+
+	private static bool MatchesSearchTerms(SessionSearchEntry entry, HashSet<string> searchWords)
+	{
+		HashSet<string> columnWords = new(TokenizeSearchTerms(entry.YijingCast), StringComparer.OrdinalIgnoreCase);
+		foreach (string word in TokenizeSearchTerms(entry.Keywords))
+			columnWords.Add(word);
+
+		return searchWords.Any(columnWords.Contains);
+	}
+
+	private static List<string> TokenizeSearchTerms(string? value)
+	{
+		if (string.IsNullOrWhiteSpace(value))
+			return [];
+
+		return Regex.Matches(value, @"[\p{L}\p{N}]+")
+			.Select(match => match.Value.Trim())
+			.Where(word => !string.IsNullOrWhiteSpace(word))
+			.ToList();
+	}
+
+	private void RenderSearchResults()
+	{
+		string strBC = App.Current?.RequestedTheme == AppTheme.Dark ? "black" : "white";
+		string strFC = App.Current?.RequestedTheme == AppTheme.Dark ? "white" : "black";
+		string strAC = App.Current?.RequestedTheme == AppTheme.Dark ? "gray" : "gray";
+
+		var sb = new StringBuilder();
+		sb.Append("<html><head><meta charset=\"utf-8\"/><style>");
+		sb.Append("body{");
+		sb.Append($"background-color:{strBC};color:{strFC};font-family:'Open Sans',sans-serif;font-size:16px;line-height:1.5;");
+		sb.Append("}");
+		sb.Append("h2{margin:0 0 10px 0;color:" + strAC + ";}");
+		sb.Append("p{margin:4px 0;}");
+		sb.Append(".entry{border:1px solid " + strAC + ";border-radius:8px;padding:10px;margin:10px 0;}");
+		sb.Append(".delete{display:inline-block;border:1px solid " + strAC +
+			";border-radius:6px;padding:2px 8px;margin-bottom:8px;text-decoration:none;color:" + strFC + ";}");
+		sb.Append("</style></head><body>");
+
+		sb.Append($"<h2>Search Results ({_searchResults.Count})</h2>");
+		if (_searchTerms.Count > 0)
+		{
+			sb.Append("<p><strong>Words:</strong> ");
+			sb.Append(WebUtility.HtmlEncode(string.Join(" ", _searchTerms)));
+			sb.Append("</p>");
+		}
+
+		sb.Append("<p>Press AI/Note to add all listed entries to this session's context list.</p>");
+
+		for (int i = 0; i < _searchResults.Count; ++i)
+		{
+			SessionSearchEntry entry = _searchResults[i];
+
+			sb.Append("<div class=\"entry\">");
+			sb.Append($"<a class=\"delete\" href=\"{SearchUriScheme}://delete/{i}\">Delete</a>");
+
+			AppendSearchField(sb, "Name", entry.Name);
+			AppendSearchField(sb, "YijingCast", entry.YijingCast);
+			AppendSearchField(sb, "Keywords", entry.Keywords);
+			AppendSearchField(sb, "Summary", entry.Summary);
+
+			sb.Append("</div>");
+		}
+
+		sb.Append("</body></html>");
+		UI.Try<SessionPage>(p => p.WebView().Source = new HtmlWebViewSource { Html = sb.ToString() });
+	}
+
+	private static void AppendSearchField(StringBuilder sb, string name, string? value)
+	{
+		sb.Append("<p><strong>");
+		sb.Append(WebUtility.HtmlEncode(name));
+		sb.Append(":</strong> ");
+		sb.Append(WebUtility.HtmlEncode(string.IsNullOrWhiteSpace(value) ? "-" : value));
+		sb.Append("</p>");
+	}
+
+	private void RemoveSearchResult(int index)
+	{
+		if ((index < 0) || (index >= _searchResults.Count))
+			return;
+
+		_searchResults.RemoveAt(index);
+		if (_searchResults.Count == 0)
+		{
+			AbandonSearchResults();
+			UpdateChat();
+			return;
+		}
+
+		RenderSearchResults();
+	}
+
+	private void AddSearchResultsToContextSessions()
+	{
+		if (!_searchResultsActive || (_searchResults.Count == 0))
+			return;
+
+		bool changed = false;
+		foreach (SessionSearchEntry entry in _searchResults)
+		{
+			string contextName = !string.IsNullOrWhiteSpace(entry.FileName) ? entry.FileName : entry.Name;
+			if (string.IsNullOrWhiteSpace(contextName))
+				continue;
+			if (_selectedSession?.FileName is not null &&
+				contextName.Equals(_selectedSession.FileName, StringComparison.OrdinalIgnoreCase))
+				continue;
+			if (_ai._contextSessions.Any(s => s.Equals(contextName, StringComparison.OrdinalIgnoreCase)))
+				continue;
+
+			_ai._contextSessions.Add(contextName);
+			changed = true;
+		}
+
+		if (!changed)
+			return;
+
+		SortContextSessions();
+		_contextSelectionDirty = true;
+		UpdateContextSelectionFlags();
+	}
+
+	private void AbandonSearchResults()
+	{
+		_searchResultsActive = false;
+		_searchResults = [];
+		_searchTerms = [];
 	}
 
 	private void LoadSessions(bool reload = false)
@@ -773,6 +1006,15 @@ Return only the JSON object.";
 			await Window.Page!.DisplayAlertAsync("No Prompt", "Please enter a prompt.", "OK");
 			return;
 		}
+		if (_selectedSession?.FileName is null)
+		{
+			await Window.Page!.DisplayAlertAsync("No Session", "Please select a session.", "OK");
+			return;
+		}
+
+		bool hadSearchResults = _searchResultsActive && (_searchResults.Count > 0);
+		if (hadSearchResults)
+			AddSearchResultsToContextSessions();
 
 		if (AiPreferences.IsNoneService(AppPreferences.AiChatService))
 			_sessionNotes.Add(prompt);
@@ -782,7 +1024,10 @@ Return only the JSON object.";
 			await _ai.ChatAsync(AppPreferences.AiChatService, prompt, false);
 		}
 
-		SaveChat(_selectedSession!.FileName!);
+		if (hadSearchResults)
+			AbandonSearchResults();
+
+		SaveChat(_selectedSession.FileName);
 		UpdateChat();
 		UpdateSessionLog("", false, false);
 	}

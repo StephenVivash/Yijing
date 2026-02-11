@@ -88,6 +88,7 @@
 			<Border>
 			<WebView
 				x:Name="webview"
+				Navigating="webview_Navigating"
 				Focused="webview_Focused"
 				/>
 			</Border>

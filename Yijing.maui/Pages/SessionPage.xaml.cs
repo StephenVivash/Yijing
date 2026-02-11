@@ -101,4 +101,10 @@ public partial class SessionPage : ContentPage
 		vslInput.HeightRequest = 100;
 		edtSessionLog.HeightRequest = 100;
 	}
+
+	private void webview_Navigating(object sender, WebNavigatingEventArgs e)
+	{
+		if (sessionView.HandleWebViewNavigation(e.Url))
+			e.Cancel = true;
+	}
 }
