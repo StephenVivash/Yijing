@@ -145,7 +145,7 @@ Return only the JSON object.";
 
 	private void OnAddSessionClicked(object? sender, EventArgs e)
 	{
-		AddSession();
+		AddSession(AppSettings.ReverseDateString());
 	}
 
 	private async void OnSearchSessionClicked(object? sender, EventArgs e)
@@ -703,13 +703,15 @@ Return only the JSON object.";
 		}
 	}
 
-	public void AddSession()
+	public void AddSession(string fileName, bool meditation = false, eEegDevice eegDevice = eEegDevice.eNone)
 	{
-		string fileName = AppSettings.ReverseDateString();
 		var summary = CreateSession(fileName);
+		summary.Meditation = meditation;
+		summary.EegDevice = eegDevice;
+		if (eegDevice != eEegDevice.eNone)
+			summary.Description = "EEG session";
 		_sessions.Insert(0, summary);
 		sessionCollection.SelectedItem = summary;
-
 		using var yc = new YijingDbContext();
 		var x = yc.Sessions.Add(summary);
 		YijingDatabase.SaveChanges(yc);
@@ -738,7 +740,7 @@ Return only the JSON object.";
 			}
 		}
 		else
-			AddSession();
+			AddSession(AppSettings.ReverseDateString(), true);
 	}
 
 	private void SelectSession(string? selectSession)

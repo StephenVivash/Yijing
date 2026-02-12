@@ -385,7 +385,7 @@ public partial class DiagramView : ContentView
 		if (m_nDiagramMode == (int)eDiagramMode.eAutoCast)
 		{
 			EnableDiagramControls(false, true);
-			AutoCast();
+			_ = AutoCast();
 			//m_tskAutoCast = new Task(AutoCast);
 			//m_tskAutoCast.Start();
 		}
@@ -394,7 +394,7 @@ public partial class DiagramView : ContentView
 			if (UI.Get<EegView>().EegChannel(0) is not null)
 			{
 				EnableDiagramControls(false, true);
-				MindCast();
+				_ = MindCast();
 				//m_tskAutoCast = new Task(MindCast);
 				//m_tskAutoCast.Start();
 			}

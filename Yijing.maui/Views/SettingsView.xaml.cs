@@ -2,6 +2,8 @@ using System.Collections.ObjectModel;
 
 namespace Yijing.Views;
 
+#nullable enable
+
 public enum SettingsSection
 {
 	AiPreferences

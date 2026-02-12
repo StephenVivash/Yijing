@@ -200,7 +200,7 @@ public partial class EegView : ContentView
 			picReplaySpeed.IsEnabled = false;
 
 			UI.Call<EegPage>(p => p.SessionLog().Text = "");
-			//UI.Call<DiagramView>(v => v.StartNewChat());
+			UI.Call<SessionView>(v => v.AddSession(AppSettings.ReverseDateString(), true, (eEegDevice)AppPreferences.EegDevice));
 			AudioPlayer.Ambience(Dispatcher, true);
 			_eeg.Connect();
 		}
@@ -224,7 +224,6 @@ public partial class EegView : ContentView
 			string s = (string)picSession.SelectedItem;
 			if (!string.IsNullOrEmpty(s))
 			{
-				//UI.Call<DiagramView>(v => v.SelectChat(s));
 				_strSession = s;
 				LoadAnalysis();
 				_eeg.m_bCancelReplay = false;
@@ -388,9 +387,6 @@ public partial class EegView : ContentView
 		picSession.SelectedIndex = -1;
 		picSession.ItemsSource = lf;
 		picSession.SelectedIndex = 0;
-
-		//_strSession = picSession.SelectedItem.ToString();
-
 		picSession.Focus();
 	}
 
