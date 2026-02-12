@@ -304,11 +304,15 @@ Return only the JSON object.";
 		if (!_searchResultsActive)
 			return true;
 
-		if (uri.Host.Equals("delete", StringComparison.OrdinalIgnoreCase))
+		HashSet<int> selectedSessionIds = ParseSelectedSessionIds(uri);
+		if (uri.Host.Equals("add", StringComparison.OrdinalIgnoreCase))
+			AddSelectedSearchResultsToContextSessions(selectedSessionIds);
+		else if (uri.Host.Equals("delete", StringComparison.OrdinalIgnoreCase))
+			RemoveSearchResults(selectedSessionIds);
+		else if (uri.Host.Equals("cancel", StringComparison.OrdinalIgnoreCase))
 		{
-			string indexText = uri.AbsolutePath.Trim('/');
-			if (int.TryParse(indexText, NumberStyles.Integer, CultureInfo.InvariantCulture, out int index))
-				RemoveSearchResult(index);
+			AbandonSearchResults();
+			UpdateChat();
 		}
 
 		return true;
@@ -405,11 +409,13 @@ Return only the JSON object.";
 		sb.Append("}");
 		sb.Append("h2{margin:0 0 10px 0;color:" + strAC + ";}");
 		sb.Append("p{margin:4px 0;}");
+		sb.Append(".toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px 0;}");
+		sb.Append(".toolbar button{border:1px solid " + strAC + ";border-radius:6px;padding:4px 12px;background-color:" + strBC + ";color:" + strFC + ";}");
 		sb.Append(".entry{border:1px solid " + strAC + ";border-radius:8px;padding:10px;margin:10px 0;}");
-		sb.Append(".delete{display:inline-block;border:1px solid " + strAC +
-			";border-radius:6px;padding:2px 8px;margin-bottom:8px;text-decoration:none;color:" + strFC + ";}");
+		sb.Append(".selector{display:flex;align-items:center;gap:8px;margin-bottom:8px;}");
 		sb.Append("</style></head><body>");
 
+		sb.Append("<form method=\"get\">");
 		sb.Append($"<h2>Search Results ({_searchResults.Count})</h2>");
 		if (_searchTerms.Count > 0)
 		{
@@ -418,14 +424,21 @@ Return only the JSON object.";
 			sb.Append("</p>");
 		}
 
-		sb.Append("<p>Press AI/Note to add all listed entries to this session's context list.</p>");
+		sb.Append("<div class=\"toolbar\">");
+		sb.Append($"<button type=\"submit\" formaction=\"{SearchUriScheme}://add\">Add</button>");
+		sb.Append($"<button type=\"submit\" formaction=\"{SearchUriScheme}://delete\">Delete</button>");
+		sb.Append($"<button type=\"submit\" formaction=\"{SearchUriScheme}://cancel\">Cancel</button>");
+		sb.Append("</div>");
 
 		for (int i = 0; i < _searchResults.Count; ++i)
 		{
 			SessionSearchEntry entry = _searchResults[i];
 
 			sb.Append("<div class=\"entry\">");
-			sb.Append($"<a class=\"delete\" href=\"{SearchUriScheme}://delete/{i}\">Delete</a>");
+			sb.Append("<label class=\"selector\">");
+			sb.Append($"<input type=\"checkbox\" name=\"id\" value=\"{entry.SessionId.ToString(CultureInfo.InvariantCulture)}\" />");
+			sb.Append("<span>Select</span>");
+			sb.Append("</label>");
 
 			AppendSearchField(sb, "Name", entry.Name);
 			AppendSearchField(sb, "YijingCast", entry.YijingCast);
@@ -435,8 +448,30 @@ Return only the JSON object.";
 			sb.Append("</div>");
 		}
 
+		sb.Append("</form>");
 		sb.Append("</body></html>");
 		UI.Try<SessionPage>(p => p.WebView().Source = new HtmlWebViewSource { Html = sb.ToString() });
+	}
+
+	private static HashSet<int> ParseSelectedSessionIds(Uri uri)
+	{
+		HashSet<int> selectedSessionIds = [];
+		if (string.IsNullOrWhiteSpace(uri.Query))
+			return selectedSessionIds;
+
+		string[] pairs = uri.Query.TrimStart('?').Split('&', StringSplitOptions.RemoveEmptyEntries);
+		foreach (string pair in pairs)
+		{
+			string[] kv = pair.Split('=', 2);
+			if ((kv.Length != 2) || !kv[0].Equals("id", StringComparison.OrdinalIgnoreCase))
+				continue;
+
+			string rawValue = Uri.UnescapeDataString(kv[1]);
+			if (int.TryParse(rawValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out int sessionId))
+				selectedSessionIds.Add(sessionId);
+		}
+
+		return selectedSessionIds;
 	}
 
 	private static void AppendSearchField(StringBuilder sb, string name, string? value)
@@ -448,12 +483,15 @@ Return only the JSON object.";
 		sb.Append("</p>");
 	}
 
-	private void RemoveSearchResult(int index)
+	private void RemoveSearchResults(HashSet<int> selectedSessionIds)
 	{
-		if ((index < 0) || (index >= _searchResults.Count))
+		if (!_searchResultsActive || (_searchResults.Count == 0) || (selectedSessionIds.Count == 0))
 			return;
 
-		_searchResults.RemoveAt(index);
+		int removed = _searchResults.RemoveAll(entry => selectedSessionIds.Contains(entry.SessionId));
+		if (removed == 0)
+			return;
+
 		if (_searchResults.Count == 0)
 		{
 			AbandonSearchResults();
@@ -464,14 +502,17 @@ Return only the JSON object.";
 		RenderSearchResults();
 	}
 
-	private void AddSearchResultsToContextSessions()
+	private void AddSelectedSearchResultsToContextSessions(HashSet<int> selectedSessionIds)
 	{
-		if (!_searchResultsActive || (_searchResults.Count == 0))
+		if (!_searchResultsActive || (_searchResults.Count == 0) || (selectedSessionIds.Count == 0))
 			return;
 
 		bool changed = false;
 		foreach (SessionSearchEntry entry in _searchResults)
 		{
+			if (!selectedSessionIds.Contains(entry.SessionId))
+				continue;
+
 			string contextName = !string.IsNullOrWhiteSpace(entry.FileName) ? entry.FileName : entry.Name;
 			if (string.IsNullOrWhiteSpace(contextName))
 				continue;
@@ -485,12 +526,14 @@ Return only the JSON object.";
 			changed = true;
 		}
 
-		if (!changed)
-			return;
+		if (changed)
+		{
+			SortContextSessions();
+			_contextSelectionDirty = true;
+			UpdateContextSelectionFlags();
+		}
 
-		SortContextSessions();
-		_contextSelectionDirty = true;
-		UpdateContextSelectionFlags();
+		RemoveSearchResults(selectedSessionIds);
 	}
 
 	private void AbandonSearchResults()
@@ -1014,9 +1057,7 @@ Return only the JSON object.";
 			return;
 		}
 
-		bool hadSearchResults = _searchResultsActive && (_searchResults.Count > 0);
-		if (hadSearchResults)
-			AddSearchResultsToContextSessions();
+		bool hadSearchResults = _searchResultsActive;
 
 		if (AiPreferences.IsNoneService(AppPreferences.AiChatService))
 			_sessionNotes.Add(prompt);
