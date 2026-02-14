@@ -1170,6 +1170,10 @@ Return only the JSON object.";
 			YijingDatabase.SaveChanges(yc);
 
 			int i = _sessions.IndexOf(_selectedSession!);
+			summary.EegAnalysis = _sessions[i].EegAnalysis;
+			summary.EegDevice = _sessions[i].EegDevice;
+			summary.Meditation = _sessions[i].Meditation;
+
 			_sessions[i] = summary;
 			sessionCollection.SelectedItem = summary;
 		}

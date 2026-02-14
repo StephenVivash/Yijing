@@ -190,7 +190,10 @@ public partial class EegView : ContentView
 			string s = _strSession;
 			LoadSessions();
 			if (s == _strSession)
+			{
+				UI.Call<SessionView>(v => v.AddSession(_strSession, true, (eEegDevice)AppPreferences.EegDevice));
 				SaveAnalysis();
+			}
 		}
 
 		m_nEegMode = (int)picMode.SelectedIndex;
@@ -198,9 +201,7 @@ public partial class EegView : ContentView
 		{
 			picReplaySpeed.SelectedIndex = (int)eReplaySpeed.eNormal;
 			picReplaySpeed.IsEnabled = false;
-
 			UI.Call<EegPage>(p => p.SessionLog().Text = "");
-			UI.Call<SessionView>(v => v.AddSession(AppSettings.ReverseDateString(), true, (eEegDevice)AppPreferences.EegDevice));
 			AudioPlayer.Ambience(Dispatcher, true);
 			_eeg.Connect();
 		}
@@ -224,7 +225,6 @@ public partial class EegView : ContentView
 			string s = (string)picSession.SelectedItem;
 			if (!string.IsNullOrEmpty(s))
 			{
-				_strSession = s;
 				LoadAnalysis();
 				_eeg.m_bCancelReplay = false;
 				void action1() => _eeg.Summary(Path.Combine(AppSettings.EegDataHome(), s + (AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? "-Emotiv.csv" : "-Muse.csv")));
@@ -238,6 +238,7 @@ public partial class EegView : ContentView
 	{
 		if (picSession.SelectedIndex == -1)
 			return;
+		_strSession = (string)picSession.SelectedItem;
 		picMode_SelectedIndexChanged(null, null);
 	}
 
