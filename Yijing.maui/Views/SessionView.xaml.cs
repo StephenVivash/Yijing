@@ -748,6 +748,8 @@ Return only the JSON object.";
 
 	public void AddSession(string fileName, bool meditation = false, eEegDevice eegDevice = eEegDevice.eNone)
 	{
+		ClearContextSelections();
+
 		var summary = CreateSession(fileName);
 		summary.Meditation = meditation;
 		summary.EegDevice = eegDevice;
@@ -784,6 +786,13 @@ Return only the JSON object.";
 		}
 		else
 			AddSession(AppSettings.ReverseDateString(), true);
+	}
+
+	private void ClearContextSelections()
+	{
+		_ai._contextSessions = [];
+		_contextSelectionDirty = false;
+		UpdateContextSelectionFlags();
 	}
 
 	private void SelectSession(string? selectSession)
@@ -1157,7 +1166,8 @@ Return only the JSON object.";
 
 	public void SaveChat(string name)
 	{
-		if ((_ai._userPrompts[1].Count > 0) || (_ai._chatReponses[1].Count > 0) || (_sessionNotes.Count > 0))
+		if ((_ai._userPrompts[1].Count > 0) || (_ai._chatReponses[1].Count > 0) ||
+			(_sessionNotes.Count > 0) || (_ai._contextSessions.Count > 0))
 		{
 			SaveChat(name, "Question", _ai._userPrompts[1]);
 			SaveChat(name, "Answer", _ai._chatReponses[1]);
@@ -1231,7 +1241,7 @@ Return only the JSON object.";
 		string path = Path.Combine(AppSettings.DocumentHome(), $"{type}s", name + ".txt");
 		if (!File.Exists(path))
 		{
-			UpdateSessionLog("Failed to load " + path, true, true);
+			//UpdateSessionLog("Failed to load " + path, true, true);
 			return;
 		}
 
