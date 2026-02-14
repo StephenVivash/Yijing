@@ -579,7 +579,7 @@ Return only the JSON object.";
 							if (i > 0)
 								if (DateTime.TryParseExact(session.FileName, "yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture,
 									DateTimeStyles.AssumeLocal, out DateTime dt))
-									lm.Add(new Meditation { Start = dt, Duration = 60 }); // ??????????????????
+									lm.Add(new Meditation { Start = dt, Duration = EstimateEegDurationMinutes(file, dt) });
 
 							var match = _sessions.FirstOrDefault(s => s.FileName!.Equals(session.FileName,
 								StringComparison.OrdinalIgnoreCase));
@@ -704,6 +704,70 @@ Return only the JSON object.";
 		return fileName;
 	}
 
+	private static int EstimateEegDurationMinutes(string filePath, DateTime sessionStart)
+	{
+		if (TryReadEegSessionRange(filePath, out DateTime firstTimestamp, out DateTime lastTimestamp))
+		{
+			TimeSpan span = lastTimestamp - firstTimestamp;
+			if (span > TimeSpan.Zero)
+				return Math.Max(1, (int)Math.Round(span.TotalMinutes));
+		}
+
+		try
+		{
+			TimeSpan fallback = File.GetLastWriteTime(filePath) - sessionStart;
+			if (fallback > TimeSpan.Zero)
+				return Math.Max(1, (int)Math.Round(fallback.TotalMinutes));
+		}
+		catch
+		{
+		}
+
+		return 1;
+	}
+
+	private static bool TryReadEegSessionRange(string filePath, out DateTime firstTimestamp, out DateTime lastTimestamp)
+	{
+		firstTimestamp = default;
+		lastTimestamp = default;
+		bool found = false;
+
+		foreach (string line in File.ReadLines(filePath))
+		{
+			if (string.IsNullOrWhiteSpace(line))
+				continue;
+
+			int commaIndex = line.IndexOf(',');
+			string token = (commaIndex >= 0 ? line[..commaIndex] : line).Trim();
+			if (!TryParseEegTimestamp(token, out DateTime timestamp))
+				continue;
+
+			if (!found)
+				firstTimestamp = timestamp;
+
+			lastTimestamp = timestamp;
+			found = true;
+		}
+
+		return found;
+	}
+
+	private static bool TryParseEegTimestamp(string value, out DateTime timestamp)
+	{
+		string[] formats =
+		[
+			"yyyy-MM-dd HH:mm:ss.fff",
+			"yyyy-MM-dd HH:mm:ss.ffffff",
+			"yyyy-MM-ddTHH:mm:ss.fff",
+			"yyyy-MM-ddTHH:mm:ss.ffffff",
+			"yyyy-MM-dd HH:mm:ss",
+			"yyyy-MM-ddTHH:mm:ss",
+		];
+
+		return DateTime.TryParseExact(value, formats, CultureInfo.InvariantCulture,
+			DateTimeStyles.AssumeLocal | DateTimeStyles.AllowWhiteSpaces, out timestamp);
+	}
+
 	private static void ReadText(string filePath, ref string description, ref string yijingCast)
 	{
 		string s1 = "Yijing responded with hexagram";
@@ -746,7 +810,8 @@ Return only the JSON object.";
 		}
 	}
 
-	public void AddSession(string fileName, bool meditation = false, eEegDevice eegDevice = eEegDevice.eNone)
+	public void AddSession(string fileName, bool meditation = false, eEegDevice eegDevice = eEegDevice.eNone,
+		int meditationDurationMinutes = 0)
 	{
 		ClearContextSelections();
 
@@ -758,7 +823,17 @@ Return only the JSON object.";
 		_sessions.Insert(0, summary);
 		sessionCollection.SelectedItem = summary;
 		using var yc = new YijingDbContext();
-		var x = yc.Sessions.Add(summary);
+		yc.Sessions.Add(summary);
+		if (meditation && (meditationDurationMinutes > 0) &&
+			DateTime.TryParseExact(summary.FileName, "yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture,
+			DateTimeStyles.AssumeLocal, out DateTime dt))
+		{
+			yc.Meditations.Add(new Meditation
+			{
+				Start = dt,
+				Duration = meditationDurationMinutes
+			});
+		}
 		YijingDatabase.SaveChanges(yc);
 	}
 

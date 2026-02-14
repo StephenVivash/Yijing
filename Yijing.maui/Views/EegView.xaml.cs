@@ -188,10 +188,12 @@ public partial class EegView : ContentView
 		{
 			AudioPlayer.Ambience(Dispatcher, false);
 			string s = _strSession;
+			int meditationDurationMinutes = CurrentLiveDurationMinutes();
 			LoadSessions();
 			if (s == _strSession)
 			{
-				UI.Call<SessionView>(v => v.AddSession(_strSession, true, (eEegDevice)AppPreferences.EegDevice));
+				UI.Call<SessionView>(v => v.AddSession(_strSession, true,
+					(eEegDevice)AppPreferences.EegDevice, meditationDurationMinutes));
 				SaveAnalysis();
 			}
 		}
@@ -541,6 +543,15 @@ public partial class EegView : ContentView
 	{
 		void action() => UpdateChart();
 		Dispatcher.Dispatch(action);
+	}
+
+	private int CurrentLiveDurationMinutes()
+	{
+		TimeSpan elapsed = DateTime.Now - _eeg.m_dtEegStart;
+		if (elapsed <= TimeSpan.Zero)
+			return 0;
+
+		return Math.Max(1, (int)Math.Round(elapsed.TotalMinutes));
 	}
 
 	private void UpdateChart()
