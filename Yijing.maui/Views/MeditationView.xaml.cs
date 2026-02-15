@@ -113,7 +113,8 @@ public partial class MeditationView : ContentView
 		TimeSpan elapsed = DateTime.Now - _dtElapsed!.Value;
 		int durationMinutes = Math.Max(1, (int)Math.Round(elapsed.TotalMinutes));
 
-		SaveMeditation(_dtElapsed.Value, durationMinutes);
+		if (durationMinutes > 10)
+			SaveMeditation(_dtElapsed.Value, durationMinutes);
 
 		_dtElapsed = null;
 		_isMeditating = false;
