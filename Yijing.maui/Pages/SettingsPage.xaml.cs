@@ -8,6 +8,8 @@ using Yijing.Views;
 
 namespace Yijing.Pages;
 
+#nullable enable
+
 public partial class SettingsPage : ContentPage
 {
 	public class AiServiceEditor : BindableObject
@@ -148,13 +150,13 @@ public partial class SettingsPage : ContentPage
 		string name = edtNewServiceName.Text?.Trim() ?? string.Empty;
 		if (string.IsNullOrWhiteSpace(name))
 		{
-			await DisplayAlert("AI Services", "Enter a service name before adding.", "OK");
+			await DisplayAlertAsync("AI Services", "Enter a service name before adding.", "OK");
 			return;
 		}
 
 		if (ServiceItems.Any(item => string.Equals(item.Name, name, StringComparison.OrdinalIgnoreCase)))
 		{
-			await DisplayAlert("AI Services", "That service already exists.", "OK");
+			await DisplayAlertAsync("AI Services", "That service already exists.", "OK");
 			return;
 		}
 
@@ -174,7 +176,7 @@ public partial class SettingsPage : ContentPage
 		if (sender is not Button button || button.BindingContext is not AiServiceEditor item)
 			return;
 
-		bool confirm = await DisplayAlert("Delete Service", $"Delete {item.Name}?", "Yes", "No");
+		bool confirm = await DisplayAlertAsync("Delete Service", $"Delete {item.Name}?", "Yes", "No");
 		if (!confirm)
 			return;
 
@@ -208,19 +210,19 @@ public partial class SettingsPage : ContentPage
 	{
 		if (!TryParseFloat(edtAiTemperature.Text, out float temperature))
 		{
-			await DisplayAlert("AI Preferences", "Temperature must be a number.", "OK");
+			await DisplayAlertAsync("AI Preferences", "Temperature must be a number.", "OK");
 			return false;
 		}
 
 		if (!TryParseFloat(edtAiTopP.Text, out float topP))
 		{
-			await DisplayAlert("AI Preferences", "Top P must be a number.", "OK");
+			await DisplayAlertAsync("AI Preferences", "Top P must be a number.", "OK");
 			return false;
 		}
 
 		if (!int.TryParse(edtAiMaxTokens.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out int maxTokens))
 		{
-			await DisplayAlert("AI Preferences", "Max Tokens must be a whole number.", "OK");
+			await DisplayAlertAsync("AI Preferences", "Max Tokens must be a whole number.", "OK");
 			return false;
 		}
 
@@ -233,19 +235,19 @@ public partial class SettingsPage : ContentPage
 			string name = item.Name?.Trim() ?? string.Empty;
 			if (string.IsNullOrWhiteSpace(name))
 			{
-				await DisplayAlert("AI Services", "Service names cannot be blank.", "OK");
+				await DisplayAlertAsync("AI Services", "Service names cannot be blank.", "OK");
 				return false;
 			}
 
 			if (string.Equals(name, AiPreferences.AiServiceNone, StringComparison.OrdinalIgnoreCase))
 			{
-				await DisplayAlert("AI Services", "Service name 'None' is reserved.", "OK");
+				await DisplayAlertAsync("AI Services", "Service name 'None' is reserved.", "OK");
 				return false;
 			}
 
 			if (!seen.Add(name))
 			{
-				await DisplayAlert("AI Services", $"Duplicate service name: {name}.", "OK");
+				await DisplayAlertAsync("AI Services", $"Duplicate service name: {name}.", "OK");
 				return false;
 			}
 

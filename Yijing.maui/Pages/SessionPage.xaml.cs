@@ -77,6 +77,11 @@ public partial class SessionPage : ContentPage
 		chbIncludeCast.IsChecked = false;
 	}
 
+	private async void btnSummary_Clicked(object sender, EventArgs e)
+	{
+		await sessionView.GenerateSummaryAsync();
+	}
+
 	private void chbIncludeCast_CheckedChanged(object sender, EventArgs e)
 	{
 	}
@@ -95,5 +100,11 @@ public partial class SessionPage : ContentPage
 	{
 		vslInput.HeightRequest = 100;
 		edtSessionLog.HeightRequest = 100;
+	}
+
+	private void webview_Navigating(object sender, WebNavigatingEventArgs e)
+	{
+		if (sessionView.HandleWebViewNavigation(e.Url))
+			e.Cancel = true;
 	}
 }

@@ -136,7 +136,7 @@ namespace ValueSequencer
 							l1 = 2;
 						else
 							if (l1 == 2)
-							l1 = 0;
+								l1 = 0;
 					Line(l1).Old();
 				}
 		}

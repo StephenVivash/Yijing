@@ -190,7 +190,7 @@ namespace ValueSequencer
 								l1 = 2;
 							else
 								if (l1 == 2)
-								l1 = 0;
+									l1 = 0;
 						Trigram(bInverseTrigram ? 1 - t : t).Line(l1).Old();
 					}
 		}

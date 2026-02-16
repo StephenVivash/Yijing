@@ -188,9 +188,14 @@ public partial class EegView : ContentView
 		{
 			AudioPlayer.Ambience(Dispatcher, false);
 			string s = _strSession;
+			int meditationDurationMinutes = CurrentLiveDurationMinutes();
 			LoadSessions();
 			if (s == _strSession)
+			{
+				UI.Call<SessionView>(v => v.AddSession(_strSession, true,
+					(eEegDevice)AppPreferences.EegDevice, meditationDurationMinutes));
 				SaveAnalysis();
+			}
 		}
 
 		m_nEegMode = (int)picMode.SelectedIndex;
@@ -198,9 +203,7 @@ public partial class EegView : ContentView
 		{
 			picReplaySpeed.SelectedIndex = (int)eReplaySpeed.eNormal;
 			picReplaySpeed.IsEnabled = false;
-
 			UI.Call<EegPage>(p => p.SessionLog().Text = "");
-			//UI.Call<DiagramView>(v => v.StartNewChat());
 			AudioPlayer.Ambience(Dispatcher, true);
 			_eeg.Connect();
 		}
@@ -224,8 +227,6 @@ public partial class EegView : ContentView
 			string s = (string)picSession.SelectedItem;
 			if (!string.IsNullOrEmpty(s))
 			{
-				//UI.Call<DiagramView>(v => v.SelectChat(s));
-				_strSession = s;
 				LoadAnalysis();
 				_eeg.m_bCancelReplay = false;
 				void action1() => _eeg.Summary(Path.Combine(AppSettings.EegDataHome(), s + (AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? "-Emotiv.csv" : "-Muse.csv")));
@@ -239,6 +240,7 @@ public partial class EegView : ContentView
 	{
 		if (picSession.SelectedIndex == -1)
 			return;
+		_strSession = (string)picSession.SelectedItem;
 		picMode_SelectedIndexChanged(null, null);
 	}
 
@@ -388,9 +390,6 @@ public partial class EegView : ContentView
 		picSession.SelectedIndex = -1;
 		picSession.ItemsSource = lf;
 		picSession.SelectedIndex = 0;
-
-		//_strSession = picSession.SelectedItem.ToString();
-
 		picSession.Focus();
 	}
 
@@ -544,6 +543,15 @@ public partial class EegView : ContentView
 	{
 		void action() => UpdateChart();
 		Dispatcher.Dispatch(action);
+	}
+
+	private int CurrentLiveDurationMinutes()
+	{
+		TimeSpan elapsed = DateTime.Now - _eeg.m_dtEegStart;
+		if (elapsed <= TimeSpan.Zero)
+			return 0;
+
+		return Math.Max(1, (int)Math.Round(elapsed.TotalMinutes));
 	}
 
 	private void UpdateChart()

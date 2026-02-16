@@ -50,7 +50,7 @@ namespace ValueSequencer
 				Value = 1;
 			else
 				if (Value == 3)
-				Value = 2;
+					Value = 2;
 			UpdateInnerValues();
 			UpdateOuterValues();
 			return this;
@@ -62,7 +62,7 @@ namespace ValueSequencer
 				Value = 2;
 			else
 				if (Value == 3)
-				Value = 1;
+					Value = 1;
 			UpdateInnerValues();
 			UpdateOuterValues();
 			return this;
@@ -74,7 +74,7 @@ namespace ValueSequencer
 				Value = 0;
 			else
 				if (Value == 1)
-				Value = 3;
+					Value = 3;
 			UpdateInnerValues();
 			UpdateOuterValues();
 			return this;

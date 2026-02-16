@@ -9,13 +9,13 @@ using YijingData;
 
 namespace Yijing.data.Migrations
 {
-    [DbContext(typeof(YijingDbContext))]
-    partial class YijingDbContextModelSnapshot : ModelSnapshot
-    {
-        protected override void BuildModel(ModelBuilder modelBuilder)
-        {
+	[DbContext(typeof(YijingDbContext))]
+	partial class YijingDbContextModelSnapshot : ModelSnapshot
+	{
+		protected override void BuildModel(ModelBuilder modelBuilder)
+		{
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
+			modelBuilder.HasAnnotation("ProductVersion", "10.0.2");
 
             modelBuilder.Entity("YijingData.Meditation", b =>
                 {
@@ -34,11 +34,11 @@ namespace Yijing.data.Migrations
                     b.ToTable("Meditations");
                 });
 
-            modelBuilder.Entity("YijingData.Session", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+			modelBuilder.Entity("YijingData.Session", b =>
+				{
+					b.Property<int>("Id")
+						.ValueGeneratedOnAdd()
+						.HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
@@ -63,16 +63,41 @@ namespace Yijing.data.Migrations
                     b.Property<string>("YijingCast")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+					b.HasKey("Id");
 
-                    b.ToTable("Sessions");
-                });
+					b.ToTable("Sessions");
+				});
 
-            modelBuilder.Entity("YijingData.Text", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+			modelBuilder.Entity("YijingData.SessionSummary", b =>
+				{
+					b.Property<int>("Id")
+						.ValueGeneratedOnAdd()
+						.HasColumnType("INTEGER");
+
+					b.Property<string>("Keywords")
+						.IsRequired()
+						.HasColumnType("TEXT");
+
+					b.Property<int>("SessionId")
+						.HasColumnType("INTEGER");
+
+					b.Property<string>("Summary")
+						.IsRequired()
+						.HasColumnType("TEXT");
+
+					b.HasKey("Id");
+
+					b.HasIndex("SessionId")
+						.IsUnique();
+
+					b.ToTable("SessionSummary");
+				});
+
+			modelBuilder.Entity("YijingData.Text", b =>
+				{
+					b.Property<int>("Id")
+						.ValueGeneratedOnAdd()
+						.HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
                         .HasMaxLength(100)
@@ -85,9 +110,20 @@ namespace Yijing.data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Texts");
-                });
+					b.ToTable("Texts");
+				});
+
+			modelBuilder.Entity("YijingData.SessionSummary", b =>
+				{
+					b.HasOne("YijingData.Session", "Session")
+						.WithOne()
+						.HasForeignKey("YijingData.SessionSummary", "SessionId")
+						.OnDelete(DeleteBehavior.Cascade)
+						.IsRequired();
+
+					b.Navigation("Session");
+				});
 #pragma warning restore 612, 618
-        }
-    }
+		}
+	}
 }
