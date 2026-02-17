@@ -35,7 +35,7 @@ public static class AppSettings
 			_eegDataHome = Path.Combine(_documentHome, AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? "Emotiv" : "Muse");
 			if (!Directory.Exists(_documentHome))
 				Directory.CreateDirectory(_documentHome);
-
+			/*
 			String strTemp = Path.Combine(_documentHome, "appsettings.json");
 			if (!File.Exists(strTemp))
 			{
@@ -43,12 +43,13 @@ public static class AppSettings
 				string strDestination = strTemp;
 				CopyStream(await FileSystem.OpenAppPackageFileAsync(strSource), strDestination);
 			}
-			strTemp = Path.Combine(_documentHome, "Muse");
+			*/
+			String strTemp = Path.Combine(_documentHome, "Muse");
 			if (!Directory.Exists(strTemp))
 			{
 				Directory.CreateDirectory(strTemp);
 				string strSource = "Example-Muse.csv";
-				string strDestination = Path.Combine(strTemp, strSource);
+				string strDestination = Path.Combine(strTemp, ReverseDateString() + "-Muse.csv");
 				CopyStream(await FileSystem.OpenAppPackageFileAsync(strSource), strDestination);
 			}
 			strTemp = Path.Combine(_documentHome, "Emotiv");
@@ -56,7 +57,7 @@ public static class AppSettings
 			{
 				Directory.CreateDirectory(strTemp);
 				string strSource = "Example-Emotiv.csv";
-				string strDestination = Path.Combine(strTemp, strSource);
+				string strDestination = Path.Combine(strTemp, ReverseDateString(1) + "-Emotiv.csv");
 				CopyStream(await FileSystem.OpenAppPackageFileAsync(strSource), strDestination);
 			}
 			strTemp = Path.Combine(_documentHome, "Questions");
@@ -85,9 +86,9 @@ public static class AppSettings
 		writer.Write(reader.ReadToEnd());
 	}
 
-	public static string ReverseDateString()
+	public static string ReverseDateString(int minutes = 0)
 	{
-		DateTime dt = DateTime.Now;
+		DateTime dt = DateTime.Now.AddMinutes(minutes);
 		return $"{dt.Year}-{dt.Month,2:#00}-{dt.Day,2:#00}-{dt.Hour,2:#00}-{dt.Minute,2:#00}-{dt.Second,2:#00}";
 	}
 }
