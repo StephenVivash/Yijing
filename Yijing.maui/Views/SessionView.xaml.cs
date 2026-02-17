@@ -200,8 +200,8 @@ Return only the JSON object.";
 			UI.Call<DiagramView>(v => v.SetHexagramCast(_selectedSession?.YijingCast));
 
 		string? file = Path.GetFileNameWithoutExtension(_selectedSession?.FileName);
-		if (_selectedSession?.EegDevice != eEegDevice.eNone)
-			UI.Call<EegView>(v => v.SelectSession(file));
+		if ((_selectedSession?.EegDevice != eEegDevice.eNone) && !string.IsNullOrWhiteSpace(file))
+			UI.Call<EegView>(v => v.SelectSession(file, _selectedSession.EegDevice));
 	}
 
 	private void OnContextSelectionChanged(object? sender, CheckedChangedEventArgs e)

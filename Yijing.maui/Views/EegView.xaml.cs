@@ -393,8 +393,23 @@ public partial class EegView : ContentView
 		picSession.Focus();
 	}
 
-	public void SelectSession(string name)
+	public void SelectSession(string name, eEegDevice device)
 	{
+		if (string.IsNullOrWhiteSpace(name) || (device == eEegDevice.eNone))
+			return;
+
+		int targetDevice = (int)device;
+		if (AppPreferences.EegDevice != targetDevice)
+		{
+			picDevice.SelectedIndex = targetDevice - 1;
+		}/*
+		else
+		{
+			IEnumerable<string> sessions = picSession.ItemsSource as IEnumerable<string> ?? Enumerable.Empty<string>();
+			if (!sessions.Any(s => s.Equals(name, StringComparison.OrdinalIgnoreCase)))
+				LoadSessions();
+		}*/
+
 		picSession.SelectedItem = name;
 	}
 
