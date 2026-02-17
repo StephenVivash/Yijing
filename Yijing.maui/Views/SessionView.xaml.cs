@@ -1250,14 +1250,14 @@ Return only the JSON object.";
 			var summary = CreateSession(Path.Combine(AppSettings.DocumentHome(), "Questions", name + ".txt"));
 			summary.Id = _selectedSession?.Id ?? 0;
 
-			using var yc = new YijingDbContext();
-			yc.Sessions.Update(summary);
-			YijingDatabase.SaveChanges(yc);
-
 			int i = _sessions.IndexOf(_selectedSession!);
 			summary.EegAnalysis = _sessions[i].EegAnalysis;
 			summary.EegDevice = _sessions[i].EegDevice;
 			summary.Meditation = _sessions[i].Meditation;
+
+			using var yc = new YijingDbContext();
+			yc.Sessions.Update(summary);
+			YijingDatabase.SaveChanges(yc);
 
 			_sessions[i] = summary;
 			sessionCollection.SelectedItem = summary;
