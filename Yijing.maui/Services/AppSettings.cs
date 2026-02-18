@@ -9,8 +9,6 @@ public static class AppSettings
 	private static string _eegDataHome = null;
 	public static DateTime _lastEegDataTime = DateTime.Now;
 	public static int TriggerIndex;
-	public static int MuseScale = 1;
-	public static int AudioScale = 1;
 
 	public static string DocumentHome() { return _documentHome; }
 	public static string EegDataHome() { return _eegDataHome; }

@@ -219,24 +219,22 @@ public class Eeg
 
 			if (AppPreferences.EegDevice == (int)eEegDevice.eMuse)
 			{
-				f *= AppSettings.MuseScale;
-
 				// Clean bad Muse data
 
-				if (((i >= 0) && (i <= 4)) && (f > 0.3f * AppSettings.MuseScale)) // Delta
-					f = 0.3f * AppSettings.MuseScale;
-
-				if ((i >= 5) && (i <= 9) && (f > 0.3f * AppSettings.MuseScale)) // Theta
-					f = 0.3f * AppSettings.MuseScale;
-
-				if (((i >= 10) && (i <= 14)) && (f > 0.8f * AppSettings.MuseScale)) // Alpha 
-					f = 0.8f * AppSettings.MuseScale;
-
-				if (f < -0.6f * AppSettings.MuseScale)
-					f = -0.6f * AppSettings.MuseScale;
+				if (((i >= 0) && (i <= 4)) && (f > 0.3f)) // Delta
+					f = 0.3f;
 				else
-				if (f > 3.0f * AppSettings.MuseScale)
-					f = 3.0f * AppSettings.MuseScale;
+				if ((i >= 5) && (i <= 9) && (f > 0.3f)) // Theta
+					f = 0.3f;
+				else
+				if (((i >= 10) && (i <= 14)) && (f > 0.8f)) // Alpha 
+					f = 0.8f;
+				else
+				if (f > 3.0f)
+					f = 3.0f;
+
+				if (f < -0.6f)
+					f = -0.6f;
 			}
 			else
 			{
@@ -249,10 +247,17 @@ public class Eeg
 						f = 2.0f;
 				}
 				else
+				if ((i >= 10) && (i <= 14)) // Alpha
 				{
 					f /= 10.0f;
-					if (f > 0.8f)
-						f = 0.8f;
+					if (f > 1.0f)
+						f = 1.0f;
+				}
+				else
+				{
+					f /= 10.0f;
+					if (f > 0.6f)
+						f = 0.6f;
 				}
 			}
 
@@ -289,8 +294,8 @@ public class Eeg
 			if (TimeDiff.TotalSeconds >= 10)
 			{
 				_dtSoundingUpdate = Timestamp;
-				DiagramView.SoundTrigger(m_eegChannel[AppSettings.TriggerIndex].m_fCurrentValue * AppSettings.AudioScale,
-					m_eegChannel[AppSettings.TriggerIndex].m_fHigh * AppSettings.AudioScale);
+				DiagramView.SoundTrigger(m_eegChannel[AppSettings.TriggerIndex].m_fCurrentValue,
+					m_eegChannel[AppSettings.TriggerIndex].m_fHigh);
 			}
 		}
 
@@ -321,11 +326,7 @@ public class Eeg
 
 		if (!bSummary || (++m_nSummaryCount % 100 == 0))
 		{
-#if DEBUG
-			if (!bSummary && (m_nReplaySpeed == 1) && !AiPreferences.IsNoneService(AppPreferences.AiEegService))
-#else
 			if (!bSummary && (m_bLive || (m_nReplaySpeed == 1)) && !AiPreferences.IsNoneService(AppPreferences.AiEegService))
-#endif
 			{
 				DateTime Timestamp = DateTime.Now;
 				TimeSpan TimeDiff = Timestamp - _dtAiUpdate;
@@ -354,24 +355,11 @@ public class Eeg
 						$"Gamma_AF7={m_eegChannel[21].m_fCurrentValue,1:#0.000}, " +
 						$"Gamma_AF8={m_eegChannel[23].m_fCurrentValue,1:#0.000}, " +
 						$"Gamma_TP10={m_eegChannel[24].m_fCurrentValue,1:#0.000}";
-
 					UI.Call<EegView>(v => v.AiData(str));
 				}
 			}
 			else
 				_dtAiUpdate = DateTime.Now;
-			/*
-			if ((AppPreferences.Timer != (int)eTimer.eNone)) // m_bLive
-			{
-				DateTime Timestamp1 = DateTime.Now;
-				TimeSpan TimeDiff1 = Timestamp1 - _dtTimerUpdate;
-				if (TimeDiff1.TotalMinutes >= MinuteTimer())
-				{
-					_dtTimerUpdate = Timestamp1;
-					m_vwEeg.PlayTimer();
-				}
-			}
-			*/
 			UI.Call<EegView>(v => v.UpdateData());
 		}
 	}

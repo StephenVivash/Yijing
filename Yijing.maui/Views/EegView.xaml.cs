@@ -166,15 +166,6 @@ public partial class EegView : ContentView
 
 		AppSettings.SetDocumentHome();
 		LoadSessions();
-
-		CartesianChart cc;
-		if ((cc = UI.Get<EegPage>()?.CartesianChart()) == null)
-			return;
-
-		SKColor c = AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? SKColors.Olive : SKColors.Red;
-		IEnumerable<ISeries> ies = cc.Series;
-		for (int i = 0; i < 5; ++i)
-			((LineSeries<float>)ies.ElementAt(i)).Stroke = new SolidColorPaint(c) { StrokeThickness = EegSeries.m_fThinStoke };
 	}
 
 	private async void picMode_SelectedIndexChanged(object sender, EventArgs e)
@@ -240,6 +231,16 @@ public partial class EegView : ContentView
 	{
 		if (picSession.SelectedIndex == -1)
 			return;
+
+		CartesianChart cc;
+		if ((cc = UI.Get<EegPage>()?.CartesianChart()) == null)
+			return;
+
+		SKColor c = AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? SKColors.Olive : SKColors.Red;
+		IEnumerable<ISeries> ies = cc.Series;
+		for (int i = 0; i < 5; ++i)
+			((LineSeries<float>)ies.ElementAt(i)).Stroke = new SolidColorPaint(c) { StrokeThickness = EegSeries.m_fThinStoke };
+
 		_strSession = (string)picSession.SelectedItem;
 		picMode_SelectedIndexChanged(null, null);
 	}
