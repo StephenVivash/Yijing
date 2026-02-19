@@ -11,14 +11,14 @@ using YijingData;
 namespace Yijing.data.Migrations
 {
     [DbContext(typeof(YijingDbContext))]
-    [Migration("20251007094904_AddMeditation")]
-    partial class AddMeditation
+    [Migration("20260219025911_CreateDB")]
+    partial class CreateDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.3");
 
             modelBuilder.Entity("YijingData.Meditation", b =>
                 {
@@ -71,6 +71,31 @@ namespace Yijing.data.Migrations
                     b.ToTable("Sessions");
                 });
 
+            modelBuilder.Entity("YijingData.SessionSummary", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Keywords")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SessionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Summary")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SessionId")
+                        .IsUnique();
+
+                    b.ToTable("SessionSummary");
+                });
+
             modelBuilder.Entity("YijingData.Text", b =>
                 {
                     b.Property<int>("Id")
@@ -89,6 +114,17 @@ namespace Yijing.data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Texts");
+                });
+
+            modelBuilder.Entity("YijingData.SessionSummary", b =>
+                {
+                    b.HasOne("YijingData.Session", "Session")
+                        .WithMany()
+                        .HasForeignKey("SessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Session");
                 });
 #pragma warning restore 612, 618
         }
