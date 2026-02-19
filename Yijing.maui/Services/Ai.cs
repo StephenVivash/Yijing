@@ -163,7 +163,7 @@ public class Ai
 		{
 			_userPrompts[1].Add(prompt);
 			_chatReponses[1].Add(ex.Message +
-				"\n\nEdit the Documents\\Yijing\\appsettings.json file to correct the configuration and restart the application.");
+				"\n\nEdit and save the AI preferences in the settings page.");
 		}
 	}
 }

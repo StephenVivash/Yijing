@@ -200,8 +200,8 @@ Return only the JSON object.";
 			UI.Call<DiagramView>(v => v.SetHexagramCast(_selectedSession?.YijingCast));
 
 		string? file = Path.GetFileNameWithoutExtension(_selectedSession?.FileName);
-		if (_selectedSession?.EegDevice != eEegDevice.eNone)
-			UI.Call<EegView>(v => v.SelectSession(file));
+		if ((_selectedSession?.EegDevice != eEegDevice.eNone) && !string.IsNullOrWhiteSpace(file))
+			UI.Call<EegView>(v => v.SelectSession(file, _selectedSession.EegDevice));
 	}
 
 	private void OnContextSelectionChanged(object? sender, CheckedChangedEventArgs e)
@@ -1250,14 +1250,14 @@ Return only the JSON object.";
 			var summary = CreateSession(Path.Combine(AppSettings.DocumentHome(), "Questions", name + ".txt"));
 			summary.Id = _selectedSession?.Id ?? 0;
 
-			using var yc = new YijingDbContext();
-			yc.Sessions.Update(summary);
-			YijingDatabase.SaveChanges(yc);
-
 			int i = _sessions.IndexOf(_selectedSession!);
 			summary.EegAnalysis = _sessions[i].EegAnalysis;
 			summary.EegDevice = _sessions[i].EegDevice;
 			summary.Meditation = _sessions[i].Meditation;
+
+			using var yc = new YijingDbContext();
+			yc.Sessions.Update(summary);
+			YijingDatabase.SaveChanges(yc);
 
 			_sessions[i] = summary;
 			sessionCollection.SelectedItem = summary;

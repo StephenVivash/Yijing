@@ -166,15 +166,6 @@ public partial class EegView : ContentView
 
 		AppSettings.SetDocumentHome();
 		LoadSessions();
-
-		CartesianChart cc;
-		if ((cc = UI.Get<EegPage>()?.CartesianChart()) == null)
-			return;
-
-		SKColor c = AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? SKColors.Olive : SKColors.Red;
-		IEnumerable<ISeries> ies = cc.Series;
-		for (int i = 0; i < 5; ++i)
-			((LineSeries<float>)ies.ElementAt(i)).Stroke = new SolidColorPaint(c) { StrokeThickness = EegSeries.m_fThinStoke };
 	}
 
 	private async void picMode_SelectedIndexChanged(object sender, EventArgs e)
@@ -240,6 +231,16 @@ public partial class EegView : ContentView
 	{
 		if (picSession.SelectedIndex == -1)
 			return;
+
+		CartesianChart cc;
+		if ((cc = UI.Get<EegPage>()?.CartesianChart()) == null)
+			return;
+
+		SKColor c = AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? SKColors.Olive : SKColors.Red;
+		IEnumerable<ISeries> ies = cc.Series;
+		for (int i = 0; i < 5; ++i)
+			((LineSeries<float>)ies.ElementAt(i)).Stroke = new SolidColorPaint(c) { StrokeThickness = EegSeries.m_fThinStoke };
+
 		_strSession = (string)picSession.SelectedItem;
 		picMode_SelectedIndexChanged(null, null);
 	}
@@ -393,8 +394,23 @@ public partial class EegView : ContentView
 		picSession.Focus();
 	}
 
-	public void SelectSession(string name)
+	public void SelectSession(string name, eEegDevice device)
 	{
+		if (string.IsNullOrWhiteSpace(name) || (device == eEegDevice.eNone))
+			return;
+
+		int targetDevice = (int)device;
+		if (AppPreferences.EegDevice != targetDevice)
+		{
+			picDevice.SelectedIndex = targetDevice - 1;
+		}/*
+		else
+		{
+			IEnumerable<string> sessions = picSession.ItemsSource as IEnumerable<string> ?? Enumerable.Empty<string>();
+			if (!sessions.Any(s => s.Equals(name, StringComparison.OrdinalIgnoreCase)))
+				LoadSessions();
+		}*/
+
 		picSession.SelectedItem = name;
 	}
 
