@@ -135,10 +135,10 @@ Return only the JSON object.";
 		if ((width == -1) || (height == -1))
 			return;
 
-		double w = Math.Max(0, (width - 40) / 3);
+		double w = Math.Max(0, (width - 40) / 4);
 		btnAdd.WidthRequest = w;
 		btnDelete.WidthRequest = w;
-		btnSearch.WidthRequest = w;
+		//btnSearch.WidthRequest = w;
 
 		base.OnSizeAllocated(width, height);
 	}
@@ -230,7 +230,7 @@ Return only the JSON object.";
 	{
 		btnAdd.Padding = thickness;
 		btnDelete.Padding = thickness;
-		btnSearch.Padding = thickness;
+		//btnSearch.Padding = thickness;
 	}
 
 	public void UpdateChat()
@@ -559,6 +559,7 @@ Return only the JSON object.";
 
 				if (!yc.Sessions.Any())
 				{
+					Thread.Sleep(500);
 					IEnumerable<string>[] files = new IEnumerable<string>[3];
 					string[] folder = [Path.Combine(AppSettings.DocumentHome(), "Questions"),
 						Path.Combine(AppSettings.DocumentHome(), "Muse"),
