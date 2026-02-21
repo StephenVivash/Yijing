@@ -10,7 +10,13 @@
 
 https://apps.microsoft.com/detail/9n9hhltgvjsk?cid=DevShareMTwPCS&hl=en-US&gl=AU
 
-* v7.0.6 (01-Sep-25)
+* v7.0.7 (20-Feb-26)
+- Session page
+- Meditation timer page
+- Settings page
+- EEG ML & AI analysis
+- EEG Trigger Schedule / Hunter
+- Bug fixes
 * v7.0.0 (2023) [C#, MAUI]
 * v6.1.0 (2017) [Java, SWT]
 * v6.0.0 (2016) [Java, Android5]
