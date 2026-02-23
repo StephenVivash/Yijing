@@ -138,7 +138,7 @@ Return only the JSON object.";
 		double w = Math.Max(0, (width - 40) / 4);
 		btnAdd.WidthRequest = w;
 		btnDelete.WidthRequest = w;
-		//btnSearch.WidthRequest = w;
+		btnSearch.WidthRequest = w;
 
 		base.OnSizeAllocated(width, height);
 	}
@@ -230,7 +230,7 @@ Return only the JSON object.";
 	{
 		btnAdd.Padding = thickness;
 		btnDelete.Padding = thickness;
-		//btnSearch.Padding = thickness;
+		btnSearch.Padding = thickness;
 	}
 
 	public void UpdateChat()
