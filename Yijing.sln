@@ -18,6 +18,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yijing.web", "Yijing.web\Yi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yijing.data", "Yijing.data\Yijing.data.csproj", "{EE415E03-B2EA-5748-73DC-6F8E01E76DA7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrayCode", "GrayCode\GrayCode.csproj", "{5A59F009-2D7D-4732-B5DF-E30FF2537080}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -130,6 +132,18 @@ Global
 		{EE415E03-B2EA-5748-73DC-6F8E01E76DA7}.Release|x64.Build.0 = Release|Any CPU
 		{EE415E03-B2EA-5748-73DC-6F8E01E76DA7}.Release|x86.ActiveCfg = Release|Any CPU
 		{EE415E03-B2EA-5748-73DC-6F8E01E76DA7}.Release|x86.Build.0 = Release|Any CPU
+		{5A59F009-2D7D-4732-B5DF-E30FF2537080}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A59F009-2D7D-4732-B5DF-E30FF2537080}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A59F009-2D7D-4732-B5DF-E30FF2537080}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5A59F009-2D7D-4732-B5DF-E30FF2537080}.Debug|x64.Build.0 = Debug|Any CPU
+		{5A59F009-2D7D-4732-B5DF-E30FF2537080}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5A59F009-2D7D-4732-B5DF-E30FF2537080}.Debug|x86.Build.0 = Debug|Any CPU
+		{5A59F009-2D7D-4732-B5DF-E30FF2537080}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A59F009-2D7D-4732-B5DF-E30FF2537080}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A59F009-2D7D-4732-B5DF-E30FF2537080}.Release|x64.ActiveCfg = Release|Any CPU
+		{5A59F009-2D7D-4732-B5DF-E30FF2537080}.Release|x64.Build.0 = Release|Any CPU
+		{5A59F009-2D7D-4732-B5DF-E30FF2537080}.Release|x86.ActiveCfg = Release|Any CPU
+		{5A59F009-2D7D-4732-B5DF-E30FF2537080}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
