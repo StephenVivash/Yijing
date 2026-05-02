@@ -56,11 +56,11 @@ public sealed class EegBandPowerTracker
         }
 
         bands = new MuseBandPowers(
-            CalculateBandDisplayDb(snapshot, _sampleRate, 1, 4),
-            CalculateBandDisplayDb(snapshot, _sampleRate, 4, 8),
-            CalculateBandDisplayDb(snapshot, _sampleRate, 8, 13),
-            CalculateBandDisplayDb(snapshot, _sampleRate, 13, 30),
-            CalculateBandDisplayDb(snapshot, _sampleRate, 30, 45));
+            CalculateAbsoluteBandPower(snapshot, _sampleRate, 1, 4),
+            CalculateAbsoluteBandPower(snapshot, _sampleRate, 4, 8),
+            CalculateAbsoluteBandPower(snapshot, _sampleRate, 7.5, 13),
+            CalculateAbsoluteBandPower(snapshot, _sampleRate, 13, 30),
+            CalculateAbsoluteBandPower(snapshot, _sampleRate, 30, 44));
 
         lock (_gate)
         {
@@ -70,32 +70,52 @@ public sealed class EegBandPowerTracker
         return true;
     }
 
-    private static double CalculateBandDisplayDb(double[] samples, int sampleRate, double lowHz, double highHz)
+    private static double CalculateAbsoluteBandPower(double[] samples, int sampleRate, double lowHz, double highHz)
     {
         var n = samples.Length;
-        var mean = samples.Average();
+        var psd = CalculatePowerSpectralDensity(samples, sampleRate);
         var firstBin = Math.Max(1, (int)Math.Ceiling(lowHz * n / sampleRate));
-        var lastBin = Math.Min(n / 2, (int)Math.Floor(highHz * n / sampleRate));
-        var binCount = Math.Max(1, lastBin - firstBin + 1);
+        var lastBin = Math.Min((n / 2) - 1, (int)Math.Floor(highHz * n / sampleRate));
         var powerSum = 0.0;
 
         for (var bin = firstBin; bin <= lastBin; bin++)
+        {
+            powerSum += psd[bin];
+        }
+
+        return Math.Log10(Math.Max(powerSum, 1e-12));
+    }
+
+    private static double[] CalculatePowerSpectralDensity(double[] samples, int sampleRate)
+    {
+        var n = samples.Length;
+        var mean = samples.Average();
+        var psd = new double[(n / 2) + 1];
+        var windowPower = 0.0;
+        var windowedSamples = new double[n];
+
+        for (var i = 0; i < n; i++)
+        {
+            var window = 0.54 - 0.46 * Math.Cos(2.0 * Math.PI * i / (n - 1));
+            windowedSamples[i] = (samples[i] - mean) * window;
+            windowPower += window * window;
+        }
+
+        for (var bin = 0; bin < psd.Length; bin++)
         {
             var real = 0.0;
             var imaginary = 0.0;
             for (var i = 0; i < n; i++)
             {
-                var window = 0.5 - 0.5 * Math.Cos(2.0 * Math.PI * i / (n - 1));
-                var sample = (samples[i] - mean) * window;
                 var angle = 2.0 * Math.PI * bin * i / n;
-                real += sample * Math.Cos(angle);
-                imaginary -= sample * Math.Sin(angle);
+                real += windowedSamples[i] * Math.Cos(angle);
+                imaginary -= windowedSamples[i] * Math.Sin(angle);
             }
 
-            powerSum += (real * real + imaginary * imaginary) / n;
+            psd[bin] = (real * real + imaginary * imaginary) / Math.Max(sampleRate * windowPower, double.Epsilon);
         }
 
-        var averagePower = powerSum / binCount;
-        return 10.0 * Math.Log10(Math.Max(averagePower, 1e-12));
+        return psd;
     }
+
 }

@@ -644,12 +644,14 @@ public class MuseEeg : Eeg
 
 	private void ReceiveMuseData()
 	{
-		ReceiveBTData();
-		//ReceiveMMData();
+		//ReceiveBTData();
+		ReceiveMMData();
 	}
 
 	private void ReceiveBTData()
 	{
+		bool osc = true;
+
 		async Task ReceiveAsync()
 		{
 			int count = 0;
@@ -689,18 +691,21 @@ public class MuseEeg : Eeg
 				{
 					AppSettings._lastEegDataTime = DateTime.Now;
 
-					m_alMuseData[channelOffset] = (float)reading.Bands.DeltaOsc;
-					m_alMuseData[channelOffset + 5] = (float)reading.Bands.ThetaOsc;
-					m_alMuseData[channelOffset + 10] = (float)reading.Bands.AlphaOsc;
-					m_alMuseData[channelOffset + 15] = (float)reading.Bands.BetaOsc;
-					m_alMuseData[channelOffset + 20] = (float)reading.Bands.GammaOsc;
+					m_alMuseData[channelOffset] = (float)(osc ? reading.Bands.DeltaAbsolute : reading.Bands.DeltaDb);
+					m_alMuseData[channelOffset + 5] = (float)(osc ? reading.Bands.ThetaAbsolute : reading.Bands.ThetaDb);
+					m_alMuseData[channelOffset + 10] = (float)(osc ? reading.Bands.AlphaAbsolute : reading.Bands.AlphaDb);
+					m_alMuseData[channelOffset + 15] = (float)(osc ? reading.Bands.BetaAbsolute : reading.Bands.BetaDb);
+					m_alMuseData[channelOffset + 20] = (float)(osc ? reading.Bands.GammaAbsolute : reading.Bands.GammaDb);
 
 					if (++count % 4 == 0)
 					{
 						DateTime now = DateTime.Now;
 						string date = $"{now.Year,4:#0000}-{now.Month,2:#00}-{now.Day,2:#00} {now.Hour,2:#00}:{now.Minute,2:#00}:{now.Second,2:#00}.{now.Millisecond,3:#000}";
 						m_alMuseData[0] = date;
-						UpdateData(m_alMuseData, false);
+						if (osc)
+							UpdateData(m_alMuseData, false);
+						else
+							UpdateBTDbData(m_alMuseData);
 						UI.Call<EegView>(v => v.UpdateTime(now));
 						WriteFile(m_fsMuse, m_alMuseData, false, false);
 					}
@@ -734,6 +739,27 @@ public class MuseEeg : Eeg
 		}
 
 		ReceiveAsync().GetAwaiter().GetResult();
+	}
+
+	private void UpdateBTDbData(ArrayList data)
+	{
+		for (int i = 0; i < Eeg.m_nChannelMax; i++)
+		{
+			float sum = 0;
+			float f = (float)data[i + 1];
+
+			if (!m_eegChannel[i].m_isInitialised)
+				m_eegChannel[i].InitialseChannel(f);
+
+			m_eegChannel[i].m_alAverage.Insert(0, f);
+			m_eegChannel[i].m_alAverage.RemoveAt(EegChannel.m_nAverageMax);
+			for (int j = 0; j < EegChannel.m_nAverageMax; ++j)
+				sum += (float)m_eegChannel[i].m_alAverage[j];
+
+			m_eegChannel[i].m_fCurrentValue = AppPreferences.RawData ? f : sum / EegChannel.m_nAverageMax;
+		}
+
+		UI.Call<EegView>(v => v.UpdateData());
 	}
 
 	private void ReceiveMMData()

@@ -178,7 +178,7 @@ public sealed class MuseBtClient : IAsyncDisposable
             var keepAliveTimer = Stopwatch.StartNew();
             while (!cancellationToken.IsCancellationRequested)
             {
-                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+                await Task.Delay(MuseBluetoothConstants.BandPowerPublishInterval, cancellationToken);
                 PublishBandSummaries();
 
                 if (keepAliveTimer.Elapsed >= TimeSpan.FromSeconds(5))
@@ -485,7 +485,7 @@ public sealed class MuseBtClient : IAsyncDisposable
             var keepAliveTimer = Stopwatch.StartNew();
             while (!cancellationToken.IsCancellationRequested)
             {
-                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+                await Task.Delay(MuseBluetoothConstants.BandPowerPublishInterval, cancellationToken);
                 PublishBandSummaries();
 
                 if (keepAliveTimer.Elapsed >= TimeSpan.FromSeconds(5))

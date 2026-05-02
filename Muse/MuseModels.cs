@@ -20,19 +20,22 @@ public sealed record MuseNotification(string Name, Guid Uuid, MuseSensorKind Kin
 
 public readonly record struct MuseEegPacket(ushort Sequence, double[] Samples);
 
-public readonly record struct MuseBandPowers(double DeltaDb, double ThetaDb, double AlphaDb, double BetaDb, double GammaDb)
+public readonly record struct MuseBandPowers(
+    double DeltaAbsolute,
+    double ThetaAbsolute,
+    double AlphaAbsolute,
+    double BetaAbsolute,
+    double GammaAbsolute)
 {
-    public double DeltaOsc => ToMindMonitorOscScale(DeltaDb);
+    public double DeltaDb => DeltaAbsolute * 10.0;
 
-    public double ThetaOsc => ToMindMonitorOscScale(ThetaDb);
+    public double ThetaDb => ThetaAbsolute * 10.0;
 
-    public double AlphaOsc => ToMindMonitorOscScale(AlphaDb);
+    public double AlphaDb => AlphaAbsolute * 10.0;
 
-    public double BetaOsc => ToMindMonitorOscScale(BetaDb);
+    public double BetaDb => BetaAbsolute * 10.0;
 
-    public double GammaOsc => ToMindMonitorOscScale(GammaDb);
-
-    private static double ToMindMonitorOscScale(double displayDb) => (displayDb / 50.0) - 1.0;
+    public double GammaDb => GammaAbsolute * 10.0;
 }
 
 public sealed record MuseBandPowerReading(string SensorName, MuseBandPowers Bands);

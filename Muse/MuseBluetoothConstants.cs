@@ -3,7 +3,8 @@ namespace Muse.Core;
 public static class MuseBluetoothConstants
 {
     public const int EegSampleRate = 256;
-    public const int DefaultBandWindowSamples = EegSampleRate * 2;
+    public const int DefaultBandWindowSamples = 256;
+    public static readonly TimeSpan BandPowerPublishInterval = TimeSpan.FromMilliseconds(100);
 
     public static readonly Guid MuseServiceUuid = Guid.Parse("0000fe8d-0000-1000-8000-00805f9b34fb");
     public static readonly Guid ControlUuid = MuseUuid(0x0001);
