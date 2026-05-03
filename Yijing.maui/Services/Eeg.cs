@@ -644,13 +644,13 @@ public class MuseEeg : Eeg
 
 	private void ReceiveMuseData()
 	{
-		//ReceiveBTData();
-		ReceiveMMData();
+		ReceiveBTData();
+		//ReceiveMMData();
 	}
 
 	private void ReceiveBTData()
 	{
-		bool osc = true;
+		bool abs = true;
 
 		async Task ReceiveAsync()
 		{
@@ -662,7 +662,6 @@ public class MuseEeg : Eeg
 
 			if (AppPreferences.EegGoal == (int)eGoal.eYijingCast)
 				UI.Call<DiagramView>(v => v.SetDiagramMode(eDiagramMode.eMindCast));
-
 			using CancellationTokenSource cts = new();
 			_ = Task.Run(async () =>
 			{
@@ -670,7 +669,6 @@ public class MuseEeg : Eeg
 					await Task.Delay(250);
 				cts.Cancel();
 			});
-
 			var client = new Muse.Core.MuseBtClient();
 			client.InfoMessage += (_, message) => UI.Call<EegView>(v => v.SetAppTitle(message + " - Yijing"));
 			client.ConnectionStatusChanged += (_, status) => UI.Call<EegView>(v => v.SetAppTitle("Muse BT " + status + " - Yijing"));
@@ -691,21 +689,18 @@ public class MuseEeg : Eeg
 				{
 					AppSettings._lastEegDataTime = DateTime.Now;
 
-					m_alMuseData[channelOffset] = (float)(osc ? reading.Bands.DeltaAbsolute : reading.Bands.DeltaDb);
-					m_alMuseData[channelOffset + 5] = (float)(osc ? reading.Bands.ThetaAbsolute : reading.Bands.ThetaDb);
-					m_alMuseData[channelOffset + 10] = (float)(osc ? reading.Bands.AlphaAbsolute : reading.Bands.AlphaDb);
-					m_alMuseData[channelOffset + 15] = (float)(osc ? reading.Bands.BetaAbsolute : reading.Bands.BetaDb);
-					m_alMuseData[channelOffset + 20] = (float)(osc ? reading.Bands.GammaAbsolute : reading.Bands.GammaDb);
+					m_alMuseData[channelOffset] = (float)(abs ? reading.Bands.DeltaAbsolute : reading.Bands.DeltaDb);
+					m_alMuseData[channelOffset + 5] = (float)(abs ? reading.Bands.ThetaAbsolute : reading.Bands.ThetaDb);
+					m_alMuseData[channelOffset + 10] = (float)(abs ? reading.Bands.AlphaAbsolute : reading.Bands.AlphaDb);
+					m_alMuseData[channelOffset + 15] = (float)(abs ? reading.Bands.BetaAbsolute : reading.Bands.BetaDb);
+					m_alMuseData[channelOffset + 20] = (float)(abs ? reading.Bands.GammaAbsolute : reading.Bands.GammaDb);
 
 					if (++count % 4 == 0)
 					{
 						DateTime now = DateTime.Now;
 						string date = $"{now.Year,4:#0000}-{now.Month,2:#00}-{now.Day,2:#00} {now.Hour,2:#00}:{now.Minute,2:#00}:{now.Second,2:#00}.{now.Millisecond,3:#000}";
 						m_alMuseData[0] = date;
-						if (osc)
-							UpdateData(m_alMuseData, false);
-						else
-							UpdateBTDbData(m_alMuseData);
+						UpdateData(m_alMuseData, false);
 						UI.Call<EegView>(v => v.UpdateTime(now));
 						WriteFile(m_fsMuse, m_alMuseData, false, false);
 					}
@@ -739,27 +734,6 @@ public class MuseEeg : Eeg
 		}
 
 		ReceiveAsync().GetAwaiter().GetResult();
-	}
-
-	private void UpdateBTDbData(ArrayList data)
-	{
-		for (int i = 0; i < Eeg.m_nChannelMax; i++)
-		{
-			float sum = 0;
-			float f = (float)data[i + 1];
-
-			if (!m_eegChannel[i].m_isInitialised)
-				m_eegChannel[i].InitialseChannel(f);
-
-			m_eegChannel[i].m_alAverage.Insert(0, f);
-			m_eegChannel[i].m_alAverage.RemoveAt(EegChannel.m_nAverageMax);
-			for (int j = 0; j < EegChannel.m_nAverageMax; ++j)
-				sum += (float)m_eegChannel[i].m_alAverage[j];
-
-			m_eegChannel[i].m_fCurrentValue = AppPreferences.RawData ? f : sum / EegChannel.m_nAverageMax;
-		}
-
-		UI.Call<EegView>(v => v.UpdateData());
 	}
 
 	private void ReceiveMMData()
@@ -864,23 +838,6 @@ public class MuseEeg : Eeg
 				}
 				*/
 			}
-		}
-	}
-
-	private void SocketTest()
-	{
-		EndPoint ep = new IPEndPoint(IPAddress.Any, 5000);
-		Socket s1 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-		s1.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.PacketInformation, true);
-		s1.Bind(ep);
-		s1.Listen();
-		Socket s2 = s1.Accept();
-		byte[] buffer1 = new byte[s2.ReceiveBufferSize];
-		while (s2.Poll(1000, SelectMode.SelectRead))
-		{
-			int size = s2.Receive(buffer1);
-			//byte[] buffer2 = new byte[size] = buffer1;
-			string s = Encoding.ASCII.GetString(buffer1); // UTF8
 		}
 	}
 }

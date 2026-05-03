@@ -54,15 +54,13 @@ public sealed class EegBandPowerTracker
 
             _lastCalculatedVersion = _version;
         }
-
         bands = new MuseBandPowers(
             CalculateAbsoluteBandPower(snapshot, _sampleRate, 1, 4),
             CalculateAbsoluteBandPower(snapshot, _sampleRate, 4, 8),
             CalculateAbsoluteBandPower(snapshot, _sampleRate, 7.5, 13),
             CalculateAbsoluteBandPower(snapshot, _sampleRate, 13, 30),
-            CalculateAbsoluteBandPower(snapshot, _sampleRate, 30, 44));
-
-        lock (_gate)
+            CalculateAbsoluteBandPower(snapshot, _sampleRate, 30, 44)); // 60 80
+		lock (_gate)
         {
             _lastBands = bands;
         }

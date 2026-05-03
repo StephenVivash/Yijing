@@ -22,9 +22,8 @@ public static class MusePacketDecoder
         {
             return "EEG packet too short";
         }
-
-        return $"seq={packet.Sequence}, eeg[uV]=[{string.Join(", ", packet.Samples.Take(4).Select(value => value.ToString("F1")))} ...]";
-    }
+        return $"seq={packet.Sequence}, eeg[uV]=[{string.Join(", ", packet.Samples.Select(value => value.ToString("F1")))}]"; // .Take(4)
+	}
 
     public static bool TryDecodeEeg(byte[] bytes, out MuseEegPacket packet)
     {
