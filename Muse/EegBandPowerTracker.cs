@@ -59,7 +59,7 @@ public sealed class EegBandPowerTracker
             CalculateAbsoluteBandPower(snapshot, _sampleRate, 4, 8),
             CalculateAbsoluteBandPower(snapshot, _sampleRate, 7.5, 13),
             CalculateAbsoluteBandPower(snapshot, _sampleRate, 13, 30),
-            CalculateAbsoluteBandPower(snapshot, _sampleRate, 30, 44)); // 60 80
+            CalculateAbsoluteBandPower(snapshot, _sampleRate, 30, 44)); // 44 60 80
 		lock (_gate)
         {
             _lastBands = bands;
