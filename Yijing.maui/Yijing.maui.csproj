@@ -20,8 +20,11 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>disable</Nullable>
 
-		<Version>7.0.7</Version>
-		<Copyright>Copyright © 2025</Copyright>
+		<!--AotAssemblies>true</AotAssemblies>
+		<PublishAot>true</PublishAot-->
+
+		<Version>7.0.8</Version>
+		<Copyright>Copyright © 2026</Copyright>
 		<Description>The Classic of Change</Description>
 		<Authors>Stephen Vivash</Authors>
 		<Product>Yijing</Product>
@@ -34,7 +37,7 @@
 		<!--ApplicationIdGuid>32c06256-5676-445a-96ed-eb5cf45faa81</ApplicationIdGuid-->
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>7.0.7</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>7.0.8</ApplicationDisplayVersion>
 		<ApplicationVersion>7</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">12.2</SupportedOSPlatformVersion>
@@ -59,9 +62,9 @@
 	  <ProvisioningType>automatic</ProvisioningType>
 	</PropertyGroup>
 
-	<PropertyGroup>
+	<!--PropertyGroup>
 		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
-	</PropertyGroup>
+	</PropertyGroup-->
 
 	<ItemGroup>
 		<!-- App Icon -->
@@ -81,26 +84,26 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.3" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.3" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.3" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.7" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.7" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.7" />
 
-		<PackageReference Include="Microsoft.SemanticKernel" Version="1.72.0" />
-		<PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="10.3.0" />
-		<PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.3.0" />
+		<PackageReference Include="Microsoft.SemanticKernel" Version="1.74.0" />
+		<PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="10.5.0" />
+		<PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.5.0" />
 
 		<!--PackageReference Include="Microsoft.Extensions.AI" Version="9.9.0" /-->
 		<!--PackageReference Include="Microsoft.Extensions.AI.Ollama" Version="9.7.0-preview.1.25356.2" /-->
 		<!--PackageReference Include="OllamaSharp" Version="*" /-->
 		
-		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.41" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.41" />
-		<PackageReference Include="CommunityToolkit.Maui" Version="14.0.0" />
-		<PackageReference Include="System.Memory.Data" Version="10.0.3" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.51" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.51" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="14.1.0" />
+		<PackageReference Include="System.Memory.Data" Version="10.0.7" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Plugin.Maui.Audio" Version="4.0.0" />
-		<PackageReference Include="LiveChartsCore.SkiaSharpView.Maui" Version="2.0.0-rc5.4" />
-		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.269">
+		<PackageReference Include="LiveChartsCore.SkiaSharpView.Maui" Version="2.0.1" />
+		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.275">
 			<PrivateAssets>all</PrivateAssets>
 			<!--IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets-->
 		</PackageReference>
@@ -111,6 +114,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Muse\Muse.csproj" />
 		<ProjectReference Include="..\ValueSequencer\ValueSequencer.csproj" />
 		<ProjectReference Include="..\CortexAccess\CortexAccess.csproj" />
 		<ProjectReference Include="..\Yijing.data\Yijing.data.csproj" />

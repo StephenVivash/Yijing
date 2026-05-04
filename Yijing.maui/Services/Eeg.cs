@@ -220,7 +220,7 @@ public class Eeg
 			if (AppPreferences.EegDevice == (int)eEegDevice.eMuse)
 			{
 				// Clean bad Muse data
-
+				/*
 				if (((i >= 0) && (i <= 4)) && (f > 0.3f)) // Delta
 					f = 0.3f;
 				else
@@ -235,6 +235,7 @@ public class Eeg
 
 				if (f < -0.6f)
 					f = -0.6f;
+				*/
 			}
 			else
 			{
@@ -643,6 +644,100 @@ public class MuseEeg : Eeg
 
 	private void ReceiveMuseData()
 	{
+		ReceiveBTData();
+		//ReceiveMMData();
+	}
+
+	private void ReceiveBTData()
+	{
+		bool abs = true;
+
+		async Task ReceiveAsync()
+		{
+			int count = 0;
+			bool bTitle = false;
+			object dataLock = new();
+
+			AppSettings._lastEegDataTime = DateTime.Now;
+
+			if (AppPreferences.EegGoal == (int)eGoal.eYijingCast)
+				UI.Call<DiagramView>(v => v.SetDiagramMode(eDiagramMode.eMindCast));
+			using CancellationTokenSource cts = new();
+			_ = Task.Run(async () =>
+			{
+				while ((m_socMuse != null) && !cts.IsCancellationRequested)
+					await Task.Delay(250);
+				cts.Cancel();
+			});
+			var client = new Muse.Core.MuseBtClient();
+			client.InfoMessage += (_, message) => UI.Call<EegView>(v => v.SetAppTitle(message + " - Yijing"));
+			client.ConnectionStatusChanged += (_, status) => UI.Call<EegView>(v => v.SetAppTitle("Muse BT " + status + " - Yijing"));
+			client.BandPowersCalculated += (_, reading) =>
+			{
+				int channelOffset = reading.SensorName switch
+				{
+					"EEG TP9" => 1,
+					"EEG AF7" => 2,
+					"EEG AF8" => 4,
+					"EEG TP10" => 5,
+					_ => 0
+				};
+				if (channelOffset == 0)
+					return;
+
+				lock (dataLock)
+				{
+					AppSettings._lastEegDataTime = DateTime.Now;
+
+					m_alMuseData[channelOffset] = (float)(abs ? reading.Bands.DeltaAbsolute : reading.Bands.DeltaDb);
+					m_alMuseData[channelOffset + 5] = (float)(abs ? reading.Bands.ThetaAbsolute : reading.Bands.ThetaDb);
+					m_alMuseData[channelOffset + 10] = (float)(abs ? reading.Bands.AlphaAbsolute : reading.Bands.AlphaDb);
+					m_alMuseData[channelOffset + 15] = (float)(abs ? reading.Bands.BetaAbsolute : reading.Bands.BetaDb);
+					m_alMuseData[channelOffset + 20] = (float)(abs ? reading.Bands.GammaAbsolute : reading.Bands.GammaDb);
+
+					if (++count % 4 == 0)
+					{
+						DateTime now = DateTime.Now;
+						string date = $"{now.Year,4:#0000}-{now.Month,2:#00}-{now.Day,2:#00} {now.Hour,2:#00}:{now.Minute,2:#00}:{now.Second,2:#00}.{now.Millisecond,3:#000}";
+						m_alMuseData[0] = date;
+						UpdateData(m_alMuseData, false);
+						UI.Call<EegView>(v => v.UpdateTime(now));
+						WriteFile(m_fsMuse, m_alMuseData, false, false);
+					}
+				}
+
+				if (!bTitle)
+				{
+					bTitle = true;
+					UI.Call<EegView>(v => v.SetAppTitle("Received from Muse BT - Yijing"));
+				}
+			};
+
+			try
+			{
+				UI.Call<EegView>(v => v.SetAppTitle("Scanning for Muse BT - Yijing"));
+				var discovered = await client.FindMuseAsync(TimeSpan.FromSeconds(30), cts.Token);
+				if (discovered == null)
+					return;
+
+				UI.Call<EegView>(v => v.SetAppTitle("Connecting to " + discovered.DisplayName + " - Yijing"));
+				await client.ConnectAndStreamAsync(discovered, cts.Token);
+			}
+			catch (OperationCanceledException)
+			{
+			}
+			finally
+			{
+				await client.DisposeAsync();
+				UI.Call<EegView>(v => v.UpdateTime(m_dtEegStart, DateTime.Now));
+			}
+		}
+
+		ReceiveAsync().GetAwaiter().GetResult();
+	}
+
+	private void ReceiveMMData()
+	{
 		//int[] ms = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 		byte[] buffer = new byte[1024];
 		int nSize = 0;
@@ -743,23 +838,6 @@ public class MuseEeg : Eeg
 				}
 				*/
 			}
-		}
-	}
-
-	private void SocketTest()
-	{
-		EndPoint ep = new IPEndPoint(IPAddress.Any, 5000);
-		Socket s1 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-		s1.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.PacketInformation, true);
-		s1.Bind(ep);
-		s1.Listen();
-		Socket s2 = s1.Accept();
-		byte[] buffer1 = new byte[s2.ReceiveBufferSize];
-		while (s2.Poll(1000, SelectMode.SelectRead))
-		{
-			int size = s2.Receive(buffer1);
-			//byte[] buffer2 = new byte[size] = buffer1;
-			string s = Encoding.ASCII.GetString(buffer1); // UTF8
 		}
 	}
 }

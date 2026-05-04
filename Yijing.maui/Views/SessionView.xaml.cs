@@ -138,7 +138,7 @@ Return only the JSON object.";
 		double w = Math.Max(0, (width - 40) / 4);
 		btnAdd.WidthRequest = w;
 		btnDelete.WidthRequest = w;
-		//btnSearch.WidthRequest = w;
+		btnSearch.WidthRequest = w;
 
 		base.OnSizeAllocated(width, height);
 	}
@@ -230,7 +230,7 @@ Return only the JSON object.";
 	{
 		btnAdd.Padding = thickness;
 		btnDelete.Padding = thickness;
-		//btnSearch.Padding = thickness;
+		btnSearch.Padding = thickness;
 	}
 
 	public void UpdateChat()
@@ -244,7 +244,7 @@ Return only the JSON object.";
 		String strText = Sequences.strDiagramSettings[16, Sequences.HexagramText + 1];
 		string strBC = App.Current?.RequestedTheme == AppTheme.Dark ? "black" : "white";
 		string strFC = App.Current?.RequestedTheme == AppTheme.Dark ? "white" : "black";
-		string strAC = App.Current?.RequestedTheme == AppTheme.Dark ? "gray" : "gray";
+		string strAC = App.Current?.RequestedTheme == AppTheme.Dark ? "#BABABA" : "gray";
 
 		var sb = new StringBuilder();
 		sb.Append("<html><head><meta charset=\"utf-8\"/><style>");
@@ -400,7 +400,7 @@ Return only the JSON object.";
 	{
 		string strBC = App.Current?.RequestedTheme == AppTheme.Dark ? "black" : "white";
 		string strFC = App.Current?.RequestedTheme == AppTheme.Dark ? "white" : "black";
-		string strAC = App.Current?.RequestedTheme == AppTheme.Dark ? "gray" : "gray";
+		string strAC = App.Current?.RequestedTheme == AppTheme.Dark ? "#BDBDBD" : "gray";
 
 		var sb = new StringBuilder();
 		sb.Append("<html><head><meta charset=\"utf-8\"/><style>");
