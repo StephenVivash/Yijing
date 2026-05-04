@@ -41,6 +41,7 @@ public class EegChannel
 		m_nAverageMax = nAverageMax;
 		m_alAverage.Clear();
 		m_isInitialised = false;
+		InitialseChannel(0);
 	}
 
 	public void InitialseChannel(float f)
