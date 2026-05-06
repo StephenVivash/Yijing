@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace Muse.Core;
 
 public sealed class EegBandPowerTracker
@@ -58,7 +60,7 @@ public sealed class EegBandPowerTracker
             }
 
             _lastCalculatedVersion = _version;
-            _samplesSinceLastCalculation = 0;
+            _samplesSinceLastCalculation = Math.Max(0, _samplesSinceLastCalculation - HopSamples);
         }
 
         var psd = CalculatePowerSpectralDensity(snapshot, _sampleRate);
@@ -121,6 +123,41 @@ public sealed class EegBandPowerTracker
 
     private static double[] CalculatePowerSpectralDensity(double[] samples, int sampleRate)
     {
+        return IsPowerOfTwo(samples.Length)
+            ? CalculatePowerSpectralDensityFft(samples, sampleRate)
+            : CalculatePowerSpectralDensityDft(samples, sampleRate);
+    }
+
+    private static double[] CalculatePowerSpectralDensityFft(double[] samples, int sampleRate)
+    {
+        var n = samples.Length;
+        var mean = samples.Average();
+        var psd = new double[(n / 2) + 1];
+        var windowPower = 0.0;
+        var spectrum = new Complex[n];
+
+        for (var i = 0; i < n; i++)
+        {
+            var window = 0.54 - 0.46 * Math.Cos(2.0 * Math.PI * i / (n - 1));
+            spectrum[i] = new Complex((samples[i] - mean) * window, 0.0);
+            windowPower += window * window;
+        }
+
+        TransformForward(spectrum);
+
+        for (var bin = 0; bin < psd.Length; bin++)
+        {
+            var oneSidedScale = (bin == 0 || bin == n / 2) ? 1.0 : 2.0;
+            var real = spectrum[bin].Real;
+            var imaginary = spectrum[bin].Imaginary;
+            psd[bin] = oneSidedScale * (real * real + imaginary * imaginary) / Math.Max(sampleRate * windowPower, double.Epsilon);
+        }
+
+        return psd;
+    }
+
+    private static double[] CalculatePowerSpectralDensityDft(double[] samples, int sampleRate)
+    {
         var n = samples.Length;
         var mean = samples.Average();
         var psd = new double[(n / 2) + 1];
@@ -151,4 +188,44 @@ public sealed class EegBandPowerTracker
 
         return psd;
     }
+
+    private static void TransformForward(Complex[] values)
+    {
+        var n = values.Length;
+        for (int i = 1, j = 0; i < n; i++)
+        {
+            var bit = n >> 1;
+            for (; (j & bit) != 0; bit >>= 1)
+            {
+                j ^= bit;
+            }
+
+            j ^= bit;
+            if (i < j)
+            {
+                (values[i], values[j]) = (values[j], values[i]);
+            }
+        }
+
+        for (var length = 2; length <= n; length <<= 1)
+        {
+            var angle = -2.0 * Math.PI / length;
+            var wLength = new Complex(Math.Cos(angle), Math.Sin(angle));
+            for (var i = 0; i < n; i += length)
+            {
+                var w = Complex.One;
+                var halfLength = length >> 1;
+                for (var j = 0; j < halfLength; j++)
+                {
+                    var even = values[i + j];
+                    var odd = values[i + j + halfLength] * w;
+                    values[i + j] = even + odd;
+                    values[i + j + halfLength] = even - odd;
+                    w *= wLength;
+                }
+            }
+        }
+    }
+
+    private static bool IsPowerOfTwo(int value) => value > 0 && (value & (value - 1)) == 0;
 }

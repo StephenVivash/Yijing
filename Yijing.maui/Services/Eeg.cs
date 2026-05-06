@@ -652,12 +652,60 @@ public class MuseEeg : Eeg
 	private void ReceiveBTData()
 	{
 		bool abs = true;
+		// Experimental BT calibration: first two minutes are treated as eyes-open baseline.
+		bool baselineNormalise = true;
+		TimeSpan baselineDuration = TimeSpan.FromMinutes(2);
 
 		async Task ReceiveAsync()
 		{
 			int count = 0;
 			bool bTitle = false;
 			object dataLock = new();
+			DateTime? baselineStart = null;
+			bool baselineFrozen = false;
+			float[] rawBandData = new float[m_nChannelMax];
+			bool[] rawBandSeen = new bool[m_nChannelMax];
+			double[] baselineSums = new double[m_nChannelMax];
+			int[] baselineCounts = new int[m_nChannelMax];
+			float[] baselineValues = new float[m_nChannelMax];
+
+			void SetRawBand(int dataIndex, double value)
+			{
+				int channelIndex = dataIndex - 1;
+				rawBandData[channelIndex] = (float)value;
+				rawBandSeen[channelIndex] = true;
+			}
+
+			void PopulateMuseData(DateTime now)
+			{
+				baselineStart ??= now;
+
+				if (baselineNormalise && !baselineFrozen && (now - baselineStart.Value) >= baselineDuration)
+					baselineFrozen = true;
+
+				for (int i = 0; i < m_nChannelMax; i++)
+				{
+					if (!rawBandSeen[i])
+					{
+						m_alMuseData[i + 1] = 0.0f;
+						continue;
+					}
+
+					if (baselineNormalise)
+					{
+						if (!baselineFrozen)
+						{
+							baselineSums[i] += rawBandData[i];
+							baselineCounts[i]++;
+							baselineValues[i] = (float)(baselineSums[i] / baselineCounts[i]);
+						}
+
+						m_alMuseData[i + 1] = rawBandData[i] - baselineValues[i];
+					}
+					else
+						m_alMuseData[i + 1] = rawBandData[i];
+				}
+			}
 
 			AppSettings._lastEegDataTime = DateTime.Now;
 
@@ -690,15 +738,16 @@ public class MuseEeg : Eeg
 				{
 					AppSettings._lastEegDataTime = DateTime.Now;
 
-					m_alMuseData[channelOffset] = (float)(abs ? reading.Bands.DeltaAbsolute : reading.Bands.DeltaDb);
-					m_alMuseData[channelOffset + 5] = (float)(abs ? reading.Bands.ThetaAbsolute : reading.Bands.ThetaDb);
-					m_alMuseData[channelOffset + 10] = (float)(abs ? reading.Bands.AlphaAbsolute : reading.Bands.AlphaDb);
-					m_alMuseData[channelOffset + 15] = (float)(abs ? reading.Bands.BetaAbsolute : reading.Bands.BetaDb);
-					m_alMuseData[channelOffset + 20] = (float)(abs ? reading.Bands.GammaAbsolute : reading.Bands.GammaDb);
+					SetRawBand(channelOffset, abs ? reading.Bands.DeltaAbsolute : reading.Bands.DeltaDb);
+					SetRawBand(channelOffset + 5, abs ? reading.Bands.ThetaAbsolute : reading.Bands.ThetaDb);
+					SetRawBand(channelOffset + 10, abs ? reading.Bands.AlphaAbsolute : reading.Bands.AlphaDb);
+					SetRawBand(channelOffset + 15, abs ? reading.Bands.BetaAbsolute : reading.Bands.BetaDb);
+					SetRawBand(channelOffset + 20, abs ? reading.Bands.GammaAbsolute : reading.Bands.GammaDb);
 
 					if (++count % 4 == 0)
 					{
 						DateTime now = DateTime.Now;
+						PopulateMuseData(now);
 						string date = $"{now.Year,4:#0000}-{now.Month,2:#00}-{now.Day,2:#00} {now.Hour,2:#00}:{now.Minute,2:#00}:{now.Second,2:#00}.{now.Millisecond,3:#000}";
 						m_alMuseData[0] = date;
 						UpdateData(m_alMuseData, false);
