@@ -4,7 +4,7 @@ namespace MauiApp1
 {
 	public partial class MainPage : ContentPage
 	{
-		internal bool debug = false;
+		internal bool debug = true;
 
 		private MuseBtClient? _client;
 		private CancellationTokenSource? _streamingCts;
@@ -31,6 +31,7 @@ namespace MauiApp1
 			_client.InfoMessage += (_, message) => LogDebug(message);
 			_client.DiagnosticMessage += (_, message) => LogDebug(message);
 			_client.ConnectionStatusChanged += (_, status) => MainThread.BeginInvokeOnMainThread(() => Log.StatusText = status);
+			_client.EegPacketDiagnostic += (_, diagnostic) => LogEegPacketDiagnostic(diagnostic);
 			_client.NotificationReceived += (_, notification) =>
 			{
 				if (debug && (notification.Count <= 3 || notification.Count % 50 == 0))
@@ -132,6 +133,33 @@ namespace MauiApp1
 				$"{FormatBandCell(reading.Bands.BetaDb, reading.Bands.BetaAbsolute)} | " +
 
 				$"{FormatBandCell(reading.Bands.GammaDb, reading.Bands.GammaAbsolute)} |");
+		}
+
+		private void LogEegPacketDiagnostic(MuseEegPacketDiagnostic diagnostic)
+		{
+			if (!debug)
+			{
+				return;
+			}
+
+			bool shouldLog = diagnostic.Count <= 3 ||
+				diagnostic.Count % 50 == 0 ||
+				diagnostic.LargeSequenceJump ||
+				(diagnostic.IntervalMilliseconds.HasValue && diagnostic.IntervalMilliseconds.Value > 250);
+
+			if (!shouldLog)
+			{
+				return;
+			}
+
+			var interval = diagnostic.IntervalMilliseconds.HasValue ? $"{diagnostic.IntervalMilliseconds.Value,6:F1}ms" : "     -";
+			var sequenceDelta = diagnostic.SequenceDelta.HasValue ? $"{diagnostic.SequenceDelta.Value,2}" : " -";
+			var sequenceJump = diagnostic.LargeSequenceJump ? "yes" : " no";
+			Log.Add(
+				$"{FormatSensorName(diagnostic.SensorName),-6} pkt #{diagnostic.Count,5} " +
+				$"seq={diagnostic.Sequence,5} dSeq={sequenceDelta} jump={sequenceJump} totalJump={diagnostic.TotalLargeSequenceJumps,3} " +
+				$"dt={interval} uV[min={diagnostic.MinMicrovolts,7:F1}, max={diagnostic.MaxMicrovolts,7:F1}, " +
+				$"meanAbs={diagnostic.MeanAbsMicrovolts,6:F1}, rms={diagnostic.RmsMicrovolts,6:F1}]");
 		}
 
 		private void PrintBandHeaderOnce()

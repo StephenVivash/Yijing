@@ -13,6 +13,7 @@ public sealed class MuseBtClient : IAsyncDisposable
 {
     private readonly ConcurrentDictionary<Guid, long> _notificationCounts = new();
     private readonly ConcurrentDictionary<Guid, EegBandPowerTracker> _eegBandTrackers = new();
+    private readonly ConcurrentDictionary<Guid, MuseEegPacketStats> _eegPacketStats = new();
     private BluetoothLEDevice? _device;
     private GattCharacteristic? _control;
 
@@ -23,6 +24,8 @@ public sealed class MuseBtClient : IAsyncDisposable
     public event EventHandler<string>? ConnectionStatusChanged;
 
     public event EventHandler<MuseNotification>? NotificationReceived;
+
+    public event EventHandler<MuseEegPacketDiagnostic>? EegPacketDiagnostic;
 
     public event EventHandler<MuseBandPowerReading>? BandPowersCalculated;
 
@@ -237,8 +240,15 @@ public sealed class MuseBtClient : IAsyncDisposable
             {
                 var tracker = _eegBandTrackers.GetOrAdd(
                     characteristic.Uuid,
-                    _ => new EegBandPowerTracker(name, MuseBluetoothConstants.DefaultBandWindowSamples, MuseBluetoothConstants.EegSampleRate));
+                    _ => new EegBandPowerTracker(
+                        name,
+                        MuseBluetoothConstants.DefaultBandWindowSamples,
+                        MuseBluetoothConstants.EegSampleRate,
+                        MuseBluetoothConstants.DefaultBandHopSamples));
                 tracker.AddSamples(packet.Samples);
+
+                var stats = _eegPacketStats.GetOrAdd(characteristic.Uuid, _ => new MuseEegPacketStats());
+                EegPacketDiagnostic?.Invoke(this, stats.Track(name, count, packet));
             }
 
             NotificationReceived?.Invoke(this, new MuseNotification(name, characteristic.Uuid, kind, bytes, count));
@@ -311,6 +321,7 @@ public sealed class MuseBtClient : IAsyncDisposable
 
     private readonly ConcurrentDictionary<Guid, long> _notificationCounts = new();
     private readonly ConcurrentDictionary<Guid, EegBandPowerTracker> _eegBandTrackers = new();
+    private readonly ConcurrentDictionary<Guid, MuseEegPacketStats> _eegPacketStats = new();
     private BluetoothGatt? _gatt;
     private MuseGattCallback? _gattCallback;
     private BluetoothGattCharacteristic? _control;
@@ -322,6 +333,8 @@ public sealed class MuseBtClient : IAsyncDisposable
     public event EventHandler<string>? ConnectionStatusChanged;
 
     public event EventHandler<MuseNotification>? NotificationReceived;
+
+    public event EventHandler<MuseEegPacketDiagnostic>? EegPacketDiagnostic;
 
     public event EventHandler<MuseBandPowerReading>? BandPowersCalculated;
 
@@ -594,8 +607,15 @@ public sealed class MuseBtClient : IAsyncDisposable
         {
             var tracker = _eegBandTrackers.GetOrAdd(
                 uuid,
-                _ => new EegBandPowerTracker(info.Name, MuseBluetoothConstants.DefaultBandWindowSamples, MuseBluetoothConstants.EegSampleRate));
+                _ => new EegBandPowerTracker(
+                    info.Name,
+                    MuseBluetoothConstants.DefaultBandWindowSamples,
+                    MuseBluetoothConstants.EegSampleRate,
+                    MuseBluetoothConstants.DefaultBandHopSamples));
             tracker.AddSamples(packet.Samples);
+
+            var stats = _eegPacketStats.GetOrAdd(uuid, _ => new MuseEegPacketStats());
+            EegPacketDiagnostic?.Invoke(this, stats.Track(info.Name, count, packet));
         }
 
         NotificationReceived?.Invoke(this, new MuseNotification(info.Name, uuid, info.Kind, bytes, count));
@@ -780,6 +800,8 @@ public sealed class MuseBtClient : IAsyncDisposable
     public event EventHandler<string>? ConnectionStatusChanged;
 
     public event EventHandler<MuseNotification>? NotificationReceived;
+
+    public event EventHandler<MuseEegPacketDiagnostic>? EegPacketDiagnostic;
 
     public event EventHandler<MuseBandPowerReading>? BandPowersCalculated;
 

@@ -4,6 +4,7 @@ public static class MuseBluetoothConstants
 {
     public const int EegSampleRate = 256;
     public const int DefaultBandWindowSamples = 256;
+    public const int DefaultBandHopSamples = 26;
     public static readonly TimeSpan BandPowerPublishInterval = TimeSpan.FromMilliseconds(100);
 
     public static readonly Guid MuseServiceUuid = Guid.Parse("0000fe8d-0000-1000-8000-00805f9b34fb");

@@ -88,21 +88,21 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.7" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.7" />
 
-		<PackageReference Include="Microsoft.SemanticKernel" Version="1.74.0" />
-		<PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="10.5.0" />
-		<PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.5.0" />
+		<PackageReference Include="Microsoft.SemanticKernel" Version="1.75.0" />
+		<PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="10.5.1" />
+		<PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.5.1" />
 
 		<!--PackageReference Include="Microsoft.Extensions.AI" Version="9.9.0" /-->
 		<!--PackageReference Include="Microsoft.Extensions.AI.Ollama" Version="9.7.0-preview.1.25356.2" /-->
 		<!--PackageReference Include="OllamaSharp" Version="*" /-->
 		
-		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.51" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.51" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.60" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.60" />
 		<PackageReference Include="CommunityToolkit.Maui" Version="14.1.0" />
 		<PackageReference Include="System.Memory.Data" Version="10.0.7" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Plugin.Maui.Audio" Version="4.0.0" />
-		<PackageReference Include="LiveChartsCore.SkiaSharpView.Maui" Version="2.0.1" />
+		<PackageReference Include="LiveChartsCore.SkiaSharpView.Maui" Version="2.0.2" />
 		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.275">
 			<PrivateAssets>all</PrivateAssets>
 			<!--IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets-->
