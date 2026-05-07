@@ -10,6 +10,9 @@ public static class MuseBluetoothConstants
     public const double BandPowerNotchQ = 35.0;
     public const double GammaSpikeLimitMedianMultiplier = 2.0;
     public static readonly TimeSpan BandPowerPublishInterval = TimeSpan.FromMilliseconds(100);
+    public static readonly TimeSpan AutoReconnectInitialDelay = TimeSpan.FromSeconds(2);
+    public static readonly TimeSpan AutoReconnectMaxDelay = TimeSpan.FromSeconds(20);
+    public static readonly TimeSpan NotificationStallReconnectTimeout = TimeSpan.FromSeconds(8);
 
     public static readonly Guid MuseServiceUuid = Guid.Parse("0000fe8d-0000-1000-8000-00805f9b34fb");
     public static readonly Guid ControlUuid = MuseUuid(0x0001);

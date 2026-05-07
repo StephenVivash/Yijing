@@ -16,6 +16,7 @@ public sealed class MuseBtClient : IAsyncDisposable
     private readonly ConcurrentDictionary<Guid, MuseEegPacketStats> _eegPacketStats = new();
     private BluetoothLEDevice? _device;
     private GattCharacteristic? _control;
+    private TaskCompletionSource? _connectionLost;
 
     public event EventHandler<string>? DiagnosticMessage;
 
@@ -84,6 +85,48 @@ public sealed class MuseBtClient : IAsyncDisposable
 
     public async Task ConnectAndStreamAsync(MuseDeviceAdvertisement discovered, CancellationToken cancellationToken = default)
     {
+        var reconnectAttempt = 0;
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            try
+            {
+                if (reconnectAttempt > 0)
+                {
+                    OnDiagnostic($"Reconnect attempt {reconnectAttempt} to {discovered.DisplayName}...");
+                }
+
+                await ConnectAndStreamOnceAsync(discovered, cancellationToken);
+            }
+            catch (System.OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or System.Runtime.InteropServices.COMException or InvalidOperationException)
+            {
+                OnInfo($"Muse BT stream failed: {ex.GetType().Name} 0x{ex.HResult:X8} {ex.Message}");
+            }
+            finally
+            {
+                await CleanupConnectionAsync(sendStopCommand: false);
+            }
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                break;
+            }
+
+            reconnectAttempt++;
+            var delay = GetReconnectDelay(reconnectAttempt);
+            ConnectionStatusChanged?.Invoke(this, "Reconnecting");
+            OnDiagnostic($"Reconnecting to {discovered.DisplayName} in {delay.TotalSeconds:F1}s...");
+            await Task.Delay(delay, cancellationToken);
+        }
+    }
+
+    private async Task ConnectAndStreamOnceAsync(MuseDeviceAdvertisement discovered, CancellationToken cancellationToken)
+    {
+        _connectionLost = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+
         OnDiagnostic($"Connecting to {discovered.DisplayName}...");
         _device = await BluetoothLEDevice.FromBluetoothAddressAsync(discovered.BluetoothAddress);
         if (_device is null)
@@ -92,12 +135,7 @@ public sealed class MuseBtClient : IAsyncDisposable
             return;
         }
 
-        _device.ConnectionStatusChanged += (_, _) =>
-        {
-            var status = _device.ConnectionStatus.ToString();
-            ConnectionStatusChanged?.Invoke(this, status);
-            OnDiagnostic($"Connection status: {status}");
-        };
+        _device.ConnectionStatusChanged += OnDeviceConnectionStatusChanged;
         OnDiagnostic($"Device name='{_device.Name}', id='{_device.DeviceId}', status={_device.ConnectionStatus}");
 
         var servicesResult = await _device.GetGattServicesForUuidAsync(MuseBluetoothConstants.MuseServiceUuid, BluetoothCacheMode.Uncached);
@@ -167,12 +205,7 @@ public sealed class MuseBtClient : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        if (_control is not null)
-        {
-            await SendControlCommandAsync("h", CancellationToken.None);
-        }
-
-        _device?.Dispose();
+        await CleanupConnectionAsync(sendStopCommand: true);
     }
 
     private async Task RunStreamingLoopAsync(CancellationToken cancellationToken)
@@ -181,10 +214,33 @@ public sealed class MuseBtClient : IAsyncDisposable
         try
         {
             var keepAliveTimer = Stopwatch.StartNew();
+            var lastNotificationTotal = TotalNotifications();
+            var lastNotificationProgress = DateTimeOffset.UtcNow;
+            var connectionLostTask = _connectionLost?.Task ?? Task.Delay(Timeout.InfiniteTimeSpan);
             while (!cancellationToken.IsCancellationRequested)
             {
-                await Task.Delay(MuseBluetoothConstants.BandPowerPublishInterval, cancellationToken);
+                var delayTask = Task.Delay(MuseBluetoothConstants.BandPowerPublishInterval, cancellationToken);
+                if (await Task.WhenAny(delayTask, connectionLostTask) == connectionLostTask)
+                {
+                    OnDiagnostic("Connection lost; leaving stream loop for reconnect.");
+                    break;
+                }
+
+                await delayTask;
                 PublishBandSummaries();
+
+                var notificationTotal = TotalNotifications();
+                if (notificationTotal > lastNotificationTotal)
+                {
+                    lastNotificationTotal = notificationTotal;
+                    lastNotificationProgress = DateTimeOffset.UtcNow;
+                }
+                else if (DateTimeOffset.UtcNow - lastNotificationProgress >= MuseBluetoothConstants.NotificationStallReconnectTimeout)
+                {
+                    OnInfo($"No Muse notifications for {MuseBluetoothConstants.NotificationStallReconnectTimeout.TotalSeconds:F0}s; reconnecting.");
+                    _connectionLost?.TrySetResult();
+                    continue;
+                }
 
                 if (keepAliveTimer.Elapsed >= TimeSpan.FromSeconds(5))
                 {
@@ -201,11 +257,61 @@ public sealed class MuseBtClient : IAsyncDisposable
         }
         finally
         {
-            OnDiagnostic("Stopping stream...");
-            await SendControlCommandAsync("h", CancellationToken.None);
-            _device?.Dispose();
-            _device = null;
+            var connected = _device?.ConnectionStatus == BluetoothConnectionStatus.Connected;
+            OnDiagnostic(connected ? "Stopping stream..." : "Stream stopped; device is disconnected.");
+            if (connected)
+            {
+                await SendControlCommandAsync("h", CancellationToken.None);
+            }
         }
+    }
+
+    private void OnDeviceConnectionStatusChanged(BluetoothLEDevice sender, object args)
+    {
+        _ = args;
+        var status = sender.ConnectionStatus.ToString();
+        ConnectionStatusChanged?.Invoke(this, status);
+        OnDiagnostic($"Connection status: {status}");
+        if (sender.ConnectionStatus == BluetoothConnectionStatus.Disconnected)
+        {
+            _connectionLost?.TrySetResult();
+        }
+    }
+
+    private async Task CleanupConnectionAsync(bool sendStopCommand)
+    {
+        if (sendStopCommand && _control is not null && _device?.ConnectionStatus == BluetoothConnectionStatus.Connected)
+        {
+            try
+            {
+                await SendControlCommandAsync("h", CancellationToken.None);
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or System.Runtime.InteropServices.COMException)
+            {
+                OnDiagnostic($"Stop command during cleanup failed: {ex.GetType().Name} 0x{ex.HResult:X8} {ex.Message}");
+            }
+        }
+
+        if (_device is not null)
+        {
+            _device.ConnectionStatusChanged -= OnDeviceConnectionStatusChanged;
+            _device.Dispose();
+        }
+
+        _control = null;
+        _device = null;
+        _connectionLost = null;
+    }
+
+    private long TotalNotifications() => _notificationCounts.Values.Sum();
+
+    private static TimeSpan GetReconnectDelay(int attempt)
+    {
+        var multiplier = Math.Pow(2, Math.Max(0, Math.Min(attempt - 1, 4)));
+        var seconds = Math.Min(
+            MuseBluetoothConstants.AutoReconnectMaxDelay.TotalSeconds,
+            MuseBluetoothConstants.AutoReconnectInitialDelay.TotalSeconds * multiplier);
+        return TimeSpan.FromSeconds(seconds);
     }
 
     private async Task<GattCharacteristic?> FindCharacteristicAsync(GattDeviceService service, Guid uuid, string name, bool optional = false)
@@ -398,6 +504,46 @@ public sealed class MuseBtClient : IAsyncDisposable
 
     public async Task ConnectAndStreamAsync(MuseDeviceAdvertisement discovered, CancellationToken cancellationToken = default)
     {
+        var reconnectAttempt = 0;
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            try
+            {
+                if (reconnectAttempt > 0)
+                {
+                    OnDiagnostic($"Reconnect attempt {reconnectAttempt} to {discovered.DisplayName}...");
+                }
+
+                await ConnectAndStreamOnceAsync(discovered, cancellationToken);
+            }
+            catch (System.OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex) when (ex is IOException or InvalidOperationException)
+            {
+                OnInfo($"Muse BT stream failed: {ex.GetType().Name} 0x{ex.HResult:X8} {ex.Message}");
+            }
+            finally
+            {
+                await CleanupConnectionAsync(sendStopCommand: false);
+            }
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                break;
+            }
+
+            reconnectAttempt++;
+            var delay = GetReconnectDelay(reconnectAttempt);
+            ConnectionStatusChanged?.Invoke(this, "Reconnecting");
+            OnDiagnostic($"Reconnecting to {discovered.DisplayName} in {delay.TotalSeconds:F1}s...");
+            await Task.Delay(delay, cancellationToken);
+        }
+    }
+
+    private async Task ConnectAndStreamOnceAsync(MuseDeviceAdvertisement discovered, CancellationToken cancellationToken)
+    {
         var adapter = GetBluetoothAdapter();
         if (adapter is null)
         {
@@ -503,15 +649,7 @@ public sealed class MuseBtClient : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        if (_control is not null)
-        {
-            await SendControlCommandAsync("h", CancellationToken.None);
-        }
-
-        _gatt?.Disconnect();
-        _gatt?.Close();
-        _gatt?.Dispose();
-        _gattCallback?.Dispose();
+        await CleanupConnectionAsync(sendStopCommand: true);
     }
 
     private async Task RunStreamingLoopAsync(CancellationToken cancellationToken)
@@ -520,10 +658,33 @@ public sealed class MuseBtClient : IAsyncDisposable
         try
         {
             var keepAliveTimer = Stopwatch.StartNew();
+            var lastNotificationTotal = TotalNotifications();
+            var lastNotificationProgress = DateTimeOffset.UtcNow;
+            var disconnectedTask = _gattCallback?.DisconnectedTask ?? Task.Delay(Timeout.InfiniteTimeSpan);
             while (!cancellationToken.IsCancellationRequested)
             {
-                await Task.Delay(MuseBluetoothConstants.BandPowerPublishInterval, cancellationToken);
+                var delayTask = Task.Delay(MuseBluetoothConstants.BandPowerPublishInterval, cancellationToken);
+                if (await Task.WhenAny(delayTask, disconnectedTask) == disconnectedTask)
+                {
+                    OnDiagnostic("Connection lost; leaving stream loop for reconnect.");
+                    break;
+                }
+
+                await delayTask;
                 PublishBandSummaries();
+
+                var notificationTotal = TotalNotifications();
+                if (notificationTotal > lastNotificationTotal)
+                {
+                    lastNotificationTotal = notificationTotal;
+                    lastNotificationProgress = DateTimeOffset.UtcNow;
+                }
+                else if (DateTimeOffset.UtcNow - lastNotificationProgress >= MuseBluetoothConstants.NotificationStallReconnectTimeout)
+                {
+                    OnInfo($"No Muse notifications for {MuseBluetoothConstants.NotificationStallReconnectTimeout.TotalSeconds:F0}s; reconnecting.");
+                    _gattCallback?.SignalReconnectRequested();
+                    continue;
+                }
 
                 if (keepAliveTimer.Elapsed >= TimeSpan.FromSeconds(5))
                 {
@@ -542,8 +703,41 @@ public sealed class MuseBtClient : IAsyncDisposable
         {
             OnDiagnostic("Stopping stream...");
             await SendControlCommandAsync("h", CancellationToken.None);
-            _gatt?.Disconnect();
         }
+    }
+
+    private async Task CleanupConnectionAsync(bool sendStopCommand)
+    {
+        if (sendStopCommand && _control is not null && _gatt is not null)
+        {
+            try
+            {
+                await SendControlCommandAsync("h", CancellationToken.None);
+            }
+            catch (Exception ex) when (ex is IOException or InvalidOperationException)
+            {
+                OnDiagnostic($"Stop command during cleanup failed: {ex.GetType().Name} 0x{ex.HResult:X8} {ex.Message}");
+            }
+        }
+
+        _control = null;
+        _gatt?.Disconnect();
+        _gatt?.Close();
+        _gatt?.Dispose();
+        _gatt = null;
+        _gattCallback?.Dispose();
+        _gattCallback = null;
+    }
+
+    private long TotalNotifications() => _notificationCounts.Values.Sum();
+
+    private static TimeSpan GetReconnectDelay(int attempt)
+    {
+        var multiplier = Math.Pow(2, Math.Max(0, Math.Min(attempt - 1, 4)));
+        var seconds = Math.Min(
+            MuseBluetoothConstants.AutoReconnectMaxDelay.TotalSeconds,
+            MuseBluetoothConstants.AutoReconnectInitialDelay.TotalSeconds * multiplier);
+        return TimeSpan.FromSeconds(seconds);
     }
 
     private BluetoothGattCharacteristic? FindCharacteristic(BluetoothGattService service, Guid uuid, string name, bool optional = false)
@@ -746,6 +940,7 @@ public sealed class MuseBtClient : IAsyncDisposable
         private readonly Action<string> _onConnectionStatusChanged;
         private readonly TaskCompletionSource _connected = new(TaskCreationOptions.RunContinuationsAsynchronously);
         private readonly TaskCompletionSource<GattStatus> _servicesDiscovered = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        private readonly TaskCompletionSource _disconnected = new(TaskCreationOptions.RunContinuationsAsynchronously);
         private TaskCompletionSource<GattStatus>? _descriptorWrite;
         private TaskCompletionSource<GattStatus>? _characteristicWrite;
 
@@ -758,6 +953,10 @@ public sealed class MuseBtClient : IAsyncDisposable
         public Task WaitForConnectedAsync(CancellationToken cancellationToken) => _connected.Task.WaitAsync(cancellationToken);
 
         public Task<GattStatus> WaitForServicesDiscoveredAsync(CancellationToken cancellationToken) => _servicesDiscovered.Task.WaitAsync(cancellationToken);
+
+        public Task DisconnectedTask => _disconnected.Task;
+
+        public void SignalReconnectRequested() => _disconnected.TrySetResult();
 
         public Task<GattStatus> BeginDescriptorWrite()
         {
@@ -784,6 +983,7 @@ public sealed class MuseBtClient : IAsyncDisposable
             if (status != GattStatus.Success)
             {
                 _connected.TrySetException(new InvalidOperationException($"Android GATT connection failed: {status}"));
+                _disconnected.TrySetResult();
                 return;
             }
 
@@ -794,7 +994,7 @@ public sealed class MuseBtClient : IAsyncDisposable
             }
             else if (newState == ProfileState.Disconnected)
             {
-                _onConnectionStatusChanged("Disconnected");
+                _disconnected.TrySetResult();
             }
         }
 
