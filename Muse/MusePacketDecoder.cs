@@ -51,9 +51,20 @@ public static class MusePacketDecoder
 
     public static string DecodeImuSummary(byte[] bytes)
     {
-        if (bytes.Length < 20)
+        if (!TryDecodeImu(bytes, out var packet))
         {
             return "IMU packet too short";
+        }
+
+        return $"seq={packet.Sequence}, xyzSamples=[{string.Join(", ", packet.Samples)}]";
+    }
+
+    public static bool TryDecodeImu(byte[] bytes, out MuseImuPacket packet)
+    {
+        packet = default;
+        if (bytes.Length < 20)
+        {
+            return false;
         }
 
         var sequence = ReadUInt16BigEndian(bytes, 0);
@@ -63,7 +74,28 @@ public static class MusePacketDecoder
             values[i] = unchecked((short)ReadUInt16BigEndian(bytes, 2 + i * 2));
         }
 
-        return $"seq={sequence}, xyzSamples=[{string.Join(", ", values)}]";
+        packet = new MuseImuPacket(sequence, values);
+        return true;
+    }
+
+    public static bool TryDecodePpg(byte[] bytes, out MusePpgPacket packet)
+    {
+        packet = default;
+        if (bytes.Length < 20)
+        {
+            return false;
+        }
+
+        var sequence = ReadUInt16BigEndian(bytes, 0);
+        var values = new int[6];
+        for (var i = 0; i < values.Length; i++)
+        {
+            var offset = 2 + i * 3;
+            values[i] = (bytes[offset] << 16) | (bytes[offset + 1] << 8) | bytes[offset + 2];
+        }
+
+        packet = new MusePpgPacket(sequence, values);
+        return true;
     }
 
     public static string DecodeTelemetrySummary(byte[] bytes)

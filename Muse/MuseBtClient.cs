@@ -27,6 +27,8 @@ public sealed class MuseBtClient : IAsyncDisposable
 
     public event EventHandler<MuseEegPacketDiagnostic>? EegPacketDiagnostic;
 
+    public event EventHandler<MuseBandPowerDiagnostic>? BandPowerDiagnostic;
+
     public event EventHandler<MuseBandPowerReading>? BandPowersCalculated;
 
     public async Task<MuseDeviceAdvertisement?> FindMuseAsync(TimeSpan timeout, CancellationToken cancellationToken = default)
@@ -278,8 +280,14 @@ public sealed class MuseBtClient : IAsyncDisposable
     {
         foreach (var tracker in _eegBandTrackers.Values.OrderBy(tracker => tracker.Name))
         {
-            if (tracker.TryCalculate(out var bands))
+            if (tracker.TryCalculate(out var bands, out var diagnostic))
             {
+                if (diagnostic is not null)
+                {
+                    BandPowerDiagnostic?.Invoke(this, diagnostic);
+                    OnDiagnostic(FormatBandPowerDiagnostic(diagnostic));
+                }
+
                 BandPowersCalculated?.Invoke(this, new MuseBandPowerReading(tracker.Name, bands));
             }
         }
@@ -296,6 +304,20 @@ public sealed class MuseBtClient : IAsyncDisposable
     private static string ShortUuid(Guid uuid) => uuid.ToString()[4..8];
 
     private static string FormatProtocolError(byte? protocolError) => protocolError.HasValue ? $"0x{protocolError.Value:X2}" : "none";
+
+    private static string FormatBandPowerDiagnostic(MuseBandPowerDiagnostic diagnostic) =>
+        $"PSD {ShortSensorName(diagnostic.SensorName),-4} #{diagnostic.Count,5} " +
+        $"n={diagnostic.WindowSamples} hop={diagnostic.HopSamples} fs={diagnostic.SampleRate} notch={FormatNotch(diagnostic)} " +
+        $"uV[min={diagnostic.MinMicrovolts,7:F1}, max={diagnostic.MaxMicrovolts,7:F1}, mean={diagnostic.MeanMicrovolts,7:F2}, " +
+        $"meanAbs={diagnostic.MeanAbsMicrovolts,6:F1}, rms={diagnostic.RmsMicrovolts,6:F1}] " +
+        $"gamma[pow={diagnostic.GammaIntegratedPower:E3}, final={diagnostic.GammaLogPower,6:F3}, dB={diagnostic.GammaDb,6:F2}, " +
+        $"peak={diagnostic.GammaPeakHz,5:F1}Hz/{diagnostic.GammaPeakPower:E3}, spike={diagnostic.GammaSpikeLimit:E3}/x{diagnostic.GammaSpikeLimitMultiplier:F1}] " +
+        $"highPeak={diagnostic.HighPeakHz,5:F1}Hz/{diagnostic.HighPeakPower:E3} line50={diagnostic.Line50HzPower:E3} line60={diagnostic.Line60HzPower:E3}";
+
+    private static string FormatNotch(MuseBandPowerDiagnostic diagnostic) =>
+        diagnostic.NotchFrequencyHz > 0.0 ? $"{diagnostic.NotchFrequencyHz:F1}Hz/q{diagnostic.NotchQ:F1}" : "off";
+
+    private static string ShortSensorName(string name) => name.StartsWith("EEG ", StringComparison.OrdinalIgnoreCase) ? name[4..] : name;
 
     private void OnDiagnostic(string message) => DiagnosticMessage?.Invoke(this, message);
 
@@ -335,6 +357,8 @@ public sealed class MuseBtClient : IAsyncDisposable
     public event EventHandler<MuseNotification>? NotificationReceived;
 
     public event EventHandler<MuseEegPacketDiagnostic>? EegPacketDiagnostic;
+
+    public event EventHandler<MuseBandPowerDiagnostic>? BandPowerDiagnostic;
 
     public event EventHandler<MuseBandPowerReading>? BandPowersCalculated;
 
@@ -625,8 +649,14 @@ public sealed class MuseBtClient : IAsyncDisposable
     {
         foreach (var tracker in _eegBandTrackers.Values.OrderBy(tracker => tracker.Name))
         {
-            if (tracker.TryCalculate(out var bands))
+            if (tracker.TryCalculate(out var bands, out var diagnostic))
             {
+                if (diagnostic is not null)
+                {
+                    BandPowerDiagnostic?.Invoke(this, diagnostic);
+                    OnDiagnostic(FormatBandPowerDiagnostic(diagnostic));
+                }
+
                 BandPowersCalculated?.Invoke(this, new MuseBandPowerReading(tracker.Name, bands));
             }
         }
@@ -659,6 +689,20 @@ public sealed class MuseBtClient : IAsyncDisposable
     }
 
     private static string ShortUuid(Guid uuid) => uuid.ToString()[4..8];
+
+    private static string FormatBandPowerDiagnostic(MuseBandPowerDiagnostic diagnostic) =>
+        $"PSD {ShortSensorName(diagnostic.SensorName),-4} #{diagnostic.Count,5} " +
+        $"n={diagnostic.WindowSamples} hop={diagnostic.HopSamples} fs={diagnostic.SampleRate} notch={FormatNotch(diagnostic)} " +
+        $"uV[min={diagnostic.MinMicrovolts,7:F1}, max={diagnostic.MaxMicrovolts,7:F1}, mean={diagnostic.MeanMicrovolts,7:F2}, " +
+        $"meanAbs={diagnostic.MeanAbsMicrovolts,6:F1}, rms={diagnostic.RmsMicrovolts,6:F1}] " +
+        $"gamma[pow={diagnostic.GammaIntegratedPower:E3}, final={diagnostic.GammaLogPower,6:F3}, dB={diagnostic.GammaDb,6:F2}, " +
+        $"peak={diagnostic.GammaPeakHz,5:F1}Hz/{diagnostic.GammaPeakPower:E3}, spike={diagnostic.GammaSpikeLimit:E3}/x{diagnostic.GammaSpikeLimitMultiplier:F1}] " +
+        $"highPeak={diagnostic.HighPeakHz,5:F1}Hz/{diagnostic.HighPeakPower:E3} line50={diagnostic.Line50HzPower:E3} line60={diagnostic.Line60HzPower:E3}";
+
+    private static string FormatNotch(MuseBandPowerDiagnostic diagnostic) =>
+        diagnostic.NotchFrequencyHz > 0.0 ? $"{diagnostic.NotchFrequencyHz:F1}Hz/q{diagnostic.NotchQ:F1}" : "off";
+
+    private static string ShortSensorName(string name) => name.StartsWith("EEG ", StringComparison.OrdinalIgnoreCase) ? name[4..] : name;
 
     private void OnDiagnostic(string message) => DiagnosticMessage?.Invoke(this, message);
 
@@ -802,6 +846,8 @@ public sealed class MuseBtClient : IAsyncDisposable
     public event EventHandler<MuseNotification>? NotificationReceived;
 
     public event EventHandler<MuseEegPacketDiagnostic>? EegPacketDiagnostic;
+
+    public event EventHandler<MuseBandPowerDiagnostic>? BandPowerDiagnostic;
 
     public event EventHandler<MuseBandPowerReading>? BandPowersCalculated;
 

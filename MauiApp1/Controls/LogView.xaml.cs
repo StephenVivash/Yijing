@@ -5,6 +5,8 @@ namespace MauiApp1.Controls;
 public partial class LogView : ContentView
 {
     private const int MaxEntries = 500;
+    private readonly object _logFileGate = new();
+    private string? _logFilePath;
 
     public static readonly BindableProperty EntriesProperty = BindableProperty.Create(
         nameof(Entries),
@@ -39,6 +41,8 @@ public partial class LogView : ContentView
         InitializeComponent();
     }
 
+    public string? LogFilePath => _logFilePath;
+
     public ObservableCollection<string> Entries
     {
         get => (ObservableCollection<string>)GetValue(EntriesProperty);
@@ -63,9 +67,40 @@ public partial class LogView : ContentView
         set => SetValue(IsStopEnabledProperty, value);
     }
 
+    public string? StartFileLog(string prefix)
+    {
+        var appDataDirectory = Microsoft.Maui.Storage.FileSystem.AppDataDirectory;
+        var path = Path.Combine(appDataDirectory, $"{prefix}-{DateTimeOffset.Now:yyyyMMdd-HHmmss}.log");
+
+        lock (_logFileGate)
+        {
+            try
+            {
+                Directory.CreateDirectory(appDataDirectory);
+                File.WriteAllText(path, string.Empty);
+                _logFilePath = path;
+            }
+            catch
+            {
+                _logFilePath = null;
+            }
+
+            return _logFilePath;
+        }
+    }
+
+    public void StopFileLog()
+    {
+        lock (_logFileGate)
+        {
+            _logFilePath = null;
+        }
+    }
+
     public void Add(string message)
     {
         var entry = $"[{DateTimeOffset.Now:HH:mm:ss.fff}] {message}";
+        AppendToFile(entry);
         MainThread.BeginInvokeOnMainThread(() =>
         {
             Entries.Add(entry);
@@ -76,6 +111,26 @@ public partial class LogView : ContentView
 
             LogEntriesView.ScrollTo(Entries.Count - 1, position: ScrollToPosition.End, animate: false);
         });
+    }
+
+    private void AppendToFile(string entry)
+    {
+        lock (_logFileGate)
+        {
+            if (_logFilePath is null)
+            {
+                return;
+            }
+
+            try
+            {
+                File.AppendAllText(_logFilePath, entry + Environment.NewLine);
+            }
+            catch
+            {
+                _logFilePath = null;
+            }
+        }
     }
 
     public void Clear()

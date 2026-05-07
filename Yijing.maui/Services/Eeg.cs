@@ -81,8 +81,8 @@ public class Eeg
 	public FileStream m_fsEmotiv = null;
 	public FileStream m_fsMuse = null;
 
-	public string m_strMuseData = ",800.0,810.0,820.0,830.0,840.0,58.0,8.0,0.1,0.0,0.9,5.2,-3.7,1.8,1,1.0,1.0,1.0,1.0,85.0";
-	public string m_strMuseHeader = "TimeStamp,Delta_TP9,Delta_AF7,Delta_AF8,Delta_TP10,Theta_TP9,Theta_AF7,Theta_AF8,Theta_TP10,Alpha_TP9,Alpha_AF7,Alpha_AF8,Alpha_TP10,Beta_TP9,Beta_AF7,Beta_AF8,Beta_TP10,Gamma_TP9,Gamma_AF7,Gamma_AF8,Gamma_TP10,RAW_TP9,RAW_AF7,RAW_AF8,RAW_TP10,AUX_RIGHT,Mellow,Concentration,Accelerometer_X,Accelerometer_Y,Accelerometer_Z,Gyro_X,Gyro_Y,Gyro_Z,HeadBandOn,HSI_TP9,HSI_AF7,HSI_AF8,HSI_TP10,Battery,Elements\n";
+	public string m_strMuseData = ",800.000,800.000,800.000,800.000,800.000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0,0,0,0.000,1,1.0,1.0,1.0,1.0,0.00,";
+	public string m_strMuseHeader = "TimeStamp,Delta_TP9,Delta_AF7,Delta_AF8,Delta_TP10,Theta_TP9,Theta_AF7,Theta_AF8,Theta_TP10,Alpha_TP9,Alpha_AF7,Alpha_AF8,Alpha_TP10,Beta_TP9,Beta_AF7,Beta_AF8,Beta_TP10,Gamma_TP9,Gamma_AF7,Gamma_AF8,Gamma_TP10,RAW_TP9,RAW_AF7,RAW_AF8,RAW_TP10,AUX_RIGHT,Accelerometer_X,Accelerometer_Y,Accelerometer_Z,Gyro_X,Gyro_Y,Gyro_Z,PPG_Ambient,PPG_IR,PPG_Red,Heart_Rate,HeadBandOn,HSI_TP9,HSI_AF7,HSI_AF8,HSI_TP10,Battery,Elements\n";
 
 	public static string m_strPrediction;
 
@@ -668,12 +668,53 @@ public class MuseEeg : Eeg
 			double[] baselineSums = new double[m_nChannelMax];
 			int[] baselineCounts = new int[m_nChannelMax];
 			float[] baselineValues = new float[m_nChannelMax];
+			const double rawOffsetMicrovolts = 800.0;
+			const double accelerometerScale = 1.0 / 16384.0;
+			const double gyroScale = 245.0 / 32768.0;
+			double rawTp9 = rawOffsetMicrovolts;
+			double rawAf7 = rawOffsetMicrovolts;
+			double rawAf8 = rawOffsetMicrovolts;
+			double rawTp10 = rawOffsetMicrovolts;
+			double rawAux = rawOffsetMicrovolts;
+			double accelerometerX = 0.0;
+			double accelerometerY = 0.0;
+			double accelerometerZ = 0.0;
+			double gyroX = 0.0;
+			double gyroY = 0.0;
+			double gyroZ = 0.0;
+			double ppgAmbient = 0.0;
+			double ppgIr = 0.0;
+			double ppgRed = 0.0;
+			double heartRate = 0.0;
+			int headBandOn = 1;
+			double hsiTp9 = 1.0;
+			double hsiAf7 = 1.0;
+			double hsiAf8 = 1.0;
+			double hsiTp10 = 1.0;
+			double battery = 0.0;
 
 			void SetRawBand(int dataIndex, double value)
 			{
 				int channelIndex = dataIndex - 1;
 				rawBandData[channelIndex] = (float)value;
 				rawBandSeen[channelIndex] = true;
+			}
+
+			static double AverageAxis(short[] samples, int axis)
+			{
+				double sum = 0.0;
+				int count = 0;
+				for (int i = axis; i < samples.Length; i += 3)
+				{
+					sum += samples[i];
+					count++;
+				}
+				return count == 0 ? 0.0 : sum / count;
+			}
+
+			void UpdateMuseExtraData()
+			{
+				m_strMuseData = FormattableString.Invariant($",{rawTp9:F3},{rawAf7:F3},{rawAf8:F3},{rawTp10:F3},{rawAux:F3},{accelerometerX:F6},{accelerometerY:F6},{accelerometerZ:F6},{gyroX:F6},{gyroY:F6},{gyroZ:F6},{ppgAmbient:F0},{ppgIr:F0},{ppgRed:F0},{heartRate:F3},{headBandOn},{hsiTp9:F1},{hsiAf7:F1},{hsiAf8:F1},{hsiTp10:F1},{battery:F2},");
 			}
 
 			void PopulateMuseData(DateTime now)
@@ -721,6 +762,81 @@ public class MuseEeg : Eeg
 			var client = new Muse.Core.MuseBtClient();
 			client.InfoMessage += (_, message) => UI.Call<EegView>(v => v.SetAppTitle(message + " - Yijing"));
 			client.ConnectionStatusChanged += (_, status) => UI.Call<EegView>(v => v.SetAppTitle("Muse BT " + status + " - Yijing"));
+			client.NotificationReceived += (_, notification) =>
+			{
+				lock (dataLock)
+				{
+					if (notification.Kind == Muse.Core.MuseSensorKind.Eeg &&
+						Muse.Core.MusePacketDecoder.TryDecodeEeg(notification.Data, out var eegPacket))
+					{
+						double raw = rawOffsetMicrovolts + eegPacket.Samples.Average();
+						switch (notification.Name)
+						{
+							case "EEG TP9":
+								rawTp9 = raw;
+								break;
+							case "EEG AF7":
+								rawAf7 = raw;
+								break;
+							case "EEG AF8":
+								rawAf8 = raw;
+								break;
+							case "EEG TP10":
+								rawTp10 = raw;
+								break;
+							case "EEG AUX":
+								rawAux = raw;
+								break;
+						}
+						return;
+					}
+
+					if (notification.Kind == Muse.Core.MuseSensorKind.Imu &&
+						Muse.Core.MusePacketDecoder.TryDecodeImu(notification.Data, out var imuPacket))
+					{
+						double x = AverageAxis(imuPacket.Samples, 0);
+						double y = AverageAxis(imuPacket.Samples, 1);
+						double z = AverageAxis(imuPacket.Samples, 2);
+						if (notification.Name == "Accelerometer")
+						{
+							accelerometerX = x * accelerometerScale;
+							accelerometerY = y * accelerometerScale;
+							accelerometerZ = z * accelerometerScale;
+						}
+						else if (notification.Name == "Gyroscope")
+						{
+							gyroX = x * gyroScale;
+							gyroY = y * gyroScale;
+							gyroZ = z * gyroScale;
+						}
+						return;
+					}
+
+					if (notification.Kind == Muse.Core.MuseSensorKind.Telemetry && notification.Data.Length >= 4)
+					{
+						battery = Muse.Core.MusePacketDecoder.ReadUInt16BigEndian(notification.Data, 2) / 512.0;
+						return;
+					}
+
+					if (notification.Kind == Muse.Core.MuseSensorKind.Raw &&
+						Muse.Core.MusePacketDecoder.TryDecodePpg(notification.Data, out var ppgPacket))
+					{
+						double ppg = ppgPacket.Samples.Sum(value => (double)value);
+						switch (notification.Name)
+						{
+							case "PPG ambient":
+								ppgAmbient = ppg;
+								break;
+							case "PPG IR":
+								ppgIr = ppg;
+								break;
+							case "PPG red":
+								ppgRed = ppg;
+								break;
+						}
+					}
+				}
+			};
 			client.BandPowersCalculated += (_, reading) =>
 			{
 				int channelOffset = reading.SensorName switch
@@ -750,6 +866,7 @@ public class MuseEeg : Eeg
 						PopulateMuseData(now);
 						string date = $"{now.Year,4:#0000}-{now.Month,2:#00}-{now.Day,2:#00} {now.Hour,2:#00}:{now.Minute,2:#00}:{now.Second,2:#00}.{now.Millisecond,3:#000}";
 						m_alMuseData[0] = date;
+						UpdateMuseExtraData();
 						UpdateData(m_alMuseData, false);
 						UI.Call<EegView>(v => v.UpdateTime(now));
 						WriteFile(m_fsMuse, m_alMuseData, false, false);

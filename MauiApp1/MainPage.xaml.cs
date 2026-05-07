@@ -25,6 +25,10 @@ namespace MauiApp1
 			Log.IsStartEnabled = false;
 			Log.IsStopEnabled = true;
 			Log.StatusText = "Scanning";
+			_bandHeaderPrinted = false;
+
+			var debugLogPath = Log.StartFileLog("MuseBtDebug");
+			LogDebug(debugLogPath is null ? "Full debug log unavailable." : $"Full debug log: {debugLogPath}");
 
 			_streamingCts = new CancellationTokenSource();
 			_client = new MuseBtClient();
@@ -67,6 +71,13 @@ namespace MauiApp1
 			finally
 			{
 				await StopClientAsync();
+				var savedLogPath = Log.LogFilePath;
+				if (!string.IsNullOrWhiteSpace(savedLogPath))
+				{
+					LogDebug($"Debug log saved to {savedLogPath}");
+				}
+
+				Log.StopFileLog();
 				Log.StatusText = "Idle";
 				Log.IsStartEnabled = true;
 				Log.IsStopEnabled = false;

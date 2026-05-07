@@ -13,6 +13,31 @@ public sealed record MuseEegPacketDiagnostic(
     double MeanAbsMicrovolts,
     double RmsMicrovolts);
 
+public sealed record MuseBandPowerDiagnostic(
+    string SensorName,
+    long Count,
+    int WindowSamples,
+    int HopSamples,
+    int SampleRate,
+    double NotchFrequencyHz,
+    double NotchQ,
+    double MinMicrovolts,
+    double MaxMicrovolts,
+    double MeanMicrovolts,
+    double MeanAbsMicrovolts,
+    double RmsMicrovolts,
+    double GammaIntegratedPower,
+    double GammaLogPower,
+    double GammaDb,
+    double GammaPeakHz,
+    double GammaPeakPower,
+    double HighPeakHz,
+    double HighPeakPower,
+    double Line50HzPower,
+    double Line60HzPower,
+    double GammaSpikeLimitMultiplier,
+    double GammaSpikeLimit);
+
 internal sealed class MuseEegPacketStats
 {
     private bool _hasLastSequence;

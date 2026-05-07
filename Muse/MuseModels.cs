@@ -20,6 +20,10 @@ public sealed record MuseNotification(string Name, Guid Uuid, MuseSensorKind Kin
 
 public readonly record struct MuseEegPacket(ushort Sequence, double[] Samples);
 
+public readonly record struct MuseImuPacket(ushort Sequence, short[] Samples);
+
+public readonly record struct MusePpgPacket(ushort Sequence, int[] Samples);
+
 public readonly record struct MuseBandPowers(
     double DeltaAbsolute,
     double ThetaAbsolute,
