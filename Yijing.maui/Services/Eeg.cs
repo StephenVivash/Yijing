@@ -494,6 +494,11 @@ public class MuseEeg : Eeg
 	private EndPoint m_epMuse = null;
 	private Socket m_socMuse = null;
 	private Task m_tskMuse = null;
+	private CancellationTokenSource m_ctsMuseBt = null;
+#if DEBUG
+	private readonly object m_oMuseDebugLogLock = new();
+	private string m_strMuseDebugLog = "";
+#endif
 	private ArrayList m_alMuseData = new();
 
 	public override void InitialiseChannels()
@@ -508,37 +513,37 @@ public class MuseEeg : Eeg
 
 	public override bool Connect()
 	{
-		if (m_socMuse == null)
+		// if (m_socMuse == null) // don't abandon MM OSC yet
+		if ((m_tskMuse == null) || m_tskMuse.IsCompleted)
 		{
 			Initialise(true);
 			OpenFileStreams(false, true);
-			m_epMuse = new IPEndPoint(IPAddress.Any, 5000);
-			m_socMuse = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-			m_socMuse.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.PacketInformation, true);
-			m_socMuse.Bind(m_epMuse);
-			m_tskMuse = new Task(ReceiveMuseData);
-			m_tskMuse.Start();
+			StartMuseDebugLog();
+			m_ctsMuseBt?.Cancel();
+			m_ctsMuseBt = new CancellationTokenSource();
+			bool connected = base.Connect();
 
-			string s = m_socMuse.ToString();
-			if ((s = Dns.GetHostName()) != null)
-			{
-				IPAddress[] ipa = Dns.GetHostEntry(s).AddressList;
-				if ((ipa != null) && (ipa.Length > 0))
-					if ((s = ipa[ipa.Length - 1].ToString()) != null)
-						UI.Call<EegView>(v => v.SetAppTitle("Listening on " + s + ":5000" + " - Yijing"));
-			}
+			if (AppPreferences.EegGoal == (int)eGoal.eYijingCast)
+				UI.Call<DiagramView>(v => v.SetDiagramMode(eDiagramMode.eMindCast));
+
+			CancellationToken token = m_ctsMuseBt.Token;
+			m_tskMuse = ReceiveMuseDataAsync(token);
+			UI.Call<EegView>(v => v.SetAppTitle("Starting Muse BT - Yijing"));
+			return connected;
 		}
 		return base.Connect();
 	}
 
 	public override void Disconnect()
 	{
+		m_ctsMuseBt?.Cancel();
 		if (m_socMuse != null)
 		{
 			UI.Call<EegView>(v => v.EnableEegControls(true, true));
 			m_socMuse.Close();
 			m_socMuse = null;
 		}
+		m_tskMuse = null;
 		base.Disconnect();
 	}
 
@@ -643,13 +648,88 @@ public class MuseEeg : Eeg
 		}
 	}
 
-	private void ReceiveMuseData()
+	private Task ReceiveMuseDataAsync(CancellationToken token)
 	{
-		ReceiveBTData();
+		return ReceiveBTDataAsync(token);
 		//ReceiveMMData();
 	}
 
-	private void ReceiveBTData()
+	private void StartMuseDebugLog()
+	{
+#if DEBUG
+		lock (m_oMuseDebugLogLock)
+		{
+			try
+			{
+				CreateMuseDebugLog(AppSettings.ReverseDateString() + ".txt");
+			}
+			catch
+			{
+				m_strMuseDebugLog = "";
+			}
+		}
+
+		LogMuseDebug(string.IsNullOrWhiteSpace(m_strMuseDebugLog)
+			? "Full debug log unavailable."
+			: "Full debug log: " + m_strMuseDebugLog);
+#endif
+	}
+
+	private void LogMuseDebug(string message)
+	{
+#if DEBUG
+		string entry = $"[{DateTimeOffset.Now:HH:mm:ss.fff}] {message}";
+		lock (m_oMuseDebugLogLock)
+		{
+			if (string.IsNullOrWhiteSpace(m_strMuseDebugLog))
+				return;
+
+			try
+			{
+				AppendMuseDebugLog(entry);
+			}
+			catch
+			{
+				m_strMuseDebugLog = "";
+			}
+		}
+#endif
+	}
+
+#if DEBUG
+	private void CreateMuseDebugLog(string fileName)
+	{
+		string directory = AppSettings.LogHome();
+		Directory.CreateDirectory(directory);
+		m_strMuseDebugLog = Path.Combine(directory, fileName);
+		File.WriteAllText(m_strMuseDebugLog, "");
+	}
+
+	private void AppendMuseDebugLog(string entry)
+	{
+		File.AppendAllText(m_strMuseDebugLog, entry + Environment.NewLine);
+	}
+#endif
+
+	private async Task<bool> EnsureBluetoothPermissionsAsync()
+	{
+#if ANDROID
+		var bluetoothStatus = await Permissions.RequestAsync<Permissions.Bluetooth>();
+		if (bluetoothStatus != PermissionStatus.Granted)
+			return false;
+		if (DeviceInfo.Platform == DevicePlatform.Android && DeviceInfo.Version.Major < 12)
+		{
+			var locationStatus = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+			if (locationStatus != PermissionStatus.Granted)
+				return false;
+		}
+		return true;
+#else
+		return await Task.FromResult(true);
+#endif
+	}
+
+	private async Task ReceiveBTDataAsync(CancellationToken token)
 	{
 		bool abs = true;
 		// Experimental BT calibration: first two minutes are treated as eyes-open baseline.
@@ -660,7 +740,9 @@ public class MuseEeg : Eeg
 		{
 			int count = 0;
 			bool bTitle = false;
+			bool errorReported = false;
 			object dataLock = new();
+			string lastDiagnostic = "";
 			DateTime? baselineStart = null;
 			bool baselineFrozen = false;
 			float[] rawBandData = new float[m_nChannelMax];
@@ -748,20 +830,34 @@ public class MuseEeg : Eeg
 				}
 			}
 
+			if (!await EnsureBluetoothPermissionsAsync())
+			{
+				const string message = "Muse BT needs Bluetooth permission, and location permission on older Android versions, before it can scan.";
+				UI.Call<EegView>(v => v.SetAppTitle("Muse BT permission denied - Yijing"));
+				UI.Call<EegView>(v => v.ShowError("Muse BT", message));
+				return;
+			}
+
 			AppSettings._lastEegDataTime = DateTime.Now;
 
 			if (AppPreferences.EegGoal == (int)eGoal.eYijingCast)
 				UI.Call<DiagramView>(v => v.SetDiagramMode(eDiagramMode.eMindCast));
-			using CancellationTokenSource cts = new();
-			_ = Task.Run(async () =>
-			{
-				while ((m_socMuse != null) && !cts.IsCancellationRequested)
-					await Task.Delay(250);
-				cts.Cancel();
-			});
 			var client = new Muse.Core.MuseBtClient();
-			client.InfoMessage += (_, message) => UI.Call<EegView>(v => v.SetAppTitle(message + " - Yijing"));
-			client.ConnectionStatusChanged += (_, status) => UI.Call<EegView>(v => v.SetAppTitle("Muse BT " + status + " - Yijing"));
+			client.DiagnosticMessage += (_, message) =>
+			{
+				lastDiagnostic = message;
+				LogMuseDebug(message);
+			};
+			client.InfoMessage += (_, message) =>
+			{
+				LogMuseDebug(message);
+				UI.Call<EegView>(v => v.SetAppTitle(message + " - Yijing"));
+			};
+			client.ConnectionStatusChanged += (_, status) =>
+			{
+				LogMuseDebug("Connection status: " + status);
+				UI.Call<EegView>(v => v.SetAppTitle("Muse BT " + status + " - Yijing"));
+			};
 			client.NotificationReceived += (_, notification) =>
 			{
 				lock (dataLock)
@@ -883,24 +979,57 @@ public class MuseEeg : Eeg
 			try
 			{
 				UI.Call<EegView>(v => v.SetAppTitle("Scanning for Muse BT - Yijing"));
-				var discovered = await client.FindMuseAsync(TimeSpan.FromSeconds(30), cts.Token);
+				var discovered = await client.FindMuseAsync(TimeSpan.FromSeconds(30), token);
 				if (discovered == null)
+				{
+					errorReported = true;
+					UI.Call<EegView>(v => v.SetAppTitle("No Muse BT headset found - Yijing"));
+					string message = "No Muse headset was found during the 30 second scan.";
+					if (!string.IsNullOrWhiteSpace(lastDiagnostic))
+						message += "\n\nLast BT step: " + lastDiagnostic;
+#if DEBUG
+					if (!string.IsNullOrWhiteSpace(m_strMuseDebugLog))
+						message += "\n\nDebug log: " + m_strMuseDebugLog;
+#endif
+					UI.Call<EegView>(v => v.ShowError("Muse BT", message));
 					return;
+				}
 
 				UI.Call<EegView>(v => v.SetAppTitle("Connecting to " + discovered.DisplayName + " - Yijing"));
-				await client.ConnectAndStreamAsync(discovered, cts.Token);
+				LogMuseDebug($"Found {discovered.DisplayName} at 0x{discovered.BluetoothAddress:X}.");
+				await client.ConnectAndStreamAsync(discovered, token);
 			}
-			catch (OperationCanceledException)
+			catch (OperationCanceledException) when (token.IsCancellationRequested)
 			{
+			}
+			catch (OperationCanceledException ex)
+			{
+				errorReported = true;
+				UI.Call<EegView>(v => v.ShowError("Muse BT", ex.Message));
+			}
+			catch (Exception ex)
+			{
+				errorReported = true;
+				string message = string.IsNullOrWhiteSpace(lastDiagnostic)
+					? ex.Message
+					: ex.Message + "\n\nLast BT step: " + lastDiagnostic;
+#if DEBUG
+				if (!string.IsNullOrWhiteSpace(m_strMuseDebugLog))
+					message += "\n\nDebug log: " + m_strMuseDebugLog;
+#endif
+				UI.Call<EegView>(v => v.ShowError("Muse BT", message));
 			}
 			finally
 			{
 				await client.DisposeAsync();
+				if (!bTitle && !errorReported && m_bConnected)
+					UI.Call<EegView>(v => v.ShowError("Muse BT", "Muse BT stopped before any EEG band data was received."));
 				UI.Call<EegView>(v => v.UpdateTime(m_dtEegStart, DateTime.Now));
+				m_tskMuse = null;
 			}
 		}
 
-		ReceiveAsync().GetAwaiter().GetResult();
+		await ReceiveAsync();
 	}
 
 	private void ReceiveMMData()

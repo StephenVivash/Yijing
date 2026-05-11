@@ -12,6 +12,7 @@ public static class AppSettings
 
 	public static string DocumentHome() { return _documentHome; }
 	public static string EegDataHome() { return _eegDataHome; }
+	public static string LogHome() { return Path.Combine(_documentHome, "Log"); }
 
 	public static void Load()
 	{
@@ -21,18 +22,17 @@ public static class AppSettings
 	public static async void SetDocumentHome()
 	{
 #if WINDOWS
-		_documentHome = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+		_documentHome = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Yijing");
 #elif ANDROID
-		_documentHome = FileSystem.Current.AppDataDirectory;
+		_documentHome = GetAndroidDocumentHome();
 #else
 		_documentHome = "";
 #endif
-		if (Directory.Exists(_documentHome))
+		if (!string.IsNullOrWhiteSpace(_documentHome))
 		{
-			_documentHome = Path.Combine(_documentHome, "Yijing");
+			Directory.CreateDirectory(_documentHome);
 			_eegDataHome = Path.Combine(_documentHome, AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? "Emotiv" : "Muse");
-			if (!Directory.Exists(_documentHome))
-				Directory.CreateDirectory(_documentHome);
+			Directory.CreateDirectory(LogHome());
 			/*
 			String strTemp = Path.Combine(_documentHome, "appsettings.json");
 			if (!File.Exists(strTemp))
@@ -76,6 +76,51 @@ public static class AppSettings
 			}
 		}
 	}
+
+#if ANDROID
+	private static string GetAndroidDocumentHome()
+	{
+		string[] candidates =
+		[
+			GetAndroidPublicFolder(Android.OS.Environment.DirectoryDocuments),
+			GetAndroidPublicFolder(Android.OS.Environment.DirectoryDownloads),
+			Path.Combine(FileSystem.Current.AppDataDirectory, "Yijing")
+		];
+
+		foreach (string candidate in candidates)
+		{
+			if (TryUseDocumentHome(candidate))
+				return candidate;
+		}
+
+		return Path.Combine(FileSystem.Current.AppDataDirectory, "Yijing");
+	}
+
+	private static string GetAndroidPublicFolder(string folderType)
+	{
+		Java.IO.File folder = Android.OS.Environment.GetExternalStoragePublicDirectory(folderType);
+		return Path.Combine(folder.AbsolutePath, "Yijing");
+	}
+
+	private static bool TryUseDocumentHome(string directory)
+	{
+		if (string.IsNullOrWhiteSpace(directory))
+			return false;
+
+		try
+		{
+			Directory.CreateDirectory(directory);
+			string probe = Path.Combine(directory, ".yijing-write-test");
+			File.WriteAllText(probe, "");
+			File.Delete(probe);
+			return true;
+		}
+		catch
+		{
+			return false;
+		}
+	}
+#endif
 
 	private static void CopyStream(Stream stream, string file)
 	{

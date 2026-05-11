@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Threading;
 
 using SkiaSharp;
 using LiveChartsCore;
@@ -38,6 +39,7 @@ public partial class EegView : ContentView
 {
 	public int m_nEegMode = (int)eEegMode.eIdle;
 	private int m_nSeriesMax = 2000;
+	private readonly SemaphoreSlim _alertLock = new(1, 1);
 
 	public static string _strSession = "";
 
@@ -488,6 +490,29 @@ public partial class EegView : ContentView
 			w[0].Title = title;
 		}
 		Dispatcher.Dispatch(action);
+	}
+
+	public void ShowError(string title, string message)
+	{
+		_ = ShowErrorAsync(title, message);
+	}
+
+	private async Task ShowErrorAsync(string title, string message)
+	{
+		await _alertLock.WaitAsync();
+		try
+		{
+			await MainThread.InvokeOnMainThreadAsync(async () =>
+			{
+				Page page = Window?.Page ?? Application.Current?.Windows.FirstOrDefault()?.Page;
+				if (page != null)
+					await page.DisplayAlertAsync(title, message, "OK");
+			});
+		}
+		finally
+		{
+			_alertLock.Release();
+		}
 	}
 
 	public void EnableEegControls(bool bEnable, bool bLive)
