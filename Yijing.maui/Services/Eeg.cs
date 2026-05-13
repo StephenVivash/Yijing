@@ -221,7 +221,7 @@ public class Eeg
 			if (AppPreferences.EegDevice == (int)eEegDevice.eMuse)
 			{
 				// Clean bad Muse data
-				/*
+				
 				if (((i >= 0) && (i <= 4)) && (f > 0.3f)) // Delta
 					f = 0.3f;
 				else
@@ -236,7 +236,7 @@ public class Eeg
 
 				if (f < -0.6f)
 					f = -0.6f;
-				*/
+				
 			}
 			else
 			{
