@@ -365,41 +365,41 @@ public partial class DiagramView : ContentView
 		if (m_nDiagramMode == (int)eDiagramMode.eExplore)
 			EnableDiagramControls(true, false);
 		else
-		if (m_nDiagramMode == (int)eDiagramMode.eAnimate)
-		{
-			EnableDiagramControls(true, false);
-			m_timDiagram.Change(0, m_nSpeeds[m_nDiagramSpeed]);
-			m_bTimerOn = true;
-		}
-		else
-		if (m_nDiagramMode == (int)eDiagramMode.eTouchCast)
-		{
-			EnableDiagramControls(false, true);
-			picDiagramMode.IsEnabled = true;
-			picDiagramSpeed.SelectedIndex = (int)eDiagramSpeed.eFast;
-			picDiagramType.SelectedIndex = (int)eDiagramType.eLine;
-			SetCurrentLine(0, true);
-			m_nTouchLine = -1;
-		}
-		else
-		if (m_nDiagramMode == (int)eDiagramMode.eAutoCast)
-		{
-			EnableDiagramControls(false, true);
-			_ = AutoCast();
-			//m_tskAutoCast = new Task(AutoCast);
-			//m_tskAutoCast.Start();
-		}
-		else
-		if (m_nDiagramMode == (int)eDiagramMode.eMindCast)
-			if (UI.Get<EegView>().EegChannel(0) is not null)
+			if (m_nDiagramMode == (int)eDiagramMode.eAnimate)
 			{
-				EnableDiagramControls(false, true);
-				_ = MindCast();
-				//m_tskAutoCast = new Task(MindCast);
-				//m_tskAutoCast.Start();
+				EnableDiagramControls(true, false);
+				m_timDiagram.Change(0, m_nSpeeds[m_nDiagramSpeed]);
+				m_bTimerOn = true;
 			}
 			else
-				picDiagramMode.SelectedIndex = (int)eDiagramMode.eExplore;
+				if (m_nDiagramMode == (int)eDiagramMode.eTouchCast)
+				{
+					EnableDiagramControls(false, true);
+					picDiagramMode.IsEnabled = true;
+					picDiagramSpeed.SelectedIndex = (int)eDiagramSpeed.eFast;
+					picDiagramType.SelectedIndex = (int)eDiagramType.eLine;
+					SetCurrentLine(0, true);
+					m_nTouchLine = -1;
+				}
+				else
+					if (m_nDiagramMode == (int)eDiagramMode.eAutoCast)
+					{
+						EnableDiagramControls(false, true);
+						_ = AutoCast();
+						//m_tskAutoCast = new Task(AutoCast);
+						//m_tskAutoCast.Start();
+					}
+					else
+						if (m_nDiagramMode == (int)eDiagramMode.eMindCast)
+							if (UI.Get<EegView>().EegChannel(0) is not null)
+							{
+								EnableDiagramControls(false, true);
+								_ = MindCast();
+								//m_tskAutoCast = new Task(MindCast);
+								//m_tskAutoCast.Start();
+							}
+							else
+								picDiagramMode.SelectedIndex = (int)eDiagramMode.eExplore;
 	}
 
 	protected void picDiagramType_ValueChanged(object sender, EventArgs e)
@@ -408,11 +408,11 @@ public partial class DiagramView : ContentView
 		if (m_nDiagramType == (int)eDiagramType.eHexagram)
 			m_vsCurrent = m_hvsCurrent;
 		else
-		if (m_nDiagramType == (int)eDiagramType.eTrigram)
-			m_vsCurrent = m_hvsCurrent.Trigram(m_nCurrentTrigram);
-		else
-		if (m_nDiagramType == (int)eDiagramType.eLine)
-			m_vsCurrent = m_hvsCurrent.Trigram(m_nCurrentTrigram).Line(m_nCurrentLine % 3);
+			if (m_nDiagramType == (int)eDiagramType.eTrigram)
+				m_vsCurrent = m_hvsCurrent.Trigram(m_nCurrentTrigram);
+			else
+				if (m_nDiagramType == (int)eDiagramType.eLine)
+					m_vsCurrent = m_hvsCurrent.Trigram(m_nCurrentTrigram).Line(m_nCurrentLine % 3);
 		UpdateDiagram(false);
 	}
 
@@ -881,17 +881,17 @@ public partial class DiagramView : ContentView
 		if (width > 1800)
 			width /= 4.2;
 		else
-		if (width > 1500)
-			width /= 4;
-		else
-		if (width > 1200)
-			width /= 4.5;
-		else
-		if (bLandscape || (width > 800))
-			width /= 3;
-		else
-		 if (width > 600)
-			width /= 2;
+			if (width > 1500)
+				width /= 4;
+			else
+				if (width > 1200)
+					width /= 4.5;
+				else
+					if (bLandscape || (width > 800))
+						width /= 3;
+					else
+						if (width > 600)
+							width /= 2;
 
 		m_nDiagramHeight = (int)(width / 5.2); // 5.2
 		m_nDiagramHeight = m_nDiagramHeight - m_nDiagramHeight % 2;
@@ -939,12 +939,12 @@ public partial class DiagramView : ContentView
 			m_vsCurrent.Move();
 		}
 		else
-		if (m_hvsPrimary != null)
-		{
-			m_hvsCurrent = new CHexagramValueSequencer(ref m_hvsPrimary);
-			m_vsCurrent = m_hvsCurrent;
-			m_hvsPrimary = null;
-		}
+			if (m_hvsPrimary != null)
+			{
+				m_hvsCurrent = new CHexagramValueSequencer(ref m_hvsPrimary);
+				m_vsCurrent = m_hvsCurrent;
+				m_hvsPrimary = null;
+			}
 		UpdateDiagram(false);
 		UpdateText();
 	}
@@ -1224,8 +1224,8 @@ public partial class DiagramView : ContentView
 			if (elapsedMinutes > maxTarget)
 				newHunterDelay = Math.Max((int)eTriggerHunter.eOne, newHunterDelay - 1);
 			else
-			if (elapsedMinutes < minTarget)
-				newHunterDelay = Math.Min((int)eTriggerHunter.eTen, newHunterDelay + 1);
+				if (elapsedMinutes < minTarget)
+					newHunterDelay = Math.Min((int)eTriggerHunter.eTen, newHunterDelay + 1);
 			if (newHunterDelay != AppPreferences.TriggerHunter)
 				ev.UpdateTriggerHunter(newHunterDelay);
 		}
@@ -1433,86 +1433,86 @@ public partial class DiagramView : ContentView
 			"</body></html>";
 		}
 		else
-		if (strText == "Chinese")
-		{
-			strHtml += Chinese.strText[hvsPrimary.Value] +
-			"</body></html>";
-		}
-		else
-		if (strText == "Legge")
-		{
-			strHtml += Legge.strText[hvsPrimary.Value];
-			for (int nLine = 0; nLine < 6; ++nLine)
+			if (strText == "Chinese")
 			{
-				CHexagramValueSequencer hvs = new CHexagramValueSequencer(ref hvsPrimary);
-				hvs.Young();
-				hvs.Trigram(nLine / 3).Line(nLine % 3).Old();
-				hvs.Move();
-				String strHref = "<a href=\"Hexagram" + hvs.Value + "\">" + Sequences.strHexagramLabels[9, hvs.Value] + "</a>";
-				strHtml += "<h2>Line " + (nLine + 1).ToString() + " - " + strHref + "</h2>" +
-				Legge.strLine[nLine, hvsPrimary.Value];
+				strHtml += Chinese.strText[hvsPrimary.Value] +
+				"</body></html>";
 			}
-			strHtml += "</body></html>";
-		}
-		else
-		if (strText == "Hatcher")
-		{
-			strHtml += "You can download Bradford Hatcher's Yijing translation as a zipped PDF from ";
-			strHtml += "<a href=\"http://hermetica.info/\">Hermetica.info</a>"; // /Yijing-One.zip
-			strHtml += "<br/><br/>You can also purchase a hardcopy of the book from the site";
-			strHtml += "<br/><br/>This application can not currently open the document to the selected hexagram";
-			strHtml += "<br/><br/>You can view the document in a <a href=\"ms-windows-store://pdp/?productid=9wzdncrfj2gc\">PDF Reader</a> ";
-			strHtml += "</body></html>";
-		}
-		else
-		if (strText == "Wilhelm")
-		{
-			String strHtml1 = Wilhelm.strText[hvsPrimary.Value] +
-				"<h2>The Image</h2>" +
-				Wilhelm.strImage[hvsPrimary.Value] +
-				"<h2>The Judgement</h2>" +
-				Wilhelm.strJudgement[hvsPrimary.Value];
-			for (int nLine = 0; nLine < 6; ++nLine)
-			{
-				CHexagramValueSequencer hvs = new CHexagramValueSequencer(ref hvsPrimary);
-				hvs.Young();
-				hvs.Trigram(nLine / 3).Line(nLine % 3).Old();
-				hvs.Move();
-				String strHref = "<a href=\"Hexagram" + hvs.Value + "\">" + Sequences.strHexagramLabels[9, hvs.Value] + "</a>";
-				strHtml1 += "<h2>Line " + (nLine + 1).ToString() + " - " + strHref + "</h2>" +
-				Wilhelm.strLine[nLine, hvsPrimary.Value];
-			}
-			for (int i = 0; i < 64; ++i)
-				if (i != hvsPrimary.Value)
-					if (strHtml1.Contains(Sequences.strHexagramLabels[9, i], StringComparison.CurrentCultureIgnoreCase))
+			else
+				if (strText == "Legge")
+				{
+					strHtml += Legge.strText[hvsPrimary.Value];
+					for (int nLine = 0; nLine < 6; ++nLine)
 					{
-						String strHref = "<a href=\"Hexagram" + i + "\">" + Sequences.strHexagramLabels[9, i] + "</a>";
-						Regex rgx = new Regex("\\b(?i)" + Sequences.strHexagramLabels[9, i] +
-							"(s)?(t)?(y)?(ty)?(ing)?(ed)?(ous)?(ment)?(ate)?(in)?\\b",
-							RegexOptions.Compiled | RegexOptions.NonBacktracking | RegexOptions.IgnoreCase); // RegexOptions.ExplicitCapture
-						strHtml1 = rgx.Replace(strHtml1, strHref + "$1$2$3$4$5$6$7$8$9$10");
+						CHexagramValueSequencer hvs = new CHexagramValueSequencer(ref hvsPrimary);
+						hvs.Young();
+						hvs.Trigram(nLine / 3).Line(nLine % 3).Old();
+						hvs.Move();
+						String strHref = "<a href=\"Hexagram" + hvs.Value + "\">" + Sequences.strHexagramLabels[9, hvs.Value] + "</a>";
+						strHtml += "<h2>Line " + (nLine + 1).ToString() + " - " + strHref + "</h2>" +
+						Legge.strLine[nLine, hvsPrimary.Value];
 					}
-			strHtml += strHtml1 + "</body></html>";
+					strHtml += "</body></html>";
+				}
+				else
+					if (strText == "Hatcher")
+					{
+						strHtml += "You can download Bradford Hatcher's Yijing translation as a zipped PDF from ";
+						strHtml += "<a href=\"http://hermetica.info/\">Hermetica.info</a>"; // /Yijing-One.zip
+						strHtml += "<br/><br/>You can also purchase a hardcopy of the book from the site";
+						strHtml += "<br/><br/>This application can not currently open the document to the selected hexagram";
+						strHtml += "<br/><br/>You can view the document in a <a href=\"ms-windows-store://pdp/?productid=9wzdncrfj2gc\">PDF Reader</a> ";
+						strHtml += "</body></html>";
+					}
+					else
+						if (strText == "Wilhelm")
+						{
+							String strHtml1 = Wilhelm.strText[hvsPrimary.Value] +
+								"<h2>The Image</h2>" +
+								Wilhelm.strImage[hvsPrimary.Value] +
+								"<h2>The Judgement</h2>" +
+								Wilhelm.strJudgement[hvsPrimary.Value];
+							for (int nLine = 0; nLine < 6; ++nLine)
+							{
+								CHexagramValueSequencer hvs = new CHexagramValueSequencer(ref hvsPrimary);
+								hvs.Young();
+								hvs.Trigram(nLine / 3).Line(nLine % 3).Old();
+								hvs.Move();
+								String strHref = "<a href=\"Hexagram" + hvs.Value + "\">" + Sequences.strHexagramLabels[9, hvs.Value] + "</a>";
+								strHtml1 += "<h2>Line " + (nLine + 1).ToString() + " - " + strHref + "</h2>" +
+								Wilhelm.strLine[nLine, hvsPrimary.Value];
+							}
+							for (int i = 0; i < 64; ++i)
+								if (i != hvsPrimary.Value)
+									if (strHtml1.Contains(Sequences.strHexagramLabels[9, i], StringComparison.CurrentCultureIgnoreCase))
+									{
+										String strHref = "<a href=\"Hexagram" + i + "\">" + Sequences.strHexagramLabels[9, i] + "</a>";
+										Regex rgx = new Regex("\\b(?i)" + Sequences.strHexagramLabels[9, i] +
+											"(s)?(t)?(y)?(ty)?(ing)?(ed)?(ous)?(ment)?(ate)?(in)?\\b",
+											RegexOptions.Compiled | RegexOptions.NonBacktracking | RegexOptions.IgnoreCase); // RegexOptions.ExplicitCapture
+										strHtml1 = rgx.Replace(strHtml1, strHref + "$1$2$3$4$5$6$7$8$9$10");
+									}
+							strHtml += strHtml1 + "</body></html>";
 
-			/*
-			for (int i = 0; i < 8; ++i)
-			{
-				String strHref = "<a href=\"Trigram" + i + "\">" + Sequences.strTrigramLabels[2,i] + "</a>";
-				Regex rgx = new Regex("\\b(?i)" + Sequences.strTrigramLabels[2, i] +
-					"(s)?(t)?(y)?(ty)?(ing)?(ed)?(ous)?(ment)?(ate)?(in)?\\b");
-				strUrl = rgx.Replace(strUrl, strHref + "$1$2$3$4$5$6$7$8$9$10");
-			}
-			*/
-		}
-		else
-		if (strText == "Heyboer")
-			UI.Call<DiagramPage>(p => p.WebView().Source = Heyboer.strText[hvsPrimary.Value]);
-		else
-		if (strText == "YellowBridge")
-			UI.Call<DiagramPage>(p => p.WebView().Source = YellowBridge.strText[hvsPrimary.Value]);
-		else
-		if (strText == "Regis")
-			UI.Call<DiagramPage>(p => p.WebView().Source = Regis.strText[hvsPrimary.Value]);
+							/*
+							for (int i = 0; i < 8; ++i)
+							{
+								String strHref = "<a href=\"Trigram" + i + "\">" + Sequences.strTrigramLabels[2,i] + "</a>";
+								Regex rgx = new Regex("\\b(?i)" + Sequences.strTrigramLabels[2, i] +
+									"(s)?(t)?(y)?(ty)?(ing)?(ed)?(ous)?(ment)?(ate)?(in)?\\b");
+								strUrl = rgx.Replace(strUrl, strHref + "$1$2$3$4$5$6$7$8$9$10");
+							}
+							*/
+						}
+						else
+							if (strText == "Heyboer")
+								UI.Call<DiagramPage>(p => p.WebView().Source = Heyboer.strText[hvsPrimary.Value]);
+							else
+								if (strText == "YellowBridge")
+									UI.Call<DiagramPage>(p => p.WebView().Source = YellowBridge.strText[hvsPrimary.Value]);
+								else
+									if (strText == "Regis")
+										UI.Call<DiagramPage>(p => p.WebView().Source = Regis.strText[hvsPrimary.Value]);
 
 		UI.Call<DiagramPage>(p => p.WebView().Source = new HtmlWebViewSource { Html = strHtml });
 

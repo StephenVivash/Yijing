@@ -249,18 +249,18 @@ public class Eeg
 						f = 2.0f;
 				}
 				else
-				if ((i >= 10) && (i <= 14)) // Alpha
-				{
-					f /= 10.0f;
-					if (f > 1.0f)
-						f = 1.0f;
-				}
-				else
-				{
-					f /= 10.0f;
-					if (f > 0.6f)
-						f = 0.6f;
-				}
+					if ((i >= 10) && (i <= 14)) // Alpha
+					{
+						f /= 10.0f;
+						if (f > 1.0f)
+							f = 1.0f;
+					}
+					else
+					{
+						f /= 10.0f;
+						if (f > 0.6f)
+							f = 0.6f;
+					}
 			}
 
 			if (!m_eegChannel[i].m_isInitialised)
@@ -1073,15 +1073,15 @@ public class MuseEeg : Eeg
 				int index = 0;
 				if (s.Contains("delta")) index = 0;
 				else
-				if (s.Contains("theta")) index = 5;
-				else
-				if (s.Contains("alpha")) index = 10;
-				else
-				if (s.Contains("beta")) index = 15;
-				else
-				if (s.Contains("gamma")) index = 20;
-				else
-					continue;
+					if (s.Contains("theta")) index = 5;
+					else
+						if (s.Contains("alpha")) index = 10;
+						else
+							if (s.Contains("beta")) index = 15;
+							else
+								if (s.Contains("gamma")) index = 20;
+								else
+									continue;
 
 				Array.Reverse(buffer, 60, 4);
 				Array.Reverse(buffer, 64, 4);

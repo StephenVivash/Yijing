@@ -201,32 +201,32 @@ public partial class EegView : ContentView
 			_eeg.Connect();
 		}
 		else
-		if (m_nEegMode == (int)eEegMode.eReplay)
-		{
-			string s = (string)picSession.SelectedItem;
-			if (!string.IsNullOrEmpty(s))
+			if (m_nEegMode == (int)eEegMode.eReplay)
 			{
-				if (!AiPreferences.IsNoneService(picAiAnalysis.SelectedItem as string))
-					UI.Call<EegPage>(p => p.SessionLog().Text = "");
-				_eeg.m_bCancelReplay = false;
-				void action() => _eeg.Replay(Path.Combine(AppSettings.EegDataHome(), s + (AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? "-Emotiv.csv" : "-Muse.csv")));
-				m_tskReplay = new Task(action);
-				m_tskReplay.Start();
+				string s = (string)picSession.SelectedItem;
+				if (!string.IsNullOrEmpty(s))
+				{
+					if (!AiPreferences.IsNoneService(picAiAnalysis.SelectedItem as string))
+						UI.Call<EegPage>(p => p.SessionLog().Text = "");
+					_eeg.m_bCancelReplay = false;
+					void action() => _eeg.Replay(Path.Combine(AppSettings.EegDataHome(), s + (AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? "-Emotiv.csv" : "-Muse.csv")));
+					m_tskReplay = new Task(action);
+					m_tskReplay.Start();
+				}
 			}
-		}
-		else
-		if (m_nEegMode == (int)eEegMode.eSummary)
-		{
-			string s = (string)picSession.SelectedItem;
-			if (!string.IsNullOrEmpty(s))
-			{
-				LoadAnalysis();
-				_eeg.m_bCancelReplay = false;
-				void action1() => _eeg.Summary(Path.Combine(AppSettings.EegDataHome(), s + (AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? "-Emotiv.csv" : "-Muse.csv")));
-				m_tskReplay = new Task(action1);
-				m_tskReplay.Start();
-			}
-		}
+			else
+				if (m_nEegMode == (int)eEegMode.eSummary)
+				{
+					string s = (string)picSession.SelectedItem;
+					if (!string.IsNullOrEmpty(s))
+					{
+						LoadAnalysis();
+						_eeg.m_bCancelReplay = false;
+						void action1() => _eeg.Summary(Path.Combine(AppSettings.EegDataHome(), s + (AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? "-Emotiv.csv" : "-Muse.csv")));
+						m_tskReplay = new Task(action1);
+						m_tskReplay.Start();
+					}
+				}
 	}
 
 	private void picSession_SelectedIndexChanged(object sender, EventArgs e)
@@ -385,7 +385,7 @@ public partial class EegView : ContentView
 				s = s.Substring(0, s.Length - 5);
 			else
 				if (s.EndsWith("-Emotiv"))
-				s = s.Substring(0, s.Length - 7);
+					s = s.Substring(0, s.Length - 7);
 
 			lf.Add(s);
 		}
@@ -643,20 +643,20 @@ public partial class EegView : ContentView
 					v.Add(_eeg.m_eegChannel[index].m_fCurrentValue);
 			}
 			else
-			if (index == 25)
-				v.Add(0);
-			else
-			if (index == 26)
-			{
-				if (m_nEegMode != (int)eEegMode.eSummary)
-					v.Add(_eeg.m_eegChannel[AppSettings.TriggerIndex].m_fHigh);
-			}
-			else
-			if (index == 27)
-			{
-				if (m_nEegMode != (int)eEegMode.eSummary)
-					v.Add(_eeg.m_eegChannel[AppSettings.TriggerIndex].m_fLow);
-			}
+				if (index == 25)
+					v.Add(0);
+				else
+					if (index == 26)
+					{
+						if (m_nEegMode != (int)eEegMode.eSummary)
+							v.Add(_eeg.m_eegChannel[AppSettings.TriggerIndex].m_fHigh);
+					}
+					else
+						if (index == 27)
+						{
+							if (m_nEegMode != (int)eEegMode.eSummary)
+								v.Add(_eeg.m_eegChannel[AppSettings.TriggerIndex].m_fLow);
+						}
 
 			if (m_nEegMode != (int)eEegMode.eSummary)
 				while (v.Count > m_nSeriesMax)
