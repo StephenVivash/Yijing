@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrayCode", "GrayCode\GrayCo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Muse", "..\Common\Muse\Muse.csproj", "{0B2C3F68-E8C6-D19F-AA67-3AF5D72C5A5F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gui", "..\Common\Gui\Gui.csproj", "{7C165EE5-B87F-1FEA-121A-D460E7A53766}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -158,6 +160,18 @@ Global
 		{0B2C3F68-E8C6-D19F-AA67-3AF5D72C5A5F}.Release|x64.Build.0 = Release|Any CPU
 		{0B2C3F68-E8C6-D19F-AA67-3AF5D72C5A5F}.Release|x86.ActiveCfg = Release|Any CPU
 		{0B2C3F68-E8C6-D19F-AA67-3AF5D72C5A5F}.Release|x86.Build.0 = Release|Any CPU
+		{7C165EE5-B87F-1FEA-121A-D460E7A53766}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C165EE5-B87F-1FEA-121A-D460E7A53766}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C165EE5-B87F-1FEA-121A-D460E7A53766}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7C165EE5-B87F-1FEA-121A-D460E7A53766}.Debug|x64.Build.0 = Debug|Any CPU
+		{7C165EE5-B87F-1FEA-121A-D460E7A53766}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7C165EE5-B87F-1FEA-121A-D460E7A53766}.Debug|x86.Build.0 = Debug|Any CPU
+		{7C165EE5-B87F-1FEA-121A-D460E7A53766}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C165EE5-B87F-1FEA-121A-D460E7A53766}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C165EE5-B87F-1FEA-121A-D460E7A53766}.Release|x64.ActiveCfg = Release|Any CPU
+		{7C165EE5-B87F-1FEA-121A-D460E7A53766}.Release|x64.Build.0 = Release|Any CPU
+		{7C165EE5-B87F-1FEA-121A-D460E7A53766}.Release|x86.ActiveCfg = Release|Any CPU
+		{7C165EE5-B87F-1FEA-121A-D460E7A53766}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
