@@ -1,6 +1,7 @@
 
 using Gui.Controls;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.SemanticKernel;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Net;
@@ -927,7 +928,7 @@ Return only the JSON object.";
 		try
 		{
 			string userPrompt = $"Transcript for session '{_selectedSession.Name}' ({_selectedSession.FileName}):\n\n{transcript}";
-			string response = await _ai.ChatOnceAsync(AppPreferences.AiChatService, SummarySystemPrompt, userPrompt, false);
+			string response = await _ai.ChatOnceAsync(AppPreferences.AiChatService, SummarySystemPrompt, userPrompt);
 			string json = ExtractJsonObject(response);
 
 			if (!TryParseSummaryJson(json, out string summary, out string keywordsCsv, out string error))
@@ -1150,7 +1151,7 @@ Return only the JSON object.";
 		else
 		{
 			EnsureContextSessionsLoadedForChat();
-			await _ai.ChatAsync(AppPreferences.AiChatService, prompt, false);
+			await _ai.ChatAsync(AppPreferences.AiChatService, prompt, AddYijingPlugin);
 		}
 
 		if (hadSearchResults)
@@ -1159,6 +1160,11 @@ Return only the JSON object.";
 		SaveChat(_selectedSession.FileName);
 		UpdateChat();
 		UpdateSessionLog("", false, false);
+	}
+
+	private static void AddYijingPlugin(IKernelBuilder builder)
+	{
+		builder.Plugins.AddFromType<YijingPlugin>("Yijing");
 	}
 
 	private void ResetChat()

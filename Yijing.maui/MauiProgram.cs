@@ -17,9 +17,12 @@ public static class MauiProgram
 
 	public static MauiApp CreateMauiApp()
 	{
+		AiPreferences.PreferenceStore = new MauiAiPreferenceStore();
 		AppSettings.Load();
 		AppPreferences.Load();
 		AiPreferences.Load();
+		AppPreferences.AiChatService = AiPreferences.NormalizeServiceName(AppPreferences.AiChatService);
+		AppPreferences.AiEegService = AiPreferences.NormalizeServiceName(AppPreferences.AiEegService);
 		AudioPlayer.Load();
 
 		_yd = new YijingDatabase(Path.Combine(AppSettings.DocumentHome(), "Yijing.db"));
