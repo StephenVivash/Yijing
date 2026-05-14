@@ -12,6 +12,7 @@ using Yijing.Models;
 using Yijing.Services;
 using Yijing.Pages;
 using YijingData;
+using Gui.Controls;
 
 namespace Yijing.Views;
 

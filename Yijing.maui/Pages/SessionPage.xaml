@@ -8,7 +8,7 @@
 	xmlns:local="clr-namespace:Yijing"
 	xmlns:models="clr-namespace:YijingData;assembly=Yijing.data"
 	xmlns:views="clr-namespace:Yijing.Views"
-	xmlns:controls="clr-namespace:Yijing.Controls"
+	xmlns:controls="clr-namespace:Gui.Controls;assembly=Gui"
 			 
 	x:Class="Yijing.Pages.SessionPage"
 	Loaded="Page_Loaded">

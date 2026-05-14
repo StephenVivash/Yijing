@@ -5,6 +5,7 @@ using System.Linq;
 
 using Yijing.Services;
 using Yijing.Views;
+using Gui.Controls;
 
 namespace Yijing.Pages;
 

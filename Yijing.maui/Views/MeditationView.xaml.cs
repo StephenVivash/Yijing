@@ -1,5 +1,5 @@
+using Gui.Controls;
 using System.Diagnostics;
-using Yijing.Controls;
 using Yijing.Services;
 using YijingData;
 

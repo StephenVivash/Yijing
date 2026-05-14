@@ -51,6 +51,7 @@ using ValueSequencer;
 
 using Yijing.Pages;
 using Yijing.Services;
+using Gui.Controls;
 
 namespace Yijing.Views;
 

@@ -10,6 +10,7 @@ using EegML;
 
 using Yijing.Views;
 using YijingData;
+using Gui.Controls;
 
 namespace Yijing.Services;
 
