@@ -1,7 +1,7 @@
 
-using Gui.Controls;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.SemanticKernel;
+
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Net;
@@ -9,11 +9,12 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
-using ValueSequencer;
-
 using Yijing.Pages;
 using Yijing.Services;
 using YijingData;
+
+using ValueSequencer;
+using Gui.Services;
 
 namespace Yijing.Views;
 

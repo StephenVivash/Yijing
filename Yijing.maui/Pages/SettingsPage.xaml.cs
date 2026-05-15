@@ -1,11 +1,10 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Threading.Tasks;
-using System.Linq;
 
 using Yijing.Services;
 using Yijing.Views;
-using Gui.Controls;
+
+using Gui.Services;
 
 namespace Yijing.Pages;
 

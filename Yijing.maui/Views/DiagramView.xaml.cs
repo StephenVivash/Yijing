@@ -33,7 +33,6 @@ Press OK.
 *************************************************************************************************
 *************************************************************************************************/
 
-//using Microsoft.EntityFrameworkCore;
 using Microsoft.Maui.Controls.Shapes;
 using System.Text.RegularExpressions;
 
@@ -46,12 +45,11 @@ using Windows.Win32.Foundation;
 using Android.Media;
 #endif
 
-using ValueSequencer;
-//using YijingDb;
-
 using Yijing.Pages;
 using Yijing.Services;
-using Gui.Controls;
+
+using ValueSequencer;
+using Gui.Services;
 
 namespace Yijing.Views;
 

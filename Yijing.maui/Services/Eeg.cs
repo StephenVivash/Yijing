@@ -5,12 +5,13 @@ using System.Text;
 
 using Newtonsoft.Json.Linq;
 
-using CortexAccess;
-using EegML;
-
 using Yijing.Views;
 using YijingData;
-using Gui.Controls;
+
+using Gui.Services;
+
+using CortexAccess;
+using EegML;
 
 namespace Yijing.Services;
 

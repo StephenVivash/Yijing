@@ -1,9 +1,10 @@
-using Gui.Controls;
 using Microsoft.SemanticKernel;
 
 using System.ComponentModel;
 
 using Yijing.Views;
+
+using Gui.Services;
 
 namespace Yijing.Services;
 

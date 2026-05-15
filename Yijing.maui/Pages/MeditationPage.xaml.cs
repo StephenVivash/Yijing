@@ -1,19 +1,17 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using Gui.Controls;
-using LiveChartsCore.Measure;
-using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore.SkiaSharpView.Maui;
 
 using Microsoft.EntityFrameworkCore;
+
+using LiveChartsCore.Measure;
+using LiveChartsCore.SkiaSharpView;
 
 using Yijing.Models;
 using Yijing.Services;
 using Yijing.Views;
 using YijingData;
+
+using Gui.Services;
 
 namespace Yijing.Pages;
 

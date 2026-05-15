@@ -1,7 +1,9 @@
 
 using CommunityToolkit.Maui.Core;
-using Gui.Controls;
+
 using Yijing.Services;
+using Gui.Services;
+using Gui.Controls;
 
 namespace Yijing.Views;
 

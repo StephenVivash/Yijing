@@ -1,18 +1,18 @@
 using System.Collections.ObjectModel;
-using System.Threading;
 
-using SkiaSharp;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Maui;
 using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
 
-using Platform = Yijing.Platforms.Platform;
+//using Platform = Yijing.Platforms.Platform;
 using Yijing.Models;
 using Yijing.Services;
 using Yijing.Pages;
 using YijingData;
-using Gui.Controls;
+
+using Gui.Services;
 
 namespace Yijing.Views;
 
