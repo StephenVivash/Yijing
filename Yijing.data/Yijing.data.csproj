@@ -6,8 +6,8 @@
 	  <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-	  <Version>7.0.7</Version>
-	  <Copyright>Copyright © 2025</Copyright>
+	  <Version>7.0.8</Version>
+	  <Copyright>Copyright © 2026</Copyright>
 	  <Description>The Classic of Change</Description>
 	  <Authors>Stephen Vivash</Authors>
 	  <Product>Yijing</Product>
