@@ -11,8 +11,8 @@
 https://apps.microsoft.com/detail/9n9hhltgvjsk?cid=DevShareMTwPCS&hl=en-US&gl=AU
 
 * v7.0.8 (17-May-26)
-- Muse BT interface
-- Bug fixes
+ - Muse BT interface
+ - Bug fixes
 * v7.0.0 (2023) [C#, MAUI]
 * v6.1.0 (2017) [Java, SWT]
 * v6.0.0 (2016) [Java, Android5]
