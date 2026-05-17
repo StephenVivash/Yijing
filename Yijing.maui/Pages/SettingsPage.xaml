@@ -6,7 +6,7 @@
 	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 
 	xmlns:views="clr-namespace:Yijing.Views"
-	xmlns:controls="clr-namespace:Yijing.Controls"
+	xmlns:controls="clr-namespace:Gui.Controls;assembly=Gui"
 
 	x:Class="Yijing.Pages.SettingsPage"
 	Loaded="Page_Loaded">

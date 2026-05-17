@@ -1,7 +1,8 @@
-using System.Diagnostics;
-using Yijing.Controls;
 using Yijing.Services;
 using YijingData;
+
+using Gui.Services;
+using Gui.Controls;
 
 namespace Yijing.Views;
 

@@ -7,7 +7,7 @@
 
 	xmlns:models="clr-namespace:YijingData;assembly=Yijing.data"
 	xmlns:views="clr-namespace:Yijing.Views"
-	xmlns:controls="clr-namespace:Yijing.Controls"
+	xmlns:controls="clr-namespace:Gui.Controls;assembly=Gui"
 	xmlns:conv="clr-namespace:Yijing.Services"
 
 	x:Class="Yijing.Views.SessionView"
@@ -37,10 +37,10 @@
 						x:Name="btnDelete"
 						Icon="{x:Static controls:FluentIcons.Delete}"
 						Clicked="OnDeleteSessionClicked" />
-					<controls:ButtonEx
+					<!--controls:ButtonEx
 						x:Name="btnSearch"
 						Icon="{x:Static controls:FluentIcons.Search}"
-						Clicked="OnSearchSessionClicked" />
+						Clicked="OnSearchSessionClicked" /-->
 				</HorizontalStackLayout>
 			</Border>
 

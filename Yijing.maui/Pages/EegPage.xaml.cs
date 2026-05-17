@@ -1,12 +1,13 @@
+using System.Collections.ObjectModel;
+
 using LiveChartsCore.Measure;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Maui;
 
-using System.Collections.ObjectModel;
-
 using Yijing.Models;
 using Yijing.Services;
-using Yijing.Views;
+
+using Gui.Services;
 
 namespace Yijing.Pages;
 

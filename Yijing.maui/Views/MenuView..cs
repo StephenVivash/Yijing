@@ -1,7 +1,9 @@
 
 using CommunityToolkit.Maui.Core;
-using Yijing.Controls;
+
 using Yijing.Services;
+using Gui.Services;
+using Gui.Controls;
 
 namespace Yijing.Views;
 
@@ -71,7 +73,7 @@ public partial class MenuView : ContentView
 		};
 		_btnDiagram = new ButtonEx()
 		{
-			Icon = FluentIcons.DiagramPage,
+			Icon =FluentIcons.DiagramPage,
 		};
 		_btnEeg = new ButtonEx()
 		{

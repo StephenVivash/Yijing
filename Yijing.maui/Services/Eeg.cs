@@ -5,11 +5,13 @@ using System.Text;
 
 using Newtonsoft.Json.Linq;
 
-using CortexAccess;
-using EegML;
-
 using Yijing.Views;
 using YijingData;
+
+using Gui.Services;
+
+using CortexAccess;
+using EegML;
 
 namespace Yijing.Services;
 
@@ -81,8 +83,8 @@ public class Eeg
 	public FileStream m_fsEmotiv = null;
 	public FileStream m_fsMuse = null;
 
-	public string m_strMuseData = ",800.0,810.0,820.0,830.0,840.0,58.0,8.0,0.1,0.0,0.9,5.2,-3.7,1.8,1,1.0,1.0,1.0,1.0,85.0";
-	public string m_strMuseHeader = "TimeStamp,Delta_TP9,Delta_AF7,Delta_AF8,Delta_TP10,Theta_TP9,Theta_AF7,Theta_AF8,Theta_TP10,Alpha_TP9,Alpha_AF7,Alpha_AF8,Alpha_TP10,Beta_TP9,Beta_AF7,Beta_AF8,Beta_TP10,Gamma_TP9,Gamma_AF7,Gamma_AF8,Gamma_TP10,RAW_TP9,RAW_AF7,RAW_AF8,RAW_TP10,AUX_RIGHT,Mellow,Concentration,Accelerometer_X,Accelerometer_Y,Accelerometer_Z,Gyro_X,Gyro_Y,Gyro_Z,HeadBandOn,HSI_TP9,HSI_AF7,HSI_AF8,HSI_TP10,Battery,Elements\n";
+	public string m_strMuseData = ",800.000,800.000,800.000,800.000,800.000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0,0,0,0.000,1,1.0,1.0,1.0,1.0,0.00,";
+	public string m_strMuseHeader = "TimeStamp,Delta_TP9,Delta_AF7,Delta_AF8,Delta_TP10,Theta_TP9,Theta_AF7,Theta_AF8,Theta_TP10,Alpha_TP9,Alpha_AF7,Alpha_AF8,Alpha_TP10,Beta_TP9,Beta_AF7,Beta_AF8,Beta_TP10,Gamma_TP9,Gamma_AF7,Gamma_AF8,Gamma_TP10,RAW_TP9,RAW_AF7,RAW_AF8,RAW_TP10,AUX_RIGHT,Accelerometer_X,Accelerometer_Y,Accelerometer_Z,Gyro_X,Gyro_Y,Gyro_Z,PPG_Ambient,PPG_IR,PPG_Red,Heart_Rate,HeadBandOn,HSI_TP9,HSI_AF7,HSI_AF8,HSI_TP10,Battery,Elements\n";
 
 	public static string m_strPrediction;
 
@@ -221,7 +223,7 @@ public class Eeg
 			if (AppPreferences.EegDevice == (int)eEegDevice.eMuse)
 			{
 				// Clean bad Muse data
-				/*
+				
 				if (((i >= 0) && (i <= 4)) && (f > 0.3f)) // Delta
 					f = 0.3f;
 				else
@@ -236,7 +238,7 @@ public class Eeg
 
 				if (f < -0.6f)
 					f = -0.6f;
-				*/
+				
 			}
 			else
 			{
@@ -249,18 +251,18 @@ public class Eeg
 						f = 2.0f;
 				}
 				else
-				if ((i >= 10) && (i <= 14)) // Alpha
-				{
-					f /= 10.0f;
-					if (f > 1.0f)
-						f = 1.0f;
-				}
-				else
-				{
-					f /= 10.0f;
-					if (f > 0.6f)
-						f = 0.6f;
-				}
+					if ((i >= 10) && (i <= 14)) // Alpha
+					{
+						f /= 10.0f;
+						if (f > 1.0f)
+							f = 1.0f;
+					}
+					else
+					{
+						f /= 10.0f;
+						if (f > 0.6f)
+							f = 0.6f;
+					}
 			}
 
 			if (!m_eegChannel[i].m_isInitialised)
@@ -494,6 +496,11 @@ public class MuseEeg : Eeg
 	private EndPoint m_epMuse = null;
 	private Socket m_socMuse = null;
 	private Task m_tskMuse = null;
+	private CancellationTokenSource m_ctsMuseBt = null;
+#if DEBUG
+	private readonly object m_oMuseDebugLogLock = new();
+	private string m_strMuseDebugLog = "";
+#endif
 	private ArrayList m_alMuseData = new();
 
 	public override void InitialiseChannels()
@@ -508,37 +515,37 @@ public class MuseEeg : Eeg
 
 	public override bool Connect()
 	{
-		if (m_socMuse == null)
+		// if (m_socMuse == null) // don't abandon MM OSC yet
+		if ((m_tskMuse == null) || m_tskMuse.IsCompleted)
 		{
 			Initialise(true);
 			OpenFileStreams(false, true);
-			m_epMuse = new IPEndPoint(IPAddress.Any, 5000);
-			m_socMuse = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-			m_socMuse.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.PacketInformation, true);
-			m_socMuse.Bind(m_epMuse);
-			m_tskMuse = new Task(ReceiveMuseData);
-			m_tskMuse.Start();
+			StartMuseDebugLog();
+			m_ctsMuseBt?.Cancel();
+			m_ctsMuseBt = new CancellationTokenSource();
+			bool connected = base.Connect();
 
-			string s = m_socMuse.ToString();
-			if ((s = Dns.GetHostName()) != null)
-			{
-				IPAddress[] ipa = Dns.GetHostEntry(s).AddressList;
-				if ((ipa != null) && (ipa.Length > 0))
-					if ((s = ipa[ipa.Length - 1].ToString()) != null)
-						UI.Call<EegView>(v => v.SetAppTitle("Listening on " + s + ":5000" + " - Yijing"));
-			}
+			if (AppPreferences.EegGoal == (int)eGoal.eYijingCast)
+				UI.Call<DiagramView>(v => v.SetDiagramMode(eDiagramMode.eMindCast));
+
+			CancellationToken token = m_ctsMuseBt.Token;
+			m_tskMuse = ReceiveMuseDataAsync(token);
+			UI.Call<EegView>(v => v.SetAppTitle("Starting Muse BT - Yijing"));
+			return connected;
 		}
 		return base.Connect();
 	}
 
 	public override void Disconnect()
 	{
+		m_ctsMuseBt?.Cancel();
 		if (m_socMuse != null)
 		{
 			UI.Call<EegView>(v => v.EnableEegControls(true, true));
 			m_socMuse.Close();
 			m_socMuse = null;
 		}
+		m_tskMuse = null;
 		base.Disconnect();
 	}
 
@@ -643,36 +650,291 @@ public class MuseEeg : Eeg
 		}
 	}
 
-	private void ReceiveMuseData()
+	private Task ReceiveMuseDataAsync(CancellationToken token)
 	{
-		ReceiveBTData();
+		return ReceiveBTDataAsync(token);
 		//ReceiveMMData();
 	}
 
-	private void ReceiveBTData()
+	private void StartMuseDebugLog()
+	{
+#if DEBUG
+		lock (m_oMuseDebugLogLock)
+		{
+			try
+			{
+				CreateMuseDebugLog(AppSettings.ReverseDateString() + ".txt");
+			}
+			catch
+			{
+				m_strMuseDebugLog = "";
+			}
+		}
+
+		LogMuseDebug(string.IsNullOrWhiteSpace(m_strMuseDebugLog)
+			? "Full debug log unavailable."
+			: "Full debug log: " + m_strMuseDebugLog);
+#endif
+	}
+
+	private void LogMuseDebug(string message)
+	{
+#if DEBUG
+		string entry = $"[{DateTimeOffset.Now:HH:mm:ss.fff}] {message}";
+		lock (m_oMuseDebugLogLock)
+		{
+			if (string.IsNullOrWhiteSpace(m_strMuseDebugLog))
+				return;
+
+			try
+			{
+				AppendMuseDebugLog(entry);
+			}
+			catch
+			{
+				m_strMuseDebugLog = "";
+			}
+		}
+#endif
+	}
+
+#if DEBUG
+	private void CreateMuseDebugLog(string fileName)
+	{
+		string directory = AppSettings.LogHome();
+		Directory.CreateDirectory(directory);
+		m_strMuseDebugLog = Path.Combine(directory, fileName);
+		File.WriteAllText(m_strMuseDebugLog, "");
+	}
+
+	private void AppendMuseDebugLog(string entry)
+	{
+		File.AppendAllText(m_strMuseDebugLog, entry + Environment.NewLine);
+	}
+#endif
+
+	private async Task<bool> EnsureBluetoothPermissionsAsync()
+	{
+#if ANDROID
+		var bluetoothStatus = await Permissions.RequestAsync<Permissions.Bluetooth>();
+		if (bluetoothStatus != PermissionStatus.Granted)
+			return false;
+		if (DeviceInfo.Platform == DevicePlatform.Android && DeviceInfo.Version.Major < 12)
+		{
+			var locationStatus = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+			if (locationStatus != PermissionStatus.Granted)
+				return false;
+		}
+		return true;
+#else
+		return await Task.FromResult(true);
+#endif
+	}
+
+	private async Task ReceiveBTDataAsync(CancellationToken token)
 	{
 		bool abs = true;
+		// Experimental BT calibration: first two minutes are treated as eyes-open baseline.
+		bool baselineNormalise = true;
+		TimeSpan baselineDuration = TimeSpan.FromMinutes(2);
 
 		async Task ReceiveAsync()
 		{
 			int count = 0;
 			bool bTitle = false;
+			bool errorReported = false;
 			object dataLock = new();
+			string lastDiagnostic = "";
+			DateTime? baselineStart = null;
+			bool baselineFrozen = false;
+			float[] rawBandData = new float[m_nChannelMax];
+			bool[] rawBandSeen = new bool[m_nChannelMax];
+			double[] baselineSums = new double[m_nChannelMax];
+			int[] baselineCounts = new int[m_nChannelMax];
+			float[] baselineValues = new float[m_nChannelMax];
+			const double rawOffsetMicrovolts = 800.0;
+			const double accelerometerScale = 1.0 / 16384.0;
+			const double gyroScale = 245.0 / 32768.0;
+			double rawTp9 = rawOffsetMicrovolts;
+			double rawAf7 = rawOffsetMicrovolts;
+			double rawAf8 = rawOffsetMicrovolts;
+			double rawTp10 = rawOffsetMicrovolts;
+			double rawAux = rawOffsetMicrovolts;
+			double accelerometerX = 0.0;
+			double accelerometerY = 0.0;
+			double accelerometerZ = 0.0;
+			double gyroX = 0.0;
+			double gyroY = 0.0;
+			double gyroZ = 0.0;
+			double ppgAmbient = 0.0;
+			double ppgIr = 0.0;
+			double ppgRed = 0.0;
+			double heartRate = 0.0;
+			int headBandOn = 1;
+			double hsiTp9 = 1.0;
+			double hsiAf7 = 1.0;
+			double hsiAf8 = 1.0;
+			double hsiTp10 = 1.0;
+			double battery = 0.0;
+
+			void SetRawBand(int dataIndex, double value)
+			{
+				int channelIndex = dataIndex - 1;
+				rawBandData[channelIndex] = (float)value;
+				rawBandSeen[channelIndex] = true;
+			}
+
+			static double AverageAxis(short[] samples, int axis)
+			{
+				double sum = 0.0;
+				int count = 0;
+				for (int i = axis; i < samples.Length; i += 3)
+				{
+					sum += samples[i];
+					count++;
+				}
+				return count == 0 ? 0.0 : sum / count;
+			}
+
+			void UpdateMuseExtraData()
+			{
+				m_strMuseData = FormattableString.Invariant($",{rawTp9:F3},{rawAf7:F3},{rawAf8:F3},{rawTp10:F3},{rawAux:F3},{accelerometerX:F6},{accelerometerY:F6},{accelerometerZ:F6},{gyroX:F6},{gyroY:F6},{gyroZ:F6},{ppgAmbient:F0},{ppgIr:F0},{ppgRed:F0},{heartRate:F3},{headBandOn},{hsiTp9:F1},{hsiAf7:F1},{hsiAf8:F1},{hsiTp10:F1},{battery:F2},");
+			}
+
+			void PopulateMuseData(DateTime now)
+			{
+				baselineStart ??= now;
+
+				if (baselineNormalise && !baselineFrozen && (now - baselineStart.Value) >= baselineDuration)
+					baselineFrozen = true;
+
+				for (int i = 0; i < m_nChannelMax; i++)
+				{
+					if (!rawBandSeen[i])
+					{
+						m_alMuseData[i + 1] = 0.0f;
+						continue;
+					}
+
+					if (baselineNormalise)
+					{
+						if (!baselineFrozen)
+						{
+							baselineSums[i] += rawBandData[i];
+							baselineCounts[i]++;
+							baselineValues[i] = (float)(baselineSums[i] / baselineCounts[i]);
+						}
+
+						m_alMuseData[i + 1] = rawBandData[i] - baselineValues[i];
+					}
+					else
+						m_alMuseData[i + 1] = rawBandData[i];
+				}
+			}
+
+			if (!await EnsureBluetoothPermissionsAsync())
+			{
+				const string message = "Muse BT needs Bluetooth permission, and location permission on older Android versions, before it can scan.";
+				UI.Call<EegView>(v => v.SetAppTitle("Muse BT permission denied - Yijing"));
+				UI.Call<EegView>(v => v.ShowError("Muse BT", message));
+				return;
+			}
 
 			AppSettings._lastEegDataTime = DateTime.Now;
 
 			if (AppPreferences.EegGoal == (int)eGoal.eYijingCast)
 				UI.Call<DiagramView>(v => v.SetDiagramMode(eDiagramMode.eMindCast));
-			using CancellationTokenSource cts = new();
-			_ = Task.Run(async () =>
-			{
-				while ((m_socMuse != null) && !cts.IsCancellationRequested)
-					await Task.Delay(250);
-				cts.Cancel();
-			});
 			var client = new Muse.Core.MuseBtClient();
-			client.InfoMessage += (_, message) => UI.Call<EegView>(v => v.SetAppTitle(message + " - Yijing"));
-			client.ConnectionStatusChanged += (_, status) => UI.Call<EegView>(v => v.SetAppTitle("Muse BT " + status + " - Yijing"));
+			client.DiagnosticMessage += (_, message) =>
+			{
+				lastDiagnostic = message;
+				LogMuseDebug(message);
+			};
+			client.InfoMessage += (_, message) =>
+			{
+				LogMuseDebug(message);
+				UI.Call<EegView>(v => v.SetAppTitle(message + " - Yijing"));
+			};
+			client.ConnectionStatusChanged += (_, status) =>
+			{
+				LogMuseDebug("Connection status: " + status);
+				UI.Call<EegView>(v => v.SetAppTitle("Muse BT " + status + " - Yijing"));
+			};
+			client.NotificationReceived += (_, notification) =>
+			{
+				lock (dataLock)
+				{
+					if (notification.Kind == Muse.Core.MuseSensorKind.Eeg &&
+						Muse.Core.MusePacketDecoder.TryDecodeEeg(notification.Data, out var eegPacket))
+					{
+						double raw = rawOffsetMicrovolts + eegPacket.Samples.Average();
+						switch (notification.Name)
+						{
+							case "EEG TP9":
+								rawTp9 = raw;
+								break;
+							case "EEG AF7":
+								rawAf7 = raw;
+								break;
+							case "EEG AF8":
+								rawAf8 = raw;
+								break;
+							case "EEG TP10":
+								rawTp10 = raw;
+								break;
+							case "EEG AUX":
+								rawAux = raw;
+								break;
+						}
+						return;
+					}
+
+					if (notification.Kind == Muse.Core.MuseSensorKind.Imu &&
+						Muse.Core.MusePacketDecoder.TryDecodeImu(notification.Data, out var imuPacket))
+					{
+						double x = AverageAxis(imuPacket.Samples, 0);
+						double y = AverageAxis(imuPacket.Samples, 1);
+						double z = AverageAxis(imuPacket.Samples, 2);
+						if (notification.Name == "Accelerometer")
+						{
+							accelerometerX = x * accelerometerScale;
+							accelerometerY = y * accelerometerScale;
+							accelerometerZ = z * accelerometerScale;
+						}
+						else if (notification.Name == "Gyroscope")
+						{
+							gyroX = x * gyroScale;
+							gyroY = y * gyroScale;
+							gyroZ = z * gyroScale;
+						}
+						return;
+					}
+
+					if (notification.Kind == Muse.Core.MuseSensorKind.Telemetry && notification.Data.Length >= 4)
+					{
+						battery = Muse.Core.MusePacketDecoder.ReadUInt16BigEndian(notification.Data, 2) / 512.0;
+						return;
+					}
+
+					if (notification.Kind == Muse.Core.MuseSensorKind.Raw &&
+						Muse.Core.MusePacketDecoder.TryDecodePpg(notification.Data, out var ppgPacket))
+					{
+						double ppg = ppgPacket.Samples.Sum(value => (double)value);
+						switch (notification.Name)
+						{
+							case "PPG ambient":
+								ppgAmbient = ppg;
+								break;
+							case "PPG IR":
+								ppgIr = ppg;
+								break;
+							case "PPG red":
+								ppgRed = ppg;
+								break;
+						}
+					}
+				}
+			};
 			client.BandPowersCalculated += (_, reading) =>
 			{
 				int channelOffset = reading.SensorName switch
@@ -690,17 +952,19 @@ public class MuseEeg : Eeg
 				{
 					AppSettings._lastEegDataTime = DateTime.Now;
 
-					m_alMuseData[channelOffset] = (float)(abs ? reading.Bands.DeltaAbsolute : reading.Bands.DeltaDb);
-					m_alMuseData[channelOffset + 5] = (float)(abs ? reading.Bands.ThetaAbsolute : reading.Bands.ThetaDb);
-					m_alMuseData[channelOffset + 10] = (float)(abs ? reading.Bands.AlphaAbsolute : reading.Bands.AlphaDb);
-					m_alMuseData[channelOffset + 15] = (float)(abs ? reading.Bands.BetaAbsolute : reading.Bands.BetaDb);
-					m_alMuseData[channelOffset + 20] = (float)(abs ? reading.Bands.GammaAbsolute : reading.Bands.GammaDb);
+					SetRawBand(channelOffset, abs ? reading.Bands.DeltaAbsolute : reading.Bands.DeltaDb);
+					SetRawBand(channelOffset + 5, abs ? reading.Bands.ThetaAbsolute : reading.Bands.ThetaDb);
+					SetRawBand(channelOffset + 10, abs ? reading.Bands.AlphaAbsolute : reading.Bands.AlphaDb);
+					SetRawBand(channelOffset + 15, abs ? reading.Bands.BetaAbsolute : reading.Bands.BetaDb);
+					SetRawBand(channelOffset + 20, abs ? reading.Bands.GammaAbsolute : reading.Bands.GammaDb);
 
 					if (++count % 4 == 0)
 					{
 						DateTime now = DateTime.Now;
+						PopulateMuseData(now);
 						string date = $"{now.Year,4:#0000}-{now.Month,2:#00}-{now.Day,2:#00} {now.Hour,2:#00}:{now.Minute,2:#00}:{now.Second,2:#00}.{now.Millisecond,3:#000}";
 						m_alMuseData[0] = date;
+						UpdateMuseExtraData();
 						UpdateData(m_alMuseData, false);
 						UI.Call<EegView>(v => v.UpdateTime(now));
 						WriteFile(m_fsMuse, m_alMuseData, false, false);
@@ -717,24 +981,57 @@ public class MuseEeg : Eeg
 			try
 			{
 				UI.Call<EegView>(v => v.SetAppTitle("Scanning for Muse BT - Yijing"));
-				var discovered = await client.FindMuseAsync(TimeSpan.FromSeconds(30), cts.Token);
+				var discovered = await client.FindMuseAsync(TimeSpan.FromSeconds(30), token);
 				if (discovered == null)
+				{
+					errorReported = true;
+					UI.Call<EegView>(v => v.SetAppTitle("No Muse BT headset found - Yijing"));
+					string message = "No Muse headset was found during the 30 second scan.";
+					if (!string.IsNullOrWhiteSpace(lastDiagnostic))
+						message += "\n\nLast BT step: " + lastDiagnostic;
+#if DEBUG
+					if (!string.IsNullOrWhiteSpace(m_strMuseDebugLog))
+						message += "\n\nDebug log: " + m_strMuseDebugLog;
+#endif
+					UI.Call<EegView>(v => v.ShowError("Muse BT", message));
 					return;
+				}
 
 				UI.Call<EegView>(v => v.SetAppTitle("Connecting to " + discovered.DisplayName + " - Yijing"));
-				await client.ConnectAndStreamAsync(discovered, cts.Token);
+				LogMuseDebug($"Found {discovered.DisplayName} at 0x{discovered.BluetoothAddress:X}.");
+				await client.ConnectAndStreamAsync(discovered, token);
 			}
-			catch (OperationCanceledException)
+			catch (OperationCanceledException) when (token.IsCancellationRequested)
 			{
+			}
+			catch (OperationCanceledException ex)
+			{
+				errorReported = true;
+				UI.Call<EegView>(v => v.ShowError("Muse BT", ex.Message));
+			}
+			catch (Exception ex)
+			{
+				errorReported = true;
+				string message = string.IsNullOrWhiteSpace(lastDiagnostic)
+					? ex.Message
+					: ex.Message + "\n\nLast BT step: " + lastDiagnostic;
+#if DEBUG
+				if (!string.IsNullOrWhiteSpace(m_strMuseDebugLog))
+					message += "\n\nDebug log: " + m_strMuseDebugLog;
+#endif
+				UI.Call<EegView>(v => v.ShowError("Muse BT", message));
 			}
 			finally
 			{
 				await client.DisposeAsync();
+				if (!bTitle && !errorReported && m_bConnected)
+					UI.Call<EegView>(v => v.ShowError("Muse BT", "Muse BT stopped before any EEG band data was received."));
 				UI.Call<EegView>(v => v.UpdateTime(m_dtEegStart, DateTime.Now));
+				m_tskMuse = null;
 			}
 		}
 
-		ReceiveAsync().GetAwaiter().GetResult();
+		await ReceiveAsync();
 	}
 
 	private void ReceiveMMData()
@@ -778,15 +1075,15 @@ public class MuseEeg : Eeg
 				int index = 0;
 				if (s.Contains("delta")) index = 0;
 				else
-				if (s.Contains("theta")) index = 5;
-				else
-				if (s.Contains("alpha")) index = 10;
-				else
-				if (s.Contains("beta")) index = 15;
-				else
-				if (s.Contains("gamma")) index = 20;
-				else
-					continue;
+					if (s.Contains("theta")) index = 5;
+					else
+						if (s.Contains("alpha")) index = 10;
+						else
+							if (s.Contains("beta")) index = 15;
+							else
+								if (s.Contains("gamma")) index = 20;
+								else
+									continue;
 
 				Array.Reverse(buffer, 60, 4);
 				Array.Reverse(buffer, 64, 4);

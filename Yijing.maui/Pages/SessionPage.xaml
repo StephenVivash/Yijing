@@ -8,7 +8,7 @@
 	xmlns:local="clr-namespace:Yijing"
 	xmlns:models="clr-namespace:YijingData;assembly=Yijing.data"
 	xmlns:views="clr-namespace:Yijing.Views"
-	xmlns:controls="clr-namespace:Yijing.Controls"
+	xmlns:controls="clr-namespace:Gui.Controls;assembly=Gui"
 			 
 	x:Class="Yijing.Pages.SessionPage"
 	Loaded="Page_Loaded">
@@ -68,10 +68,10 @@
 						Icon="{x:Static controls:FluentIcons.ReturnKey}"
 						Clicked="btnAiOrNote_Clicked" />
 
-					<controls:ButtonEx
+					<!--controls:ButtonEx
 						x:Name="btnSummary"
 						Icon="{x:Static controls:FluentIcons.Dictionary}"
-						Clicked="btnSummary_Clicked" />
+						Clicked="btnSummary_Clicked" /-->
 
 				</HorizontalStackLayout>
 
