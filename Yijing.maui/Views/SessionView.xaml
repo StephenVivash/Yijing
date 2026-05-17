@@ -37,10 +37,10 @@
 						x:Name="btnDelete"
 						Icon="{x:Static controls:FluentIcons.Delete}"
 						Clicked="OnDeleteSessionClicked" />
-					<controls:ButtonEx
+					<!--controls:ButtonEx
 						x:Name="btnSearch"
 						Icon="{x:Static controls:FluentIcons.Search}"
-						Clicked="OnSearchSessionClicked" />
+						Clicked="OnSearchSessionClicked" /-->
 				</HorizontalStackLayout>
 			</Border>
 
