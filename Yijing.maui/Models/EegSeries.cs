@@ -29,7 +29,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Delta BL", // BetaL
 			},
 			new LineSeries<float>
@@ -41,7 +41,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Delta FL",
 			},
 			new LineSeries<float>
@@ -53,7 +53,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Delta BC",
 			},
 			new LineSeries<float>
@@ -65,7 +65,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Delta FR",
 			},
 			new LineSeries<float>
@@ -77,7 +77,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Delta BR",
 			},
 
@@ -91,7 +91,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Theta BL",
 			},
 			new LineSeries<float>
@@ -103,7 +103,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Theta FL",
 			},
 			new LineSeries<float>
@@ -115,7 +115,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Theta BC",
 			},
 			new LineSeries<float>
@@ -127,7 +127,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Theta FR",
 			},
 			new LineSeries<float>
@@ -139,7 +139,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Theta BR",
 			},
 
@@ -153,7 +153,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Alpha BL",
 			},
 			new LineSeries<float>
@@ -165,7 +165,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Alpha FL",
 			},
 			new LineSeries<float>
@@ -177,7 +177,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Alpha BC",
 			},
 			new LineSeries<float>
@@ -189,7 +189,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Alpha FR",
 			},
 			new LineSeries<float>
@@ -201,7 +201,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Alpha BR",
 			},
 
@@ -215,7 +215,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Beta BL", // BetaH
 			},
 			new LineSeries<float>
@@ -227,7 +227,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Beta FL",
 			},
 			new LineSeries<float>
@@ -239,7 +239,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Beta BC",
 			},
 			new LineSeries<float>
@@ -251,7 +251,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Beta FR",
 			},
 			new LineSeries<float>
@@ -263,7 +263,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Beta BR",
 			},
 
@@ -277,7 +277,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Gamma BL",
 			},
 			new LineSeries<float>
@@ -289,7 +289,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Gamma FL",
 			},
 			new LineSeries<float>
@@ -301,7 +301,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Gamma BC",
 			},
 			new LineSeries<float>
@@ -313,7 +313,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Gamma FR",
 			},
 			new LineSeries<float>
@@ -325,7 +325,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Gamma BR",
 			},
 
@@ -339,7 +339,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="Zero",
 			},
 			new LineSeries<float>
@@ -351,7 +351,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="OnTrigger",
 			},
 			new LineSeries<float>
@@ -363,7 +363,7 @@ public class EegSeries
 				GeometryStroke = null,
 				IsHoverable = false,
 				IsVisible = true,
-				LineSmoothness = 1,
+				//LineSmoothness = 1,
 				Name="OffTrigger",
 			},
 		};

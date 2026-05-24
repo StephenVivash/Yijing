@@ -39,7 +39,7 @@ public partial class EegPage : ContentPage
 		chaEeg.Series = eegChart.Series;
 		chaEeg.XAxes = new List<Axis> { xAxis };
 		chaEeg.TooltipPosition = TooltipPosition.Hidden;
-		chaEeg.ZoomMode = ZoomAndPanMode.None;
+		chaEeg.ZoomMode = ZoomAndPanMode.X;
 		chaEeg.LegendPosition = LegendPosition.Hidden;
 		chaEeg.AnimationsSpeed = new TimeSpan();
 		chaEeg.AutoUpdateEnabled = true;
