@@ -13,7 +13,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 		<PackageReference Include="SuperSocket.ClientEngine.Core" Version="0.10.0" />
 		<PackageReference Include="WebSocket4Net" Version="0.15.2" />
 	</ItemGroup>
