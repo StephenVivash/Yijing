@@ -41,7 +41,7 @@ public static class MauiProgram
 			});
 
 #if DEBUG
-		builder.Logging.AddDebug();
+		//////////////////builder.Logging.AddDebug();
 #endif
 #if ANDROID || IOS
 		//builder.Services.AddTransient<Services.SampleDataService>();

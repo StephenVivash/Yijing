@@ -513,9 +513,33 @@ public class MuseEeg : Eeg
 			m_alMuseData.Add(0.0f);
 	}
 
+	public bool Connect1() // override
+	{
+		if (m_socMuse == null)
+		{
+			Initialise(true);
+			OpenFileStreams(false, true);
+			m_epMuse = new IPEndPoint(IPAddress.Any, 5000);
+			m_socMuse = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+			m_socMuse.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.PacketInformation, true);
+			m_socMuse.Bind(m_epMuse);
+			m_tskMuse = new Task(ReceiveMMData);
+			m_tskMuse.Start();
+
+			string s = m_socMuse.ToString();
+			if ((s = Dns.GetHostName()) != null)
+			{
+				IPAddress[] ipa = Dns.GetHostEntry(s).AddressList;
+				if ((ipa != null) && (ipa.Length > 0))
+					if ((s = ipa[ipa.Length - 1].ToString()) != null)
+						UI.Call<EegView>(v => v.SetAppTitle("Listening on " + s + ":5000" + " - Yijing"));
+			}
+		}
+		return base.Connect();
+	}
+
 	public override bool Connect()
 	{
-		// if (m_socMuse == null) // don't abandon MM OSC yet
 		if ((m_tskMuse == null) || m_tskMuse.IsCompleted)
 		{
 			Initialise(true);
@@ -653,7 +677,6 @@ public class MuseEeg : Eeg
 	private Task ReceiveMuseDataAsync(CancellationToken token)
 	{
 		return ReceiveBTDataAsync(token);
-		//ReceiveMMData();
 	}
 
 	private void StartMuseDebugLog()
