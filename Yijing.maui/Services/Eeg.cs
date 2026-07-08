@@ -513,7 +513,12 @@ public class MuseEeg : Eeg
 			m_alMuseData.Add(0.0f);
 	}
 
-	public bool Connect1() // override
+	public override bool Connect()
+	{
+		return ConnectBT();
+	}
+
+	public bool ConnectMM()
 	{
 		if (m_socMuse == null)
 		{
@@ -538,7 +543,7 @@ public class MuseEeg : Eeg
 		return base.Connect();
 	}
 
-	public override bool Connect()
+	public bool ConnectBT()
 	{
 		if ((m_tskMuse == null) || m_tskMuse.IsCompleted)
 		{
@@ -549,23 +554,20 @@ public class MuseEeg : Eeg
 			m_ctsMuseBt = new CancellationTokenSource();
 			bool connected = base.Connect();
 
-			if (AppPreferences.EegGoal == (int)eGoal.eYijingCast)
-				UI.Call<DiagramView>(v => v.SetDiagramMode(eDiagramMode.eMindCast));
-
 			CancellationToken token = m_ctsMuseBt.Token;
-			m_tskMuse = ReceiveMuseDataAsync(token);
+			m_tskMuse = ReceiveBTDataAsync(token);
 			UI.Call<EegView>(v => v.SetAppTitle("Starting Muse BT - Yijing"));
 			return connected;
 		}
-		return base.Connect();
+		return false;
 	}
 
 	public override void Disconnect()
 	{
 		m_ctsMuseBt?.Cancel();
+		UI.Call<EegView>(v => v.EnableEegControls(true, true));
 		if (m_socMuse != null)
 		{
-			UI.Call<EegView>(v => v.EnableEegControls(true, true));
 			m_socMuse.Close();
 			m_socMuse = null;
 		}
@@ -672,11 +674,6 @@ public class MuseEeg : Eeg
 				UI.Call<EegView>(v => v.UpdateTime(FirstTimestamp, LastTimestamp));
 			}
 		}
-	}
-
-	private Task ReceiveMuseDataAsync(CancellationToken token)
-	{
-		return ReceiveBTDataAsync(token);
 	}
 
 	private void StartMuseDebugLog()

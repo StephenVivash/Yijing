@@ -173,10 +173,12 @@ public partial class EegView : ContentView
 
 	private async void picMode_SelectedIndexChanged(object sender, EventArgs e)
 	{
-		_eeg.m_bCancelReplay = true;
-		_eeg.Disconnect();
 		if ((m_nEegMode == (int)eEegMode.eLive) || (m_nEegMode == (int)eEegMode.eReplay)) // was
+		{
+			_eeg.m_bCancelReplay = true;
+			_eeg.Disconnect();
 			await Task.Delay(1000);
+		}
 
 		if (m_nEegMode == (int)eEegMode.eLive) // was live
 		{
