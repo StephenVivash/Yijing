@@ -236,8 +236,8 @@ public class Eeg
 				if (f > 3.0f)
 					f = 3.0f;
 
-				if (f < -0.6f)
-					f = -0.6f;
+				if (f < -1.0f)
+					f = -1.0f;
 				
 			}
 			else
