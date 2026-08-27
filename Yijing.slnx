@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/Solution Items/" />
+  <Project Path="../Common/Common/Common.csproj" />
+  <Project Path="../Common/Gui/Gui.csproj" />
+  <Project Path="../Common/Muse/Muse.csproj" />
+  <Project Path="CortexAccess/CortexAccess.csproj" />
+  <Project Path="EegML/EegML.csproj" />
+  <Project Path="GrayCode/GrayCode.csproj" />
+  <Project Path="ValueSequencer/ValueSequencer.csproj" />
+  <Project Path="Yijing.data/Yijing.data.csproj" />
+  <Project Path="Yijing.maui.test/Yijing.maui.test.csproj" />
+  <Project Path="Yijing.maui/Yijing.maui.csproj">
+    <Deploy />
+  </Project>
+  <Project Path="Yijing.test/Yijing.test.csproj" />
+  <Project Path="Yijing.web/Yijing.web.csproj" />
+</Solution>
