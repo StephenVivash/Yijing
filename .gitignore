@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 *.pt
 .DS_Store
+/Yijing.maui/Resources/Fonts/SegoeIcons.ttf
