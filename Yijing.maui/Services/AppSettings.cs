@@ -24,8 +24,8 @@ public static class AppSettings
 #if WINDOWS
 		_documentHome = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Yijing");
 #elif MACCATALYST
-		_documentHome = "/Users/" + Environment.UserName + "/Documents/Yijing";
-		//Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Yijing");
+		_documentHome = "/" + Path.Combine("Users", Environment.UserName, "Documents", "Yijing");
+		//_documentHome = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Yijing");
 #elif ANDROID
 		_documentHome = GetAndroidDocumentHome();
 #else
