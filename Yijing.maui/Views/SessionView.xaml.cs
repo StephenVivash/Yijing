@@ -1152,7 +1152,7 @@ Return only the JSON object.";
 		else
 		{
 			EnsureContextSessionsLoadedForChat();
-			await _ai.ChatAsync(AppPreferences.AiChatService, prompt, AddYijingPlugin);
+			await _ai.ChatAsync(AppPreferences.AiChatService, prompt, null); // AddYijingPlugin);
 		}
 
 		if (hadSearchResults)

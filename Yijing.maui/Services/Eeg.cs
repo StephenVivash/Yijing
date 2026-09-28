@@ -236,8 +236,8 @@ public class Eeg
 				if (f > 3.0f)
 					f = 3.0f;
 
-				if (f < -0.6f)
-					f = -0.6f;
+				if (f < -1.0f)
+					f = -1.0f;
 				
 			}
 			else
@@ -515,7 +515,36 @@ public class MuseEeg : Eeg
 
 	public override bool Connect()
 	{
-		// if (m_socMuse == null) // don't abandon MM OSC yet
+		return ConnectBT();
+	}
+
+	public bool ConnectMM()
+	{
+		if (m_socMuse == null)
+		{
+			Initialise(true);
+			OpenFileStreams(false, true);
+			m_epMuse = new IPEndPoint(IPAddress.Any, 5000);
+			m_socMuse = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+			m_socMuse.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.PacketInformation, true);
+			m_socMuse.Bind(m_epMuse);
+			m_tskMuse = new Task(ReceiveMMData);
+			m_tskMuse.Start();
+
+			string s = m_socMuse.ToString();
+			if ((s = Dns.GetHostName()) != null)
+			{
+				IPAddress[] ipa = Dns.GetHostEntry(s).AddressList;
+				if ((ipa != null) && (ipa.Length > 0))
+					if ((s = ipa[ipa.Length - 1].ToString()) != null)
+						UI.Call<EegView>(v => v.SetAppTitle("Listening on " + s + ":5000" + " - Yijing"));
+			}
+		}
+		return base.Connect();
+	}
+
+	public bool ConnectBT()
+	{
 		if ((m_tskMuse == null) || m_tskMuse.IsCompleted)
 		{
 			Initialise(true);
@@ -525,23 +554,20 @@ public class MuseEeg : Eeg
 			m_ctsMuseBt = new CancellationTokenSource();
 			bool connected = base.Connect();
 
-			if (AppPreferences.EegGoal == (int)eGoal.eYijingCast)
-				UI.Call<DiagramView>(v => v.SetDiagramMode(eDiagramMode.eMindCast));
-
 			CancellationToken token = m_ctsMuseBt.Token;
-			m_tskMuse = ReceiveMuseDataAsync(token);
+			m_tskMuse = ReceiveBTDataAsync(token);
 			UI.Call<EegView>(v => v.SetAppTitle("Starting Muse BT - Yijing"));
 			return connected;
 		}
-		return base.Connect();
+		return false;
 	}
 
 	public override void Disconnect()
 	{
 		m_ctsMuseBt?.Cancel();
+		UI.Call<EegView>(v => v.EnableEegControls(true, true));
 		if (m_socMuse != null)
 		{
-			UI.Call<EegView>(v => v.EnableEegControls(true, true));
 			m_socMuse.Close();
 			m_socMuse = null;
 		}
@@ -648,12 +674,6 @@ public class MuseEeg : Eeg
 				UI.Call<EegView>(v => v.UpdateTime(FirstTimestamp, LastTimestamp));
 			}
 		}
-	}
-
-	private Task ReceiveMuseDataAsync(CancellationToken token)
-	{
-		return ReceiveBTDataAsync(token);
-		//ReceiveMMData();
 	}
 
 	private void StartMuseDebugLog()

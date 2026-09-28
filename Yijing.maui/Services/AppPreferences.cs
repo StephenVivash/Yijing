@@ -90,7 +90,7 @@ public static class AppPreferences
 	public const int ChartBandsDefault = (int)eChartBands.eFront;
 	public const int ChartTimeDefault = (int)eChartTime.eTwoAndHalf;
 	public const int TriggerBandDefault = (int)eTriggerBand.eGamma;
-	public const int TriggerChannelDefault = (int)eTriggerChannel.eFrontLeft;
+	public const int TriggerChannelDefault = (int)eTriggerChannel.eFrontRight;
 	public const int TriggerRangeDefault = (int)eTriggerRange.eTwoFour;
 	public const int TriggerHunterDefault = (int)eTriggerHunter.eFive;
 	public const int TriggerScheduleDefault = (int)eTriggerSchedule.eSixty;
