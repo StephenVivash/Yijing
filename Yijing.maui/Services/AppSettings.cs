@@ -1,4 +1,4 @@
-
+#nullable disable
 using YijingData;
 
 namespace Yijing.Services;
@@ -14,27 +14,13 @@ public static class AppSettings
 	public static string EegDataHome() { return _eegDataHome; }
 	public static string LogHome() { return Path.Combine(_documentHome, "Log"); }
 
-	public static void Load()
+	public static async Task LoadAsync(string documentHome = null)
 	{
-		SetDocumentHome();
-	}
-
-	public static async void SetDocumentHome()
-	{
-#if WINDOWS
-		_documentHome = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Yijing");
-#elif MACCATALYST
-		_documentHome = "/" + Path.Combine("Users", Environment.UserName, "Documents", "Yijing");
-		//_documentHome = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Yijing");
-#elif ANDROID
-		_documentHome = GetAndroidDocumentHome();
-#else
-		_documentHome = "";
-#endif
+		_documentHome = documentHome ?? GetDefaultDocumentHome();
 		if (!string.IsNullOrWhiteSpace(_documentHome))
 		{
 			Directory.CreateDirectory(_documentHome);
-			_eegDataHome = Path.Combine(_documentHome, AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? "Emotiv" : "Muse");
+			UpdateEegDataHome();
 			Directory.CreateDirectory(LogHome());
 			/*
 			String strTemp = Path.Combine(_documentHome, "appsettings.json");
@@ -78,6 +64,24 @@ public static class AppSettings
 				//CopyStream(await FileSystem.OpenAppPackageFileAsync(strSource), strDestination);
 			}
 		}
+	}
+
+	private static string GetDefaultDocumentHome()
+	{
+#if WINDOWS
+		return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Yijing");
+#elif MACCATALYST
+		throw new InvalidOperationException("Choose a data folder before initializing storage.");
+#elif ANDROID
+		return GetAndroidDocumentHome();
+#else
+		return "";
+#endif
+	}
+
+	public static void UpdateEegDataHome()
+	{
+		_eegDataHome = Path.Combine(_documentHome, AppPreferences.EegDevice == (int)eEegDevice.eEmotiv ? "Emotiv" : "Muse");
 	}
 
 #if ANDROID

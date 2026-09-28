@@ -6,26 +6,20 @@ using LiveChartsCore.SkiaSharpView.Maui;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 
 using Yijing.Services;
-using YijingData;
 
 namespace Yijing;
 
 public static class MauiProgram
 {
-	static YijingDatabase _yd;
 
 	public static MauiApp CreateMauiApp()
 	{
 		AiPreferences.PreferenceStore = new MauiAiPreferenceStore();
-		AppSettings.Load();
 		AppPreferences.Load();
 		AiPreferences.Load();
 		AppPreferences.AiChatService = AiPreferences.NormalizeServiceName(AppPreferences.AiChatService);
 		AppPreferences.AiEegService = AiPreferences.NormalizeServiceName(AppPreferences.AiEegService);
 		AudioPlayer.Load();
-
-		_yd = new YijingDatabase(Path.Combine(AppSettings.DocumentHome(), "Yijing.db"));
-		_yd.Initialse();
 
 		var builder = MauiApp.CreateBuilder();
 		builder

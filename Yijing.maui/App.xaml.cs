@@ -30,7 +30,7 @@ public partial class App : Application
 	protected override Window CreateWindow(IActivationState activationState)
 	{
 		//Window window = base.CreateWindow(activationState);
-		Window window = new Window(new AppShell());
+		Window window = new Window(new Pages.DataSetupPage());
 		window.Destroying += (s, e) => { AppPreferences.Save(); AiPreferences.Save(); };
 		window.Created += (s, e) =>
 		{
