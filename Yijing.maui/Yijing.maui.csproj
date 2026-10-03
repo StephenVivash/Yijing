@@ -68,6 +68,11 @@
 		<CodesignEntitlements>Platforms/MacCatalyst/Entitlements.plist</CodesignEntitlements>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)' == 'Release' and '$(RuntimeIdentifier)' == 'maccatalyst-arm64'">
+		<!-- EF Core generates methods at runtime; ARM64 Release needs the Mono interpreter to execute them. -->
+		<UseInterpreter>true</UseInterpreter>
+	</PropertyGroup>
+
 	<!--PropertyGroup>
 		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
 	</PropertyGroup-->

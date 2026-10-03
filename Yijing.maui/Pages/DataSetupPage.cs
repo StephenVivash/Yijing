@@ -50,6 +50,7 @@ namespace Yijing.Pages
 #if MACCATALYST
 			_choose.IsVisible = false;
 #endif
+			string failureMessage = "Yijing could not open its data folder.";
 			try
 			{
 				string documentHome = null;
@@ -66,13 +67,15 @@ namespace Yijing.Pages
 #endif
 				_status.Text = "Opening Yijing data…";
 				await AppSettings.LoadAsync(documentHome);
+				failureMessage = "Yijing could not initialize its database.";
 				var database = new YijingDatabase(Path.Combine(AppSettings.DocumentHome(), "Yijing.db"));
 				await Task.Run(database.Initialse);
+				failureMessage = "Yijing could not open its main window.";
 				Window.Page = new AppShell();
 			}
 			catch (Exception ex)
 			{
-				_status.Text = $"Yijing could not open its data folder. {ex.Message}";
+				_status.Text = $"{failureMessage} {ex.Message}";
 				_retry.IsVisible = true;
 #if MACCATALYST
 				_choose.IsVisible = true;

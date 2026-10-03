@@ -23,6 +23,32 @@ The two narrowly scoped CA1416 suppressions document that binding discrepancy.
 
 Reference: [Apple: Accessing files from the macOS App Sandbox](https://developer.apple.com/documentation/security/accessing-files-from-the-macos-app-sandbox).
 
+## Release runtime
+
+ARM64 Mac Catalyst Release builds enable `UseInterpreter` because EF Core creates
+methods at runtime while initializing the context and executing queries. Debug
+already enables the Mono interpreter by default. Without it, Release can report
+"Attempting to JIT compile method ... while running in aot-only mode" after folder
+access succeeds. This is a database runtime failure, not a bookmark failure.
+
+The interpreter works within Apple's platform restrictions; no JIT or sandbox
+entitlement changes are required. This setting applies to the ARM64 build within
+universal releases too. It can affect execution performance, so include EEG
+recording/replay in Release testing. Do not enable `PublishAot` (Native AOT) with
+this configuration: Native AOT does not support the Mono interpreter.
+
+Reference: [Microsoft: Mono interpreter on iOS and Mac Catalyst](https://learn.microsoft.com/en-us/dotnet/maui/macios/interpreter?view=net-maui-10.0).
+
+When changing interpreter/AOT settings, perform a full Release rebuild. An
+incremental build can retain IL-stripped assemblies in the existing app bundle;
+interpreting those stale assemblies can fail with `InvalidProgramException` during
+startup, even when the newly compiled/linked assemblies are correct. Use **Rebuild**
+in the IDE, or (for a local ARM64 build):
+
+```sh
+dotnet build Yijing.maui/Yijing.maui.csproj -c Release -f net10.0-maccatalyst -r maccatalyst-arm64 -t:Rebuild
+```
+
 ## Validation
 
 Storage regression tests can be run with the repository's current xUnit runner:
@@ -36,7 +62,7 @@ The tests cover awaiting sample initialization, preserving existing files, and
 changing EEG device without changing the authorized folder. They do not emulate
 Apple sandbox permissions.
 
-Check these scenarios using a signed, sandboxed Mac build with a stable bundle
+Check these scenarios using a signed, sandboxed **Release** Mac build with a stable bundle
 identifier and signing identity (an unsigned build only validates compilation):
 
 1. With no saved bookmark, launch and cancel the picker. Setup should remain
