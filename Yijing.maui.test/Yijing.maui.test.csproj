@@ -15,12 +15,12 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="coverlet.collector" Version="10.0.1">
+    <PackageReference Include="coverlet.collector" Version="10.1.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Appium.WebDriver" Version="9.0.0" />
-    <PackageReference Include="Selenium.Support" Version="4.49.0" />
+    <PackageReference Include="Selenium.Support" Version="4.50.0" />
     <PackageReference Include="xunit.v3" Version="4.0.1" />
   </ItemGroup>
 </Project>
