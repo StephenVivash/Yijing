@@ -167,7 +167,7 @@ public partial class EegView : ContentView
 
 		EegCreate();
 
-		AppSettings.SetDocumentHome();
+		AppSettings.UpdateEegDataHome();
 		LoadSessions();
 	}
 
