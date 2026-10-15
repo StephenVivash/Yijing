@@ -70,8 +70,7 @@
 
 	<!-- The Apple SDK tracks the manifest path but omits the source file from
 	     its incremental inputs. Include it so privacy changes reach cached builds. -->
-	<Target Name="TrackAppleAppManifestInput" BeforeTargets="_CompileAppManifest"
-	        Condition="('$(TargetPlatformIdentifier)' == 'ios' Or '$(TargetPlatformIdentifier)' == 'maccatalyst') And Exists('$(AppBundleManifest)')">
+	<Target Name="TrackAppleAppManifestInput" BeforeTargets="_CompileAppManifest" Condition="('$(TargetPlatformIdentifier)' == 'ios' Or '$(TargetPlatformIdentifier)' == 'maccatalyst') And Exists('$(AppBundleManifest)')">
 		<ItemGroup>
 			<_CompileAppManifestInputFile Include="$(AppBundleManifest)" />
 		</ItemGroup>
@@ -79,11 +78,9 @@
 
 	<!-- MSAL NativeInterop's transitive MAUI targets select desktop dylibs by the
 	     build host, which also adds macOS binaries to iOS device/simulator builds. -->
-	<Target Name="RemoveDesktopMsalNativeReferencesForIos" BeforeTargets="_ExpandNativeReferences"
-	        Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+	<Target Name="RemoveDesktopMsalNativeReferencesForIos" BeforeTargets="_ExpandNativeReferences" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
 		<ItemGroup>
-			<NativeReference Remove="@(NativeReference)"
-			                 Condition="'%(NativeReference.Filename)' == 'msalruntime' Or '%(NativeReference.Filename)' == 'msalruntime_arm64'" />
+			<NativeReference Remove="@(NativeReference)" Condition="'%(NativeReference.Filename)' == 'msalruntime' Or '%(NativeReference.Filename)' == 'msalruntime_arm64'" />
 		</ItemGroup>
 	</Target>
 
@@ -120,8 +117,8 @@
 		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
 
 		<PackageReference Include="Microsoft.SemanticKernel" Version="1.81.0" />
-		<PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="10.10.1" />
-		<PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.10.1" />
+		<PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="10.11.0" />
+		<PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.11.0" />
 
 		<!--PackageReference Include="Microsoft.Extensions.AI" Version="9.9.0" /-->
 		<!--PackageReference Include="Microsoft.Extensions.AI.Ollama" Version="9.7.0-preview.1.25356.2" /-->
