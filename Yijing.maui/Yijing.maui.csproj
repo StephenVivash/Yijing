@@ -68,6 +68,16 @@
 		<CodesignEntitlements>Platforms/MacCatalyst/Entitlements.plist</CodesignEntitlements>
 	</PropertyGroup>
 
+	<!-- MSAL NativeInterop's transitive MAUI targets select desktop dylibs by the
+	     build host, which also adds macOS binaries to iOS device/simulator builds. -->
+	<Target Name="RemoveDesktopMsalNativeReferencesForIos" BeforeTargets="_ExpandNativeReferences"
+	        Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+		<ItemGroup>
+			<NativeReference Remove="@(NativeReference)"
+			                 Condition="'%(NativeReference.Filename)' == 'msalruntime' Or '%(NativeReference.Filename)' == 'msalruntime_arm64'" />
+		</ItemGroup>
+	</Target>
+
 	<PropertyGroup Condition="'$(Configuration)' == 'Release' and '$(RuntimeIdentifier)' == 'maccatalyst-arm64'">
 		<!-- EF Core generates methods at runtime; ARM64 Release needs the Mono interpreter to execute them. -->
 		<UseInterpreter>true</UseInterpreter>

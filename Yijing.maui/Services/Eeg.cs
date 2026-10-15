@@ -555,8 +555,8 @@ public class MuseEeg : Eeg
 			bool connected = base.Connect();
 
 			CancellationToken token = m_ctsMuseBt.Token;
-			m_tskMuse = ReceiveBTDataAsync(token);
 			UI.Call<EegView>(v => v.SetAppTitle("Starting Muse BT - Yijing"));
+			m_tskMuse = ReceiveBTDataAsync(token);
 			return connected;
 		}
 		return false;
@@ -1002,6 +1002,7 @@ public class MuseEeg : Eeg
 			{
 				UI.Call<EegView>(v => v.SetAppTitle("Scanning for Muse BT - Yijing"));
 				var discovered = await client.FindMuseAsync(TimeSpan.FromSeconds(30), token);
+				token.ThrowIfCancellationRequested();
 				if (discovered == null)
 				{
 					errorReported = true;
@@ -1018,7 +1019,7 @@ public class MuseEeg : Eeg
 				}
 
 				UI.Call<EegView>(v => v.SetAppTitle("Connecting to " + discovered.DisplayName + " - Yijing"));
-				LogMuseDebug($"Found {discovered.DisplayName} at 0x{discovered.BluetoothAddress:X}.");
+				LogMuseDebug($"Found {discovered.DisplayName}, id={discovered.DeviceIdentifier}.");
 				await client.ConnectAndStreamAsync(discovered, token);
 			}
 			catch (OperationCanceledException) when (token.IsCancellationRequested)
@@ -1044,7 +1045,7 @@ public class MuseEeg : Eeg
 			finally
 			{
 				await client.DisposeAsync();
-				if (!bTitle && !errorReported && m_bConnected)
+				if (!token.IsCancellationRequested && !bTitle && !errorReported && m_bConnected)
 					UI.Call<EegView>(v => v.ShowError("Muse BT", "Muse BT stopped before any EEG band data was received."));
 				UI.Call<EegView>(v => v.UpdateTime(m_dtEegStart, DateTime.Now));
 				m_tskMuse = null;
