@@ -68,6 +68,15 @@
 		<CodesignEntitlements>Platforms/MacCatalyst/Entitlements.plist</CodesignEntitlements>
 	</PropertyGroup>
 
+	<!-- The Apple SDK tracks the manifest path but omits the source file from
+	     its incremental inputs. Include it so privacy changes reach cached builds. -->
+	<Target Name="TrackAppleAppManifestInput" BeforeTargets="_CompileAppManifest"
+	        Condition="('$(TargetPlatformIdentifier)' == 'ios' Or '$(TargetPlatformIdentifier)' == 'maccatalyst') And Exists('$(AppBundleManifest)')">
+		<ItemGroup>
+			<_CompileAppManifestInputFile Include="$(AppBundleManifest)" />
+		</ItemGroup>
+	</Target>
+
 	<!-- MSAL NativeInterop's transitive MAUI targets select desktop dylibs by the
 	     build host, which also adds macOS binaries to iOS device/simulator builds. -->
 	<Target Name="RemoveDesktopMsalNativeReferencesForIos" BeforeTargets="_ExpandNativeReferences"

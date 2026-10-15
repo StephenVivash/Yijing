@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Compile Include="../Yijing.maui/Services/AppSettings.cs" Link="Services/AppSettings.cs" />
+    <Compile Include="../Yijing.maui/Services/TriggerToneFeedback.cs" Link="Services/TriggerToneFeedback.cs" />
   </ItemGroup>
 
   <ItemGroup>
