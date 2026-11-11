@@ -45,6 +45,11 @@ using Windows.Win32.Foundation;
 using Android.Media;
 #endif
 
+#if IOS || MACCATALYST
+using AVFoundation;
+using Foundation;
+#endif
+
 using Yijing.Pages;
 using Yijing.Services;
 
@@ -95,6 +100,8 @@ public partial class DiagramView : ContentView
 	private Timer m_timDiagram = new Timer(DiagramTimer, null, Timeout.Infinite, 0);
 
 	//private Task m_tskAutoCast = null;
+	private Task m_tskMindCast = Task.CompletedTask;
+	public bool IsMindCastRunning => !m_tskMindCast.IsCompleted;
 
 	private SolidColorBrush m_brMonoColor;
 	private SolidColorBrush m_brMovingYang;
@@ -393,7 +400,7 @@ public partial class DiagramView : ContentView
 							if (UI.Get<EegView>().EegChannel(0) is not null)
 							{
 								EnableDiagramControls(false, true);
-								_ = MindCast();
+								m_tskMindCast = MindCast();
 								//m_tskAutoCast = new Task(MindCast);
 								//m_tskAutoCast.Start();
 							}
@@ -1116,39 +1123,15 @@ public partial class DiagramView : ContentView
 		PlayAndroidTone(bandHz, 200, 1.0);
 		if (fTrigger != 0.0f)
 			PlayAndroidTone(triggerHz, 200, 1.0);
-#else
+#elif IOS || MACCATALYST
+		_ = PlayAppleTriggerTonesAsync(bandHz, fTrigger == 0.0f ? null : triggerHz);
 #endif
 	}
 
 #if ANDROID
 	static void PlayAndroidTone(double frequencyHz, int durationMs, double volume)
 	{
-		const int sampleRate = 44100;
-		int sampleCount = Math.Max(1, (int)(sampleRate * (durationMs / 1000.0)));
-
-		// 16-bit PCM mono
-		var pcm = new short[sampleCount];
-
-		// small fade to avoid clicks
-		int fadeSamples = Math.Min(sampleCount / 20, 200);
-
-		double twoPiF = 2.0 * Math.PI * frequencyHz;
-
-		for (int i = 0; i < sampleCount; i++)
-		{
-			double t = i / (double)sampleRate;
-			double s = Math.Sin(twoPiF * t);
-
-			double env = 1.0;
-			if (fadeSamples > 0)
-			{
-				if (i < fadeSamples) env = i / (double)fadeSamples;
-				else if (i > sampleCount - fadeSamples) env = (sampleCount - i) / (double)fadeSamples;
-			}
-
-			double v = s * env * volume;
-			pcm[i] = (short)Math.Clamp(v * short.MaxValue, short.MinValue, short.MaxValue);
-		}
+		var pcm = ToneWaveform.CreatePcm(frequencyHz, durationMs, volume);
 
 		var attrs = new AudioAttributes.Builder()
 			.SetUsage(AudioUsageKind.AssistanceSonification)
@@ -1157,7 +1140,7 @@ public partial class DiagramView : ContentView
 
 		var format = new AudioFormat.Builder()
 			.SetEncoding(Encoding.Pcm16bit)
-			.SetSampleRate(sampleRate)
+			.SetSampleRate(ToneWaveform.SampleRate)
 			.SetChannelMask(ChannelOut.Mono)
 			.Build();
 
@@ -1178,6 +1161,58 @@ public partial class DiagramView : ContentView
 		Thread.Sleep(durationMs + 20);
 		track.Stop();
 		track.Flush();
+	}
+#endif
+
+#if IOS || MACCATALYST
+	private static readonly SemaphoreSlim AppleTonePlayback = new(1, 1);
+
+	private static async Task PlayAppleTriggerTonesAsync(double bandHz, double? triggerHz)
+	{
+		await AppleTonePlayback.WaitAsync();
+		try
+		{
+			await MainThread.InvokeOnMainThreadAsync(async () =>
+			{
+				await PlayAppleTone(bandHz, 200, 1.0);
+				if (triggerHz is double frequency)
+					await PlayAppleTone(frequency, 200, 1.0);
+			});
+		}
+		catch (Exception ex)
+		{
+			// Audio feedback must not interrupt EEG acquisition or casting.
+			System.Diagnostics.Trace.TraceError($"Trigger tone playback failed: {ex}");
+		}
+		finally
+		{
+			AppleTonePlayback.Release();
+		}
+	}
+
+	private static async Task PlayAppleTone(double frequencyHz, int durationMs, double volume)
+	{
+		using var data = NSData.FromArray(ToneWaveform.CreateWave(frequencyHz, durationMs, volume));
+		using var player = AVAudioPlayer.FromData(data, out var error);
+		using var playbackError = error;
+		if (player is null)
+			throw new InvalidOperationException($"Could not create trigger tone: {error?.LocalizedDescription}");
+
+		var finished = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+		player.FinishedPlaying += (_, args) =>
+		{
+			if (args.Status) finished.TrySetResult();
+			else finished.TrySetException(new IOException("Trigger tone playback was interrupted."));
+		};
+		player.DecoderError += (_, args) =>
+			finished.TrySetException(new IOException($"Trigger tone decoding failed: {args.Error?.LocalizedDescription}"));
+		if (!player.PrepareToPlay() || !player.Play())
+			throw new InvalidOperationException("Could not start trigger tone playback.");
+
+		// Retain the player until playback finishes, with a bound for interruptions
+		// that do not deliver a completion callback. Awaiting keeps the UI responsive.
+		await finished.Task.WaitAsync(TimeSpan.FromMilliseconds(durationMs + 2000));
+		await Task.Delay(20);
 	}
 #endif
 

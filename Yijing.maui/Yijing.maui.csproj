@@ -68,9 +68,49 @@
 		<CodesignEntitlements>Platforms/MacCatalyst/Entitlements.plist</CodesignEntitlements>
 	</PropertyGroup>
 
+	<!-- The Apple SDK tracks the manifest path but omits the source file from
+	     its incremental inputs. Include it so privacy changes reach cached builds. -->
+	<Target Name="TrackAppleAppManifestInput" BeforeTargets="_CompileAppManifest" Condition="('$(TargetPlatformIdentifier)' == 'ios' Or '$(TargetPlatformIdentifier)' == 'maccatalyst') And Exists('$(AppBundleManifest)')">
+		<ItemGroup>
+			<_CompileAppManifestInputFile Include="$(AppBundleManifest)" />
+		</ItemGroup>
+	</Target>
+
+	<!-- MSAL NativeInterop's transitive MAUI targets select desktop dylibs by the
+	     build host, which also adds macOS binaries to iOS device/simulator builds. -->
+	<!--Target Name="RemoveDesktopMsalNativeReferencesForIos" BeforeTargets="_ExpandNativeReferences" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+		<ItemGroup>
+			<NativeReference Remove="@(NativeReference)" Condition="'%(NativeReference.Filename)' == 'msalruntime' Or '%(NativeReference.Filename)' == 'msalruntime_arm64'" />
+		</ItemGroup>
+	</Target-->
+
 	<PropertyGroup Condition="'$(Configuration)' == 'Release' and '$(RuntimeIdentifier)' == 'maccatalyst-arm64'">
 		<!-- EF Core generates methods at runtime; ARM64 Release needs the Mono interpreter to execute them. -->
 		<UseInterpreter>true</UseInterpreter>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-android|AnyCPU'">
+	  <NoWarn>1701;1702;1416</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-android|AnyCPU'">
+	  <NoWarn>1701;1702;1416</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-ios|AnyCPU'">
+	  <NoWarn>1701;1702;1416</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-ios|AnyCPU'">
+	  <NoWarn>1701;1702;1416</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-maccatalyst|AnyCPU'">
+	  <NoWarn>1701;1702;1416</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-maccatalyst|AnyCPU'">
+	  <NoWarn>1701;1702;1416</NoWarn>
 	</PropertyGroup>
 
 	<!--PropertyGroup>
@@ -98,16 +138,17 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.13" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.13" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.13" />
+		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
 
 		<PackageReference Include="Microsoft.SemanticKernel" Version="1.81.0" />
-		<PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="10.10.1" />
-		<PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.10.1" />
+		<PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="10.11.0" />
+		<PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.11.0" />
 
 		<!--PackageReference Include="Microsoft.Extensions.AI" Version="9.9.0" /-->
 		<!--PackageReference Include="Microsoft.Extensions.AI.Ollama" Version="9.7.0-preview.1.25356.2" /-->
 		<!--PackageReference Include="OllamaSharp" Version="*" /-->
 		
-		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.110" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.120" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.110" />
 		<PackageReference Include="CommunityToolkit.Maui" Version="15.0.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />

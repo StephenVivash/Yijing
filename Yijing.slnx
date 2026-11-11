@@ -1,8 +1,10 @@
 <Solution>
   <Folder Name="/Solution Items/" />
+  <Project Path="../Common/Bluetooth/Bluetooth.csproj" />
   <Project Path="../Common/Common/Common.csproj" />
   <Project Path="../Common/Gui/Gui.csproj" />
   <Project Path="../Common/Muse/Muse.csproj" />
+  <Project Path="../Common/Muse.Tests/Muse.ProtocolChecks.csproj" />
   <Project Path="CortexAccess/CortexAccess.csproj" />
   <Project Path="EegML/EegML.csproj" />
   <Project Path="GrayCode/GrayCode.csproj" />

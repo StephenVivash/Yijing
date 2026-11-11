@@ -75,7 +75,7 @@ public class Eeg
 	public bool m_bLive = false;
 
 	DateTime _dtAiUpdate = DateTime.Now;
-	DateTime _dtSoundingUpdate = DateTime.Now;
+	private readonly TriggerToneFeedback _triggerToneFeedback = new();
 	DateTime _dtTimerUpdate = DateTime.Now;
 
 	public EegChannel[] m_eegChannel = new EegChannel[m_nChannelMax];
@@ -110,7 +110,7 @@ public class Eeg
 		InitialiseChannels();
 
 		_dtAiUpdate = DateTime.Now;
-		_dtSoundingUpdate = DateTime.Now;
+		_triggerToneFeedback.Reset(DateTime.Now);
 		_dtTimerUpdate = DateTime.Now.AddSeconds(5);
 
 		string str = Path.Combine(AppSettings.DocumentHome(), "Models");
@@ -289,19 +289,20 @@ public class Eeg
 		}
 		//m_bBadData = nBadData > 3;
 
-		if (AppPreferences.TriggerSounding && ((AppPreferences.EegGoal == (int)eGoal.eMeditation) ||
-			// or MindCast is finished
-			((AppPreferences.EegGoal == (int)eGoal.eYijingCast) && (AppPreferences.DiagramMode == (int)eDiagramMode.eExplore))))
+		// MindCast supplies its own paired/crossing cues. Otherwise drive feedback
+		// from EEG samples, including when the Diagram page has never been opened.
+		bool mindCastRunning = UI.Get<DiagramView>()?.IsMindCastRunning == true;
+		if (!bSummary && m_bConnected && AppPreferences.TriggerSounding && !mindCastRunning &&
+			(AppPreferences.EegGoal == (int)eGoal.eMeditation || AppPreferences.EegGoal == (int)eGoal.eYijingCast))
 		{
-			DateTime Timestamp = DateTime.Now;
-			TimeSpan TimeDiff = Timestamp - _dtSoundingUpdate;
-			if (TimeDiff.TotalSeconds >= 10)
-			{
-				_dtSoundingUpdate = Timestamp;
-				DiagramView.SoundTrigger(m_eegChannel[AppSettings.TriggerIndex].m_fCurrentValue,
-					m_eegChannel[AppSettings.TriggerIndex].m_fHigh);
-			}
+			var channel = m_eegChannel[AppSettings.TriggerIndex];
+			float? cue = _triggerToneFeedback.Update(DateTime.Now, AppSettings.TriggerIndex,
+				channel.m_fCurrentValue, channel.m_fLow, channel.m_fHigh);
+			if (cue.HasValue)
+				DiagramView.SoundTrigger(channel.m_fCurrentValue, cue.Value);
 		}
+		else
+			_triggerToneFeedback.Reset(DateTime.Now);
 
 		if ((AppPreferences.Timer != (int)eTimer.eNone)) // m_bLive
 		{
@@ -555,8 +556,8 @@ public class MuseEeg : Eeg
 			bool connected = base.Connect();
 
 			CancellationToken token = m_ctsMuseBt.Token;
-			m_tskMuse = ReceiveBTDataAsync(token);
 			UI.Call<EegView>(v => v.SetAppTitle("Starting Muse BT - Yijing"));
+			m_tskMuse = ReceiveBTDataAsync(token);
 			return connected;
 		}
 		return false;
@@ -1002,6 +1003,7 @@ public class MuseEeg : Eeg
 			{
 				UI.Call<EegView>(v => v.SetAppTitle("Scanning for Muse BT - Yijing"));
 				var discovered = await client.FindMuseAsync(TimeSpan.FromSeconds(30), token);
+				token.ThrowIfCancellationRequested();
 				if (discovered == null)
 				{
 					errorReported = true;
@@ -1018,7 +1020,7 @@ public class MuseEeg : Eeg
 				}
 
 				UI.Call<EegView>(v => v.SetAppTitle("Connecting to " + discovered.DisplayName + " - Yijing"));
-				LogMuseDebug($"Found {discovered.DisplayName} at 0x{discovered.BluetoothAddress:X}.");
+				LogMuseDebug($"Found {discovered.DisplayName}, id={discovered.DeviceIdentifier}.");
 				await client.ConnectAndStreamAsync(discovered, token);
 			}
 			catch (OperationCanceledException) when (token.IsCancellationRequested)
@@ -1044,7 +1046,7 @@ public class MuseEeg : Eeg
 			finally
 			{
 				await client.DisposeAsync();
-				if (!bTitle && !errorReported && m_bConnected)
+				if (!token.IsCancellationRequested && !bTitle && !errorReported && m_bConnected)
 					UI.Call<EegView>(v => v.ShowError("Muse BT", "Muse BT stopped before any EEG band data was received."));
 				UI.Call<EegView>(v => v.UpdateTime(m_dtEegStart, DateTime.Now));
 				m_tskMuse = null;

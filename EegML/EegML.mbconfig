@@ -22,10 +22,18 @@
         "Version": 5
       },
       {
+        "ColumnName": "Delta_TP9",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
         "ColumnName": "Delta_AF7",
         "ColumnPurpose": "Feature",
         "ColumnDataFormat": "Single",
-        "IsCategorical": true,
+        "IsCategorical": false,
         "Type": "Column",
         "Version": 5
       },
@@ -33,7 +41,7 @@
         "ColumnName": "Delta_AF8",
         "ColumnPurpose": "Feature",
         "ColumnDataFormat": "Single",
-        "IsCategorical": true,
+        "IsCategorical": false,
         "Type": "Column",
         "Version": 5
       },
@@ -41,7 +49,7 @@
         "ColumnName": "Delta_TP10",
         "ColumnPurpose": "Feature",
         "ColumnDataFormat": "Single",
-        "IsCategorical": true,
+        "IsCategorical": false,
         "Type": "Column",
         "Version": 5
       },
@@ -49,7 +57,7 @@
         "ColumnName": "Theta_TP9",
         "ColumnPurpose": "Feature",
         "ColumnDataFormat": "Single",
-        "IsCategorical": true,
+        "IsCategorical": false,
         "Type": "Column",
         "Version": 5
       },
@@ -57,7 +65,7 @@
         "ColumnName": "Theta_AF7",
         "ColumnPurpose": "Feature",
         "ColumnDataFormat": "Single",
-        "IsCategorical": true,
+        "IsCategorical": false,
         "Type": "Column",
         "Version": 5
       },
@@ -65,7 +73,7 @@
         "ColumnName": "Theta_AF8",
         "ColumnPurpose": "Feature",
         "ColumnDataFormat": "Single",
-        "IsCategorical": true,
+        "IsCategorical": false,
         "Type": "Column",
         "Version": 5
       },
@@ -73,7 +81,7 @@
         "ColumnName": "Theta_TP10",
         "ColumnPurpose": "Feature",
         "ColumnDataFormat": "Single",
-        "IsCategorical": true,
+        "IsCategorical": false,
         "Type": "Column",
         "Version": 5
       },
@@ -81,7 +89,7 @@
         "ColumnName": "Alpha_TP9",
         "ColumnPurpose": "Feature",
         "ColumnDataFormat": "Single",
-        "IsCategorical": true,
+        "IsCategorical": false,
         "Type": "Column",
         "Version": 5
       },
@@ -89,7 +97,7 @@
         "ColumnName": "Alpha_AF7",
         "ColumnPurpose": "Feature",
         "ColumnDataFormat": "Single",
-        "IsCategorical": true,
+        "IsCategorical": false,
         "Type": "Column",
         "Version": 5
       },
@@ -97,7 +105,7 @@
         "ColumnName": "Alpha_AF8",
         "ColumnPurpose": "Feature",
         "ColumnDataFormat": "Single",
-        "IsCategorical": true,
+        "IsCategorical": false,
         "Type": "Column",
         "Version": 5
       },
@@ -105,7 +113,7 @@
         "ColumnName": "Alpha_TP10",
         "ColumnPurpose": "Feature",
         "ColumnDataFormat": "Single",
-        "IsCategorical": true,
+        "IsCategorical": false,
         "Type": "Column",
         "Version": 5
       },
@@ -187,12 +195,13 @@
         "Version": 1,
         "Type": "Trial",
         "TrainerName": "FastForestRegression",
-        "Score": 0.0630012646066823,
-        "RuntimeInSeconds": 3.272,
+        "Score": 0.95284953207876943,
+        "RuntimeInSeconds": 3.492,
         "Parameter": {
           "_SCHEMA_": "e0 * e1 * e3",
           "e0": {
             "OutputColumnNames": [
+              "Delta_TP9",
               "Delta_AF7",
               "Delta_AF8",
               "Delta_TP10",
@@ -214,6 +223,7 @@
               "Gamma_TP10"
             ],
             "InputColumnNames": [
+              "Delta_TP9",
               "Delta_AF7",
               "Delta_AF8",
               "Delta_TP10",
@@ -237,6 +247,7 @@
           },
           "e1": {
             "InputColumnNames": [
+              "Delta_TP9",
               "Delta_AF7",
               "Delta_AF8",
               "Delta_TP10",
@@ -267,354 +278,6 @@
             "FeatureColumnName": "Features"
           }
         }
-      },
-      {
-        "Version": 1,
-        "Type": "Trial",
-        "TrainerName": "LbfgsPoissonRegressionRegression",
-        "Score": 0.071253339613762123,
-        "RuntimeInSeconds": 0.062,
-        "Parameter": {
-          "_SCHEMA_": "e0 * e1 * e5",
-          "e0": {
-            "OutputColumnNames": [
-              "Delta_AF7",
-              "Delta_AF8",
-              "Delta_TP10",
-              "Theta_TP9",
-              "Theta_AF7",
-              "Theta_AF8",
-              "Theta_TP10",
-              "Alpha_TP9",
-              "Alpha_AF7",
-              "Alpha_AF8",
-              "Alpha_TP10",
-              "Beta_TP9",
-              "Beta_AF7",
-              "Beta_AF8",
-              "Beta_TP10",
-              "Gamma_TP9",
-              "Gamma_AF7",
-              "Gamma_AF8",
-              "Gamma_TP10"
-            ],
-            "InputColumnNames": [
-              "Delta_AF7",
-              "Delta_AF8",
-              "Delta_TP10",
-              "Theta_TP9",
-              "Theta_AF7",
-              "Theta_AF8",
-              "Theta_TP10",
-              "Alpha_TP9",
-              "Alpha_AF7",
-              "Alpha_AF8",
-              "Alpha_TP10",
-              "Beta_TP9",
-              "Beta_AF7",
-              "Beta_AF8",
-              "Beta_TP10",
-              "Gamma_TP9",
-              "Gamma_AF7",
-              "Gamma_AF8",
-              "Gamma_TP10"
-            ]
-          },
-          "e1": {
-            "InputColumnNames": [
-              "Delta_AF7",
-              "Delta_AF8",
-              "Delta_TP10",
-              "Theta_TP9",
-              "Theta_AF7",
-              "Theta_AF8",
-              "Theta_TP10",
-              "Alpha_TP9",
-              "Alpha_AF7",
-              "Alpha_AF8",
-              "Alpha_TP10",
-              "Beta_TP9",
-              "Beta_AF7",
-              "Beta_AF8",
-              "Beta_TP10",
-              "Gamma_TP9",
-              "Gamma_AF7",
-              "Gamma_AF8",
-              "Gamma_TP10"
-            ],
-            "OutputColumnName": "Features"
-          },
-          "e5": {
-            "L1Regularization": 1.0,
-            "L2Regularization": 1.0,
-            "LabelColumnName": "Prediction",
-            "FeatureColumnName": "Features"
-          }
-        }
-      },
-      {
-        "Version": 1,
-        "Type": "Trial",
-        "TrainerName": "LightGbmRegression",
-        "Score": 0.087537076695015148,
-        "RuntimeInSeconds": 0.069,
-        "Parameter": {
-          "_SCHEMA_": "e0 * e1 * e4",
-          "e0": {
-            "OutputColumnNames": [
-              "Delta_AF7",
-              "Delta_AF8",
-              "Delta_TP10",
-              "Theta_TP9",
-              "Theta_AF7",
-              "Theta_AF8",
-              "Theta_TP10",
-              "Alpha_TP9",
-              "Alpha_AF7",
-              "Alpha_AF8",
-              "Alpha_TP10",
-              "Beta_TP9",
-              "Beta_AF7",
-              "Beta_AF8",
-              "Beta_TP10",
-              "Gamma_TP9",
-              "Gamma_AF7",
-              "Gamma_AF8",
-              "Gamma_TP10"
-            ],
-            "InputColumnNames": [
-              "Delta_AF7",
-              "Delta_AF8",
-              "Delta_TP10",
-              "Theta_TP9",
-              "Theta_AF7",
-              "Theta_AF8",
-              "Theta_TP10",
-              "Alpha_TP9",
-              "Alpha_AF7",
-              "Alpha_AF8",
-              "Alpha_TP10",
-              "Beta_TP9",
-              "Beta_AF7",
-              "Beta_AF8",
-              "Beta_TP10",
-              "Gamma_TP9",
-              "Gamma_AF7",
-              "Gamma_AF8",
-              "Gamma_TP10"
-            ]
-          },
-          "e1": {
-            "InputColumnNames": [
-              "Delta_AF7",
-              "Delta_AF8",
-              "Delta_TP10",
-              "Theta_TP9",
-              "Theta_AF7",
-              "Theta_AF8",
-              "Theta_TP10",
-              "Alpha_TP9",
-              "Alpha_AF7",
-              "Alpha_AF8",
-              "Alpha_TP10",
-              "Beta_TP9",
-              "Beta_AF7",
-              "Beta_AF8",
-              "Beta_TP10",
-              "Gamma_TP9",
-              "Gamma_AF7",
-              "Gamma_AF8",
-              "Gamma_TP10"
-            ],
-            "OutputColumnName": "Features"
-          },
-          "e4": {
-            "NumberOfLeaves": 4,
-            "MinimumExampleCountPerLeaf": 20,
-            "LearningRate": 1.0,
-            "NumberOfTrees": 4,
-            "SubsampleFraction": 1.0,
-            "MaximumBinCountPerFeature": 254,
-            "FeatureFraction": 1.0,
-            "L1Regularization": 2E-10,
-            "L2Regularization": 1.0,
-            "LabelColumnName": "Prediction",
-            "FeatureColumnName": "Features"
-          }
-        }
-      },
-      {
-        "Version": 1,
-        "Type": "Trial",
-        "TrainerName": "SdcaRegression",
-        "Score": 0.11938285718821354,
-        "RuntimeInSeconds": 0.091,
-        "Parameter": {
-          "_SCHEMA_": "e0 * e1 * e6",
-          "e0": {
-            "OutputColumnNames": [
-              "Delta_AF7",
-              "Delta_AF8",
-              "Delta_TP10",
-              "Theta_TP9",
-              "Theta_AF7",
-              "Theta_AF8",
-              "Theta_TP10",
-              "Alpha_TP9",
-              "Alpha_AF7",
-              "Alpha_AF8",
-              "Alpha_TP10",
-              "Beta_TP9",
-              "Beta_AF7",
-              "Beta_AF8",
-              "Beta_TP10",
-              "Gamma_TP9",
-              "Gamma_AF7",
-              "Gamma_AF8",
-              "Gamma_TP10"
-            ],
-            "InputColumnNames": [
-              "Delta_AF7",
-              "Delta_AF8",
-              "Delta_TP10",
-              "Theta_TP9",
-              "Theta_AF7",
-              "Theta_AF8",
-              "Theta_TP10",
-              "Alpha_TP9",
-              "Alpha_AF7",
-              "Alpha_AF8",
-              "Alpha_TP10",
-              "Beta_TP9",
-              "Beta_AF7",
-              "Beta_AF8",
-              "Beta_TP10",
-              "Gamma_TP9",
-              "Gamma_AF7",
-              "Gamma_AF8",
-              "Gamma_TP10"
-            ]
-          },
-          "e1": {
-            "InputColumnNames": [
-              "Delta_AF7",
-              "Delta_AF8",
-              "Delta_TP10",
-              "Theta_TP9",
-              "Theta_AF7",
-              "Theta_AF8",
-              "Theta_TP10",
-              "Alpha_TP9",
-              "Alpha_AF7",
-              "Alpha_AF8",
-              "Alpha_TP10",
-              "Beta_TP9",
-              "Beta_AF7",
-              "Beta_AF8",
-              "Beta_TP10",
-              "Gamma_TP9",
-              "Gamma_AF7",
-              "Gamma_AF8",
-              "Gamma_TP10"
-            ],
-            "OutputColumnName": "Features"
-          },
-          "e6": {
-            "L1Regularization": 1.0,
-            "L2Regularization": 0.1,
-            "LabelColumnName": "Prediction",
-            "FeatureColumnName": "Features"
-          }
-        }
-      },
-      {
-        "Version": 1,
-        "Type": "Trial",
-        "TrainerName": "FastTreeRegression",
-        "Score": 0.38361174343148929,
-        "RuntimeInSeconds": 3.267,
-        "Parameter": {
-          "_SCHEMA_": "e0 * e1 * e2",
-          "e0": {
-            "OutputColumnNames": [
-              "Delta_AF7",
-              "Delta_AF8",
-              "Delta_TP10",
-              "Theta_TP9",
-              "Theta_AF7",
-              "Theta_AF8",
-              "Theta_TP10",
-              "Alpha_TP9",
-              "Alpha_AF7",
-              "Alpha_AF8",
-              "Alpha_TP10",
-              "Beta_TP9",
-              "Beta_AF7",
-              "Beta_AF8",
-              "Beta_TP10",
-              "Gamma_TP9",
-              "Gamma_AF7",
-              "Gamma_AF8",
-              "Gamma_TP10"
-            ],
-            "InputColumnNames": [
-              "Delta_AF7",
-              "Delta_AF8",
-              "Delta_TP10",
-              "Theta_TP9",
-              "Theta_AF7",
-              "Theta_AF8",
-              "Theta_TP10",
-              "Alpha_TP9",
-              "Alpha_AF7",
-              "Alpha_AF8",
-              "Alpha_TP10",
-              "Beta_TP9",
-              "Beta_AF7",
-              "Beta_AF8",
-              "Beta_TP10",
-              "Gamma_TP9",
-              "Gamma_AF7",
-              "Gamma_AF8",
-              "Gamma_TP10"
-            ]
-          },
-          "e1": {
-            "InputColumnNames": [
-              "Delta_AF7",
-              "Delta_AF8",
-              "Delta_TP10",
-              "Theta_TP9",
-              "Theta_AF7",
-              "Theta_AF8",
-              "Theta_TP10",
-              "Alpha_TP9",
-              "Alpha_AF7",
-              "Alpha_AF8",
-              "Alpha_TP10",
-              "Beta_TP9",
-              "Beta_AF7",
-              "Beta_AF8",
-              "Beta_TP10",
-              "Gamma_TP9",
-              "Gamma_AF7",
-              "Gamma_AF8",
-              "Gamma_TP10"
-            ],
-            "OutputColumnName": "Features"
-          },
-          "e2": {
-            "NumberOfLeaves": 4,
-            "MinimumExampleCountPerLeaf": 20,
-            "NumberOfTrees": 4,
-            "MaximumBinCountPerFeature": 254,
-            "FeatureFraction": 1.0,
-            "LearningRate": 0.099999999999999978,
-            "LabelColumnName": "Prediction",
-            "FeatureColumnName": "Features",
-            "DiskTranspose": false
-          }
-        }
       }
     ],
     "Estimators": {
@@ -624,10 +287,12 @@
       "e3": "FastForestRegression",
       "e4": "LightGbmRegression",
       "e5": "LbfgsPoissonRegressionRegression",
-      "e6": "SdcaRegression"
+      "e6": "SdcaRegression",
+      "e7": "FastTreeRegression",
+      "e8": "FastTreeTweedieRegression"
     },
-    "Schema": "e0 * e1 * (e2 + e3 + e4 + e5 + e6)",
-    "MetricName": "RootMeanSquaredError",
+    "Schema": "e0 * e1 * (e2 + e3 + e4 + e5 + e6 + e7 + e8)",
+    "MetricName": "RSquared",
     "ModelFilePath": "C:\\Src\\Yijing\\EegML\\EegML.mlnet"
   },
   "Type": "TrainingConfig",
@@ -638,13 +303,14 @@
     "Tuner": "eci-cfo",
     "Type": "RegressionTrainingOption",
     "TrainingTime": 10,
-    "OptimizeMetric": "RMSE",
+    "OptimizeMetric": "RSquared",
     "LabelColumn": "Prediction",
     "AvailableTrainers": [
       "SDCA",
       "LBFGS",
       "LGBM",
       "FASTTREE",
+      "FASTTREE-DISKTRANSPOSE",
       "FASTFOREST"
     ],
     "Seed": 0,
