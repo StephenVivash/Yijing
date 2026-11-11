@@ -46,7 +46,7 @@ startup, even when the newly compiled/linked assemblies are correct. Use **Rebui
 in the IDE, or (for a local ARM64 build):
 
 ```sh
-dotnet build Yijing.maui/Yijing.maui.csproj -c Release -f net10.0-maccatalyst -r maccatalyst-arm64 -t:Rebuild
+dotnet build Yijing.maui/Yijing.maui.csproj -c Release -f net11.0-maccatalyst -r maccatalyst-arm64 -t:Rebuild
 ```
 
 ## Validation
@@ -55,7 +55,7 @@ Storage regression tests can be run with the repository's current xUnit runner:
 
 ```sh
 dotnet build Yijing.maui.test/Yijing.maui.test.csproj
-dotnet Yijing.maui.test/bin/Debug/net10.0/Yijing.maui.test.dll -class Yijing.Maui.Test.AppSettingsTests
+dotnet Yijing.maui.test/bin/Debug/net11.0/Yijing.maui.test.dll -class Yijing.Maui.Test.AppSettingsTests
 ```
 
 The tests cover awaiting sample initialization, preserving existing files, and

@@ -1,5 +1,5 @@
 #:project ../EegML/EegML.csproj
-#:property TargetFramework=net10.0
+#:property TargetFramework=net11.0
 #:property PublishAot=false
 
 using Microsoft.ML;

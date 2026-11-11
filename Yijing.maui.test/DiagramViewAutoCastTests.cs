@@ -72,11 +72,11 @@ public sealed class DiagramViewAutoCastTests : IAsyncLifetime
 		}
 	}
 
-	public Task InitializeAsync()
+	ValueTask IAsyncLifetime.InitializeAsync()
 	{
 		if (_skipReason is not null)
 		{
-			return Task.CompletedTask;
+			return ValueTask.CompletedTask;
 		}
 
 		_driver = _platformName switch
@@ -88,15 +88,15 @@ public sealed class DiagramViewAutoCastTests : IAsyncLifetime
 		};
 
 		_driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
-		return Task.CompletedTask;
+		return ValueTask.CompletedTask;
 	}
 
-	public Task DisposeAsync()
+	ValueTask IAsyncDisposable.DisposeAsync()
 	{
 		_driver?.Quit();
 		_driver?.Dispose();
 		_driver = null;
-		return Task.CompletedTask;
+		return ValueTask.CompletedTask;
 	}
 
 	[Fact(DisplayName = "AutoCast")]
@@ -188,15 +188,5 @@ public sealed class DiagramViewAutoCastTests : IAsyncLifetime
 		}
 
 		return null;
-	}
-
-	ValueTask IAsyncLifetime.InitializeAsync()
-	{
-		throw new NotImplementedException();
-	}
-
-	ValueTask IAsyncDisposable.DisposeAsync()
-	{
-		throw new NotImplementedException();
 	}
 }

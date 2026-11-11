@@ -1,4 +1,4 @@
-// Minimal MAUI dependencies for exercising the production storage initializer on net10.0.
+// Minimal MAUI dependencies for exercising the production storage initializer on net11.0.
 namespace Yijing.Services
 {
 	internal static class FileSystem

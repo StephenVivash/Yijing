@@ -17,7 +17,7 @@ Build the arm64 Release app with:
 
 ```sh
 dotnet build Yijing.maui/Yijing.maui.csproj -c Release \
-  -f net10.0-maccatalyst -p:RuntimeIdentifier=maccatalyst-arm64
+  -f net11.0-maccatalyst -p:RuntimeIdentifier=maccatalyst-arm64
 ```
 
 If an Apple/.NET toolchain change leaves stale AOT outputs, add `-t:Rebuild`.
@@ -28,9 +28,9 @@ Check the packaged description and signature, rather than just the source:
 
 ```sh
 /usr/libexec/PlistBuddy -c 'Print :NSBluetoothAlwaysUsageDescription' \
-  'Yijing.maui/bin/Release/net10.0-maccatalyst/maccatalyst-arm64/Yijing EEG.app/Contents/Info.plist'
+  'Yijing.maui/bin/Release/net11.0-maccatalyst/maccatalyst-arm64/Yijing EEG.app/Contents/Info.plist'
 codesign -d --entitlements - \
-  'Yijing.maui/bin/Release/net10.0-maccatalyst/maccatalyst-arm64/Yijing EEG.app'
+  'Yijing.maui/bin/Release/net11.0-maccatalyst/maccatalyst-arm64/Yijing EEG.app'
 ```
 
 The description must be present and the signed entitlements must include
