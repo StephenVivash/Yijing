@@ -35,7 +35,7 @@ namespace EegML
 		{
 			var sampleData = new EegML.ModelInput()
 			{
-				//Delta_TP9 = fDelta_TP9,
+				Delta_TP9 = fDelta_TP9,
 				Delta_AF7 = fDelta_AF7,
 				Delta_AF8 = fDelta_AF8,
 				Delta_TP10 = fDelta_TP10,
@@ -65,7 +65,7 @@ namespace EegML
 			//Load sample data
 			var sampleData = new EegML.ModelInput()
 			{
-				//Delta_TP9 = 0.645F,
+				Delta_TP9 = 0.645F,
 				Delta_AF7 = 0.064F,
 				Delta_AF8 = 0.819F,
 				Delta_TP10 = 0.163F,

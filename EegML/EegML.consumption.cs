@@ -20,78 +20,82 @@ namespace EegML
             public float Prediction { get; set; }
 
             [LoadColumn(1)]
+            [ColumnName(@"Delta_TP9")]
+            public float Delta_TP9 { get; set; }
+
+            [LoadColumn(2)]
             [ColumnName(@"Delta_AF7")]
             public float Delta_AF7 { get; set; }
 
-            [LoadColumn(2)]
+            [LoadColumn(3)]
             [ColumnName(@"Delta_AF8")]
             public float Delta_AF8 { get; set; }
 
-            [LoadColumn(3)]
+            [LoadColumn(4)]
             [ColumnName(@"Delta_TP10")]
             public float Delta_TP10 { get; set; }
 
-            [LoadColumn(4)]
+            [LoadColumn(5)]
             [ColumnName(@"Theta_TP9")]
             public float Theta_TP9 { get; set; }
 
-            [LoadColumn(5)]
+            [LoadColumn(6)]
             [ColumnName(@"Theta_AF7")]
             public float Theta_AF7 { get; set; }
 
-            [LoadColumn(6)]
+            [LoadColumn(7)]
             [ColumnName(@"Theta_AF8")]
             public float Theta_AF8 { get; set; }
 
-            [LoadColumn(7)]
+            [LoadColumn(8)]
             [ColumnName(@"Theta_TP10")]
             public float Theta_TP10 { get; set; }
 
-            [LoadColumn(8)]
+            [LoadColumn(9)]
             [ColumnName(@"Alpha_TP9")]
             public float Alpha_TP9 { get; set; }
 
-            [LoadColumn(9)]
+            [LoadColumn(10)]
             [ColumnName(@"Alpha_AF7")]
             public float Alpha_AF7 { get; set; }
 
-            [LoadColumn(10)]
+            [LoadColumn(11)]
             [ColumnName(@"Alpha_AF8")]
             public float Alpha_AF8 { get; set; }
 
-            [LoadColumn(11)]
+            [LoadColumn(12)]
             [ColumnName(@"Alpha_TP10")]
             public float Alpha_TP10 { get; set; }
 
-            [LoadColumn(12)]
+            [LoadColumn(13)]
             [ColumnName(@"Beta_TP9")]
             public float Beta_TP9 { get; set; }
 
-            [LoadColumn(13)]
+            [LoadColumn(14)]
             [ColumnName(@"Beta_AF7")]
             public float Beta_AF7 { get; set; }
 
-            [LoadColumn(14)]
+            [LoadColumn(15)]
             [ColumnName(@"Beta_AF8")]
             public float Beta_AF8 { get; set; }
 
-            [LoadColumn(15)]
+            [LoadColumn(16)]
             [ColumnName(@"Beta_TP10")]
             public float Beta_TP10 { get; set; }
 
-            [LoadColumn(16)]
+            [LoadColumn(17)]
             [ColumnName(@"Gamma_TP9")]
             public float Gamma_TP9 { get; set; }
 
-            [LoadColumn(17)]
+            [LoadColumn(18)]
             [ColumnName(@"Gamma_AF7")]
             public float Gamma_AF7 { get; set; }
 
-            [LoadColumn(18)]
+            [LoadColumn(19)]
             [ColumnName(@"Gamma_AF8")]
             public float Gamma_AF8 { get; set; }
 
-            [LoadColumn(19)]
+            [LoadColumn(20)]
             [ColumnName(@"Gamma_TP10")]
             public float Gamma_TP10 { get; set; }
 
@@ -107,6 +111,9 @@ namespace EegML
         {
             [ColumnName(@"Prediction")]
             public float Prediction { get; set; }
+
+            [ColumnName(@"Delta_TP9")]
+            public float Delta_TP9 { get; set; }
 
             [ColumnName(@"Delta_AF7")]
             public float Delta_AF7 { get; set; }
