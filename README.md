@@ -14,12 +14,13 @@ https://apps.microsoft.com/detail/9n9hhltgvjsk?cid=DevShareMTwPCS&hl=en-US&gl=AU
 
 Clone Yijing and [Common](https://github.com/StephenVivash/Common) side by side.
 Use Common's .NET 11 checkout with the shared Apple scene files under `Build/Apple`.
-Yijing selects the same .NET 11.0.1xx SDK and workload set as Common. On macOS,
-use Xcode 27.2 with that workload set. The Mac Catalyst build requires macOS 14
-or later. Android also needs an Android SDK and JDK.
+Yijing and Common select the .NET 11.0.1xx SDK. On Windows, use the .NET 11
+MAUI workloads installed by Visual Studio. On macOS, restore workload set
+11.0.100 with the command below and use Xcode 27.2. The Mac Catalyst build
+requires macOS 14 or later. Android also needs an Android SDK and JDK.
 
 ```sh
-dotnet workload restore Yijing.maui/Yijing.maui.csproj
+dotnet workload restore Yijing.maui/Yijing.maui.csproj --version 11.0.100
 dotnet build Yijing.maui/Yijing.maui.csproj -f net11.0-maccatalyst -r maccatalyst-arm64
 dotnet build Yijing.maui/Yijing.maui.csproj -f net11.0-ios -r iossimulator-arm64
 dotnet test --project Yijing.test/Yijing.test.csproj
