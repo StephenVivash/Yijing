@@ -6,12 +6,11 @@ Live requested Bluetooth. The system log reported a missing
 the description, while the packaged Release Info.plist was still cached from
 October 3. Debug had a freshly compiled manifest and worked.
 
-The installed Apple SDK 26.5 tracks the source manifest's path in
-`_CompileAppManifest.inputs`, but omits the source file itself from the
-`_CompileAppManifest` target's incremental inputs. `TrackAppleAppManifestInput`
-in the application project adds that file for both Mac Catalyst and iOS, so
-editing privacy descriptions invalidates the compiled manifest in Debug and
-Release builds.
+The Apple SDK 26.5 tracked the manifest's path but omitted the source file
+from the incremental inputs. The .NET 11 Apple SDK 27.2 tracks the source
+Info.plist directly for Mac Catalyst and iOS, so the app no longer needs its
+own workaround. Editing privacy descriptions invalidates the compiled manifest
+in Debug and Release builds.
 
 Build the arm64 Release app with:
 
@@ -37,7 +36,7 @@ The description must be present and the signed entitlements must include
 `com.apple.security.device.bluetooth`. Launch the Release app and use
 Muse / Live to exercise the Bluetooth permission path.
 
-Validation: a normal incremental arm64 Release build refreshed the previously
+Original validation: a normal incremental arm64 Release build refreshed the previously
 stale manifest. The signed Bluetooth entitlement was present. The resulting
 Release app launched, connected to the physical Muse and displayed live EEG
 data. The short test was stopped and Summary mode restored. iOS manifest input

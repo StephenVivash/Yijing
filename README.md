@@ -10,6 +10,27 @@
 
 https://apps.microsoft.com/detail/9n9hhltgvjsk?cid=DevShareMTwPCS&hl=en-US&gl=AU
 
+## .NET 11 development
+
+Clone Yijing and [Common](https://github.com/StephenVivash/Common) side by side.
+Use Common's .NET 11 checkout with the shared Apple scene files under `Build/Apple`.
+Yijing selects the same .NET 11.0.1xx SDK and workload set as Common. On macOS,
+use Xcode 27.2 with that workload set. The Mac Catalyst build requires macOS 14
+or later. Android also needs an Android SDK and JDK.
+
+```sh
+dotnet workload restore Yijing.maui/Yijing.maui.csproj
+dotnet build Yijing.maui/Yijing.maui.csproj -f net11.0-maccatalyst -r maccatalyst-arm64
+dotnet build Yijing.maui/Yijing.maui.csproj -f net11.0-ios -r iossimulator-arm64
+dotnet test --project Yijing.test/Yijing.test.csproj
+dotnet test --project Yijing.maui.test/Yijing.maui.test.csproj
+```
+
+For toolbar icons, place your local copy of `SegoeIcons.ttf` in
+`Yijing.maui/Resources/Fonts`. Git ignores this file.
+
+## Releases
+
 * v7.0.8 (17-May-26)
  - Muse BT interface
  - Bug fixes

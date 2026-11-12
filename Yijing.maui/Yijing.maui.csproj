@@ -43,7 +43,7 @@
 		<ApplicationVersion>7</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">15.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">17.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">24.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</TargetPlatformMinVersion>
@@ -68,21 +68,10 @@
 		<CodesignEntitlements>Platforms/MacCatalyst/Entitlements.plist</CodesignEntitlements>
 	</PropertyGroup>
 
-	<!-- The Apple SDK tracks the manifest path but omits the source file from
-	     its incremental inputs. Include it so privacy changes reach cached builds. -->
-	<Target Name="TrackAppleAppManifestInput" BeforeTargets="_CompileAppManifest" Condition="('$(TargetPlatformIdentifier)' == 'ios' Or '$(TargetPlatformIdentifier)' == 'maccatalyst') And Exists('$(AppBundleManifest)')">
-		<ItemGroup>
-			<_CompileAppManifestInputFile Include="$(AppBundleManifest)" />
-		</ItemGroup>
-	</Target>
-
-	<!-- MSAL NativeInterop's transitive MAUI targets select desktop dylibs by the
-	     build host, which also adds macOS binaries to iOS device/simulator builds. -->
-	<!--Target Name="RemoveDesktopMsalNativeReferencesForIos" BeforeTargets="_ExpandNativeReferences" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
-		<ItemGroup>
-			<NativeReference Remove="@(NativeReference)" Condition="'%(NativeReference.Filename)' == 'msalruntime' Or '%(NativeReference.Filename)' == 'msalruntime_arm64'" />
-		</ItemGroup>
-	</Target-->
+	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'ios' Or '$(TargetPlatformIdentifier)' == 'maccatalyst'">
+		<Compile Include="../../Common/Build/Apple/SceneDelegate.cs" Link="Platforms/Apple/SceneDelegate.cs" />
+		<PartialAppManifest Include="../../Common/Build/Apple/SceneManifest.plist" />
+	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Release' and '$(RuntimeIdentifier)' == 'maccatalyst-arm64'">
 		<!-- EF Core generates methods at runtime; ARM64 Release needs the Mono interpreter to execute them. -->
